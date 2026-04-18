@@ -15,9 +15,14 @@ dependencies {
     api("net.kyori:adventure-api:4.25.0")
     api("co.aikar:acf-core:0.5.1-SNAPSHOT")
     api("net.kyori:adventure-text-serializer-legacy:4.25.0")
-    api("dev.aurelium:polyglot:1.2.4")
+    api("dev.aurelium:polyglot:1.2.4") {
+        exclude(group = "org.spongepowered", module = "configurate-yaml")
+        exclude(group = "org.spongepowered", module = "configurate-core")
+    }
     api("com.ezylang:EvalEx:3.3.0")
-    api("org.spongepowered:configurate-yaml:4.2.0")
+    // 4.1.x matches Fabric modpacks (e.g. glowing-torchflower). Polyglot would pull 4.2 — exclude so Gradle cannot upgrade 4.1.2 -> 4.2.0.
+    api("org.spongepowered:configurate-core:4.1.2")
+    api("org.spongepowered:configurate-yaml:4.1.2")
     implementation("com.zaxxer:HikariCP:5.1.0") {
         exclude("org.slf4j", "slf4j-api")
     }

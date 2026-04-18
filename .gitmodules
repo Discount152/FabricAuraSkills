@@ -1,0 +1,3 @@
+[submodule "vendor/Slate"]
+	path = vendor/Slate
+	url = https://github.com/Archy-X/Slate.git

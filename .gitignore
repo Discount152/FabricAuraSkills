@@ -1,3 +1,7 @@
+# Local tooling / logs (do not publish)
+.cursor/
+/*.log
+
 # User-specific stuff
 .idea/
 
@@ -35,5 +39,11 @@ buildNumber.properties
 build.xml
 
 bukkit/run/
+
+# Fabric Loom runServer/runClient — worlds, logs, caches (safe to delete to reset)
+fabric/run/
+
+# Timestamped copies of every Fabric mod build (see :fabric:archiveFabricModJar); keep locally
+fabric-mod-jar-history/
 
 htmlReport/

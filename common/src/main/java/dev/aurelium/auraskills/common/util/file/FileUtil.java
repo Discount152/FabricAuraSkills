@@ -10,16 +10,15 @@ import org.spongepowered.configurate.NodePath;
 import org.spongepowered.configurate.yaml.NodeStyle;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.nio.charset.StandardCharsets;
 
 public class FileUtil {
 
@@ -98,31 +97,24 @@ public class FileUtil {
         return loadEmbeddedYamlFile(fileName, plugin.getClass().getClassLoader(), true);
     }
 
+    /**
+     * @param createFileSystem ignored; embedded YAML is always read via {@link ClassLoader#getResourceAsStream}
+     *        so we never open a second {@link java.nio.file.FileSystem} for the same JAR (avoids
+     *        {@link java.nio.file.FileSystemAlreadyExistsException} on Fabric production servers).
+     */
+    @SuppressWarnings("unused")
     public static ConfigurationNode loadEmbeddedYamlFile(String fileName, ClassLoader classLoader, boolean createFileSystem) throws IOException {
-        URI uri = getEmbeddedURI(fileName, classLoader);
-
-        if (uri == null) {
-            throw new IllegalArgumentException("File " + fileName + " does not exist");
-        }
-
-        Map<String, String> env = new ConcurrentHashMap<>();
-        env.put("create", "true");
-        if (createFileSystem && "jar".equals(uri.getScheme())) {
-            try (FileSystem ignored = FileSystems.newFileSystem(uri, env)) {
-                return loadFromUri(uri);
+        try (InputStream in = classLoader.getResourceAsStream(fileName)) {
+            if (in == null) {
+                throw new IllegalArgumentException("File " + fileName + " does not exist");
             }
-        } else {
-            return loadFromUri(uri);
+            YamlConfigurationLoader loader = YamlConfigurationLoader.builder()
+                    .defaultOptions(opts -> opts.shouldCopyDefaults(false))
+                    .nodeStyle(NodeStyle.BLOCK)
+                    .source(() -> new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8)))
+                    .build();
+            return loader.load();
         }
-    }
-
-    private static ConfigurationNode loadFromUri(URI uri) throws ConfigurateException {
-        YamlConfigurationLoader loader = YamlConfigurationLoader.builder()
-                .defaultOptions(opts -> opts.shouldCopyDefaults(false))
-                .path(Path.of(uri))
-                .build();
-
-        return loader.load();
     }
 
     public static URI getEmbeddedURI(String fileName, ClassLoader classLoader) {

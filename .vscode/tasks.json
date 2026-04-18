@@ -1,0 +1,80 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Fabric: build mod JAR",
+      "type": "shell",
+      "command": ".\\gradlew.bat -PfabricOnly=true :fabric:build",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Fabric: run local dedicated server",
+      "type": "shell",
+      "command": ".\\gradlew.bat -PfabricOnly=true :fabric:runServer",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "focus": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Fabric: run local game client",
+      "type": "shell",
+      "command": ".\\gradlew.bat -PfabricOnly=true :fabric:runClient",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "focus": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Fabric: verify JiJ release bundle",
+      "type": "shell",
+      "command": ".\\gradlew.bat -PfabricOnly=true :fabric:verifyFabricReleaseBundle",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Fabric: run unit tests (:fabric:test)",
+      "type": "shell",
+      "command": ".\\gradlew.bat -PfabricOnly=true :fabric:test",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "test",
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    }
+  ]
+}

@@ -9,14 +9,13 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class ConfigurateLoader {
 
@@ -51,32 +50,21 @@ public class ConfigurateLoader {
 
     @Nullable
     public ConfigurationNode loadEmbeddedFileOrNull(String fileName) throws IOException {
-        URI uri = FileUtil.getEmbeddedURI(fileName, classLoader);
-
-        if (uri == null) {
-            return null;
-        }
-
-        Map<String, String> env = new ConcurrentHashMap<>();
-        env.put("create", "true");
-        if ("jar".equals(uri.getScheme())) {
-            try (FileSystem ignored = FileSystems.newFileSystem(uri, env)) {
-                return loadFromUri(uri);
+        // Use classpath streams instead of FileSystems.newFileSystem(jar:...) — on Fabric production
+        // (Knot/Linux) the mod JAR may already be registered with ZipFileSystemProvider, causing
+        // FileSystemAlreadyExistsException when generating multiple default configs in sequence.
+        try (InputStream in = classLoader.getResourceAsStream(fileName)) {
+            if (in == null) {
+                return null;
             }
-        } else {
-            return loadFromUri(uri);
+            YamlConfigurationLoader loader = YamlConfigurationLoader.builder()
+                    .defaultOptions(opts ->
+                            opts.shouldCopyDefaults(false).serializers(build -> build.registerAll(serializers))
+                    )
+                    .source(() -> new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8)))
+                    .build();
+            return loader.load();
         }
-    }
-
-    private ConfigurationNode loadFromUri(URI uri) throws ConfigurateException {
-        YamlConfigurationLoader loader = YamlConfigurationLoader.builder()
-                .path(Path.of(uri))
-                .defaultOptions(opts ->
-                        opts.shouldCopyDefaults(false).serializers(build -> build.registerAll(serializers))
-                )
-                .build();
-
-        return loader.load();
     }
 
     /**

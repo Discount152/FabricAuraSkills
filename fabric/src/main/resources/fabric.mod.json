@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "auraskills",
+  "version": "${version}",
+  "name": "Fabric AuraSkills",
+  "description": "Fabric AuraSkills — dedicated server build for Minecraft 1.21.11 (skills, XP, storage, permissions). See fabric/FABRIC_QUICKSTART.md.",
+  "authors": ["Archyx (original)", "Fabric port"],
+  "license": "GPL-3.0",
+  "environment": "*",
+  "entrypoints": {
+    "server": [
+      "dev.aurelium.auraskills.fabric.FabricAuraSkillsMod"
+    ]
+  },
+  "mixins": [
+    "auraskills.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.18.4",
+    "minecraft": "~1.21.11",
+    "java": ">=21",
+    "fabric-api": "*",
+    "fabric-permissions-api-v0": "*"
+  }
+}

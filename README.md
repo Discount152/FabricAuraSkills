@@ -1,7 +1,7 @@
-<h1 style="text-align:center;">AuraSkills</h1>
+<h1 style="text-align:center;">Fabric AuraSkills</h1>
 
 <p style="text-align:center;">
-The ultra-versatile Minecraft RPG skills plugin
+Fabric dedicated-server port of the AuraSkills RPG skills system
 </p>
 
 [![GitHub Release](https://img.shields.io/github/v/release/Archy-X/AuraSkills?style=flat-square)](https://github.com/Archy-X/AuraSkills/releases/latest)
