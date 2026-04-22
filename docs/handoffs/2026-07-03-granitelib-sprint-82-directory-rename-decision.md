@@ -48,3 +48,5 @@ Full tables: [granitelib-physical-directory-rename-decision.md](../architecture/
 - **Otherwise:** **license/notice**, **external** distribution prep, or **feature** work in `dev.granitelib.…` before spending churn on the folder name.
 
 **Done:** this handoff + [granitelib-physical-directory-rename-decision.md](../architecture/granitelib-physical-directory-rename-decision.md).
+
+**Next (Sprint 83):** [granitelib-license-notice-review-plan.md](../architecture/granitelib-license-notice-review-plan.md) · [2026-07-04-granitelib-sprint-83-license-notice-review-plan.md](2026-07-04-granitelib-sprint-83-license-notice-review-plan.md).

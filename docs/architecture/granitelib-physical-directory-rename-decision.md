@@ -5,7 +5,7 @@
 | **Status** | **Proposed** (product/maintainer sign-off) |
 | **Date** | 2026-07-03 (Sprint 82) |
 | **Scope** | On-disk folder that backs Gradle project **`:granitelib-fabric`** |
-| **Related** | [granitelib-package-public-class-rename-plan.md](granitelib-package-public-class-rename-plan.md) (Stage 5) · [Sprint 81 handoff](../handoffs/2026-07-02-granitelib-sprint-81-package-bootstrap-rename.md) · [Sprint 82 handoff](../handoffs/2026-07-03-granitelib-sprint-82-directory-rename-decision.md) |
+| **Related** | [granitelib-package-public-class-rename-plan.md](granitelib-package-public-class-rename-plan.md) (Stage 5) · [granitelib-license-notice-review-plan.md](granitelib-license-notice-review-plan.md) (Sprint 83) · [Sprint 81 handoff](../handoffs/2026-07-02-granitelib-sprint-81-package-bootstrap-rename.md) · [Sprint 82 handoff](../handoffs/2026-07-03-granitelib-sprint-82-directory-rename-decision.md) |
 
 ---
 
@@ -120,9 +120,10 @@ This document answers: **Is renaming the folder to `granitelib-fabric/` worth th
 
 After **any future** implement sprint that renames the folder, run the matrix in [granitelib-package-public-class-rename-plan.md](granitelib-package-public-class-rename-plan.md#9-validation-matrix-run-after-any-rename-implementation). Until then, current **2.3.20** build expectations apply.
 
-## Recommended Sprint 83
+## Recommended follow-ups (post–Sprint 82)
 
-- **If** the team **accepts** this decision’s **deferred** rename: **Sprint 83 = execute** the implementation plan in one PR (after sign-off), or **bump** to a later **breadcrumb / pre-release** epic.  
-- **Else:** **License/notice** review, **external** distribution prerequisites, or **GraniteLib** feature port (more `dev.granitelib` code) — higher leverage than folder paint.
+- **Sprint 83 (done, docs):** [granitelib-license-notice-review-plan.md](granitelib-license-notice-review-plan.md) — **license/notice** audit plan before **breadcrumb** or **external** work.  
+- **Later:** **If** the team **accepts** a **physical** rename: **execute** the implementation plan in one PR (after sign-off), or **bundle** with a **breadcrumb / pre-release** epic.  
+- **Or:** **GraniteLib** feature port; **re-run** the license plan before **public** **Maven** publish.
 
 *Sprint 82: decision + audit only.*

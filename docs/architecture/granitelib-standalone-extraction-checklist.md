@@ -19,8 +19,9 @@ If **`slate-platform/`** is added: mirror the Sprint 77 pattern — **`include("
 - [x] **First** package / bootstrap rename — [granitelib-package-public-class-rename-plan.md](granitelib-package-public-class-rename-plan.md) / [Sprint 81 handoff](../handoffs/2026-07-02-granitelib-sprint-81-package-bootstrap-rename.md) — **`dev.granitelib.fabric`**, **`GraniteFabricBootstrap`** (stages 1–3 for current tiny tree).  
 - [ ] **Further** renames and subpackages as the port grows (same plan; re-audit on merge).  
 - [ ] **API** surface / SemVer (embed contract + ADR).
+- [ ] **License / notice** — [granitelib-license-notice-review-plan.md](granitelib-license-notice-review-plan.md) (Sprint 83 checklist; **human/legal** pass before aggressive breadcrumb removal or **external** publish).  
 - [ ] **CI** for one-way `:fabric` → lib edges.
 
-Cross-link: [granitelib-sprint-77-implementation.md](granitelib-sprint-77-implementation.md), [granitelib-package-name-adr.md](granitelib-package-name-adr.md), [granitelib-distribution-adr.md](granitelib-distribution-adr.md), [granitelib-package-public-class-rename-plan.md](granitelib-package-public-class-rename-plan.md), [granitelib-physical-directory-rename-decision.md](granitelib-physical-directory-rename-decision.md).
+Cross-link: [granitelib-sprint-77-implementation.md](granitelib-sprint-77-implementation.md), [granitelib-package-name-adr.md](granitelib-package-name-adr.md), [granitelib-distribution-adr.md](granitelib-distribution-adr.md), [granitelib-package-public-class-rename-plan.md](granitelib-package-public-class-rename-plan.md), [granitelib-physical-directory-rename-decision.md](granitelib-physical-directory-rename-decision.md), [granitelib-license-notice-review-plan.md](granitelib-license-notice-review-plan.md).
 
-*Sprint 78: stub replaced with upstream–fork split. Sprint 79: distribution ADR (Milestone D). Sprint 80: package/public class rename plan. Sprint 81: first package + class rename in code. Sprint 82: physical directory decision (default defer).*
+*Sprint 78: stub replaced with upstream–fork split. Sprint 79: distribution ADR (Milestone D). Sprint 80: package/public class rename plan. Sprint 81: first package + class rename in code. Sprint 82: physical directory decision (default defer). Sprint 83: license/notice review plan.*
