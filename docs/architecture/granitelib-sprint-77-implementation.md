@@ -7,7 +7,7 @@
 
 ## What is true on **this** repo (upstream `main` after merge)
 
-- **Gradle** includes **`:granitelib-fabric`** with **`project(":granitelib-fabric").projectDir = file("slate-fabric")`**. The directory is still named **`slate-fabric/`** (no physical rename).
+- **Gradle** includes **`:granitelib-fabric`** with **`project(":granitelib-fabric").projectDir = file("slate-fabric")`**. The directory is still named **`slate-fabric/`**; **physical** rename to `granitelib-fabric/` is **optional and deferred** by default — [granitelib-physical-directory-rename-decision.md](granitelib-physical-directory-rename-decision.md) (Sprint 82).
 - **`:fabric` depends** on `project(":granitelib-fabric", configuration = "namedElements")` and **JiJ-embeds** the library; nested JAR name prefix is **`granitelib-fabric-*.jar`**; **`slate-fabric/build.gradle.kts`** sets `archiveBaseName` to `granitelib-fabric`.
 - **`verifyFabricReleaseBundle`** requires a nested **`granitelib-fabric-*.jar`**. (Sprint 77: **14** nested JARs in **`FabricAuraSkills-2.3.19.jar`**; use current `projectVersion` for filename — e.g. **2.3.20**+ after Sprint 81.)
 - **No** `slate-platform/` and **no** **`:granitelib-platform`** in this monorepo **today** — that is not an omission in the handoff; upstream never had the second subproject.
@@ -27,5 +27,6 @@ Some forks or long-lived feature branches add **`slate-platform/`** and a second
 - [granitelib-standalone-extraction-checklist.md](granitelib-standalone-extraction-checklist.md) — single-module vs two-module  
 - [granitelib-v1-embed-contract.md](granitelib-v1-embed-contract.md) — v1 “embedded in mod” story  
 - [granitelib-package-public-class-rename-plan.md](granitelib-package-public-class-rename-plan.md) — future package / public class staging  
+- [granitelib-physical-directory-rename-decision.md](granitelib-physical-directory-rename-decision.md) — on-disk `slate-fabric/` vs `granitelib-fabric/` (Sprint 82)  
 
-**Doc pass:** [Sprint 78 handoff](../handoffs/2026-06-29-granitelib-sprint-78-upstream-doc-reconciliation.md) — stubs reconciled to this file’s upstream/fork split. [Sprint 79 handoff](../handoffs/2026-06-30-granitelib-sprint-79-distribution-adr.md) — distribution ADR. [Sprint 80 handoff](../handoffs/2026-07-01-granitelib-sprint-80-package-public-class-rename-plan.md) — rename plan. [Sprint 81 handoff](../handoffs/2026-07-02-granitelib-sprint-81-package-bootstrap-rename.md) — first package/class rename in `:granitelib-fabric`.
+**Doc pass:** [Sprint 78 handoff](../handoffs/2026-06-29-granitelib-sprint-78-upstream-doc-reconciliation.md) — stubs reconciled to this file’s upstream/fork split. [Sprint 79 handoff](../handoffs/2026-06-30-granitelib-sprint-79-distribution-adr.md) — distribution ADR. [Sprint 80 handoff](../handoffs/2026-07-01-granitelib-sprint-80-package-public-class-rename-plan.md) — rename plan. [Sprint 81 handoff](../handoffs/2026-07-02-granitelib-sprint-81-package-bootstrap-rename.md) — first package/class rename in `:granitelib-fabric`. [Sprint 82 handoff](../handoffs/2026-07-03-granitelib-sprint-82-directory-rename-decision.md) — physical directory decision.

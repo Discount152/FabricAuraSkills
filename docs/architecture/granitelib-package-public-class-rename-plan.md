@@ -5,7 +5,7 @@
 | **Type** | Implementation blueprint; **Sprint 81** executed the first Stages 1–3 for the current stub. |
 | **Date** | 2026-07-01 (Sprint 80 plan); **2026-07-02 (Sprint 81 first rename)** |
 | **Scope** | [FabricAuraSkills](https://github.com/Discount152/FabricAuraSkills) `main`-shaped tree; **`:granitelib-fabric`** + consumers |
-| **Prereq** | [granitelib-package-name-adr.md](granitelib-package-name-adr.md) · [granitelib-distribution-adr.md](granitelib-distribution-adr.md) (JiJ now, external later) · [Sprint 79 handoff](../handoffs/2026-06-30-granitelib-sprint-79-distribution-adr.md) · [Sprint 81 handoff](../handoffs/2026-07-02-granitelib-sprint-81-package-bootstrap-rename.md) |
+| **Prereq** | [granitelib-package-name-adr.md](granitelib-package-name-adr.md) · [granitelib-distribution-adr.md](granitelib-distribution-adr.md) (JiJ now, external later) · [granitelib-physical-directory-rename-decision.md](granitelib-physical-directory-rename-decision.md) (Sprint 82) · [Sprint 79 handoff](../handoffs/2026-06-30-granitelib-sprint-79-distribution-adr.md) · [Sprint 81 handoff](../handoffs/2026-07-02-granitelib-sprint-81-package-bootstrap-rename.md) |
 
 ---
 
@@ -97,8 +97,8 @@ Audit query: public top-level types under `slate-fabric` whose names suggest **S
 
 | Question | **Recommendation** |
 |----------|---------------------|
-| Rename **`slate-fabric/`** → `granitelib-fabric/`? | **Not** in the **first** package/class rename implementation **unless** tooling or org policy **requires** path = package. **Gradle** already exposes **`:granitelib-fabric`**; physical rename is **cosmetic + churn** (IDE, git blame, backports). |
-| **Later** (optional “filesystem cleanup” sprint) | **Stage 5** — after packages and call sites are stable, optionally align folder name with `projectDir` for contributor ergonomics, with a **single** mechanical commit and no logic change. |
+| Rename **`slate-fabric/`** → `granitelib-fabric/`? | **Sprint 82 decision (Proposed default):** **defer** — see [granitelib-physical-directory-rename-decision.md](granitelib-physical-directory-rename-decision.md). **Gradle** already exposes **`:granitelib-fabric`**; physical rename is **cosmetic + churn** unless product wants breadcrumb alignment. |
+| **Later** (optional “filesystem cleanup” sprint) | **Stage 5** — if accepted: **`git mv` + `settings.gradle.kts` `projectDir` + doc path sweep**; one mechanical PR, no logic change. |
 
 ---
 
@@ -159,15 +159,16 @@ Avoid one “rename everything” PR. Suggested order:
 
 ---
 
-## 12. Recommended Sprint 82+
+## 12. Recommended Sprint 83+
 
-- **Re-audit** this inventory when a branch adds **new** `slate-fabric` source; apply **Stages 1–3** for any new `dev.aurelium` / Slate-branded public types.  
-- **Optional:** physical `slate-fabric/` → `granitelib-fabric/` (Stage 5) when churn is acceptable.  
+- **Re-audit** this inventory when a branch adds **new** `slate-fabric` / **on-disk** `granitelib-fabric` source; apply **Stages 1–3** for new Slate-branded public types.  
+- **Physical directory (Stage 5):** [granitelib-physical-directory-rename-decision.md](granitelib-physical-directory-rename-decision.md) (Sprint 82) — default **defer**; **execute** only after sign-off.  
 - **Stage 6** license/notice and external story when [granitelib-distribution-adr.md](granitelib-distribution-adr.md) prereqs are met.
 
 ## See also
 
 - [Sprint 80 handoff](../handoffs/2026-07-01-granitelib-sprint-80-package-public-class-rename-plan.md) (historical plan)  
-- [Sprint 81 handoff](../handoffs/2026-07-02-granitelib-sprint-81-package-bootstrap-rename.md) (landed renames + validation)
+- [Sprint 81 handoff](../handoffs/2026-07-02-granitelib-sprint-81-package-bootstrap-rename.md) (landed renames + validation)  
+- [Sprint 82 handoff](../handoffs/2026-07-03-granitelib-sprint-82-directory-rename-decision.md) (directory decision + audit)
 
-*Sprint 80: plan. Sprint 81: first rename in code + docs + 2.3.20.*
+*Sprint 80: plan. Sprint 81: first code rename + 2.3.20. Sprint 82: physical directory decision (default defer).*

@@ -31,7 +31,7 @@
 
 ## 3. `slate-fabric` source path
 
-The **on-disk** directory is still **`slate-fabric/src/...`**. The **Java** package for the bootstrap is **`dev.granitelib.fabric`** (Sprint 81). The **Gradle** id remains **`granitelib-fabric`**. [granitelib-package-public-class-rename-plan.md](granitelib-package-public-class-rename-plan.md) covers further staging; re-run the **validation matrix** after future moves.
+The **on-disk** directory is still **`slate-fabric/src/...`** (see [granitelib-physical-directory-rename-decision.md](granitelib-physical-directory-rename-decision.md) for rename-vs-defer). The **Java** package for the bootstrap is **`dev.granitelib.fabric`** (Sprint 81). The **Gradle** id remains **`granitelib-fabric`**. [granitelib-package-public-class-rename-plan.md](granitelib-package-public-class-rename-plan.md) covers further staging; re-run the **validation matrix** after future moves.
 
 ## See also
 
@@ -41,6 +41,8 @@ The **on-disk** directory is still **`slate-fabric/src/...`**. The **Java** pack
 - [Sprint 79 handoff](../handoffs/2026-06-30-granitelib-sprint-79-distribution-adr.md)  
 - [granitelib-package-public-class-rename-plan.md](granitelib-package-public-class-rename-plan.md)  
 - [Sprint 80 handoff](../handoffs/2026-07-01-granitelib-sprint-80-package-public-class-rename-plan.md)  
-- [Sprint 81 handoff](../handoffs/2026-07-02-granitelib-sprint-81-package-bootstrap-rename.md)
+- [Sprint 81 handoff](../handoffs/2026-07-02-granitelib-sprint-81-package-bootstrap-rename.md)  
+- [granitelib-physical-directory-rename-decision.md](granitelib-physical-directory-rename-decision.md)  
+- [Sprint 82 handoff](../handoffs/2026-07-03-granitelib-sprint-82-directory-rename-decision.md)
 
-*Sprint 79: linked Milestone D ADR; no build change. Sprint 80: linked rename plan. Sprint 81: package + class rename in `slate-fabric`.*
+*Sprint 79: linked Milestone D ADR; no build change. Sprint 80: linked rename plan. Sprint 81: package + class rename in `slate-fabric`. Sprint 82: directory rename decision (docs).*

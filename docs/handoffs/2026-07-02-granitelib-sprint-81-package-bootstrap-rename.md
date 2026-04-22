@@ -57,5 +57,5 @@ Run the matrix from [granitelib-package-public-class-rename-plan.md](../architec
 ## Recommended Sprint 82
 
 - **Port work** that adds real `slate-fabric` surface: **re-audit** the [rename plan](../architecture/granitelib-package-public-class-rename-plan.md) and add subpackages under `dev.granitelib.…` with the same staging rules.  
-- **Or** optional **Stage 5** (rename folder `slate-fabric` → `granitelib-fabric`) only if the team wants path alignment, with a single mechanical commit.  
+- **Or** optional **Stage 5** (rename folder `slate-fabric` → `granitelib-fabric`) only if the team wants path alignment, with a single mechanical commit — see [Sprint 82 decision](../handoffs/2026-07-03-granitelib-sprint-82-directory-rename-decision.md) (default: **defer**).  
 - **Or** **Stage 6** / distribution: Maven group, license, external when [granitelib-distribution-adr.md](../architecture/granitelib-distribution-adr.md) gates are met.
