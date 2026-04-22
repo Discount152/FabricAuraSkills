@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.20
+
+### Changes
+
+- **Fabric / embedded GraniteLib:** Renamed the Java package for `:granitelib-fabric` from `dev.aurelium.slate.fabric` to `dev.granitelib.fabric`. Renamed `SlateFabricBootstrap` to `GraniteFabricBootstrap`. No gameplay or menu behavior changes.
+
 ## 2.3.19
 
 ### Changes

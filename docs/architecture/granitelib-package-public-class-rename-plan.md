@@ -2,10 +2,10 @@
 
 | Field | Value |
 |-------|--------|
-| **Type** | Planning only — **no renames in the sprint that added this file** |
-| **Date** | 2026-07-01 (Sprint 80) |
+| **Type** | Implementation blueprint; **Sprint 81** executed the first Stages 1–3 for the current stub. |
+| **Date** | 2026-07-01 (Sprint 80 plan); **2026-07-02 (Sprint 81 first rename)** |
 | **Scope** | [FabricAuraSkills](https://github.com/Discount152/FabricAuraSkills) `main`-shaped tree; **`:granitelib-fabric`** + consumers |
-| **Prereq** | [granitelib-package-name-adr.md](granitelib-package-name-adr.md) · [granitelib-distribution-adr.md](granitelib-distribution-adr.md) (JiJ now, external later) · [Sprint 79 handoff](../handoffs/2026-06-30-granitelib-sprint-79-distribution-adr.md) |
+| **Prereq** | [granitelib-package-name-adr.md](granitelib-package-name-adr.md) · [granitelib-distribution-adr.md](granitelib-distribution-adr.md) (JiJ now, external later) · [Sprint 79 handoff](../handoffs/2026-06-30-granitelib-sprint-79-distribution-adr.md) · [Sprint 81 handoff](../handoffs/2026-07-02-granitelib-sprint-81-package-bootstrap-rename.md) |
 
 ---
 
@@ -13,40 +13,43 @@
 
 Turn the **partial** package/identity ADR into a **sequenced, reviewable** plan so a **future implementation milestone** can rename Java packages and public types **without** a single giant refactor (the “caffeinated raccoon with a refactor button” failure mode).
 
-This document is the **blueprint**; the next sprint that **edits** `*.java` should follow these stages and re-audit inventories after large merges.
+This document is the **blueprint**; re-audit inventories after **large merges**; future types follow the same stages.
 
----
+### 2.1 After Sprint 81 (current snapshot)
 
-## 2. Current upstream naming state (audited, Sprint 80)
-
-| Dimension | **Upstream `main` (this clone)** |
-|-----------|-----------------------------------|
+| Dimension | **Upstream** |
+|-----------|-------------|
 | **Gradle module** | **`:granitelib-fabric`** |
-| **Directory** | **`slate-fabric/`** (name unchanged; `projectDir` mapping gives artifact identity) |
-| **`slate-fabric/src/main/java`** | **1** file under **`dev.aurelium.slate.fabric`** (see inventory). |
-| **`slate-fabric/src/test/java`** | **Not present** — no test sources under this module in this tree. |
-| **Distribution** | **JiJ** embedded in FabricAuraSkills; [granitelib-distribution-adr.md](granitelib-distribution-adr.md) **Option C**. |
-| **Public API** | **Embedded v1, evolving** — not a standalone SemVer library yet. |
-| **Consumer imports** | No `import dev.aurelium.slate.fabric.…` found **outside** `slate-fabric/` in first-party `fabric/` / `api/` / `common/` (lib is a stub; [`:fabric` does not yet depend on it at source level in a way that would break on rename, until code references land). Re-run grep before any rename. |
+| **Directory** | **`slate-fabric/`** (unchanged) |
+| **`slate-fabric/src/main/java`** | **1** file, package **`dev.granitelib.fabric`**, class **`GraniteFabricBootstrap`**. |
+| **Prior (historical)** | `dev.aurelium.slate.fabric` / `SlateFabricBootstrap` — **removed in Sprint 81** (see [Changelog.md](../../Changelog.md) **2.3.20**). |
+| **`slate-fabric/src/test/java`** | **Not present** — no tests in module yet. |
+| **Consumer imports** | No first-party code outside `slate-fabric` required updates (no call sites) — **re-run** `rg` when consumers appear. |
+
+### 2.2 Before Sprint 81 (archived, Sprint 80 audit)
+
+| Dimension | **Was true** |
+|-----------|-------------|
+| **Package** | `dev.aurelium.slate.fabric` |
+| **Class** | `SlateFabricBootstrap` |
+| **Consumer imports** | None outside the module. |
 
 **Reference (not in `:granitelib-fabric` source):** `vendor/Slate` holds **upstream Bukkit Slate** as a submodule; **out of scope** for GraniteLib’s first package pass unless the team explicitly subsumes that tree (different license/attribution story). Bukkit / API code under `dev.aurelium.auraskills` is the **mod product** — renames there are a **larger** product decision, not required to move with the first `slate-fabric` package change.
 
 ---
 
-## 3. Target naming state (honest: not fully locked)
+## 3. Target naming state
 
 | Item | **Direction** |
 |------|----------------|
-| **Preferred package root (GraniteLib on Fabric)** | **`dev.granitelib.…`** (or **`org.…` / team domain** if legal/org policy picks otherwise — **not fully decided in Sprint 80**; confirm before first mass move). |
-| **Avoid for new public API** | **`dev.aurelium.slate.…`** as the long-term **public** home for new GraniteLib types; “Slate” in **public** class names where it reads like product branding. |
-| **Allow temporarily** | Historical packages under `slate-fabric` until a staged move completes. |
-| **Sibling modules** | **`dev.aurelium.slate.platform…`** N/A on upstream (no `slate-platform/`) — any target tree is **future / fork** only. |
+| **Adopted root (Sprint 81) for `slate-fabric` bootstrap** | **`dev.granitelib.fabric`**. |
+| **Further** subpackages (e.g. `…menu`, `…menu.render`) | Add when the port lands; not locked here. |
+| **Avoid for new public API** in GraniteLib | `dev.aurelium.slate.…` for **new** first-party code in this module; **vendor** `dev.aurelium.slate` in `vendor/Slate` stays until a separate policy. |
+| **Sibling modules** | **`dev.aurelium.slate.platform…`** N/A on upstream (no `slate-platform/`). |
 
-**Naming candidates (illustrative, not a commitment):**
-
-| Current (illustrative) | Possible future |
-|------------------------|-----------------|
-| `dev.aurelium.slate.fabric` | `dev.granitelib.fabric` (or `dev.granitelib.fabric.bootstrap`, split by subpackage as the tree grows) |
+| Previous | **Now (Sprint 81)** |
+|----------|---------------------|
+| `dev.aurelium.slate.fabric` | `dev.granitelib.fabric` |
 
 Re-split subpackages (e.g. `…fabric.menu`, `…fabric.menu.render`) when the code exists — **not** invented in this inventory.
 
@@ -54,15 +57,13 @@ Re-split subpackages (e.g. `…fabric.menu`, `…fabric.menu.render`) when the c
 
 ## 4. Package rename inventory (first-party `:granitelib-fabric` only)
 
-**Source:** `slate-fabric/src/main/java` and `slate-fabric/src/test/java` (test directory **absent** here).
+**Source:** `slate-fabric/src/main/java` and `slate-fabric/src/test/java` (test **absent**).
 
-| Package root (current) | File count (main) | Suggested future root (illustrative) | Notes |
-|------------------------|--------------------|--------------------------------------|--------|
-| `dev.aurelium.slate.fabric` | 1 | `dev.granitelib.fabric` (or `dev.granitelib.fabric.bootstrap`) | Only package in module today. |
+| Package root (current) | File count (main) | Status |
+|------------------------|--------------------|--------|
+| `dev.granitelib.fabric` | 1 | **Landed (Sprint 81)**. |
 
-**Not listed:** `dev.aurelium.slate.menu`, `…platform` — **no** such packages under `slate-fabric/src` in this repository snapshot.
-
-**When new files land** (e.g. from a feature branch), **re-run** this inventory before executing Stage 1.
+**Not listed yet:** `…menu`, `…platform` under `slate-fabric` — re-run inventory when new packages appear.
 
 ---
 
@@ -72,7 +73,7 @@ Audit query: public top-level types under `slate-fabric` whose names suggest **S
 
 | Type | Found? | Future name (suggested) | Scope | Stage | Risk |
 |------|--------|-------------------------|--------|--------|------|
-| `SlateFabricBootstrap` | **Yes** | e.g. `GraniteFabricBootstrap` (or `GraniteLibFabricBootstrap`) | Public API entry / bootstrap | **Stage 3** (after package move + import fixes) or same PR as **Stage 1** if trivially small | Low today (no external callers) |
+| `GraniteFabricBootstrap` (was `SlateFabricBootstrap`) | **Current** | — | Public bootstrap | **Landed (Sprint 81)** | — |
 | `SlateFabricMenuRegistry` | **N/A** (not in tree) | e.g. `GraniteFabricMenuRegistry` if introduced | public-ish | TBD | — |
 | `SlatePortManifest` | **N/A** | TBD | public-ish | TBD | — |
 | `FabricSlateGroupSlotMath` | **N/A** | e.g. `GraniteGroupSlotMath` or `FabricMenuGroupSlotMath` | public-ish / util | TBD | — |
@@ -114,7 +115,9 @@ Avoid one “rename everything” PR. Suggested order:
 | **5** | **Optional** physical **`slate-fabric/`** directory rename. | Isolated, low value until team cares. |
 | **6** | **License / notice** review and **metadata** (Modrinth/Maven) per [granitelib-distribution-adr.md](granitelib-distribution-adr.md) **before** external publish. | Gate for “toolbox out of backpack.” |
 
-**Merge strategy:** If Stage 1–3 stay **small** (current tree: **one** class), a **single** PR can still be *staged* in commits (package move commit, then class rename commit) for reviewability.
+**Sprint 81:** Stages **1–3** completed in one pass for the **one-class** tree (`dev.granitelib.fabric` + `GraniteFabricBootstrap`); **Stage 4** (this doc, ADR, [Changelog.md](../../Changelog.md)) in the same release.
+
+**Merge strategy (future):** For larger trees, use separate commits (package, consumers, public class renames) for reviewability.
 
 **Anti-pattern:** Renaming `vendor/Slate` and `slate-fabric` and `dev.aurelium.auraskills.fabric` in one PR.
 
@@ -149,25 +152,22 @@ Avoid one “rename everything” PR. Suggested order:
 
 ---
 
-## 11. Non-goals (Sprint 80)
+## 11. Non-goals (Sprint 80 doc sprint; Sprint 81 code sprint was separate)
 
-- **No** Java edits, renames, Gradle, YAML, or metadata in the sprint that **only** adds/updates this plan and handoff links.  
-- **No** commitment to a specific `dev.granitelib` vs `org.*` final root without org sign-off.  
-- **No** `vendor/Slate` rewrite as part of “Sprint 80” deliverable.
+- Sprint 80: **no** code edits when only the plan was added.  
+- **No** `vendor/Slate` rewrite as part of GraniteLib module renames.  
 
 ---
 
-## 12. Recommended Sprint 81
+## 12. Recommended Sprint 82+
 
-**First execution slice (when product approves root + one bootstrap name):**
-
-- Implement **Stages 1–3** for current **`slate-fabric` tree** (small: likely **one** class + any new files merged since this audit), then run the **Validation matrix** in one CI/local pass.  
-- **Or** if the next merge adds **substantive** `slate-fabric` code from a long-lived branch, **Sprint 81 = re-audit inventories** in this file *then* apply the same stages.
-
-**Parallel track (optional):** org/legal **package root** sign-off, or **license/notice** prep (Stage 6) before any public GraniteLib story grows.
+- **Re-audit** this inventory when a branch adds **new** `slate-fabric` source; apply **Stages 1–3** for any new `dev.aurelium` / Slate-branded public types.  
+- **Optional:** physical `slate-fabric/` → `granitelib-fabric/` (Stage 5) when churn is acceptable.  
+- **Stage 6** license/notice and external story when [granitelib-distribution-adr.md](granitelib-distribution-adr.md) prereqs are met.
 
 ## See also
 
-- [Sprint 80 handoff](../handoffs/2026-07-01-granitelib-sprint-80-package-public-class-rename-plan.md)
+- [Sprint 80 handoff](../handoffs/2026-07-01-granitelib-sprint-80-package-public-class-rename-plan.md) (historical plan)  
+- [Sprint 81 handoff](../handoffs/2026-07-02-granitelib-sprint-81-package-bootstrap-rename.md) (landed renames + validation)
 
-*Sprint 80: plan only. Re-audit before implementation.*
+*Sprint 80: plan. Sprint 81: first rename in code + docs + 2.3.20.*

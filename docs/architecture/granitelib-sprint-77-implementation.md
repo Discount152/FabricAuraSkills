@@ -3,15 +3,15 @@
 | Field | Value |
 |-------|--------|
 | **Handoff** | [2026-06-28 handoff](../handoffs/2026-06-28-granitelib-sprint-77-module-rename-implementation.md) |
-| **Status** | Landed: Gradle project **`:granitelib-fabric`**, `projectDir` = `slate-fabric/`, `projectVersion` **2.3.19** |
+| **Status** | Landed: Gradle project **`:granitelib-fabric`**, `projectDir` = `slate-fabric/`, `projectVersion` **2.3.20**+ (bump for packaging / identity work as released) |
 
 ## What is true on **this** repo (upstream `main` after merge)
 
 - **Gradle** includes **`:granitelib-fabric`** with **`project(":granitelib-fabric").projectDir = file("slate-fabric")`**. The directory is still named **`slate-fabric/`** (no physical rename).
 - **`:fabric` depends** on `project(":granitelib-fabric", configuration = "namedElements")` and **JiJ-embeds** the library; nested JAR name prefix is **`granitelib-fabric-*.jar`**; **`slate-fabric/build.gradle.kts`** sets `archiveBaseName` to `granitelib-fabric`.
-- **`verifyFabricReleaseBundle`** requires a nested **`granitelib-fabric-*.jar`**. (Observed: **14** nested JARs in **`FabricAuraSkills-2.3.19.jar`** in Sprint 77 validation; count can shift if dependencies change.)
+- **`verifyFabricReleaseBundle`** requires a nested **`granitelib-fabric-*.jar`**. (Sprint 77: **14** nested JARs in **`FabricAuraSkills-2.3.19.jar`**; use current `projectVersion` for filename — e.g. **2.3.20**+ after Sprint 81.)
 - **No** `slate-platform/` and **no** **`:granitelib-platform`** in this monorepo **today** — that is not an omission in the handoff; upstream never had the second subproject.
-- **No** Java package, class, directory, or YAML renames in Sprint 77 — only Gradle/JiJ/verification and version bump.
+- **No** Java package, class, directory, or YAML renames in Sprint 77 — only Gradle/JiJ/verification and version bump. **Sprint 81** renamed the stub package/class in `:granitelib-fabric` to **`dev.granitelib.fabric`** / **`GraniteFabricBootstrap`** (see [Sprint 81 handoff](../handoffs/2026-07-02-granitelib-sprint-81-package-bootstrap-rename.md)).
 
 ## Fork / planning branches (not asserted as upstream)
 
@@ -28,4 +28,4 @@ Some forks or long-lived feature branches add **`slate-platform/`** and a second
 - [granitelib-v1-embed-contract.md](granitelib-v1-embed-contract.md) — v1 “embedded in mod” story  
 - [granitelib-package-public-class-rename-plan.md](granitelib-package-public-class-rename-plan.md) — future package / public class staging  
 
-**Doc pass:** [Sprint 78 handoff](../handoffs/2026-06-29-granitelib-sprint-78-upstream-doc-reconciliation.md) — stubs reconciled to this file’s upstream/fork split. [Sprint 79 handoff](../handoffs/2026-06-30-granitelib-sprint-79-distribution-adr.md) — distribution ADR. [Sprint 80 handoff](../handoffs/2026-07-01-granitelib-sprint-80-package-public-class-rename-plan.md) — rename plan.
+**Doc pass:** [Sprint 78 handoff](../handoffs/2026-06-29-granitelib-sprint-78-upstream-doc-reconciliation.md) — stubs reconciled to this file’s upstream/fork split. [Sprint 79 handoff](../handoffs/2026-06-30-granitelib-sprint-79-distribution-adr.md) — distribution ADR. [Sprint 80 handoff](../handoffs/2026-07-01-granitelib-sprint-80-package-public-class-rename-plan.md) — rename plan. [Sprint 81 handoff](../handoffs/2026-07-02-granitelib-sprint-81-package-bootstrap-rename.md) — first package/class rename in `:granitelib-fabric`.

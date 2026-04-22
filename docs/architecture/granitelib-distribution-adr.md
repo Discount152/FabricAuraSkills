@@ -5,7 +5,7 @@
 | **Status** | **Proposed** (awaiting product buy-in) |
 | **Date** | 2026-06-30 |
 | **Scope** | [FabricAuraSkills](https://github.com/Discount152/FabricAuraSkills) on upstream `main` after Sprint 77/78 (one module: **`:granitelib-fabric`**) |
-| **Related** | [granitelib-v1-embed-contract.md](granitelib-v1-embed-contract.md) · [granitelib-package-name-adr.md](granitelib-package-name-adr.md) · [granitelib-package-public-class-rename-plan.md](granitelib-package-public-class-rename-plan.md) · [granitelib-verification-report.md](granitelib-verification-report.md) · [Sprint 79 handoff](../handoffs/2026-06-30-granitelib-sprint-79-distribution-adr.md) |
+| **Related** | [granitelib-v1-embed-contract.md](granitelib-v1-embed-contract.md) · [granitelib-package-name-adr.md](granitelib-package-name-adr.md) · [granitelib-package-public-class-rename-plan.md](granitelib-package-public-class-rename-plan.md) · [granitelib-verification-report.md](granitelib-verification-report.md) · [Sprint 79 handoff](../handoffs/2026-06-30-granitelib-sprint-79-distribution-adr.md) · [Sprint 81 handoff](../handoffs/2026-07-02-granitelib-sprint-81-package-bootstrap-rename.md) |
 
 ---
 
@@ -18,7 +18,7 @@
 - GraniteLib ships **only** as a **Jar-in-Jar (JiJ) nested JAR** inside the remapped **FabricAuraSkills** mod JAR: **`granitelib-fabric-*.jar`** under `META-INF/jars/`.
 - **`:fabric` compileClasspath** includes **`project :granitelib-fabric`**; **`:granitelib-fabric`** has **no** reverse compile dependency on **`:fabric`**.
 - There is **no** separate installable “GraniteLib” mod, **no** Maven publication of GraniteLib as a first-class product line on this repo to date, and **no** `fabric.mod.json` entry advertising GraniteLib as a standalone dependency to end users.
-- **Java package names** remain historical (`dev.aurelium.slate.…`); **Gradle** module id is **`granitelib-fabric`**; physical directory is **`slate-fabric/`**.
+- **Java package names** for **`:granitelib-fabric`** are now **`dev.granitelib.fabric`** (Sprint 81); other product code may still use historical roots. **Gradle** module id is **`granitelib-fabric`**; physical directory is **`slate-fabric/`**.
 
 **What `verifyFabricReleaseBundle` enforces (today):**
 
@@ -89,7 +89,7 @@
 **Reasoning (summary):**
 
 - Upstream **already embeds** `granitelib-fabric` successfully; **`verifyFabricReleaseBundle`** is the gate.
-- **Package names, Maven group, public class names, and license review** are still open per [granitelib-package-name-adr.md](granitelib-package-name-adr.md) — an **external “library product”** before those are settled would be **premature**.
+- **Maven group, broader public API / SemVer, and license review** remain open per [granitelib-package-name-adr.md](granitelib-package-name-adr.md) — the **bootstrap** package rename (**Sprint 81**) does **not** by itself make an external library product ready. An **external “library product”** before publishing prereqs close would still be **premature**.
 - **granitelib-fabric** should **not** be treated as a **fully independent consumer-facing product artifact** (with its own support tier) **until** those prerequisites close.
 - **JiJ should remain the enforced distribution** for released DiscountAuraSkills builds **until** a deliberate “external phase” rewrites Gradle, metadata, and docs in a follow-on epic.
 
@@ -144,7 +144,8 @@
 | **Risks if users must install separately?** | Wrong version, “missing dependency” reports, and support load — trade for reusability. |
 | **Is `granitelib-fabric` a product yet?** | **Not** as a stand-alone shippable library with its own support story — **it is** the Gradle/artifact name for the embedded lib **inside** FabricAuraSkills. Re-evaluate when publish + API freeze land. |
 | **Must JiJ stay until package rename and license review?** | **This ADR recommends yes** for **released** upstream artifacts until a deliberate switch — avoid half-external, half-embedded confusion. |
-| **What should Sprint 80 do?** | **Done (docs):** [granitelib-package-public-class-rename-plan.md](granitelib-package-public-class-rename-plan.md) · [Sprint 80 handoff](../handoffs/2026-07-01-granitelib-sprint-80-package-public-class-rename-plan.md). **Implementation** remains a future milestone. |
+| **What should Sprint 80 do?** | **Done (docs):** [granitelib-package-public-class-rename-plan.md](granitelib-package-public-class-rename-plan.md) · [Sprint 80 handoff](../handoffs/2026-07-01-granitelib-sprint-80-package-public-class-rename-plan.md). |
+| **Sprint 81 follow-up** | **Done (code + docs):** first **`:granitelib-fabric`** package/class rename — [Sprint 81 handoff](../handoffs/2026-07-02-granitelib-sprint-81-package-bootstrap-rename.md). **Further** port renames TBD. |
 
 ### Embedded answers (index)
 

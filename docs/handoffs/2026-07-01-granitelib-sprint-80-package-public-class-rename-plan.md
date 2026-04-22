@@ -53,3 +53,5 @@ After distribution ADR (Sprint 79), produce a **concrete, staged** plan for **Ja
 - **Or** re-audit the plan when a branch lands **substantive** `slate-fabric` code, then apply the same stages.
 
 **Done:** this handoff + [granitelib-package-public-class-rename-plan.md](../architecture/granitelib-package-public-class-rename-plan.md). Cross-links added from ADRs and Sprint 77/78/79–related arch docs.
+
+**Sprint 81 (implementation):** [2026-07-02-granitelib-sprint-81-package-bootstrap-rename.md](2026-07-02-granitelib-sprint-81-package-bootstrap-rename.md) — Stages 1–3: **`dev.granitelib.fabric`**, **`GraniteFabricBootstrap`**, **`projectVersion` 2.3.20**.
