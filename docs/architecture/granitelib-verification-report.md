@@ -1,6 +1,6 @@
 # GraniteLib verification (upstream `main` after Sprint 77)
 
-**Scope:** [FabricAuraSkills](https://github.com/Discount152/FabricAuraSkills) with **`projectVersion` 2.3.20** and Gradle ID **`:granitelib-fabric`**. This is a **summary**; line numbers in `build.gradle.kts` can drift.
+**Scope:** [FabricAuraSkills](https://github.com/Discount152/FabricAuraSkills) with **`projectVersion` 2.3.21** and Gradle ID **`:granitelib-fabric`**. This is a **summary**; line numbers in `build.gradle.kts` can drift.
 
 ## 1. Gradle dependencies (Sprint 77+)
 
@@ -23,7 +23,7 @@
 ## 2. JiJ / `verifyFabricReleaseBundle`
 
 - **Distribution policy (Milestone D):** [granitelib-distribution-adr.md](granitelib-distribution-adr.md) — **Proposed:** keep **JiJ** for upstream releases; external dependency is a **future** migration after naming/publish readiness.
-- Remapped JAR: **`FabricAuraSkills-2.3.20.jar`** (or current `projectVersion`).
+- Remapped JAR: **`FabricAuraSkills-2.3.21.jar`** (or current `projectVersion`).
 - **Sprint 77+ validation (counts vary):** **`verifyFabricReleaseBundle: OK`**, **14** nested JARs under `META-INF/jars/` was observed for **2.3.19**; re-check after dependency changes.
 - Task requires nested **`granitelib-fabric-*.jar`**, plus existing checks (e.g. `api-`, `common-`, Configurate **4.1.2**, polyglot) and the **forbidden** Configurate **4.2** filter — see [`fabric/build.gradle.kts`](../../fabric/build.gradle.kts) `verifyFabricReleaseBundle` block. This is the **current** enforcement that GraniteLib is embedded in the release JAR.
 
@@ -49,6 +49,7 @@ The **on-disk** directory is still **`slate-fabric/src/...`** (see [granitelib-p
 - [granitelib-notice-attribution-strategy.md](granitelib-notice-attribution-strategy.md)  
 - [Sprint 84 handoff](../handoffs/2026-07-05-granitelib-sprint-84-notice-attribution-strategy.md)  
 - [granitelib-branding-metadata-cleanup-plan.md](granitelib-branding-metadata-cleanup-plan.md) (Sprint 85)  
-- [Sprint 85 handoff](../handoffs/2026-07-06-granitelib-sprint-85-branding-metadata-cleanup-plan.md)
+- [Sprint 85 handoff](../handoffs/2026-07-06-granitelib-sprint-85-branding-metadata-cleanup-plan.md)  
+- [Sprint 86 handoff](../handoffs/2026-07-07-granitelib-sprint-86-readme-url-branding-cleanup.md)
 
-*Sprint 79: linked Milestone D ADR; no build change. Sprint 80: linked rename plan. Sprint 81: package + class rename in `slate-fabric`. Sprint 82: directory rename decision (docs). Sprint 83: license/notice plan. Sprint 84: draft NOTICE strategy. Sprint 85: branding & metadata cleanup plan (docs only).*
+*Sprint 79: linked Milestone D ADR; no build change. Sprint 80: linked rename plan. Sprint 81: package + class rename in `slate-fabric`. Sprint 82: directory rename decision (docs). Sprint 83: license/notice plan. Sprint 84: draft NOTICE strategy. Sprint 85: branding & metadata cleanup plan (docs only). Sprint 86: README + `gradle.properties` + `2.3.21` (see handoff for validation).*

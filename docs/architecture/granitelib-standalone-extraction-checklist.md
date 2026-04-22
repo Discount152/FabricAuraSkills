@@ -6,7 +6,7 @@
 
 ## Upstream `main` **today** (Sprint 77+)
 
-- **One** library Gradle module: **`:granitelib-fabric`**, on-disk path **`slate-fabric/`** (or future **`granitelib-fabric/`** if [granitelib-physical-directory-rename-decision.md](granitelib-physical-directory-rename-decision.md) is accepted later), JiJ’d into the remapped mod with nested **`granitelib-fabric-*.jar`**, **`projectVersion` 2.3.20**+.
+- **One** library Gradle module: **`:granitelib-fabric`**, on-disk path **`slate-fabric/`** (or future **`granitelib-fabric/`** if [granitelib-physical-directory-rename-decision.md](granitelib-physical-directory-rename-decision.md) is accepted later), JiJ’d into the remapped mod with nested **`granitelib-fabric-*.jar`**, **`projectVersion` 2.3.21**+.
 - **Not present:** **`slate-platform/`**, **`:granitelib-platform`**. Any checklist line that assumed two modules is **fork / future** until that code lands.
 
 ## Future / fork (optional second module)

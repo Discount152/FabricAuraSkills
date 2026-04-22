@@ -5,7 +5,7 @@
 | **Status** | **Draft** for **human / legal** review — **not** legal advice, **not** final |
 | **Date** | 2026-07-05 (Sprint 84) |
 | **Prereq** | [granitelib-license-notice-review-plan.md](granitelib-license-notice-review-plan.md) (Sprint 83) |
-| **Related** | [granitelib-distribution-adr.md](granitelib-distribution-adr.md) · [granitelib-branding-metadata-cleanup-plan.md](granitelib-branding-metadata-cleanup-plan.md) (Sprint 85) · [Sprint 84 handoff](../handoffs/2026-07-05-granitelib-sprint-84-notice-attribution-strategy.md) |
+| **Related** | [granitelib-distribution-adr.md](granitelib-distribution-adr.md) · [granitelib-branding-metadata-cleanup-plan.md](granitelib-branding-metadata-cleanup-plan.md) (Sprint 85 plan; Sprint 86 README/`gradle.properties`) · [Sprint 86 handoff](../handoffs/2026-07-07-granitelib-sprint-86-readme-url-branding-cleanup.md) · [Sprint 84 handoff](../handoffs/2026-07-05-granitelib-sprint-84-notice-attribution-strategy.md) |
 
 **Sprint 84 does not create a root `NOTICE` file** unless maintainers explicitly approve a follow-up implementation PR.
 

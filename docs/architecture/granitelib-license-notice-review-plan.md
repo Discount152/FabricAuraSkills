@@ -5,7 +5,7 @@
 | **Status** | **Proposed** (checklist; not legal advice) |
 | **Date** | 2026-07-04 (Sprint 83) |
 | **Scope** | Preparing for **branding / breadcrumb cleanup** and a possible **public** or **external** GraniteLib story **without** removing legally required text |
-| **Related** | [granitelib-distribution-adr.md](granitelib-distribution-adr.md) · [granitelib-standalone-extraction-checklist.md](granitelib-standalone-extraction-checklist.md) · [granitelib-package-name-adr.md](granitelib-package-name-adr.md) · [granitelib-notice-attribution-strategy.md](granitelib-notice-attribution-strategy.md) (Sprint 84) · [granitelib-branding-metadata-cleanup-plan.md](granitelib-branding-metadata-cleanup-plan.md) (Sprint 85) · [Sprint 83 handoff](../handoffs/2026-07-04-granitelib-sprint-83-license-notice-review-plan.md) |
+| **Related** | [granitelib-distribution-adr.md](granitelib-distribution-adr.md) · [granitelib-standalone-extraction-checklist.md](granitelib-standalone-extraction-checklist.md) · [granitelib-package-name-adr.md](granitelib-package-name-adr.md) · [granitelib-notice-attribution-strategy.md](granitelib-notice-attribution-strategy.md) (Sprint 84) · [granitelib-branding-metadata-cleanup-plan.md](granitelib-branding-metadata-cleanup-plan.md) (Sprint 85–86) · [Sprint 86 handoff](../handoffs/2026-07-07-granitelib-sprint-86-readme-url-branding-cleanup.md) · [Sprint 83 handoff](../handoffs/2026-07-04-granitelib-sprint-83-license-notice-review-plan.md) |
 
 ---
 
@@ -19,7 +19,7 @@ This file is a **repo-local plan and inventory**. It does **not** replace counse
 
 ## 2. Current project state (snapshot)
 
-- **Mod / product:** Still positioned as a **Fabric** port of the AuraSkills ecosystem; **`fabric.mod.json`** id **`auraskills`**, name **Fabric AuraSkills**; `gradle.properties` includes **`releaseTitle`**, **`repoBaseUrl`** → `Archy-X/AuraSkills` (see audit).
+- **Mod / product:** **`fabric.mod.json`** id **`auraskills`**, name **Fabric AuraSkills** (launcher-visible strings **deferred** to a later stage — [granitelib-branding-metadata-cleanup-plan.md](granitelib-branding-metadata-cleanup-plan.md)). **`gradle.properties`:** **`releaseTitle`**, **`repoBaseUrl`**, and **`projectVersion`** updated in Sprint 86 — **`repoBaseUrl`** is **this** fork **([Discount152/FabricAuraSkills](https://github.com/Discount152/FabricAuraSkills))**; see [Sprint 86 handoff](../handoffs/2026-07-07-granitelib-sprint-86-readme-url-branding-cleanup.md).
 - **GraniteLib:** **`:granitelib-fabric`**, package **`dev.granitelib.fabric`**, on-disk folder **`slate-fabric/`**; JiJ distribution per Milestone D ADR.
 - **Primary license file:** root **`LICENSE.md`** — full **GPL-3.0** text (FSF).
 - **Root `NOTICE`:** **N/A** in this tree (no `NOTICE` / `NOTICE.txt` at repo root in Sprint 83 audit) — *evaluate* whether a **NOTICE** aggregating third-party / vendor obligations is required when distributing combined works.
@@ -40,7 +40,7 @@ This file is a **repo-local plan and inventory**. It does **not** replace counse
 |----------|-------------------|
 | **Root** `LICENSE.md` | **Present** — GPL-3.0 text. **Do not remove or truncate**; any **additional** project copyright line (if added) is a **separate** maintainer decision. |
 | **Root** `NOTICE` / `NOTICE.txt` | **N/A** on disk — **draft** strategy for a **future** file: [granitelib-notice-attribution-strategy.md](granitelib-notice-attribution-strategy.md) (Sprint 84). **Sprint 84** did **not** add a root `NOTICE`. |
-| **Root** `README.md` | **Present** — heavily **AuraSkills / Archy-X / aurelium.dev / Spigot**; **product-facing**; cleanup candidate for *wording* only after **legal/product** sign-off. |
+| **Root** `README.md` | **Sprint 86:** **factual** fork URL + **FabricAuraSkills** product framing; **upstream** aurelium/wiki in **lineage** context; **no** `LICENSE` edits. **Launcher** / **`fabric.mod.json`** **strings** still on **Stage 3** of [branding plan](granitelib-branding-metadata-cleanup-plan.md). |
 | **`Changelog.md`** | Long history; may reference plugin, GPL, upstream; **historical** vs **head** sections. |
 | **`gradle.properties`** | **`repoBaseUrl`**, **`releaseTitle`**, `supportedMCVersions` — **metadata / branding**; align with true repo home and product name when ready. |
 | **`settings.gradle.kts`**, **root** `build.gradle.kts` | project **names**, comments; link to `slate-fabric/`. |

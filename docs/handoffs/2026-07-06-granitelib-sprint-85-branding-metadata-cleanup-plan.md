@@ -58,4 +58,6 @@
 - **GraniteLib** feature work, with branding implementation deferred.  
 - **Mod id** migration design if product chooses to rename the published mod id.
 
+**Follow-up:** [Sprint 86 handoff — README + URL + Gradle fields](2026-07-07-granitelib-sprint-86-readme-url-branding-cleanup.md).
+
 **Done:** this handoff + [granitelib-branding-metadata-cleanup-plan.md](../architecture/granitelib-branding-metadata-cleanup-plan.md).

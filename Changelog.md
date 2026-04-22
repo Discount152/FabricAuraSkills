@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.21
+
+### Changes
+
+- **Branding / documentation:** README and `gradle.properties` now use this repository ([Discount152/FabricAuraSkills](https://github.com/Discount152/FabricAuraSkills)) for clone instructions, `repoBaseUrl`, and `releaseTitle` (FabricAuraSkills). Document GraniteLib as embedded **:granitelib-fabric** (JiJ) and point Spigot/Bukkit API content to an explicit upstream reference section. No gameplay, `fabric.mod.json`, or license/attribution file changes in this release.
+
 ## 2.3.20
 
 ### Changes

@@ -3,13 +3,13 @@
 | Field | Value |
 |-------|--------|
 | **Handoff** | [2026-06-28 handoff](../handoffs/2026-06-28-granitelib-sprint-77-module-rename-implementation.md) |
-| **Status** | Landed: Gradle project **`:granitelib-fabric`**, `projectDir` = `slate-fabric/`, `projectVersion` **2.3.20**+ (bump for packaging / identity work as released) |
+| **Status** | Landed: Gradle project **`:granitelib-fabric`**, `projectDir` = `slate-fabric/`, `projectVersion` **2.3.21**+ (bump for packaging / identity work as released) |
 
 ## What is true on **this** repo (upstream `main` after merge)
 
 - **Gradle** includes **`:granitelib-fabric`** with **`project(":granitelib-fabric").projectDir = file("slate-fabric")`**. The directory is still named **`slate-fabric/`**; **physical** rename to `granitelib-fabric/` is **optional and deferred** by default — [granitelib-physical-directory-rename-decision.md](granitelib-physical-directory-rename-decision.md) (Sprint 82).
 - **`:fabric` depends** on `project(":granitelib-fabric", configuration = "namedElements")` and **JiJ-embeds** the library; nested JAR name prefix is **`granitelib-fabric-*.jar`**; **`slate-fabric/build.gradle.kts`** sets `archiveBaseName` to `granitelib-fabric`.
-- **`verifyFabricReleaseBundle`** requires a nested **`granitelib-fabric-*.jar`**. (Sprint 77: **14** nested JARs in **`FabricAuraSkills-2.3.19.jar`**; use current `projectVersion` for filename — e.g. **2.3.20**+ after Sprint 81.)
+- **`verifyFabricReleaseBundle`** requires a nested **`granitelib-fabric-*.jar`**. (Sprint 77: **14** nested JARs in **`FabricAuraSkills-2.3.19.jar`**; use current `projectVersion` for filename — e.g. **2.3.21**+ after Sprint 86.)
 - **No** `slate-platform/` and **no** **`:granitelib-platform`** in this monorepo **today** — that is not an omission in the handoff; upstream never had the second subproject.
 - **No** Java package, class, directory, or YAML renames in Sprint 77 — only Gradle/JiJ/verification and version bump. **Sprint 81** renamed the stub package/class in `:granitelib-fabric` to **`dev.granitelib.fabric`** / **`GraniteFabricBootstrap`** (see [Sprint 81 handoff](../handoffs/2026-07-02-granitelib-sprint-81-package-bootstrap-rename.md)).
 

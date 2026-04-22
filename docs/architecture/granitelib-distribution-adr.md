@@ -5,7 +5,7 @@
 | **Status** | **Proposed** (awaiting product buy-in) |
 | **Date** | 2026-06-30 |
 | **Scope** | [FabricAuraSkills](https://github.com/Discount152/FabricAuraSkills) on upstream `main` after Sprint 77/78 (one module: **`:granitelib-fabric`**) |
-| **Related** | [granitelib-v1-embed-contract.md](granitelib-v1-embed-contract.md) · [granitelib-package-name-adr.md](granitelib-package-name-adr.md) · [granitelib-package-public-class-rename-plan.md](granitelib-package-public-class-rename-plan.md) · [granitelib-physical-directory-rename-decision.md](granitelib-physical-directory-rename-decision.md) · [granitelib-license-notice-review-plan.md](granitelib-license-notice-review-plan.md) · [granitelib-notice-attribution-strategy.md](granitelib-notice-attribution-strategy.md) · [granitelib-branding-metadata-cleanup-plan.md](granitelib-branding-metadata-cleanup-plan.md) (Sprint 85) · [granitelib-verification-report.md](granitelib-verification-report.md) · [Sprint 79 handoff](../handoffs/2026-06-30-granitelib-sprint-79-distribution-adr.md) · [Sprint 81 handoff](../handoffs/2026-07-02-granitelib-sprint-81-package-bootstrap-rename.md) |
+| **Related** | [granitelib-v1-embed-contract.md](granitelib-v1-embed-contract.md) · [granitelib-package-name-adr.md](granitelib-package-name-adr.md) · [granitelib-package-public-class-rename-plan.md](granitelib-package-public-class-rename-plan.md) · [granitelib-physical-directory-rename-decision.md](granitelib-physical-directory-rename-decision.md) · [granitelib-license-notice-review-plan.md](granitelib-license-notice-review-plan.md) · [granitelib-notice-attribution-strategy.md](granitelib-notice-attribution-strategy.md) · [granitelib-branding-metadata-cleanup-plan.md](granitelib-branding-metadata-cleanup-plan.md) (Sprint 85–86) · [Sprint 86 handoff](../handoffs/2026-07-07-granitelib-sprint-86-readme-url-branding-cleanup.md) · [granitelib-verification-report.md](granitelib-verification-report.md) · [Sprint 79 handoff](../handoffs/2026-06-30-granitelib-sprint-79-distribution-adr.md) · [Sprint 81 handoff](../handoffs/2026-07-02-granitelib-sprint-81-package-bootstrap-rename.md) |
 
 ---
 
@@ -150,6 +150,7 @@
 | **Sprint 83** | **Done (docs):** [granitelib-license-notice-review-plan.md](granitelib-license-notice-review-plan.md) — license/notice **audit plan** (branding vs attribution); [Sprint 83 handoff](../handoffs/2026-07-04-granitelib-sprint-83-license-notice-review-plan.md). |
 | **Sprint 84** | **Done (docs):** [granitelib-notice-attribution-strategy.md](granitelib-notice-attribution-strategy.md) — **draft** root `NOTICE` **outline** (no file at repo root); [Sprint 84 handoff](../handoffs/2026-07-05-granitelib-sprint-84-notice-attribution-strategy.md). |
 | **Sprint 85** | **Done (docs):** [granitelib-branding-metadata-cleanup-plan.md](granitelib-branding-metadata-cleanup-plan.md) — product-facing metadata cleanup **plan** (README / Gradle / `fabric.mod.json` **non-license** / docs order); no metadata edits in the sprint; [Sprint 85 handoff](../handoffs/2026-07-06-granitelib-sprint-85-branding-metadata-cleanup-plan.md). |
+| **Sprint 86** | **Done (product docs + `gradle.properties`):** README + clone/home URL + **`releaseTitle`/`repoBaseUrl`** + **`projectVersion` 2.3.21**; **`fabric.mod.json` not edited**; [Sprint 86 handoff](../handoffs/2026-07-07-granitelib-sprint-86-readme-url-branding-cleanup.md). |
 
 ### Embedded answers (index)
 
@@ -158,4 +159,4 @@
 
 ---
 
-*Sprint 79: initial Milestone D ADR. Does not change build output. Sprint 85: linked branding / metadata cleanup plan (docs only).*
+*Sprint 79: initial Milestone D ADR. Does not change build output. Sprint 85: linked branding / metadata cleanup plan (docs only). Sprint 86: linked README + Gradle product fields + 2.3.21 bump (no `fabric.mod.json`).*

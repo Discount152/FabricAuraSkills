@@ -1,128 +1,51 @@
-<h1 style="text-align:center;">Fabric AuraSkills</h1>
+<h1 style="text-align:center;">FabricAuraSkills</h1>
 
 <p style="text-align:center;">
-Fabric dedicated-server port of the AuraSkills RPG skills system
+  Fabric dedicated-server port of the <strong>AuraSkills</strong> RPG skills system, maintained in
+  <a href="https://github.com/Discount152/FabricAuraSkills">this repository</a>.
+  The mod embeds <strong>GraniteLib</strong> (<code>:granitelib-fabric</code>) for menu and layout work (Jar-in-Jar; see <code>docs/architecture/</code>).
 </p>
 
-[![GitHub Release](https://img.shields.io/github/v/release/Archy-X/AuraSkills?style=flat-square)](https://github.com/Archy-X/AuraSkills/releases/latest)
-[![Maven Central Version](https://img.shields.io/maven-central/v/dev.aurelium/auraskills-api-bukkit?style=flat-square&color=%238529F5)](https://central.sonatype.com/artifact/dev.aurelium/auraskills-api-bukkit)
-[![Spiget Downloads](https://img.shields.io/spiget/downloads/81069?style=flat-square)](https://www.spigotmc.org/resources/81069/)
-
-<p style="text-align: center;font-weight: bold;">
-  <a href="https://aurelium.dev/auraskills/download">Downloads</a>
-  &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-  <a href="https://wiki.aurelium.dev/auraskills">Wiki</a>
-  &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-  <a href="https://discord.gg/Bh2EZfB">Discord</a>
+<p style="text-align:center;">
+  <a href="https://github.com/Discount152/FabricAuraSkills/releases">Releases</a>
+  &nbsp;&nbsp;|&nbsp;&nbsp;
+  <a href="https://github.com/Discount152/FabricAuraSkills/issues">Issues</a>
 </p>
+
+[![GitHub Release](https://img.shields.io/github/v/release/Discount152/FabricAuraSkills?style=flat-square)](https://github.com/Discount152/FabricAuraSkills/releases/latest)
 
 ## About
 
-**AuraSkills** (formerly **Aurelium Skills**) is a Minecraft plugin that adds skills, stats, abilities, and other
-RPG-related features. The plugin is fully configurable and customizable, enabling usage on a wide range of server types.
+**AuraSkills** (formerly *Aurelium Skills*) is a skills/stats/abilities system originally shipped as a **Bukkit/Spigot** plugin. **Archy-X** continues that line on Spigot; the official site and plugin downloads are on [aurelium.dev](https://aurelium.dev/auraskills) with [wiki](https://wiki.aurelium.dev/auraskills) documentation.
 
-Features include:
+**This repository** is the **Fabric** dedicated-server build (**FabricAuraSkills**). It is a separate artifact from the Spigot plugin: install the JAR from this repo’s releases for Fabric servers. **GraniteLib** is the embedded library inside the mod JAR; it is **not** a standalone published Fabric mod in this release model ([distribution ADR](docs/architecture/granitelib-distribution-adr.md)).
 
-- **Skills** - Gain skill XP to level skills through general Minecraft tasks, such as Farming or Mining.
-- **Stats** - Get player buffs like increased health and damage by leveling skills, which can be as independent
-  modifiers and on items.
-- **Abilities** - Skills have passive and active abilities that add gameplay mechanics, plus a full mana system.
-- **Menus** - Players can see everything related to skills in fully-configurable inventory GUIs.
-- **Rewards** - Customize rewards given for leveling skills, such as running commands or giving items.
-- **Loot** - Create custom loot tables for fishing, blocks, and mobs.
-
-See the [official website](https://aurelium.dev/auraskills) and [wiki](https://wiki.aurelium.dev/auraskills) for a more
-complete list of features. The wiki also contains the list
-of [server requirements](https://wiki.aurelium.dev/auraskills/server-requirements) to run the plugin.
+Features mirror the original design at a high level (skills, stats, abilities, menus, rewards, loot); see the upstream wiki for conceptual detail and [server requirements](https://wiki.aurelium.dev/auraskills/server-requirements) where they still apply to game-version concepts.
 
 ## Building
 
-AuraSkills uses Gradle for dependencies and building.
+Use **this** source tree (not the upstream Spigot repository):
 
-#### Compiling from source
-
-First, clone the project (requires Git to be installed):
-
-```
-git clone https://github.com/Archy-X/AuraSkills.git
-cd AuraSkills/
+```text
+git clone https://github.com/Discount152/FabricAuraSkills.git
+cd FabricAuraSkills
 ```
 
-Then build depending on your operating system:
+**Fabric mod (typical):**
 
-Linux / macOS
-
-```
-./gradlew clean build
-```
-
-Windows
-
-```
-.\gradlew.bat clean build
+```text
+# Windows
+.\gradlew.bat :fabric:build -PfabricOnly=true
 ```
 
-The output jar can be found in the `build/libs` directory.
+The remapped Fabric mod JAR is produced under `fabric/build/libs/` (name includes `FabricAuraSkills` and the current `projectVersion` in `gradle.properties`).
 
-## API
+A full multi-loader build may use `./gradlew clean build` depending on your environment; see `settings.gradle.kts` and [CONTRIBUTING.md](CONTRIBUTING.md) for the layout you need.
 
-AuraSkills has an extensive developer API.
+## Upstream Bukkit/Spigot API (reference)
 
-Read the full API documentation on the [wiki](https://wiki.aurelium.dev/auraskills/api), or view
-the [Javadocs](https://docs.aurelium.dev/auraskills-api-bukkit/).
-
-Release versions are published to the Maven central repository. Snapshot versions require adding the Sonatype OSS
-repository.
-
-### Maven
-
-```xml
-
-<repository>
-    <id>maven-central-snapshots</id>
-    <url>https://central.sonatype.com/repository/maven-snapshots/</url>
-</repository>
-```
-
-```xml
-
-<dependency>
-    <groupId>dev.aurelium</groupId>
-    <artifactId>auraskills-api-bukkit</artifactId>
-    <version>2.3.5</version>
-    <scope>provided</scope>
-</dependency>
-```
-
-### Gradle
-
-**Groovy DSL:**
-
-```gradle
-repositories {
-    mavenCentral()
-    maven { url 'https://central.sonatype.com/repository/maven-snapshots/' }
-}
-
-dependencies {
-    compileOnly 'dev.aurelium:auraskills-api-bukkit:2.3.5'
-}
-```
-
-**Kotlin DSL:**
-
-```Gradle Kotlin DSL
-repositories { 
-    mavenCentral()
-    maven("https://central.sonatype.com/repository/maven-snapshots/")
-}
-
-dependencies { 
-    compileOnly("dev.aurelium:auraskills-api-bukkit:2.3.5")
-}
-```
+The **Bukkit** API, Javadocs, and Maven coordinates for `dev.aurelium:auraskills-api-bukkit` describe the **original plugin**, not the Fabric mod in this repository. This port does not ship the same API surface. For upstream plugin development, see the [API wiki](https://wiki.aurelium.dev/auraskills/api) and [Javadocs](https://docs.aurelium.dev/auraskills-api-bukkit/) published for that product line.
 
 ## Contributing
 
-We welcome contributions from the community. Please read the [contributing guide](CONTRIBUTING.md) for instructions
-on setting up a development environment and important guidelines you should know before submitting a pull request.
+We welcome contributions. Read [CONTRIBUTING.md](CONTRIBUTING.md) for environment setup and guidelines before opening a pull request.
