@@ -2,12 +2,12 @@
 
 | Field | Value |
 |-------|--------|
-| **Status** | **Proposed** plan; **Stages 1–2** **implemented** in [Sprint 86 handoff](../handoffs/2026-07-07-granitelib-sprint-86-readme-url-branding-cleanup.md) (README + `gradle.properties` + `projectVersion` **2.3.21**); **`fabric.mod.json`** **deferred** |
-| **Date** | 2026-07-06 (Sprint 85 plan) · 2026-07-07 (Sprint 86 first implementation tranche) |
+| **Status** | **Stages 1–3** **implemented** (Sprint 86: README + Gradle; [Sprint 87](../handoffs/2026-07-08-granitelib-sprint-87-fabric-mod-json-branding-cleanup.md): **`fabric.mod.json`** non-license + **`projectVersion` 2.3.22**). **Stage 4+** TBD. |
+| **Date** | 2026-07-06 (Sprint 85) · 2026-07-07 (Sprint 86) · 2026-07-08 (Sprint 87) |
 | **Prereq** | [granitelib-notice-attribution-strategy.md](granitelib-notice-attribution-strategy.md) (Sprint 84) · [granitelib-license-notice-review-plan.md](granitelib-license-notice-review-plan.md) (Sprint 83) |
-| **Related** | [granitelib-distribution-adr.md](granitelib-distribution-adr.md) · [Sprint 85 handoff](../handoffs/2026-07-06-granitelib-sprint-85-branding-metadata-cleanup-plan.md) · [Sprint 86 handoff](../handoffs/2026-07-07-granitelib-sprint-86-readme-url-branding-cleanup.md) |
+| **Related** | [granitelib-distribution-adr.md](granitelib-distribution-adr.md) · [Sprint 85 handoff](../handoffs/2026-07-06-granitelib-sprint-85-branding-metadata-cleanup-plan.md) · [Sprint 86 handoff](../handoffs/2026-07-07-granitelib-sprint-86-readme-url-branding-cleanup.md) · [Sprint 87 handoff](../handoffs/2026-07-08-granitelib-sprint-87-fabric-mod-json-branding-cleanup.md) |
 
-**Sprint 85** was **planning only**. **Sprint 86** applied **README** and **`gradle.properties`** **product** fields per **Stages 1–2**; **`fabric.mod.json`** **unchanged** (Stage 3).
+**Sprint 87** updated **`name`**, **`description`**, **`authors`**, and **`contact`**, and bumped **`projectVersion`**, without changing **`id`**, **`license`**, **`depends`**, **`entrypoints`**, **`mixins`**, or **`environment`**.
 
 ---
 
@@ -24,8 +24,8 @@ Inventory **product-facing** surfaces that still read like the **upstream** **Au
 | Surface | Finding |
 |---------|---------|
 | **`README.md`** | **Sprint 86:** **FabricAuraSkills** title; **Discount152/FabricAuraSkills** clone and nav; **GraniteLib** JiJ called out; upstream **aurelium.dev** / wiki in **About** and **Upstream Bukkit API** as **lineage/reference**, not as this repo’s home. Hero **Spiget**/Bukkit Maven badges **removed** from main view. |
-| **`gradle.properties`** | **Sprint 86:** **`releaseTitle=FabricAuraSkills (MC 1.21.11)`**; **`repoBaseUrl=https://github.com/Discount152/FabricAuraSkills`**; **`projectVersion=2.3.21`**. |
-| **`fabric/src/main/resources/fabric.mod.json`** | **`id`:** `auraskills`; **`name`:** `Fabric AuraSkills`; **`description`:** “Fabric AuraSkills — dedicated server…”; **`authors`:** “Archyx (original), Fabric port”. **`license`:** `GPL-3.0` — **do not change** **for branding** (§3). **No** `homepage` / `sources` / `issues` keys in current file — optional **adds** later for **accurate** links. **— (B)** for **name**, **description**, **authors** **wording** **only** after **sign-off**. |
+| **`gradle.properties`** | **Sprint 86+87:** **`releaseTitle`**, **`repoBaseUrl`** as in Sprint 86; **`projectVersion=2.3.22`** (Sprint 87). |
+| **`fabric/src/main/resources/fabric.mod.json`** | **Sprint 87:** **`name`** `FabricAuraSkills`; **`description`** + **GraniteLib**; **`authors`** list **Archyx** (original) + **Discount152**; **`contact`:** homepage, sources, issues **→** this GitHub. **`id`** `auraskills`, **`license`** `GPL-3.0` **unchanged** (§3). |
 | **`Changelog.md`** | Historical entries; **head** section can use **current** product naming in **future** releases without **rewriting** **old** entries. **— (C)** / **(B)** for **new** lines only by default. |
 | **`docs/architecture/*`**, **`docs/handoffs/*`** | Mix: some links use **Discount152/FabricAuraSkills** GitHub; sprint text references **AuraSkills**/**Slate** for **history** — **(C)** or leave. |
 | **`LICENSE.md`** | **GPL-3.0** full text — **(A)** **not** **branding**. |
@@ -63,24 +63,25 @@ Inventory **product-facing** surfaces that still read like the **upstream** **Au
 
 | Key | Current (after Sprint 86) | Notes |
 |-----|---------------------------|--------|
-| **`releaseTitle`** | `FabricAuraSkills (MC 1.21.11)` | Align with **`fabric.mod.json` `name`** when **Stage 3** **runs** (Sprint 87 candidate). |
+| **`releaseTitle`** | `FabricAuraSkills (MC 1.21.11)` | **Aligned** with **`fabric.mod.json` `name` `FabricAuraSkills`** (Sprint 87). |
 | **`repoBaseUrl`** | `https://github.com/Discount152/FabricAuraSkills` | **Sprint 86** **applied** **fork** **canonical** URL. |
 
-**`projectVersion`:** bumped **2.3.20 → 2.3.21** with **Sprint 86** **branding/Gradle** **metadata** **change** and **Changelog** **entry** (not “version bump for docs only” without record).
+**`projectVersion`:** **2.3.20 → 2.3.21** (Sprint 86) → **2.3.22** (Sprint 87 **`fabric.mod.json`** + Changelog), each with a **Changelog** line.
 
 ---
 
 ## 6. `fabric.mod.json` cleanup candidates (non-license fields only)
 
-| Field | Current | Notes |
-|-------|---------|--------|
-| **`id`** | `auraskills` | **Mod** **ID** **change** **breaks** **worlds**/**depends** — **major** **decision**; **out of** **typical** **“**branding** **text**” **sprint**. |
-| **`name`** | `Fabric AuraSkills` | **(B)** — **user-visible** **in** **launcher**. |
-| **`description`** | “Fabric AuraSkills — …” | **(B)** — **mention** **GraniteLib** **JiJ** **if** **desired**; **keep** **accurate** **MC** **version**. |
-| **`authors`** | Archyx + Fabric port | **(B)** — **add** **Discount** **maintainers** **as** **appropriate**; **do** **not** **remove** **“**original**” **without** **NOTICE**/**README** **attribution**. |
-| **`license`** | `GPL-3.0` | **(A)** — **unchanged** **unless** **license** **changes**. |
+| Field | After Sprint 87 | Notes |
+|-------|-----------------|--------|
+| **`id`** | `auraskills` | **Unchanged** — **mod** **ID** **migration** is a **separate** **decision**. |
+| **`name`** | `FabricAuraSkills` | **Done** (launcher / mod list). |
+| **`description`** | Fork-consistent; **GraniteLib**; **MC** version | **Done**. |
+| **`authors`** | **Archyx** (original) + **Discount152** (Fabric) | **Done** — **no** **silent** **drop** of **upstream** **credit**. |
+| **`contact`** | **homepage** / **sources** / **issues** | **Done** (Discount152/FabricAuraSkills). |
+| **`license`** | `GPL-3.0` | **(A)** — **unchanged**. |
 
-**Optional** **future** **keys:** `links` / **Fabric** **metadata** **for** **homepage**, **sources**, **issues** — **point** to **this** **repo** **when** **ready**.
+**Future** (optional): **`custom`**, **Modrinth**-specific **fields** on **publish** — **Stage** **6**; **`id`** only with **migration** **plan**.
 
 ---
 
@@ -122,8 +123,8 @@ Inventory **product-facing** surfaces that still read like the **upstream** **Au
 |-------|--------|----------------------|
 | **1** | **README** **product** **language**, **badges**, **clone** **URL** | **Sprint 86** **done** — no **LICENSE**/**vendor** **edits**; **factual** **fork** **URL**; **upstream** **links** **labeled** **as** **lineage**/**API** **reference**. |
 | **2** | **`gradle.properties`** **`releaseTitle`**, **`repoBaseUrl`** | **Sprint 86** **done**; **`projectVersion`** **→** **2.3.21** with **Changelog** **(see** **Sprint 86** **handoff).** |
-| **3** | **`fabric.mod.json`** **non-license** **fields** | **`id`** **change** **only** **if** **explicit** **migration** **plan**; **`license`** **unchanged**. |
-| **4** | **Changelog** **head** / **release** **notes** **template** | **History** **preserved**. |
+| **3** | **`fabric.mod.json`** **non-license** **fields** | **Sprint 87** **done** — **`name`**, **`description`**, **`authors`**, **`contact`**; **`id`**, **`license`**, **`depends`**, **entrypoints**, **mixins** **unchanged**. **`projectVersion` 2.3.22**. |
+| **4** | **Changelog** **head** / **release** **notes** **template** | **Ongoing** — **2.3.22** **entry** with **Sprint 87**. |
 | **5** | **Root** **`NOTICE`** **finalization** | [granitelib-notice-attribution-strategy.md §10](granitelib-notice-attribution-strategy.md#10-review-checklist-before-any-root-notice-is-added) |
 | **6** | **Modrinth** / **CurseForge** / **GitHub** **About** | [granitelib-distribution-adr.md](granitelib-distribution-adr.md) **external** **prereqs** |
 
@@ -136,9 +137,9 @@ Inventory **product-facing** surfaces that still read like the **upstream** **Au
 - [ ] **Legal** / **maintainer:** **Apache** **(vendor/Slate)** **+** **GPL** **(root)** **story** **unchanged** **or** **documented** **in** **future** **`NOTICE`**.  
 - [ ] **Product:** **canonical** **repo** **URL**, **mod** **name**, **mod** **id** **(if** **changing)** **decided**.  
 - [x] **README** clone URL matches the repository people actually clone — **Sprint 86** **→** **Discount152/FabricAuraSkills**.  
-- [ ] **`fabric.mod.json` `license`** **stays** **`GPL-3.0`** **unless** **license** **project** **changes**. (Unchanged in Sprint 86.)  
-- [x] **Changelog** **entry** for **branding** **metadata** / **version** **bump** — **2.3.21** in Sprint 86.  
-- [x] **Re-run** **:fabric:build** **+** **`verifyFabricReleaseBundle`** after **`gradle.properties`** **change** — see Sprint 86 handoff.
+- [x] **`fabric.mod.json` `license`** **stays** **`GPL-3.0`** — **unchanged** in Sprints 86–87.  
+- [x] **Changelog** **entry** for **branding** **metadata** / **version** **bump** — **2.3.21** (Sprint 86), **2.3.22** (Sprint 87).  
+- [x] **Re-run** **:fabric:build** **+** **`verifyFabricReleaseBundle`** after **metadata** **changes** — see Sprint 86 and Sprint 87 handoffs.
 
 ---
 
@@ -162,10 +163,10 @@ Inventory **product-facing** surfaces that still read like the **upstream** **Au
 
 ---
 
-## 14. Recommended Sprint 87
+## 14. Recommended Sprint 88
 
-- **`fabric.mod.json`** **non-license** **fields** **(Stage 3):** `name`, `description`, `authors`, optional `sources`/`issues` **→** this repo — **no** **`license`**, **no** **`id`**, without **migration** **plan** **if** **renaming** **mod** **id**.  
-- **Or** **legal:** **finalize** **draft** **`NOTICE`** + **root** **file** **per** [granitelib-notice-attribution-strategy.md](granitelib-notice-attribution-strategy.md) **before** **launcher-visible** **renames** **if** **policy** **requires** **it**.  
-- **Or** **GraniteLib** / **port** **code** **work** **unrelated** **to** **branding**.
+- **Root `NOTICE` PR** (after **signed-off** draft) — [granitelib-notice-attribution-strategy.md](granitelib-notice-attribution-strategy.md) §9–10 — **or** **external** **listings** / **Modrinth** **metadata** (Stage 6) when **publishing** **is** **in** **scope**.  
+- **Or** **`mod` `id` migration** design (`auraskills` **→** **new** **id**) only if product accepts **save**/**depends** **break** **and** **has** a **communication** **plan** — **not** **default**.  
+- **Or** **GraniteLib** / **port** **code** **work** with **branding** **on** **maintenance** **mode**.
 
-*Sprint 85: plan + cross-links. Sprint 86: README + `gradle.properties` + `2.3.21` (see [handoff](../handoffs/2026-07-07-granitelib-sprint-86-readme-url-branding-cleanup.md)).*
+*Sprint 85: plan. Sprint 86: README + `gradle.properties` + `2.3.21`. Sprint 87: `fabric.mod.json` + `2.3.22` ([handoff](../handoffs/2026-07-08-granitelib-sprint-87-fabric-mod-json-branding-cleanup.md)).*

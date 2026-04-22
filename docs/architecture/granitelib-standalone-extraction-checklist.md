@@ -6,7 +6,7 @@
 
 ## Upstream `main` **today** (Sprint 77+)
 
-- **One** library Gradle module: **`:granitelib-fabric`**, on-disk path **`slate-fabric/`** (or future **`granitelib-fabric/`** if [granitelib-physical-directory-rename-decision.md](granitelib-physical-directory-rename-decision.md) is accepted later), JiJ’d into the remapped mod with nested **`granitelib-fabric-*.jar`**, **`projectVersion` 2.3.21**+.
+- **One** library Gradle module: **`:granitelib-fabric`**, on-disk path **`slate-fabric/`** (or future **`granitelib-fabric/`** if [granitelib-physical-directory-rename-decision.md](granitelib-physical-directory-rename-decision.md) is accepted later), JiJ’d into the remapped mod with nested **`granitelib-fabric-*.jar`**, **`projectVersion` 2.3.22**+.
 - **Not present:** **`slate-platform/`**, **`:granitelib-platform`**. Any checklist line that assumed two modules is **fork / future** until that code lands.
 
 ## Future / fork (optional second module)
@@ -25,4 +25,4 @@ If **`slate-platform/`** is added: mirror the Sprint 77 pattern — **`include("
 
 Cross-link: [granitelib-sprint-77-implementation.md](granitelib-sprint-77-implementation.md), [granitelib-package-name-adr.md](granitelib-package-name-adr.md), [granitelib-distribution-adr.md](granitelib-distribution-adr.md), [granitelib-package-public-class-rename-plan.md](granitelib-package-public-class-rename-plan.md), [granitelib-physical-directory-rename-decision.md](granitelib-physical-directory-rename-decision.md), [granitelib-license-notice-review-plan.md](granitelib-license-notice-review-plan.md), [granitelib-notice-attribution-strategy.md](granitelib-notice-attribution-strategy.md), [granitelib-branding-metadata-cleanup-plan.md](granitelib-branding-metadata-cleanup-plan.md).
 
-*Sprint 78: stub replaced with upstream–fork split. Sprint 79: distribution ADR (Milestone D). Sprint 80: package/public class rename plan. Sprint 81: first package + class rename in code. Sprint 82: physical directory decision (default defer). Sprint 83: license/notice review plan. Sprint 84: draft NOTICE / attribution strategy (no root file). Sprint 85: branding & metadata cleanup plan (docs only, no product file edits).*
+*Sprint 78: stub replaced with upstream–fork split. Sprint 79: distribution ADR (Milestone D). Sprint 80: package/public class rename plan. Sprint 81: first package + class rename in code. Sprint 82: physical directory decision (default defer). Sprint 83: license/notice review plan. Sprint 84: draft NOTICE / attribution strategy (no root file). Sprint 85: branding & metadata cleanup plan (docs only, no product file edits). Sprint 86–87: README, Gradle, `fabric.mod.json` (non-`id`/`license`) branding.*

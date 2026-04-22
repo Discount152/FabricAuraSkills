@@ -2,9 +2,14 @@
   "schemaVersion": 1,
   "id": "auraskills",
   "version": "${version}",
-  "name": "Fabric AuraSkills",
-  "description": "Fabric AuraSkills — dedicated server build for Minecraft 1.21.11 (skills, XP, storage, permissions). See fabric/FABRIC_QUICKSTART.md.",
-  "authors": ["Archyx (original)", "Fabric port"],
+  "name": "FabricAuraSkills",
+  "description": "Fabric dedicated-server port of AuraSkills for Minecraft 1.21.11 (skills, XP, storage, permissions). Embeds GraniteLib (:granitelib-fabric) for menu and layout. See fabric/FABRIC_QUICKSTART.md.",
+  "authors": ["Archyx (original AuraSkills)", "Discount152 (Fabric port)"],
+  "contact": {
+    "homepage": "https://github.com/Discount152/FabricAuraSkills",
+    "sources": "https://github.com/Discount152/FabricAuraSkills",
+    "issues": "https://github.com/Discount152/FabricAuraSkills/issues"
+  },
   "license": "GPL-3.0",
   "environment": "*",
   "entrypoints": {

@@ -72,10 +72,11 @@ BUILD SUCCESSFUL in 15s
 
 (`:granitelib-fabric:test` is **NO-SOURCE** in this tree; `:fabric:test` ran.)
 
-## Sprint 87 recommendation
+**Follow-up:** [Sprint 87 handoff — `fabric.mod.json` branding](2026-07-08-granitelib-sprint-87-fabric-mod-json-branding-cleanup.md).
 
-- **`fabric.mod.json` non-license** pass (**Stage 3**): `name`, `description`, `authors`, optional `sources`/`issues` → align launcher-facing strings with **README** + **`releaseTitle`**, with **`id`** and **`license`** unchanged unless a **separate** migration/legal decision.
-- **Or** **NOTICE** **implementation** after **signed-off** draft (Track A) before **wide** public listing changes.
-- **Or** continue **GraniteLib** / gameplay port work with branding **frozen** on **mod** metadata.
+## Later sprints (post–Sprint 86; see Sprint 87+ handoffs)
+
+- **Stage 3** (`fabric.mod.json`): see [Sprint 87](2026-07-08-granitelib-sprint-87-fabric-mod-json-branding-cleanup.md) (**done** in follow-up).  
+- **Or** **NOTICE** **implementation** (Track A) or **Modrinth**/external (**Stage 6**), or **GraniteLib** / port work.
 
 **Done:** this handoff + **Sprint 86** file list above.

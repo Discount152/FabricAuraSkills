@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.22
+
+### Changes
+
+- **Fabric `fabric.mod.json`:** Updated `name`, `description`, `authors`, and added `contact` (homepage, sources, issues) to match fork-accurate **FabricAuraSkills** / **Discount152** branding. **`id`**, **`license`**, **`depends`**, **`entrypoints`**, **`mixins`**, and **`environment`** unchanged. No gameplay or menu behavior changes.
+
 ## 2.3.21
 
 ### Changes

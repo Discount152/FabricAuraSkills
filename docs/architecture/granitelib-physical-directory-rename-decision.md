@@ -118,7 +118,7 @@ This document answers: **Is renaming the folder to `granitelib-fabric/` worth th
 
 ## Validation matrix (no change required after Sprint 82 docs-only)
 
-After **any future** implement sprint that renames the folder, run the matrix in [granitelib-package-public-class-rename-plan.md](granitelib-package-public-class-rename-plan.md#9-validation-matrix-run-after-any-rename-implementation). Until then, current **2.3.21** build expectations apply.
+After **any future** implement sprint that renames the folder, run the matrix in [granitelib-package-public-class-rename-plan.md](granitelib-package-public-class-rename-plan.md#9-validation-matrix-run-after-any-rename-implementation). Until then, current **2.3.22** build expectations apply.
 
 ## Recommended follow-ups (post–Sprint 82)
 

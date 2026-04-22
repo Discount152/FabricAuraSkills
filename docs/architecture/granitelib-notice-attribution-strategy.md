@@ -5,7 +5,7 @@
 | **Status** | **Draft** for **human / legal** review — **not** legal advice, **not** final |
 | **Date** | 2026-07-05 (Sprint 84) |
 | **Prereq** | [granitelib-license-notice-review-plan.md](granitelib-license-notice-review-plan.md) (Sprint 83) |
-| **Related** | [granitelib-distribution-adr.md](granitelib-distribution-adr.md) · [granitelib-branding-metadata-cleanup-plan.md](granitelib-branding-metadata-cleanup-plan.md) (Sprint 85 plan; Sprint 86 README/`gradle.properties`) · [Sprint 86 handoff](../handoffs/2026-07-07-granitelib-sprint-86-readme-url-branding-cleanup.md) · [Sprint 84 handoff](../handoffs/2026-07-05-granitelib-sprint-84-notice-attribution-strategy.md) |
+| **Related** | [granitelib-distribution-adr.md](granitelib-distribution-adr.md) · [granitelib-branding-metadata-cleanup-plan.md](granitelib-branding-metadata-cleanup-plan.md) (Sprint 85–87) · [Sprint 86 handoff](../handoffs/2026-07-07-granitelib-sprint-86-readme-url-branding-cleanup.md) · [Sprint 87 handoff](../handoffs/2026-07-08-granitelib-sprint-87-fabric-mod-json-branding-cleanup.md) · [Sprint 84 handoff](../handoffs/2026-07-05-granitelib-sprint-84-notice-attribution-strategy.md) |
 
 **Sprint 84 does not create a root `NOTICE` file** unless maintainers explicitly approve a follow-up implementation PR.
 
@@ -31,7 +31,7 @@ Decide **where** legally and historically important **attribution** should live 
 |----------|--------|
 | **Root `LICENSE.md`** | **Present** — full **GNU GPL version 3** text (FSF). **Preserve.** |
 | **Root `NOTICE` / `NOTICE.txt`** | **Not present** (Sprint 83/84) — **gap** this strategy addresses. |
-| **`fabric/.../fabric.mod.json` `license` field** | **`GPL-3.0`** — must stay **consistent** with **shipped** mod license story until changed by **legal** + **build** review. **Preserve** field; **rewording** the **string** is out of scope for Sprint 84. |
+| **`fabric/.../fabric.mod.json` `license` field** | **`GPL-3.0`** — must stay **consistent** with **shipped** mod license story until changed by **legal** + **build** review. **Preserve** field; **rewording** the **string** is out of scope for Sprint 84. **(Sprint 87:** `name` / `description` / `authors` / `contact` updated; **`license`** unchanged.) |
 | **`vendor/Slate/LICENSE.md`** | **Apache License 2.0** (see file; includes **Copyright 2018-2021 Isaac Montagne** boilerplate at end). **Preserve**; this tree is **not** the same license as root GPL — **compatibility** of **distribution** is a **separate** review. |
 | **`vendor/Slate/**` `*.java`** | Many per-file **Copyright** lines (e.g. **Isaac Montagne** for SmartInv-like inventory code, **deanveloper** for some utils). **Preserve** in source. |
 | **`slate-fabric/.../GraniteFabricBootstrap.java`** | Javadoc references **Slate** upstream (`Archy-X/Slate`) for **porting** context. **Do not remove** in Sprint 84; **see** §7. |
