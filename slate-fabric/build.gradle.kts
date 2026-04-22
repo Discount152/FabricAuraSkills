@@ -31,7 +31,7 @@ dependencies {
 }
 
 tasks.withType<org.gradle.api.tasks.bundling.Jar>().configureEach {
-    archiveBaseName.set("slate-fabric")
+    archiveBaseName.set("granitelib-fabric")
 }
 
 tasks.withType<JavaCompile>().configureEach {

@@ -74,13 +74,14 @@ dependencies {
     implementation(project(":api"))
     implementation(project(":common"))
     // Slate Fabric port (skeleton); Loom expects namedElements between Loom subprojects.
-    implementation(project(":slate-fabric", configuration = "namedElements"))
+    implementation(project(":granitelib-fabric", configuration = "namedElements"))
 
     implementation("com.google.guava:guava:33.2.1-jre")
 
-    // Jar-in-Jar: ship api + common inside the remapped mod (production server has only this one jar).
+    // Jar-in-Jar: ship api + common + granitelib-fabric inside the remapped mod (production server has only this one jar).
     include(implementation(project(":api"))!!)
     include(implementation(project(":common"))!!)
+    include(implementation(project(":granitelib-fabric", configuration = "namedElements"))!!)
 
     // :common uses these at runtime but they are not inside common.jar — mirror common/build.gradle.kts.
     implementation("dev.aurelium:polyglot:1.2.4") {
@@ -147,6 +148,10 @@ tasks.register("verifyFabricReleaseBundle") {
         }
         requireJar({ it.startsWith("api-") && it.endsWith(".jar") }, "JiJ must include api-*.jar")
         requireJar({ it.startsWith("common-") && it.endsWith(".jar") }, "JiJ must include common-*.jar")
+        requireJar(
+            { it.startsWith("granitelib-fabric-") && it.endsWith(".jar") },
+            "JiJ must include granitelib-fabric-*.jar",
+        )
         requireJar({ it == "configurate-core-4.1.2.jar" }, "JiJ must include configurate-core-4.1.2.jar")
         requireJar({ it == "configurate-yaml-4.1.2.jar" }, "JiJ must include configurate-yaml-4.1.2.jar")
         requireJar({ it.contains("polyglot") }, "JiJ must include polyglot")

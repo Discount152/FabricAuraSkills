@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.19
+
+### Changes
+
+- **Fabric / Gradle:** Rename Gradle project **`:slate-fabric`** → **`:granitelib-fabric`** with `projectDir` → `slate-fabric/` (no directory rename). Library JAR archive name **granitelib-fabric-*.jar**; **Jar-in-Jar** now includes the library in the remapped mod; **`verifyFabricReleaseBundle`** requires the nested `granitelib-fabric-*.jar`. **Note:** Upstream `main` does not include `slate-platform`; a future module **`:granitelib-platform`** is a separate change when that subproject exists.
+
 ## 2.3.12
 
 ### New Features
