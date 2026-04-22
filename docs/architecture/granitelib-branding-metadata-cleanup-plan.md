@@ -5,7 +5,7 @@
 | **Status** | **Stages 1–3** **implemented** (Sprint 86: README + Gradle; [Sprint 87](../handoffs/2026-07-08-granitelib-sprint-87-fabric-mod-json-branding-cleanup.md): **`fabric.mod.json`** non-license + **`projectVersion` 2.3.22**). **Stage 4+** TBD. |
 | **Date** | 2026-07-06 (Sprint 85) · 2026-07-07 (Sprint 86) · 2026-07-08 (Sprint 87) |
 | **Prereq** | [granitelib-notice-attribution-strategy.md](granitelib-notice-attribution-strategy.md) (Sprint 84) · [granitelib-license-notice-review-plan.md](granitelib-license-notice-review-plan.md) (Sprint 83) |
-| **Related** | [granitelib-distribution-adr.md](granitelib-distribution-adr.md) · [granitelib-standalone-dependency-identity-adr.md](granitelib-standalone-dependency-identity-adr.md) (Sprint 88) · [Sprint 85 handoff](../handoffs/2026-07-06-granitelib-sprint-85-branding-metadata-cleanup-plan.md) · [Sprint 86 handoff](../handoffs/2026-07-07-granitelib-sprint-86-readme-url-branding-cleanup.md) · [Sprint 87 handoff](../handoffs/2026-07-08-granitelib-sprint-87-fabric-mod-json-branding-cleanup.md) · [Sprint 88 handoff](../handoffs/2026-07-09-granitelib-sprint-88-standalone-dependency-identity-adr.md) |
+| **Related** | [granitelib-distribution-adr.md](granitelib-distribution-adr.md) · [granitelib-standalone-dependency-identity-adr.md](granitelib-standalone-dependency-identity-adr.md) (Sprint 88) · [granitelib-standalone-build-metadata-plan.md](granitelib-standalone-build-metadata-plan.md) (Sprint 89) · [Sprint 85 handoff](../handoffs/2026-07-06-granitelib-sprint-85-branding-metadata-cleanup-plan.md) · [Sprint 86 handoff](../handoffs/2026-07-07-granitelib-sprint-86-readme-url-branding-cleanup.md) · [Sprint 87 handoff](../handoffs/2026-07-08-granitelib-sprint-87-fabric-mod-json-branding-cleanup.md) · [Sprint 88 handoff](../handoffs/2026-07-09-granitelib-sprint-88-standalone-dependency-identity-adr.md) · [Sprint 89 handoff](../handoffs/2026-07-10-granitelib-sprint-89-standalone-build-metadata-plan.md) |
 
 **Sprint 87** updated **`name`**, **`description`**, **`authors`**, and **`contact`**, and bumped **`projectVersion`**, without changing **`id`**, **`license`**, **`depends`**, **`entrypoints`**, **`mixins`**, or **`environment`**.
 
@@ -163,10 +163,10 @@ Inventory **product-facing** surfaces that still read like the **upstream** **Au
 
 ---
 
-## 14. Recommended Sprint 89+
+## 14. Recommended Sprint 90+
 
-- **Sprint 88 (done, docs only):** [granitelib-standalone-dependency-identity-adr.md](granitelib-standalone-dependency-identity-adr.md) — **proposed** standalone mod **`id` `granitelib`**, **display** **name**, **0.1.x** **line**, **JiJ** through **transition**, **`auraskills`** **frozen**; [handoff](../handoffs/2026-07-09-granitelib-sprint-88-standalone-dependency-identity-adr.md).  
-- **Sprint 89 (next):** **implementation** / **build** **plan** for **standalone** **`fabric.mod.json`**, **remap** **JAR**, **`depends: granitelib`**, **verify** — not **ADR-only**.  
-- **Or** **NOTICE** (signed-off) **or** **Modrinth**/**host** (Stage 6) **or** **gameplay** **`auraskills` id** migration (separate ADR).
+- **Sprint 88 (done):** [granitelib-standalone-dependency-identity-adr.md](granitelib-standalone-dependency-identity-adr.md) — [handoff](../handoffs/2026-07-09-granitelib-sprint-88-standalone-dependency-identity-adr.md).  
+- **Sprint 89 (done, docs only):** [granitelib-standalone-build-metadata-plan.md](granitelib-standalone-build-metadata-plan.md) — [handoff](../handoffs/2026-07-10-granitelib-sprint-89-standalone-build-metadata-plan.md).  
+- **Sprint 90 (next):** **implement** standalone **`granitelib` metadata + `granitelibVersion` +** optional **Loom** **`mods { }`**, **`remap` deliverable**; **then** **runtime** **smoke** / **`depends`**. **Or** **NOTICE** / **Modrinth** (Stage 6) per Track A. **Or** **gameplay** **`auraskills`** **id** migration (separate ADR).
 
-*Sprint 85: plan. Sprint 86–87: product metadata. Sprint 88: standalone **identity** ADR only.*
+*Sprint 85: plan. Sprint 86–87: product metadata. Sprint 88: identity ADR. Sprint 89: build plan only.*

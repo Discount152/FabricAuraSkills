@@ -6,7 +6,7 @@
 | **Date** | 2026-07-09 (Sprint 88) |
 | **Sprint** | 88 — planning / ADR only; **no** Gradle, **no** new `fabric.mod.json`, **no** Java |
 | **Supersedes in spirit** | “**External later** as vague future” (see [granitelib-distribution-adr.md](granitelib-distribution-adr.md) Milestone D): standalone GraniteLib is now a **committed near-term product goal** with a **defined transition** |
-| **Related** | [granitelib-distribution-adr.md](granitelib-distribution-adr.md) · [granitelib-v1-embed-contract.md](granitelib-v1-embed-contract.md) · [granitelib-standalone-extraction-checklist.md](granitelib-standalone-extraction-checklist.md) · [granitelib-package-name-adr.md](granitelib-package-name-adr.md) · [granitelib-package-public-class-rename-plan.md](granitelib-package-public-class-rename-plan.md) · [granitelib-verification-report.md](granitelib-verification-report.md) · [granitelib-notice-attribution-strategy.md](granitelib-notice-attribution-strategy.md) · [granitelib-license-notice-review-plan.md](granitelib-license-notice-review-plan.md) · [granitelib-branding-metadata-cleanup-plan.md](granitelib-branding-metadata-cleanup-plan.md) · [Sprint 87 handoff](../handoffs/2026-07-08-granitelib-sprint-87-fabric-mod-json-branding-cleanup.md) · [Sprint 88 handoff](../handoffs/2026-07-09-granitelib-sprint-88-standalone-dependency-identity-adr.md) |
+| **Related** | [granitelib-distribution-adr.md](granitelib-distribution-adr.md) · [granitelib-v1-embed-contract.md](granitelib-v1-embed-contract.md) · [granitelib-standalone-extraction-checklist.md](granitelib-standalone-extraction-checklist.md) · [granitelib-standalone-build-metadata-plan.md](granitelib-standalone-build-metadata-plan.md) (Sprint 89) · [granitelib-package-name-adr.md](granitelib-package-name-adr.md) · [granitelib-package-public-class-rename-plan.md](granitelib-package-public-class-rename-plan.md) · [granitelib-verification-report.md](granitelib-verification-report.md) · [granitelib-notice-attribution-strategy.md](granitelib-notice-attribution-strategy.md) · [granitelib-license-notice-review-plan.md](granitelib-license-notice-review-plan.md) · [granitelib-branding-metadata-cleanup-plan.md](granitelib-branding-metadata-cleanup-plan.md) · [Sprint 87 handoff](../handoffs/2026-07-08-granitelib-sprint-87-fabric-mod-json-branding-cleanup.md) · [Sprint 88 handoff](../handoffs/2026-07-09-granitelib-sprint-88-standalone-dependency-identity-adr.md) · [Sprint 89 handoff](../handoffs/2026-07-10-granitelib-sprint-89-standalone-build-metadata-plan.md) |
 
 **This document does not add build files, mod metadata, or published artifacts.** Implementation belongs in a follow-on sprint (recommended: **Sprint 89** — build/metadata implementation **plan** or first implementation PR per product).
 
@@ -214,10 +214,14 @@ Before **widely** marketing or hosting standalone GraniteLib as a **public** “
 
 ---
 
-## Recommended Sprint 89
+## Sprint 89 (build / metadata plan — **done**)
 
-- **Sprint 89 — GraniteLib standalone build / metadata implementation plan** (or equivalent title): *Where* does GraniteLib’s **`fabric.mod.json`** live in the tree; *how* does **`:granitelib-fabric`** produce a **standalone** remapped JAR; *does* FabricAuraSkills **still** JiJ during the **first** external release; *when* does **`depends: granitelib`** land; *what* **validates** (both JARs, Loader resolution, `verify`).
+- Deliverable: [granitelib-standalone-build-metadata-plan.md](granitelib-standalone-build-metadata-plan.md) — *where* `fabric.mod.json` lives, *how* **`:granitelib-fabric`** becomes a **Loader-visible** mod (vs **today’s** **library** **JiJ** JAR), **version** split, **JiJ** / **`depends`**, **validation** matrix, **risks** (duplicate mod/class). [Handoff](../handoffs/2026-07-10-granitelib-sprint-89-standalone-build-metadata-plan.md).
+
+## Recommended Sprint 90
+
+- **Implement** per that plan: **`granitelibVersion`**, **`slate-fabric/.../fabric.mod.json`**, **resource** expansion, **optional** Loom **`mods { }`**, **remap** output as **distributable**; **no** `depends: granitelib` on **:fabric** until **valid** standalone JAR + **smoke** **(Runtime B/C)** as needed.
 
 ---
 
-*Sprint 88: ADR + cross-links + handoff only.*
+*Sprint 88: ADR + cross-links + handoff only. Sprint 89: build plan + cross-links + handoff only.*

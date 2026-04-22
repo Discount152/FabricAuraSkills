@@ -61,9 +61,7 @@
 
 - **Docs-only sprint.** Optional: `.\gradlew.bat :granitelib-fabric:test :fabric:test :fabric:build -PfabricOnly=true` — expect **unchanged** **2.3.22** **artifact** and **verifyFabricReleaseBundle: OK** (no file edits in Sprint 88).
 
-## Sprint 89 recommendation
-
-- **Sprint 89 — GraniteLib standalone build / metadata implementation plan** (or first implementation PR): where **`fabric.mod.json`** for **`:granitelib-fabric`** lives; how **remapped standalone JAR** is produced; **when** **`depends: granitelib`** lands on **`:fabric`**; **double-JAR** / Loader **validation** matrix.
+**Follow-up (Sprint 89):** [Standalone build / metadata plan](2026-07-10-granitelib-sprint-89-standalone-build-metadata-plan.md) — **JiJ** library JAR **today** vs **Loader**-visible **mod** JAR, **`granitelibVersion`**, **validation** matrix.
 
 **Follows:** [Sprint 87](2026-07-08-granitelib-sprint-87-fabric-mod-json-branding-cleanup.md).
 
