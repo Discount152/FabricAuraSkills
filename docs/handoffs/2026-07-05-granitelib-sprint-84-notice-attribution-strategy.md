@@ -46,8 +46,12 @@
 
 - **Docs** only; **optional** Gradle: **2.3.20** build, **`verifyFabricReleaseBundle: OK`**.
 
-## Sprint 85 recommendation
+## Sprint 85 (completed follow-up)
 
-- **Add** **root** **`NOTICE`** (implementation PR) **if** **signed off**, **or** **branding** pass on **README**/**metadata** **coordinated** with this **strategy**, **or** **GraniteLib** **feature** work.
+Sprint 85 did **not** add a root `NOTICE` (same policy: **draft** + sign-off first). The planning deliverable is:
 
-**Done:** this handoff + [granitelib-notice-attribution-strategy.md](../architecture/granitelib-notice-attribution-strategy.md).
+- [granitelib-branding-metadata-cleanup-plan.md](../architecture/granitelib-branding-metadata-cleanup-plan.md) — **product-facing** metadata inventory and staged cleanup **order**; see [Sprint 85 handoff](2026-07-06-granitelib-sprint-85-branding-metadata-cleanup-plan.md).
+
+A future sprint may still: **(1)** add `NOTICE` after sign-off, **(2)** implement branding cleanup per the Sprint 85 plan, or **(3)** continue GraniteLib feature work.
+
+**Done (Sprint 84):** this handoff + [granitelib-notice-attribution-strategy.md](../architecture/granitelib-notice-attribution-strategy.md).

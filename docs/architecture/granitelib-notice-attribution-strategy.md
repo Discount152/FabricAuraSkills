@@ -5,7 +5,7 @@
 | **Status** | **Draft** for **human / legal** review — **not** legal advice, **not** final |
 | **Date** | 2026-07-05 (Sprint 84) |
 | **Prereq** | [granitelib-license-notice-review-plan.md](granitelib-license-notice-review-plan.md) (Sprint 83) |
-| **Related** | [granitelib-distribution-adr.md](granitelib-distribution-adr.md) · [Sprint 84 handoff](../handoffs/2026-07-05-granitelib-sprint-84-notice-attribution-strategy.md) |
+| **Related** | [granitelib-distribution-adr.md](granitelib-distribution-adr.md) · [granitelib-branding-metadata-cleanup-plan.md](granitelib-branding-metadata-cleanup-plan.md) (Sprint 85) · [Sprint 84 handoff](../handoffs/2026-07-05-granitelib-sprint-84-notice-attribution-strategy.md) |
 
 **Sprint 84 does not create a root `NOTICE` file** unless maintainers explicitly approve a follow-up implementation PR.
 
@@ -175,10 +175,15 @@ at the repository root until explicitly added in a follow-up change.
 
 ---
 
-## 12. Sprint 85 recommendation
+## 12. Sprint 85 (what landed)
 
-- **If** **`NOTICE` is desired:** open a **small** **implementation** PR: **add** **`NOTICE` or `NOTICE.md`** at **root** using the **signed-off** **outline** in §9; **link** from **README** **“**Legal**”** **section**; **re-run** [granitelib-license-notice-review-plan.md](granitelib-license-notice-review-plan.md) **§10** process.  
-- **Else:** **branding** **metadata** **pass** (README + `gradle.properties` + `fabric.mod.json` **name/description**) **only** **where** **factual** and **not** **stripping** **(A)** **content** from **`NOTICE`**-eligible **text**.  
-- **Or:** **GraniteLib** **port** **features**; **revisit** **NOTICE** before **external** **Maven** **publish** per [granitelib-distribution-adr.md](granitelib-distribution-adr.md).
+Sprint 85 did **not** add a root `NOTICE` (same guardrail as Sprint 84: **wait** for maintainer / legal sign-off on a **draft** before installation).
+
+**What to use next for product-facing cleanup (docs/planning only in Sprint 85):**
+
+- [granitelib-branding-metadata-cleanup-plan.md](granitelib-branding-metadata-cleanup-plan.md) — which README / `gradle.properties` / `fabric.mod.json` (non-license) / docs / Changelog surfaces can move to Discount / GraniteLib **wording** **later**, in **what order**, without treating **(A)** legal surfaces as “branding.”
+- [Sprint 85 handoff](../handoffs/2026-07-06-granitelib-sprint-85-branding-metadata-cleanup-plan.md) — short summary, staging, and Sprint 86 ideas.
+
+**When a root `NOTICE` is still the right follow-up** (separate PR from branding cleanup): use §9–10 in this file and [granitelib-license-notice-review-plan.md](granitelib-license-notice-review-plan.md) §10 before any file is added at the repository root.
 
 *Sprint 84: strategy doc + cross-links only.*

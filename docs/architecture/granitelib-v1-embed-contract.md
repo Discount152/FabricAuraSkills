@@ -14,7 +14,7 @@
 
 ## Relationship to a future standalone
 
-When/if GraniteLib ships standalone, the split between **“library owns”** and **“mod owns”** in this doc is still the conceptual boundary; implementation details are in planning forks, the [package/identity ADR](granitelib-package-name-adr.md), the [rename plan](granitelib-package-public-class-rename-plan.md) (staged package/class work), the [license/notice plan](granitelib-license-notice-review-plan.md) (attribution vs branding), the [draft NOTICE strategy](granitelib-notice-attribution-strategy.md) (Sprint 84), and the [distribution model ADR](granitelib-distribution-adr.md) (Milestone D — default recommendation: **JiJ now, external later** while naming/API mature).
+When/if GraniteLib ships standalone, the split between **“library owns”** and **“mod owns”** in this doc is still the conceptual boundary; implementation details are in planning forks, the [package/identity ADR](granitelib-package-name-adr.md), the [rename plan](granitelib-package-public-class-rename-plan.md) (staged package/class work), the [license/notice plan](granitelib-license-notice-review-plan.md) (attribution vs branding), the [draft NOTICE strategy](granitelib-notice-attribution-strategy.md) (Sprint 84), the [branding & metadata cleanup plan](granitelib-branding-metadata-cleanup-plan.md) (Sprint 85 — product-facing strings, **not** `NOTICE`/vendor without sign-off), and the [distribution model ADR](granitelib-distribution-adr.md) (Milestone D — default recommendation: **JiJ now, external later** while naming/API mature).
 
 ## See also
 
@@ -26,6 +26,7 @@ When/if GraniteLib ships standalone, the split between **“library owns”** an
 - [Sprint 81 handoff — package + bootstrap](../handoffs/2026-07-02-granitelib-sprint-81-package-bootstrap-rename.md)  
 - [Sprint 82 handoff — directory decision](../handoffs/2026-07-03-granitelib-sprint-82-directory-rename-decision.md)  
 - [Sprint 83 handoff — license/notice plan](../handoffs/2026-07-04-granitelib-sprint-83-license-notice-review-plan.md)  
-- [Sprint 84 handoff — NOTICE strategy](../handoffs/2026-07-05-granitelib-sprint-84-notice-attribution-strategy.md)
+- [Sprint 84 handoff — NOTICE strategy](../handoffs/2026-07-05-granitelib-sprint-84-notice-attribution-strategy.md)  
+- [Sprint 85 handoff — branding & metadata plan](../handoffs/2026-07-06-granitelib-sprint-85-branding-metadata-cleanup-plan.md)
 
-*Sprint 78: placeholder replaced; embed story aligned with one-module upstream. Sprint 79: Milestone D ADR (JiJ first, external later as policy default). Sprint 80: package/public class rename plan (no code changes in that doc sprint). Sprint 81: `dev.granitelib.fabric` + `GraniteFabricBootstrap` in source. Sprint 82: physical directory rename decision (default defer). Sprint 83: license/notice review plan. Sprint 84: draft root NOTICE/attribution strategy (no new file at repo root).*
+*Sprint 78: placeholder replaced; embed story aligned with one-module upstream. Sprint 79: Milestone D ADR (JiJ first, external later as policy default). Sprint 80: package/public class rename plan (no code changes in that doc sprint). Sprint 81: `dev.granitelib.fabric` + `GraniteFabricBootstrap` in source. Sprint 82: physical directory rename decision (default defer). Sprint 83: license/notice review plan. Sprint 84: draft root NOTICE/attribution strategy (no new file at repo root). Sprint 85: branding & metadata inventory (docs only; no README/Gradle/mod metadata edits in sprint).*

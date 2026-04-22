@@ -5,7 +5,7 @@
 | **Status** | **Proposed** (checklist; not legal advice) |
 | **Date** | 2026-07-04 (Sprint 83) |
 | **Scope** | Preparing for **branding / breadcrumb cleanup** and a possible **public** or **external** GraniteLib story **without** removing legally required text |
-| **Related** | [granitelib-distribution-adr.md](granitelib-distribution-adr.md) · [granitelib-standalone-extraction-checklist.md](granitelib-standalone-extraction-checklist.md) · [granitelib-package-name-adr.md](granitelib-package-name-adr.md) · [granitelib-notice-attribution-strategy.md](granitelib-notice-attribution-strategy.md) (Sprint 84) · [Sprint 83 handoff](../handoffs/2026-07-04-granitelib-sprint-83-license-notice-review-plan.md) |
+| **Related** | [granitelib-distribution-adr.md](granitelib-distribution-adr.md) · [granitelib-standalone-extraction-checklist.md](granitelib-standalone-extraction-checklist.md) · [granitelib-package-name-adr.md](granitelib-package-name-adr.md) · [granitelib-notice-attribution-strategy.md](granitelib-notice-attribution-strategy.md) (Sprint 84) · [granitelib-branding-metadata-cleanup-plan.md](granitelib-branding-metadata-cleanup-plan.md) (Sprint 85) · [Sprint 83 handoff](../handoffs/2026-07-04-granitelib-sprint-83-license-notice-review-plan.md) |
 
 ---
 
