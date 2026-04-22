@@ -45,6 +45,8 @@ The **on-disk** directory is still **`slate-fabric/src/...`** (see [granitelib-p
 - [granitelib-physical-directory-rename-decision.md](granitelib-physical-directory-rename-decision.md)  
 - [Sprint 82 handoff](../handoffs/2026-07-03-granitelib-sprint-82-directory-rename-decision.md)  
 - [granitelib-license-notice-review-plan.md](granitelib-license-notice-review-plan.md)  
-- [Sprint 83 handoff](../handoffs/2026-07-04-granitelib-sprint-83-license-notice-review-plan.md)
+- [Sprint 83 handoff](../handoffs/2026-07-04-granitelib-sprint-83-license-notice-review-plan.md)  
+- [granitelib-notice-attribution-strategy.md](granitelib-notice-attribution-strategy.md)  
+- [Sprint 84 handoff](../handoffs/2026-07-05-granitelib-sprint-84-notice-attribution-strategy.md)
 
-*Sprint 79: linked Milestone D ADR; no build change. Sprint 80: linked rename plan. Sprint 81: package + class rename in `slate-fabric`. Sprint 82: directory rename decision (docs). Sprint 83: license/notice plan.*
+*Sprint 79: linked Milestone D ADR; no build change. Sprint 80: linked rename plan. Sprint 81: package + class rename in `slate-fabric`. Sprint 82: directory rename decision (docs). Sprint 83: license/notice plan. Sprint 84: draft NOTICE strategy.*

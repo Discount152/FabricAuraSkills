@@ -52,3 +52,5 @@
 - **`NOTICE` draft** or a **branding + legal sign-off** implementation sprint for **README** / **`fabric.mod.json`** / **`gradle.properties`**, **or** continue **GraniteLib** port; **re-audit** this plan before **standalone** **Maven**/host publish.
 
 **Done:** this handoff + [granitelib-license-notice-review-plan.md](../architecture/granitelib-license-notice-review-plan.md).
+
+**Next (Sprint 84):** [granitelib-notice-attribution-strategy.md](../architecture/granitelib-notice-attribution-strategy.md) · [2026-07-05-granitelib-sprint-84-notice-attribution-strategy.md](2026-07-05-granitelib-sprint-84-notice-attribution-strategy.md) — **draft** root `NOTICE` **outline** (no file at repo root in Sprint 84).

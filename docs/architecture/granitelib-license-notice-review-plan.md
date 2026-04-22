@@ -5,7 +5,7 @@
 | **Status** | **Proposed** (checklist; not legal advice) |
 | **Date** | 2026-07-04 (Sprint 83) |
 | **Scope** | Preparing for **branding / breadcrumb cleanup** and a possible **public** or **external** GraniteLib story **without** removing legally required text |
-| **Related** | [granitelib-distribution-adr.md](granitelib-distribution-adr.md) · [granitelib-standalone-extraction-checklist.md](granitelib-standalone-extraction-checklist.md) · [granitelib-package-name-adr.md](granitelib-package-name-adr.md) · [Sprint 83 handoff](../handoffs/2026-07-04-granitelib-sprint-83-license-notice-review-plan.md) |
+| **Related** | [granitelib-distribution-adr.md](granitelib-distribution-adr.md) · [granitelib-standalone-extraction-checklist.md](granitelib-standalone-extraction-checklist.md) · [granitelib-package-name-adr.md](granitelib-package-name-adr.md) · [granitelib-notice-attribution-strategy.md](granitelib-notice-attribution-strategy.md) (Sprint 84) · [Sprint 83 handoff](../handoffs/2026-07-04-granitelib-sprint-83-license-notice-review-plan.md) |
 
 ---
 
@@ -39,7 +39,7 @@ This file is a **repo-local plan and inventory**. It does **not** replace counse
 | Location | Notes (Sprint 83) |
 |----------|-------------------|
 | **Root** `LICENSE.md` | **Present** — GPL-3.0 text. **Do not remove or truncate**; any **additional** project copyright line (if added) is a **separate** maintainer decision. |
-| **Root** `NOTICE` / `NOTICE.txt` | **N/A** — consider **adding** if policy requires third-party notices in one file. |
+| **Root** `NOTICE` / `NOTICE.txt` | **N/A** on disk — **draft** strategy for a **future** file: [granitelib-notice-attribution-strategy.md](granitelib-notice-attribution-strategy.md) (Sprint 84). **Sprint 84** did **not** add a root `NOTICE`. |
 | **Root** `README.md` | **Present** — heavily **AuraSkills / Archy-X / aurelium.dev / Spigot**; **product-facing**; cleanup candidate for *wording* only after **legal/product** sign-off. |
 | **`Changelog.md`** | Long history; may reference plugin, GPL, upstream; **historical** vs **head** sections. |
 | **`gradle.properties`** | **`repoBaseUrl`**, **`releaseTitle`**, `supportedMCVersions` — **metadata / branding**; align with true repo home and product name when ready. |
@@ -181,4 +181,4 @@ Before **publishing** GraniteLib as its own **Maven** or **Modrinth** artifact (
 - **Product:** approved **README** / **fabric.mod.json** / **`gradle.properties`** string updates that **factualize** the **Discount** fork **without** dropping **(A)** content — as a **separate** “branding + legal review” implementation sprint, **not** mixed with refactors.  
 - **Or** continue **GraniteLib** **feature** port work; re-run this checklist before **any** public **GraniteLib** **Maven** publish.
 
-*Sprint 83: plan + inventory only.*
+*Sprint 83: plan + inventory only. Sprint 84: [granitelib-notice-attribution-strategy.md](granitelib-notice-attribution-strategy.md) — draft NOTICE outline; no new file at repo root.*

@@ -5,7 +5,7 @@
 | **Status** | **Proposed** (awaiting product buy-in) |
 | **Date** | 2026-06-30 |
 | **Scope** | [FabricAuraSkills](https://github.com/Discount152/FabricAuraSkills) on upstream `main` after Sprint 77/78 (one module: **`:granitelib-fabric`**) |
-| **Related** | [granitelib-v1-embed-contract.md](granitelib-v1-embed-contract.md) · [granitelib-package-name-adr.md](granitelib-package-name-adr.md) · [granitelib-package-public-class-rename-plan.md](granitelib-package-public-class-rename-plan.md) · [granitelib-physical-directory-rename-decision.md](granitelib-physical-directory-rename-decision.md) · [granitelib-license-notice-review-plan.md](granitelib-license-notice-review-plan.md) · [granitelib-verification-report.md](granitelib-verification-report.md) · [Sprint 79 handoff](../handoffs/2026-06-30-granitelib-sprint-79-distribution-adr.md) · [Sprint 81 handoff](../handoffs/2026-07-02-granitelib-sprint-81-package-bootstrap-rename.md) |
+| **Related** | [granitelib-v1-embed-contract.md](granitelib-v1-embed-contract.md) · [granitelib-package-name-adr.md](granitelib-package-name-adr.md) · [granitelib-package-public-class-rename-plan.md](granitelib-package-public-class-rename-plan.md) · [granitelib-physical-directory-rename-decision.md](granitelib-physical-directory-rename-decision.md) · [granitelib-license-notice-review-plan.md](granitelib-license-notice-review-plan.md) · [granitelib-notice-attribution-strategy.md](granitelib-notice-attribution-strategy.md) · [granitelib-verification-report.md](granitelib-verification-report.md) · [Sprint 79 handoff](../handoffs/2026-06-30-granitelib-sprint-79-distribution-adr.md) · [Sprint 81 handoff](../handoffs/2026-07-02-granitelib-sprint-81-package-bootstrap-rename.md) |
 
 ---
 
@@ -148,6 +148,7 @@
 | **Sprint 81 follow-up** | **Done (code + docs):** first **`:granitelib-fabric`** package/class rename — [Sprint 81 handoff](../handoffs/2026-07-02-granitelib-sprint-81-package-bootstrap-rename.md). **Further** port renames TBD. |
 | **Sprint 82** | **Done (docs):** [granitelib-physical-directory-rename-decision.md](granitelib-physical-directory-rename-decision.md) — **Proposed: defer** on-disk `slate-fabric/` → `granitelib-fabric/`; [Sprint 82 handoff](../handoffs/2026-07-03-granitelib-sprint-82-directory-rename-decision.md). |
 | **Sprint 83** | **Done (docs):** [granitelib-license-notice-review-plan.md](granitelib-license-notice-review-plan.md) — license/notice **audit plan** (branding vs attribution); [Sprint 83 handoff](../handoffs/2026-07-04-granitelib-sprint-83-license-notice-review-plan.md). |
+| **Sprint 84** | **Done (docs):** [granitelib-notice-attribution-strategy.md](granitelib-notice-attribution-strategy.md) — **draft** root `NOTICE` **outline** (no file at repo root); [Sprint 84 handoff](../handoffs/2026-07-05-granitelib-sprint-84-notice-attribution-strategy.md). |
 
 ### Embedded answers (index)
 

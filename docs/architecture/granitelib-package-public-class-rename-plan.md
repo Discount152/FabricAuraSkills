@@ -5,7 +5,7 @@
 | **Type** | Implementation blueprint; **Sprint 81** executed the first Stages 1–3 for the current stub. |
 | **Date** | 2026-07-01 (Sprint 80 plan); **2026-07-02 (Sprint 81 first rename)** |
 | **Scope** | [FabricAuraSkills](https://github.com/Discount152/FabricAuraSkills) `main`-shaped tree; **`:granitelib-fabric`** + consumers |
-| **Prereq** | [granitelib-package-name-adr.md](granitelib-package-name-adr.md) · [granitelib-distribution-adr.md](granitelib-distribution-adr.md) (JiJ now, external later) · [granitelib-physical-directory-rename-decision.md](granitelib-physical-directory-rename-decision.md) (Sprint 82) · [granitelib-license-notice-review-plan.md](granitelib-license-notice-review-plan.md) (Sprint 83) · [Sprint 79 handoff](../handoffs/2026-06-30-granitelib-sprint-79-distribution-adr.md) · [Sprint 81 handoff](../handoffs/2026-07-02-granitelib-sprint-81-package-bootstrap-rename.md) |
+| **Prereq** | [granitelib-package-name-adr.md](granitelib-package-name-adr.md) · [granitelib-distribution-adr.md](granitelib-distribution-adr.md) (JiJ now, external later) · [granitelib-physical-directory-rename-decision.md](granitelib-physical-directory-rename-decision.md) (Sprint 82) · [granitelib-license-notice-review-plan.md](granitelib-license-notice-review-plan.md) (Sprint 83) · [granitelib-notice-attribution-strategy.md](granitelib-notice-attribution-strategy.md) (Sprint 84) · [Sprint 79 handoff](../handoffs/2026-06-30-granitelib-sprint-79-distribution-adr.md) · [Sprint 81 handoff](../handoffs/2026-07-02-granitelib-sprint-81-package-bootstrap-rename.md) |
 
 ---
 
@@ -163,13 +163,14 @@ Avoid one “rename everything” PR. Suggested order:
 
 - **Re-audit** this inventory when a branch adds **new** `slate-fabric` / **on-disk** `granitelib-fabric` source; apply **Stages 1–3** for new Slate-branded public types.  
 - **Physical directory (Stage 5):** [granitelib-physical-directory-rename-decision.md](granitelib-physical-directory-rename-decision.md) (Sprint 82) — default **defer**; **execute** only after sign-off.  
-- **Stage 6** license/notice and external story when [granitelib-distribution-adr.md](granitelib-distribution-adr.md) prereqs are met — use [granitelib-license-notice-review-plan.md](granitelib-license-notice-review-plan.md) before stripping **Slate**/**vendor** **attribution** in comments or `vendor/`.
+- **Stage 6** license/notice and external story when [granitelib-distribution-adr.md](granitelib-distribution-adr.md) prereqs are met — use [granitelib-license-notice-review-plan.md](granitelib-license-notice-review-plan.md) and [granitelib-notice-attribution-strategy.md](granitelib-notice-attribution-strategy.md) before stripping **Slate**/**vendor** **attribution** in comments or `vendor/`; **add** root `NOTICE` only after [§10 review](granitelib-notice-attribution-strategy.md#10-review-checklist-before-any-root-notice-is-added).
 
 ## See also
 
 - [Sprint 80 handoff](../handoffs/2026-07-01-granitelib-sprint-80-package-public-class-rename-plan.md) (historical plan)  
 - [Sprint 81 handoff](../handoffs/2026-07-02-granitelib-sprint-81-package-bootstrap-rename.md) (landed renames + validation)  
 - [Sprint 82 handoff](../handoffs/2026-07-03-granitelib-sprint-82-directory-rename-decision.md) (directory decision + audit)  
-- [Sprint 83 handoff](../handoffs/2026-07-04-granitelib-sprint-83-license-notice-review-plan.md) (license/notice plan)
+- [Sprint 83 handoff](../handoffs/2026-07-04-granitelib-sprint-83-license-notice-review-plan.md) (license/notice plan)  
+- [Sprint 84 handoff](../handoffs/2026-07-05-granitelib-sprint-84-notice-attribution-strategy.md) (draft `NOTICE` strategy)
 
-*Sprint 80: plan. Sprint 81: first code rename + 2.3.20. Sprint 82: physical directory decision (default defer). Sprint 83: license/notice review plan.*
+*Sprint 80: plan. Sprint 81: first code rename + 2.3.20. Sprint 82: physical directory decision (default defer). Sprint 83: license/notice review plan. Sprint 84: draft NOTICE/attribution strategy (no root file).*
