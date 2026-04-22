@@ -5,7 +5,13 @@
 | **Status** | **Proposed** (awaiting product buy-in) |
 | **Date** | 2026-06-30 |
 | **Scope** | [FabricAuraSkills](https://github.com/Discount152/FabricAuraSkills) on upstream `main` after Sprint 77/78 (one module: **`:granitelib-fabric`**) |
-| **Related** | [granitelib-v1-embed-contract.md](granitelib-v1-embed-contract.md) · [granitelib-package-name-adr.md](granitelib-package-name-adr.md) · [granitelib-package-public-class-rename-plan.md](granitelib-package-public-class-rename-plan.md) · [granitelib-physical-directory-rename-decision.md](granitelib-physical-directory-rename-decision.md) · [granitelib-license-notice-review-plan.md](granitelib-license-notice-review-plan.md) · [granitelib-notice-attribution-strategy.md](granitelib-notice-attribution-strategy.md) · [granitelib-branding-metadata-cleanup-plan.md](granitelib-branding-metadata-cleanup-plan.md) (Sprint 85–87) · [Sprint 86 handoff](../handoffs/2026-07-07-granitelib-sprint-86-readme-url-branding-cleanup.md) · [Sprint 87 handoff](../handoffs/2026-07-08-granitelib-sprint-87-fabric-mod-json-branding-cleanup.md) · [granitelib-verification-report.md](granitelib-verification-report.md) · [Sprint 79 handoff](../handoffs/2026-06-30-granitelib-sprint-79-distribution-adr.md) · [Sprint 81 handoff](../handoffs/2026-07-02-granitelib-sprint-81-package-bootstrap-rename.md) |
+| **Related** | [granitelib-v1-embed-contract.md](granitelib-v1-embed-contract.md) · [granitelib-package-name-adr.md](granitelib-package-name-adr.md) · [granitelib-package-public-class-rename-plan.md](granitelib-package-public-class-rename-plan.md) · [granitelib-physical-directory-rename-decision.md](granitelib-physical-directory-rename-decision.md) · [granitelib-license-notice-review-plan.md](granitelib-license-notice-review-plan.md) · [granitelib-notice-attribution-strategy.md](granitelib-notice-attribution-strategy.md) · [granitelib-branding-metadata-cleanup-plan.md](granitelib-branding-metadata-cleanup-plan.md) (Sprint 85–87) · [granitelib-standalone-dependency-identity-adr.md](granitelib-standalone-dependency-identity-adr.md) (Sprint 88) · [Sprint 86 handoff](../handoffs/2026-07-07-granitelib-sprint-86-readme-url-branding-cleanup.md) · [Sprint 87 handoff](../handoffs/2026-07-08-granitelib-sprint-87-fabric-mod-json-branding-cleanup.md) · [Sprint 88 handoff](../handoffs/2026-07-09-granitelib-sprint-88-standalone-dependency-identity-adr.md) · [granitelib-verification-report.md](granitelib-verification-report.md) · [Sprint 79 handoff](../handoffs/2026-06-30-granitelib-sprint-79-distribution-adr.md) · [Sprint 81 handoff](../handoffs/2026-07-02-granitelib-sprint-81-package-bootstrap-rename.md) |
+
+---
+
+## Sprint 88 supplement — product goal (read with this file)
+
+Milestone D below still describes **history** and **Options A–C** as of Sprint 79. **Sprint 88** (2026-07-09) **locks a near-term product goal:** GraniteLib must become a **separately downloadable** Fabric mod dependency, with **identity** decided in [granitelib-standalone-dependency-identity-adr.md](granitelib-standalone-dependency-identity-adr.md) (**proposed** mod `id` **`granitelib`**, **JiJ retained during transition**). Treat **“external later”** as **in flight**, not unscheduled — **implementation** (metadata, `depends`, publish) is **Sprint 89+**, not Sprint 88.
 
 ---
 
@@ -152,12 +158,13 @@
 | **Sprint 85** | **Done (docs):** [granitelib-branding-metadata-cleanup-plan.md](granitelib-branding-metadata-cleanup-plan.md) — product-facing metadata cleanup **plan** (README / Gradle / `fabric.mod.json` **non-license** / docs order); no metadata edits in the sprint; [Sprint 85 handoff](../handoffs/2026-07-06-granitelib-sprint-85-branding-metadata-cleanup-plan.md). |
 | **Sprint 86** | **Done (product docs + `gradle.properties`):** README + clone/home URL + **`releaseTitle`/`repoBaseUrl`** + **`projectVersion` 2.3.21**; **`fabric.mod.json` not edited**; [Sprint 86 handoff](../handoffs/2026-07-07-granitelib-sprint-86-readme-url-branding-cleanup.md). |
 | **Sprint 87** | **Done (`fabric.mod.json` non-`id`/`license` + version):** `name`, `description`, `authors`, **`contact`**; **`id`**, **`license`**, **`depends`**, **entrypoints**, **mixins**, **`environment`** unchanged; **`projectVersion` 2.3.22**; [Sprint 87 handoff](../handoffs/2026-07-08-granitelib-sprint-87-fabric-mod-json-branding-cleanup.md). |
+| **Sprint 88** | **Done (docs):** [granitelib-standalone-dependency-identity-adr.md](granitelib-standalone-dependency-identity-adr.md) — **standalone** mod **identity** + **transition** (**JiJ** through migration; **target** **external** **depends** on **`granitelib`**) — **no** code/Gradle; [Sprint 88 handoff](../handoffs/2026-07-09-granitelib-sprint-88-standalone-dependency-identity-adr.md). |
 
 ### Embedded answers (index)
 
 - **Current distribution model:** JiJ nested JAR, enforced by `verifyFabricReleaseBundle`.
-- **For external later:** Gradle dependency edges, `fabric.mod.json` / platform metadata, publish pipeline, user-facing install docs, verification task updates, and SemVer for the lib line.
+- **For external (now a committed near-term goal, Sprint 88+):** see [granitelib-standalone-dependency-identity-adr.md](granitelib-standalone-dependency-identity-adr.md) — then Gradle edges, `fabric.mod.json` **`depends`**, publish pipeline, install docs, verification updates, **library** SemVer **0.1.x** line.
 
 ---
 
-*Sprint 79: initial Milestone D ADR. Does not change build output. Sprint 85: linked branding / metadata cleanup plan (docs only). Sprint 86: README + Gradle + 2.3.21. Sprint 87: `fabric.mod.json` + 2.3.22.*
+*Sprint 79: initial Milestone D ADR. Does not change build output. Sprint 85: linked branding / metadata cleanup plan (docs only). Sprint 86: README + Gradle + 2.3.21. Sprint 87: `fabric.mod.json` + 2.3.22. Sprint 88: standalone dependency **identity** ADR (not implementation).*

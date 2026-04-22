@@ -51,6 +51,8 @@ The **on-disk** directory is still **`slate-fabric/src/...`** (see [granitelib-p
 - [granitelib-branding-metadata-cleanup-plan.md](granitelib-branding-metadata-cleanup-plan.md) (Sprint 85)  
 - [Sprint 85 handoff](../handoffs/2026-07-06-granitelib-sprint-85-branding-metadata-cleanup-plan.md)  
 - [Sprint 86 handoff](../handoffs/2026-07-07-granitelib-sprint-86-readme-url-branding-cleanup.md)  
-- [Sprint 87 handoff](../handoffs/2026-07-08-granitelib-sprint-87-fabric-mod-json-branding-cleanup.md)
+- [Sprint 87 handoff](../handoffs/2026-07-08-granitelib-sprint-87-fabric-mod-json-branding-cleanup.md)  
+- [granitelib-standalone-dependency-identity-adr.md](granitelib-standalone-dependency-identity-adr.md) (Sprint 88)  
+- [Sprint 88 handoff](../handoffs/2026-07-09-granitelib-sprint-88-standalone-dependency-identity-adr.md)
 
-*Sprint 79: linked Milestone D ADR; no build change. Sprint 80: linked rename plan. Sprint 81: package + class rename in `slate-fabric`. Sprint 82: directory rename decision (docs). Sprint 83: license/notice plan. Sprint 84: draft NOTICE strategy. Sprint 85: branding & metadata cleanup plan (docs only). Sprint 86: README + `gradle.properties` + `2.3.21`. Sprint 87: `fabric.mod.json` + `2.3.22`.*
+*Sprint 79: linked Milestone D ADR; no build change. Sprint 80: linked rename plan. Sprint 81: package + class rename in `slate-fabric`. Sprint 82: directory rename decision (docs). Sprint 83: license/notice plan. Sprint 84: draft NOTICE strategy. Sprint 85: branding & metadata cleanup plan (docs only). Sprint 86: README + `gradle.properties` + `2.3.21`. Sprint 87: `fabric.mod.json` + `2.3.22`. Sprint 88: standalone dependency **identity** ADR (no build change).*

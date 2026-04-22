@@ -65,11 +65,6 @@ BUILD SUCCESSFUL in 14s
 
 (`:granitelib-fabric:test` is **NO-SOURCE**; `:fabric:test` ran.)
 
-## Sprint 88 recommendation
-
-- **`NOTICE`** **implementation** PR after **signed-off** draft ([granitelib-notice-attribution-strategy.md](../architecture/granitelib-notice-attribution-strategy.md)) — **Track A**  
-- **Or** **external** / **Modrinth** / **host** metadata (**Stage 6** of [branding plan](../architecture/granitelib-branding-metadata-cleanup-plan.md)) when publishing is in scope  
-- **Or** deliberate **`mod` `id` migration** (breaking) with product + comms plan  
-- **Or** **GraniteLib** / feature work
+**Follow-up (Sprint 88):** [Standalone dependency identity ADR](2026-07-09-granitelib-sprint-88-standalone-dependency-identity-adr.md) — **proposed** mod **`id` `granitelib`**, **JiJ**-through-**transition**, **Sprint 89** **implementation** next.
 
 **Done:** this handoff + [granitelib-branding-metadata-cleanup-plan.md](../architecture/granitelib-branding-metadata-cleanup-plan.md) updates (Stage 3 complete).

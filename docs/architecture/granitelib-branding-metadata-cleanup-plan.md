@@ -5,7 +5,7 @@
 | **Status** | **Stages 1–3** **implemented** (Sprint 86: README + Gradle; [Sprint 87](../handoffs/2026-07-08-granitelib-sprint-87-fabric-mod-json-branding-cleanup.md): **`fabric.mod.json`** non-license + **`projectVersion` 2.3.22**). **Stage 4+** TBD. |
 | **Date** | 2026-07-06 (Sprint 85) · 2026-07-07 (Sprint 86) · 2026-07-08 (Sprint 87) |
 | **Prereq** | [granitelib-notice-attribution-strategy.md](granitelib-notice-attribution-strategy.md) (Sprint 84) · [granitelib-license-notice-review-plan.md](granitelib-license-notice-review-plan.md) (Sprint 83) |
-| **Related** | [granitelib-distribution-adr.md](granitelib-distribution-adr.md) · [Sprint 85 handoff](../handoffs/2026-07-06-granitelib-sprint-85-branding-metadata-cleanup-plan.md) · [Sprint 86 handoff](../handoffs/2026-07-07-granitelib-sprint-86-readme-url-branding-cleanup.md) · [Sprint 87 handoff](../handoffs/2026-07-08-granitelib-sprint-87-fabric-mod-json-branding-cleanup.md) |
+| **Related** | [granitelib-distribution-adr.md](granitelib-distribution-adr.md) · [granitelib-standalone-dependency-identity-adr.md](granitelib-standalone-dependency-identity-adr.md) (Sprint 88) · [Sprint 85 handoff](../handoffs/2026-07-06-granitelib-sprint-85-branding-metadata-cleanup-plan.md) · [Sprint 86 handoff](../handoffs/2026-07-07-granitelib-sprint-86-readme-url-branding-cleanup.md) · [Sprint 87 handoff](../handoffs/2026-07-08-granitelib-sprint-87-fabric-mod-json-branding-cleanup.md) · [Sprint 88 handoff](../handoffs/2026-07-09-granitelib-sprint-88-standalone-dependency-identity-adr.md) |
 
 **Sprint 87** updated **`name`**, **`description`**, **`authors`**, and **`contact`**, and bumped **`projectVersion`**, without changing **`id`**, **`license`**, **`depends`**, **`entrypoints`**, **`mixins`**, or **`environment`**.
 
@@ -163,10 +163,10 @@ Inventory **product-facing** surfaces that still read like the **upstream** **Au
 
 ---
 
-## 14. Recommended Sprint 88
+## 14. Recommended Sprint 89+
 
-- **Root `NOTICE` PR** (after **signed-off** draft) — [granitelib-notice-attribution-strategy.md](granitelib-notice-attribution-strategy.md) §9–10 — **or** **external** **listings** / **Modrinth** **metadata** (Stage 6) when **publishing** **is** **in** **scope**.  
-- **Or** **`mod` `id` migration** design (`auraskills` **→** **new** **id**) only if product accepts **save**/**depends** **break** **and** **has** a **communication** **plan** — **not** **default**.  
-- **Or** **GraniteLib** / **port** **code** **work** with **branding** **on** **maintenance** **mode**.
+- **Sprint 88 (done, docs only):** [granitelib-standalone-dependency-identity-adr.md](granitelib-standalone-dependency-identity-adr.md) — **proposed** standalone mod **`id` `granitelib`**, **display** **name**, **0.1.x** **line**, **JiJ** through **transition**, **`auraskills`** **frozen**; [handoff](../handoffs/2026-07-09-granitelib-sprint-88-standalone-dependency-identity-adr.md).  
+- **Sprint 89 (next):** **implementation** / **build** **plan** for **standalone** **`fabric.mod.json`**, **remap** **JAR**, **`depends: granitelib`**, **verify** — not **ADR-only**.  
+- **Or** **NOTICE** (signed-off) **or** **Modrinth**/**host** (Stage 6) **or** **gameplay** **`auraskills` id** migration (separate ADR).
 
-*Sprint 85: plan. Sprint 86: README + `gradle.properties` + `2.3.21`. Sprint 87: `fabric.mod.json` + `2.3.22` ([handoff](../handoffs/2026-07-08-granitelib-sprint-87-fabric-mod-json-branding-cleanup.md)).*
+*Sprint 85: plan. Sprint 86–87: product metadata. Sprint 88: standalone **identity** ADR only.*
