@@ -81,3 +81,5 @@ project(":granitelib-fabric").projectDir = file("slate-fabric")
 - If the fork adds **`slate-platform`**, a **follow-up** PR: `include("granitelib-platform")` + `projectDir`, `fabric` lines + JiJ + `requireJar` for `granitelib-platform-*.jar`, re-run the full two-module matrix.
 - **Milestone D** (JiJ vs external) when the team is ready.
 - Reconcile **local planning docs** (from other branches) with **upstream** file layout in a doc-only pass if needed.
+
+**Done (Sprint 78):** [2026-06-29-granitelib-sprint-78-upstream-doc-reconciliation.md](2026-06-29-granitelib-sprint-78-upstream-doc-reconciliation.md).

@@ -1,3 +1,25 @@
-# GraniteLib v1 — embed contract (placeholder)
+# GraniteLib v1 — embed contract (upstream)
 
-**Upstream note (Sprint 77):** Full narrative embed-contract text may live in forks or a future doc sync. For **Gradle **`:granitelib-fabric`** on this repo, behavior is unchanged: only **project** coordinates and the nested JAR name in the remapped mod differ — see [granitelib-sprint-77-implementation.md](granitelib-sprint-77-implementation.md) and the [Sprint 77 handoff](../handoffs/2026-06-28-granitelib-sprint-77-module-rename-implementation.md).
+**Status:** Design / policy for **this** monorepo. **Not** a SemVer or standalone-publish guarantee.
+
+## What “GraniteLib v1” means **here**
+
+- The neutral menu / definition / plan work lives in Gradle module **`:granitelib-fabric`**, with sources under directory **`slate-fabric/`** and Java packages still using historical **`dev.aurelium.slate.…`** (and similar) **until** a **package** rename is explicitly done.
+- The library is **not** published as a separate product line on upstream `main` today. It is **Jar-in-Jar’d** (embedded) inside the remapped **FabricAuraSkills** JAR: nested **`granitelib-fabric-*.jar`**, with **`verifyFabricReleaseBundle`** enforcing presence.
+- **Sprint 77** did **not** change Java packages, classes, YAML, or gameplay behavior — only **Gradle** identity, JiJ, and verification. Runtime behavior of menus is unchanged by the module id alone.
+
+## What is **not** in this repo’s embed story yet
+
+- A second module **`:granitelib-platform`**: only appears when **`slate-platform/`** (or equivalent) is part of the build. *Some forks document two modules; that is not upstream today.*
+
+## Relationship to a future standalone
+
+When/if GraniteLib ships standalone, the split between **“library owns”** and **“mod owns”** in this doc is still the conceptual boundary; implementation details are in planning forks and the [ADR](granitelib-package-name-adr.md).
+
+## See also
+
+- [granitelib-sprint-77-implementation.md](granitelib-sprint-77-implementation.md)  
+- [granitelib-renderer-facade.md](granitelib-renderer-facade.md) (design direction)  
+- [Sprint 77 handoff](../handoffs/2026-06-28-granitelib-sprint-77-module-rename-implementation.md)
+
+*Sprint 78: placeholder replaced; embed story aligned with one-module upstream.*
