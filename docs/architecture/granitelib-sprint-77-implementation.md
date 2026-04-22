@@ -23,7 +23,8 @@ Some forks or long-lived feature branches add **`slate-platform/`** and a second
 
 - [granitelib-verification-report.md](granitelib-verification-report.md) — Gradle graph + verify snapshot  
 - [granitelib-package-name-adr.md](granitelib-package-name-adr.md) — ADR status on upstream  
+- [granitelib-distribution-adr.md](granitelib-distribution-adr.md) — Milestone D: JiJ vs external (**Proposed:** JiJ now, external later)  
 - [granitelib-standalone-extraction-checklist.md](granitelib-standalone-extraction-checklist.md) — single-module vs two-module  
 - [granitelib-v1-embed-contract.md](granitelib-v1-embed-contract.md) — v1 “embedded in mod” story  
 
-**Doc pass:** [Sprint 78 handoff](../handoffs/2026-06-29-granitelib-sprint-78-upstream-doc-reconciliation.md) — stubs reconciled to this file’s upstream/fork split.
+**Doc pass:** [Sprint 78 handoff](../handoffs/2026-06-29-granitelib-sprint-78-upstream-doc-reconciliation.md) — stubs reconciled to this file’s upstream/fork split. [Sprint 79 handoff](../handoffs/2026-06-30-granitelib-sprint-79-distribution-adr.md) — distribution ADR.

@@ -4,7 +4,7 @@
 |-------|--------|
 | **Status** | **Partial / upstream** (not a full product-wide ADR on `main` yet) |
 | **This repo (upstream `main`, post–Sprint 77)** | See table below |
-| **Detail** | [granitelib-sprint-77-implementation.md](granitelib-sprint-77-implementation.md) · [Sprint 77 handoff](../handoffs/2026-06-28-granitelib-sprint-77-module-rename-implementation.md) |
+| **Detail** | [granitelib-sprint-77-implementation.md](granitelib-sprint-77-implementation.md) · [granitelib-distribution-adr.md](granitelib-distribution-adr.md) · [Sprint 77 handoff](../handoffs/2026-06-28-granitelib-sprint-77-module-rename-implementation.md) |
 
 ## Accepted on **this** repository (Sprint 77)
 
@@ -30,4 +30,4 @@
 - **Fork / full planning** may describe **`:granitelib-fabric` + `:granitelib-platform`**, a two-nested-JAR verify matrix, and more nested JARs — that applies **only** to branches/repos that have **both** subprojects.  
 - **Upstream** today: **one** GraniteLib Gradle module, **`:granitelib-fabric`**.
 
-*Sprint 78: reconciled for honest upstream snapshot.*
+*Sprint 78: reconciled for honest upstream snapshot. Sprint 79: distribution ADR (Milestone D) added.*

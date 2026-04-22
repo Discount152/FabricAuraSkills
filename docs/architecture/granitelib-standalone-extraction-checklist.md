@@ -15,11 +15,11 @@ If **`slate-platform/`** is added: mirror the Sprint 77 pattern — **`include("
 
 ## Build / product items (unchanged in spirit, shortened)
 
-- [ ] **Distribution:** JiJ (current) vs external mod/Maven (open).
+- [ ] **Distribution:** [granitelib-distribution-adr.md](granitelib-distribution-adr.md) (Milestone D — **Proposed:** **JiJ now, external later**; implementation deferred).
 - [ ] **Package** rename vs Gradle-only id (open).  
 - [ ] **API** surface / SemVer (embed contract + ADR).
 - [ ] **CI** for one-way `:fabric` → lib edges.
 
-Cross-link: [granitelib-sprint-77-implementation.md](granitelib-sprint-77-implementation.md), [granitelib-package-name-adr.md](granitelib-package-name-adr.md).
+Cross-link: [granitelib-sprint-77-implementation.md](granitelib-sprint-77-implementation.md), [granitelib-package-name-adr.md](granitelib-package-name-adr.md), [granitelib-distribution-adr.md](granitelib-distribution-adr.md).
 
-*Sprint 78: stub replaced with upstream–fork split.*
+*Sprint 78: stub replaced with upstream–fork split. Sprint 79: distribution ADR (Milestone D).*

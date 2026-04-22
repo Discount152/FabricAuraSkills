@@ -22,9 +22,10 @@
 
 ## 2. JiJ / `verifyFabricReleaseBundle`
 
+- **Distribution policy (Milestone D):** [granitelib-distribution-adr.md](granitelib-distribution-adr.md) — **Proposed:** keep **JiJ** for upstream releases; external dependency is a **future** migration after naming/publish readiness.
 - Remapped JAR: **`FabricAuraSkills-2.3.19.jar`** (or current `projectVersion`).
 - **Sprint 77 validation:** **`verifyFabricReleaseBundle: OK`**, **14** nested JARs under `META-INF/jars/`.
-- Task requires nested **`granitelib-fabric-*.jar`**, plus existing checks (e.g. `api-`, `common-`, Configurate **4.1.2**, polyglot) and the **forbidden** Configurate **4.2** filter — see [`fabric/build.gradle.kts`](../../fabric/build.gradle.kts) `verifyFabricReleaseBundle` block.
+- Task requires nested **`granitelib-fabric-*.jar`**, plus existing checks (e.g. `api-`, `common-`, Configurate **4.1.2**, polyglot) and the **forbidden** Configurate **4.2** filter — see [`fabric/build.gradle.kts`](../../fabric/build.gradle.kts) `verifyFabricReleaseBundle` block. This is the **current** enforcement that GraniteLib is embedded in the release JAR.
 
 **Fork note:** A **second** `requireJar` for `granitelib-platform-*.jar` only applies in repos with **`:granitelib-platform`** in the build.
 
@@ -35,4 +36,8 @@ Java sources remain under directory **`slate-fabric/src/.../dev/aurelium/slate/.
 ## See also
 
 - [granitelib-sprint-77-implementation.md](granitelib-sprint-77-implementation.md)  
-- [Sprint 77 handoff](../handoffs/2026-06-28-granitelib-sprint-77-module-rename-implementation.md)
+- [granitelib-distribution-adr.md](granitelib-distribution-adr.md)  
+- [Sprint 77 handoff](../handoffs/2026-06-28-granitelib-sprint-77-module-rename-implementation.md)  
+- [Sprint 79 handoff](../handoffs/2026-06-30-granitelib-sprint-79-distribution-adr.md)
+
+*Sprint 79: linked Milestone D ADR; no build change.*

@@ -1,0 +1,154 @@
+# ADR: GraniteLib distribution model
+
+| Field | Value |
+|-------|--------|
+| **Status** | **Proposed** (awaiting product buy-in) |
+| **Date** | 2026-06-30 |
+| **Scope** | [FabricAuraSkills](https://github.com/Discount152/FabricAuraSkills) on upstream `main` after Sprint 77/78 (one module: **`:granitelib-fabric`**) |
+| **Related** | [granitelib-v1-embed-contract.md](granitelib-v1-embed-contract.md) · [granitelib-package-name-adr.md](granitelib-package-name-adr.md) · [granitelib-verification-report.md](granitelib-verification-report.md) · [Sprint 79 handoff](../handoffs/2026-06-30-granitelib-sprint-79-distribution-adr.md) |
+
+---
+
+## Context
+
+**Milestone D** is the product choice: how GraniteLib reaches consumers of DiscountAuraSkills (and, in the future, other mods).
+
+**Current actual distribution model (upstream, Sprint 77+):**
+
+- GraniteLib ships **only** as a **Jar-in-Jar (JiJ) nested JAR** inside the remapped **FabricAuraSkills** mod JAR: **`granitelib-fabric-*.jar`** under `META-INF/jars/`.
+- **`:fabric` compileClasspath** includes **`project :granitelib-fabric`**; **`:granitelib-fabric`** has **no** reverse compile dependency on **`:fabric`**.
+- There is **no** separate installable “GraniteLib” mod, **no** Maven publication of GraniteLib as a first-class product line on this repo to date, and **no** `fabric.mod.json` entry advertising GraniteLib as a standalone dependency to end users.
+- **Java package names** remain historical (`dev.aurelium.slate.…`); **Gradle** module id is **`granitelib-fabric`**; physical directory is **`slate-fabric/`**.
+
+**What `verifyFabricReleaseBundle` enforces (today):**
+
+- The release verification task in **`fabric/build.gradle.kts`** (among other checks) **requires** a nested JAR whose name matches **`granitelib-fabric-*.jar`**, together with policy for `api-`, `common-`, Configurate 4.1.2, polyglot, and forbidden 4.2 — see the task block for the authoritative list. This encodes the **“GraniteLib must be embedded in the remapped JAR”** build contract for the current pipeline.
+
+**This ADR does not change the build** — it records the intended **strategy** and **evolution** so that package rename, publishing, and docs stay aligned.
+
+---
+
+## Decision drivers
+
+- **User experience:** minimize mistaken installs; single JAR to drop in `mods/` is simpler than a two-mod set.
+- **Reusability:** other mods may eventually want Granitelib without bundling; duplicate embedded copies complicate the ecosystem.
+- **Product maturity:** package root, Maven group, public API stability, and license/notice review are not finished — shipping an external “product” may be premature.
+- **Support surface:** every external dependency is another version to explain on Modrinth/CurseForge and in issue templates.
+- **Build reality:** the pipeline already **works** with JiJ + verification; external mode needs deliberate Gradle/metadata work later.
+
+---
+
+## Options considered
+
+### Option A — Keep JiJ embedded (status quo in code)
+
+| | |
+|--|--|
+| **Idea** | GraniteLib remains **only** bundled inside FabricAuraSkills; no separate mod to install. |
+| **Pros** | Easiest for players and server owners; fewer wrong installs; **current build already works**; **`verifyFabricReleaseBundle`** enforces the nested JAR; no external dependency metadata required yet. |
+| **Cons** | GraniteLib is not a **reusable installed mod**; **duplicate embedded copies** are possible if multiple mods each JiJ the same code; public “GraniteLib library” story stays tied to DiscountAuraSkills releases. |
+
+**Verdict:** Accurate as **current implementation**; alone it does not describe **intentional evolution** toward standalone.
+
+### Option B — External required dependency
+
+| | |
+|--|--|
+| **Idea** | GraniteLib becomes a **separate required** mod (and/or published Maven coordinates consumed at build time as a `modImplementation`-style edge). |
+| **Pros** | Clean standalone product identity; reusable by other mods; **separate versioning** possible; avoids duplicate full copies in every dependent mod. |
+| **Cons** | Users and servers must **install another artifact**; **version skew** between DiscountAuraSkills and GraniteLib; Modrinth/CurseForge/dependency fields must be **precise**; **support and CI** get harder; build/publish pipeline **more complex**. |
+
+**Verdict:** Desirable long-term for a real “library” product line — **after** API/package/licensing decisions, not as an immediate default on upstream as of Sprint 79.
+
+### Option C — Hybrid: JiJ now, external later *(recommended default)*
+
+| | |
+|--|--|
+| **Idea** | **Keep JiJ** for upstream releases; **do not remove** or weaken JiJ verification in a planning-only sprint. Plan **package rename**, **API surface**, and **publishing** so that a future sprint can add **external** distribution without a surprise pivot. |
+| **Pros** | **Safest short-term**; preserves one-JAR install story; allows **stabilization** of names and API before a standalone release; does not block a later external mode. |
+| **Cons** | **Temporary** “embedded now, might split later” messaging; a **real migration** will still be needed; avoid **overpromising** a standalone mod until prerequisites are met. |
+
+**Verdict:** **Recommended** for upstream **unless** product explicitly chooses to fund external immediately.
+
+### Option D — Support both JiJ and external
+
+| | |
+|--|--|
+| **Idea** | Some consumers JiJ, others depend on an external JAR. |
+| **Pros** | Flexible for different mod ecosystems. |
+| **Cons** | **Classpath / version conflict** risk (two copies of the same code); **harder** support matrix; Fabric Loader and mod dependency graphs favor **one** clear story per release channel. **Unclear** value before GraniteLib is a well-versioned, published product. |
+
+**Verdict:** **Defer**; revisit only with a strong compatibility story and testing.
+
+---
+
+## Recommendation
+
+**Adopt Option C — JiJ now, external later** as the **default product direction** for GraniteLib on this repo, pending explicit approval.
+
+**Reasoning (summary):**
+
+- Upstream **already embeds** `granitelib-fabric` successfully; **`verifyFabricReleaseBundle`** is the gate.
+- **Package names, Maven group, public class names, and license review** are still open per [granitelib-package-name-adr.md](granitelib-package-name-adr.md) — an **external “library product”** before those are settled would be **premature**.
+- **granitelib-fabric** should **not** be treated as a **fully independent consumer-facing product artifact** (with its own support tier) **until** those prerequisites close.
+- **JiJ should remain the enforced distribution** for released DiscountAuraSkills builds **until** a deliberate “external phase” rewrites Gradle, metadata, and docs in a follow-on epic.
+
+**Not a choice to “remove JiJ” in documentation** — the repo continues to require nested **`granitelib-fabric-*.jar`** for current releases. Moving to external is a **future** build and release change, not a Sprint 79 doc flip.
+
+---
+
+## Consequences
+
+| Area | If we stay with JiJ short-term (Option C) |
+|------|------------------------------------------|
+| **Players** | Keep **single-mod** install for FabricAuraSkills; no second mandatory download. |
+| **Ecosystem** | Other mods that copy/embed similar code may still create **duplicates** — document as known risk; mitigation is **future** shared artifact + semver. |
+| **Team** | **Install docs** for end users stay “install FabricAuraSkills”; no new Modrinth **required** dependency for GraniteLib yet. |
+| **Build** | **`verifyFabricReleaseBundle` stays** the JiJ check; no Gradle change in this ADR. |
+| **Comms** | Honest: GraniteLib is **versioned with the mod** today; a **future** split will be a **milestone** with migration notes. |
+
+---
+
+## Migration plan (when “external later” is executed — not now)
+
+*Documentation-only preview; implementation is a later sprint.*
+
+1. **Prerequisites:** package root and/or public API policy agreed; **Maven coordinates**; **license/notice** review; **SemVer** rules for a standalone line.
+2. **Build:** add publish for GraniteLib; switch consumer edge from project + JiJ to `modImplementation` (or Loom equivalent) of published artifact; **or** offer two channels with strong testing — only if product selects Option D later.
+3. **Metadata:** `fabric.mod.json` (and CurseForge/Modrinth) **depends** or **suggests** the GraniteLib mod ID as required.
+4. **Docs:** install instructions (“install GraniteLib + FabricAuraSkills”); version compatibility table; troubleshooting for wrong versions.
+5. **Verification:** replace or extend **`verifyFabricReleaseBundle`** so release artifacts match the new policy.
+6. **Retire** redundant JiJ only when external path is default and supported — not before.
+
+---
+
+## Non-goals (Sprint 79 and this ADR)
+
+- **No** Gradle, Java, YAML, or metadata edits as part of adopting this document.
+- **No** removal of JiJ or of **`granitelib-fabric-*.jar`** checks.
+- **No** publishing, Modrinth upload, or new mod IDs.
+- **No** package or class renames (see separate planning / Sprint 80 suggestion).
+
+---
+
+## Open questions
+
+| Question | Notes |
+|----------|--------|
+| **What metadata files need edits for external?** | Typically `fabric.build.json` / `mods.toml` or `fabric.mod.json` `depends`, Modrinth/CurseForge “dependencies”, and CI release job inputs — **TBD** at implementation time. |
+| **What install docs?** | Mod page body, server pack README, and optional “troubleshooting” for version pins — only when external ships. |
+| **Versioning for external GraniteLib?** | Independent **SemVer** (or mod-version aligned) is a product decision; today GraniteLib is **coupled** to `projectVersion` in the JAR name inside the remapped mod. |
+| **Risks if multiple mods embed?** | Duplicate classes / divergent patches; worst case mod load order or duplicate behavior. Mitigation: **one** published lib + dependency range. |
+| **Risks if users must install separately?** | Wrong version, “missing dependency” reports, and support load — trade for reusability. |
+| **Is `granitelib-fabric` a product yet?** | **Not** as a stand-alone shippable library with its own support story — **it is** the Gradle/artifact name for the embedded lib **inside** FabricAuraSkills. Re-evaluate when publish + API freeze land. |
+| **Must JiJ stay until package rename and license review?** | **This ADR recommends yes** for **released** upstream artifacts until a deliberate switch — avoid half-external, half-embedded confusion. |
+| **What should Sprint 80 do?** | See [Sprint 79 handoff](../handoffs/2026-06-30-granitelib-sprint-79-distribution-adr.md#recommended-sprint-80) — e.g. **package rename planning** (path B) or start packaging prerequisites for external if product accelerates. |
+
+### Embedded answers (index)
+
+- **Current distribution model:** JiJ nested JAR, enforced by `verifyFabricReleaseBundle`.
+- **For external later:** Gradle dependency edges, `fabric.mod.json` / platform metadata, publish pipeline, user-facing install docs, verification task updates, and SemVer for the lib line.
+
+---
+
+*Sprint 79: initial Milestone D ADR. Does not change build output.*

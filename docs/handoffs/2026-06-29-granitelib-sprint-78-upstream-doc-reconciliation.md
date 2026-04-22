@@ -41,3 +41,5 @@ After Sprint 77, replace **stubs and vague pointers** with a **coherent, honest*
 
 - **If** a **`slate-platform`** (or similar) subproject is introduced: follow Sprint 77’s pattern for **`:granitelib-platform`** and extend `verifyFabricReleaseBundle` + graph checks; update these docs in the same PR.  
 - **Or** product work: **JiJ vs external** (Milestone D), **package** migration planning with ADR buy-in, or merge longer fork-only audit markdown only after trimming for upstream truth.
+
+**Done (Sprint 79 — Milestone D):** [2026-06-30-granitelib-sprint-79-distribution-adr.md](2026-06-30-granitelib-sprint-79-distribution-adr.md) and [granitelib-distribution-adr.md](../architecture/granitelib-distribution-adr.md).
