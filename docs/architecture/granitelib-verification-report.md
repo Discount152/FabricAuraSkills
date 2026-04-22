@@ -31,13 +31,15 @@
 
 ## 3. `slate-fabric` source path
 
-Java sources remain under directory **`slate-fabric/src/.../dev/aurelium/slate/...`** (or whatever the tree is today). The **Gradle** id is `granitelib-fabric`, not a package rename.
+Java sources remain under directory **`slate-fabric/src/.../dev/aurelium/slate/...`** (or whatever the tree is today). The **Gradle** id is `granitelib-fabric`, not a package rename. **Planned** package moves are described in [granitelib-package-public-class-rename-plan.md](granitelib-package-public-class-rename-plan.md) (Sprint 80); re-run the same **validation matrix** after any rename implementation.
 
 ## See also
 
 - [granitelib-sprint-77-implementation.md](granitelib-sprint-77-implementation.md)  
 - [granitelib-distribution-adr.md](granitelib-distribution-adr.md)  
 - [Sprint 77 handoff](../handoffs/2026-06-28-granitelib-sprint-77-module-rename-implementation.md)  
-- [Sprint 79 handoff](../handoffs/2026-06-30-granitelib-sprint-79-distribution-adr.md)
+- [Sprint 79 handoff](../handoffs/2026-06-30-granitelib-sprint-79-distribution-adr.md)  
+- [granitelib-package-public-class-rename-plan.md](granitelib-package-public-class-rename-plan.md)  
+- [Sprint 80 handoff](../handoffs/2026-07-01-granitelib-sprint-80-package-public-class-rename-plan.md)
 
-*Sprint 79: linked Milestone D ADR; no build change.*
+*Sprint 79: linked Milestone D ADR; no build change. Sprint 80: linked rename plan.*

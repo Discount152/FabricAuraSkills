@@ -4,7 +4,7 @@
 |-------|--------|
 | **Status** | **Partial / upstream** (not a full product-wide ADR on `main` yet) |
 | **This repo (upstream `main`, post–Sprint 77)** | See table below |
-| **Detail** | [granitelib-sprint-77-implementation.md](granitelib-sprint-77-implementation.md) · [granitelib-distribution-adr.md](granitelib-distribution-adr.md) · [Sprint 77 handoff](../handoffs/2026-06-28-granitelib-sprint-77-module-rename-implementation.md) |
+| **Detail** | [granitelib-sprint-77-implementation.md](granitelib-sprint-77-implementation.md) · [granitelib-distribution-adr.md](granitelib-distribution-adr.md) · [granitelib-package-public-class-rename-plan.md](granitelib-package-public-class-rename-plan.md) · [Sprint 77 handoff](../handoffs/2026-06-28-granitelib-sprint-77-module-rename-implementation.md) |
 
 ## Accepted on **this** repository (Sprint 77)
 
@@ -18,11 +18,11 @@
 
 ## Still open (everywhere, unless decided elsewhere)
 
-- **Package** root (e.g. `dev.granitelib.*` vs staying under `dev.aurelium.slate.*`).
+- **Package** root and **staged renames** — [granitelib-package-public-class-rename-plan.md](granitelib-package-public-class-rename-plan.md) (Sprint 80 blueprint; e.g. `dev.granitelib.*` or org policy).
 - **Maven `group` /** publish coordinates.
-- **Public** class renames and branding cleanup.
-- **Physical** rename of `slate-fabric/` to match a future folder convention (optional, separate from Gradle `projectDir`).
-- **JiJ vs external** consumer dependency (Milestone D–style product decision).
+- **Public** class renames and branding cleanup (inventoried in the rename plan for `:granitelib-fabric`).
+- **Physical** rename of `slate-fabric/` — optional **Stage 5** in the rename plan, not the first move.
+- **JiJ vs external** — **Proposed and documented** in [granitelib-distribution-adr.md](granitelib-distribution-adr.md) (Milestone D, Option C). External consumption remains a **future** implementation milestone.
 - **License / notice** review before shipping a public “GraniteLib” artifact.
 
 ## Fork vs upstream (wording to reuse)
@@ -30,4 +30,4 @@
 - **Fork / full planning** may describe **`:granitelib-fabric` + `:granitelib-platform`**, a two-nested-JAR verify matrix, and more nested JARs — that applies **only** to branches/repos that have **both** subprojects.  
 - **Upstream** today: **one** GraniteLib Gradle module, **`:granitelib-fabric`**.
 
-*Sprint 78: reconciled for honest upstream snapshot. Sprint 79: distribution ADR (Milestone D) added.*
+*Sprint 78: reconciled for honest upstream snapshot. Sprint 79: distribution ADR (Milestone D) added. Sprint 80: package / public class rename plan added.*

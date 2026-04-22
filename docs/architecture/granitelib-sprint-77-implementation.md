@@ -26,5 +26,6 @@ Some forks or long-lived feature branches add **`slate-platform/`** and a second
 - [granitelib-distribution-adr.md](granitelib-distribution-adr.md) — Milestone D: JiJ vs external (**Proposed:** JiJ now, external later)  
 - [granitelib-standalone-extraction-checklist.md](granitelib-standalone-extraction-checklist.md) — single-module vs two-module  
 - [granitelib-v1-embed-contract.md](granitelib-v1-embed-contract.md) — v1 “embedded in mod” story  
+- [granitelib-package-public-class-rename-plan.md](granitelib-package-public-class-rename-plan.md) — future package / public class staging  
 
-**Doc pass:** [Sprint 78 handoff](../handoffs/2026-06-29-granitelib-sprint-78-upstream-doc-reconciliation.md) — stubs reconciled to this file’s upstream/fork split. [Sprint 79 handoff](../handoffs/2026-06-30-granitelib-sprint-79-distribution-adr.md) — distribution ADR.
+**Doc pass:** [Sprint 78 handoff](../handoffs/2026-06-29-granitelib-sprint-78-upstream-doc-reconciliation.md) — stubs reconciled to this file’s upstream/fork split. [Sprint 79 handoff](../handoffs/2026-06-30-granitelib-sprint-79-distribution-adr.md) — distribution ADR. [Sprint 80 handoff](../handoffs/2026-07-01-granitelib-sprint-80-package-public-class-rename-plan.md) — rename plan.

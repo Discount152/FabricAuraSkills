@@ -59,6 +59,8 @@ See ADR “Migration plan” — prerequisites, build/publish, metadata, install
 
 **Default suggestion:** **Sprint 80 — package / public API rename planning** (docs + ADR follow-ups) before investing in full external packaging.
 
+**Done (Sprint 80, docs):** [2026-07-01-granitelib-sprint-80-package-public-class-rename-plan.md](2026-07-01-granitelib-sprint-80-package-public-class-rename-plan.md) and [granitelib-package-public-class-rename-plan.md](../architecture/granitelib-package-public-class-rename-plan.md).
+
 ## Files touched (Sprint 79)
 
 | File | Change |

@@ -5,7 +5,7 @@
 | **Status** | **Proposed** (awaiting product buy-in) |
 | **Date** | 2026-06-30 |
 | **Scope** | [FabricAuraSkills](https://github.com/Discount152/FabricAuraSkills) on upstream `main` after Sprint 77/78 (one module: **`:granitelib-fabric`**) |
-| **Related** | [granitelib-v1-embed-contract.md](granitelib-v1-embed-contract.md) · [granitelib-package-name-adr.md](granitelib-package-name-adr.md) · [granitelib-verification-report.md](granitelib-verification-report.md) · [Sprint 79 handoff](../handoffs/2026-06-30-granitelib-sprint-79-distribution-adr.md) |
+| **Related** | [granitelib-v1-embed-contract.md](granitelib-v1-embed-contract.md) · [granitelib-package-name-adr.md](granitelib-package-name-adr.md) · [granitelib-package-public-class-rename-plan.md](granitelib-package-public-class-rename-plan.md) · [granitelib-verification-report.md](granitelib-verification-report.md) · [Sprint 79 handoff](../handoffs/2026-06-30-granitelib-sprint-79-distribution-adr.md) |
 
 ---
 
@@ -95,6 +95,8 @@
 
 **Not a choice to “remove JiJ” in documentation** — the repo continues to require nested **`granitelib-fabric-*.jar`** for current releases. Moving to external is a **future** build and release change, not a Sprint 79 doc flip.
 
+**Sprint 80 note:** **Package / class identity** and **publishing** are coupled — before external is implemented, follow [granitelib-package-public-class-rename-plan.md](granitelib-package-public-class-rename-plan.md) and close **package + license** items in [granitelib-package-name-adr.md](granitelib-package-name-adr.md).
+
 ---
 
 ## Consequences
@@ -127,7 +129,7 @@
 - **No** Gradle, Java, YAML, or metadata edits as part of adopting this document.
 - **No** removal of JiJ or of **`granitelib-fabric-*.jar`** checks.
 - **No** publishing, Modrinth upload, or new mod IDs.
-- **No** package or class renames (see separate planning / Sprint 80 suggestion).
+- **No** package or class renames in the sprint that only added the distribution ADR (see [granitelib-package-public-class-rename-plan.md](granitelib-package-public-class-rename-plan.md) for a later implementation milestone).
 
 ---
 
@@ -142,7 +144,7 @@
 | **Risks if users must install separately?** | Wrong version, “missing dependency” reports, and support load — trade for reusability. |
 | **Is `granitelib-fabric` a product yet?** | **Not** as a stand-alone shippable library with its own support story — **it is** the Gradle/artifact name for the embedded lib **inside** FabricAuraSkills. Re-evaluate when publish + API freeze land. |
 | **Must JiJ stay until package rename and license review?** | **This ADR recommends yes** for **released** upstream artifacts until a deliberate switch — avoid half-external, half-embedded confusion. |
-| **What should Sprint 80 do?** | See [Sprint 79 handoff](../handoffs/2026-06-30-granitelib-sprint-79-distribution-adr.md#recommended-sprint-80) — e.g. **package rename planning** (path B) or start packaging prerequisites for external if product accelerates. |
+| **What should Sprint 80 do?** | **Done (docs):** [granitelib-package-public-class-rename-plan.md](granitelib-package-public-class-rename-plan.md) · [Sprint 80 handoff](../handoffs/2026-07-01-granitelib-sprint-80-package-public-class-rename-plan.md). **Implementation** remains a future milestone. |
 
 ### Embedded answers (index)
 
