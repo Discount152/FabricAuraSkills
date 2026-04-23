@@ -59,7 +59,7 @@
 | AS-007 | `ConfirmManager` | — | Missing | Slate-Fabric + ACF/Brigadier | Confirm flows tied to commands/menus. |
 | AS-008 | `CommandRegistrar.registerCommands` → `PaperCommandManager` | `FabricAuraSkillsCommands` | Partial | ACF/Brigadier | Small Brigadier subset vs full ACF tree (see §3). |
 | AS-009 | `messageProvider.setACFMessages` | — | Missing | ACF/Brigadier | No ACF message integration. |
-| AS-010 | `BukkitLevelManager` + `registerLevelers` | `FabricLevelManager` + `registerFabricXpHandlers` | Partial | None | Levelers wired via Fabric handlers/mixins; compare to Bukkit list. **Sprint 10** — `StatisticLeveler`. **Sprint 11** — `BrewingLeveler` hopper. **Sprint 12** — `EVT-021`. **Sprint 13** — `EVT-022` jumping. |
+| AS-010 | `BukkitLevelManager` + `registerLevelers` | `FabricLevelManager` + `registerFabricXpHandlers` | Partial | None | Levelers wired via Fabric handlers/mixins; compare to Bukkit list. **Sprint 10** — `StatisticLeveler`. **Sprint 11** — `BrewingLeveler` hopper. **Sprint 12** — `EVT-021`. **Sprint 13** — `EVT-022` jumping. **Sprint 14** — `EVT-023` enchanting. |
 | AS-011 | `BukkitAntiAfkManager` | `FabricAntiAfkManager` | Partial | None | `common` checks; verify parity with Bukkit listeners. |
 | AS-012 | `Metrics` + `MetricsUtil` | — | Missing | Out of scope | Reference optional metrics; not default Granite product scope. |
 | AS-013 | `UpdateChecker` | — | Missing | None | Optional product parity. |
@@ -152,6 +152,7 @@
 | EVT-019 | `BrewingLeveler` | `FabricBrewingXpHandler` + `FabricBrewingTakeoutTracker` + `FabricBrewingOwnerTracker` + mixins (incl. `LockableContainerBrewingStandSetStackMixin`) | Partial | **Sprint 11** — BREW + owner + TAKEOUT; TAKEOUT **clear** on hopper empty of result slots; TAKEOUT XP only on **player** GUI. Rare automation-mod paths: **Needs Regression Proof** if reported. |
 | EVT-021 | `ManaAbilityUseLeveler` | `FabricManaAbilityUseXpHandler` (called from all mana providers after consumption) | Partial | **Sprint 12** — full provider set + `isSourceEnabled(MANA_ABILITY_USE)`; Bukkit `ManaAbilityActivateEvent` **cancel** / third-party rewrites: **N/A** |
 | EVT-022 | `JumpingLeveler` | `FabricJumpingXpHandler` (`ServerTickEvents#END_SERVER_TICK`) | Partial | **Sprint 13** — `shouldBlockXp`, spectator, `isClimbing`; Bukkit `PlayerMoveEvent` + `check_cancelled` / `LevelerContext` world blocks: **N/A** / partial |
+| EVT-023 | `EnchantingLeveler` | `FabricEnchantingXpHandler` + `EnchantmentScreenHandlerMixin` | Partial | **Sprint 14** — `enchantmentPower` for `exp_requirement` unit, spectator; Bukkit `EnchantItemEvent` **cancel** / `LevelerContext` region: **N/A** / `shouldBlockXp` |
 | EVT-015 | `JobsListener` | — | Missing | Out of scope | Reference jobs/economy listener; not default Granite scope. |
 | EVT-016 | `BukkitLeaderboardExclusion` (listener) | `FabricLeaderboardExclusion` | Partial | |
 
@@ -199,6 +200,7 @@ EVT-018,Listeners,StatisticLeveler,FabricStatisticXpHandler+FabricStatisticSourc
 EVT-019,Listeners,BrewingLeveler,FabricBrewing handlers+setStack mixin,Partial,None,Sprint 11 TAKEOUT hopper clear; manual SPRINT_11
 EVT-021,Listeners,ManaAbilityUseLeveler,FabricManaAbilityUseXpHandler+providers,Partial,None,Sprint 12 source gate; Bukkit event N/A; manual SPRINT_12
 EVT-022,Listeners,JumpingLeveler,FabricJumpingXpHandler,Partial,None,Sprint 13 shouldBlockXp+climb; manual SPRINT_13
+EVT-023,Listeners,EnchantingLeveler,FabricEnchantingXpHandler+mixin,Partial,None,Sprint 14 exp cost from table; manual SPRINT_14
 EVT-012,Listeners,RegionListener,—,Missing,Out of scope,Ref chunk load; ext region plugins N/A
 EVT-013,Listeners,RegionBlockListener,Placed block mixin+break+chunk load+Sprint05 integrity,Partial,Piston/fall/TreeFeature; ext region plugins N/A,
 ```

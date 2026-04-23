@@ -11,6 +11,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+/**
+ * Bukkit {@code EnchantingLeveler} uses {@code EnchantItemEvent} (MONITOR). Fabric: capture slot 0 + XP level
+ * in {@code onButtonClick} HEAD, award in RETURN only if the click succeeded (avoids preview / failed clicks).
+ */
 @Mixin(EnchantmentScreenHandler.class)
 public abstract class EnchantmentScreenHandlerMixin {
 

@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.42
+
+### Changes
+
+- **Fabric: enchanting table XP (Sprint 14 / Bukkit `EnchantingLeveler` hardening):** For YAML **`unit: {sources.units.exp_requirement}`** (and the legacy Bukkit-typo string), `FabricEnchantingXpHandler` now uses **`EnchantmentScreenHandler#enchantmentPower[buttonId]`** to match Bukkit **`EnchantItemEvent#getExpLevelCost()`**, with **fallback** to `xpLevelBefore - player.experienceLevel` if the field is **0** (e.g. edge timing). **Spectators** do not receive enchanting XP. Mixin + handler Javadoc describe **return-true only** = successful enchant (not preview). Manual: **`fabric/SPRINT_14_MANUAL_VALIDATION.md`**. **`projectVersion` 2.3.41 → 2.3.42**.
+
 ## 2.3.41
 
 ### Changes

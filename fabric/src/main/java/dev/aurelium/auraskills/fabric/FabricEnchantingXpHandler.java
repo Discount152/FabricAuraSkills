@@ -21,10 +21,18 @@ public final class FabricEnchantingXpHandler {
     private FabricEnchantingXpHandler() {
     }
 
+    /**
+     * Called from {@link dev.aurelium.auraskills.fabric.mixin.EnchantmentScreenHandlerMixin} only when
+     * {@link EnchantmentScreenHandler#onButtonClick} returns {@code true} for button id 0–2 (Bukkit
+     * {@code EnchantItemEvent} @ MONITOR equivalent: successful table enchant only, not preview).
+     */
     public static void onEnchantSuccess(ServerPlayerEntity player, EnchantmentScreenHandler handler, int buttonId,
             ItemStack stackBeforeEnchant, int xpLevelBefore) {
         FabricAuraSkills plugin = FabricAuraSkills.getInstance();
         if (plugin == null) {
+            return;
+        }
+        if (player.isSpectator()) {
             return;
         }
         ItemStack after = handler.getSlot(0).getStack();
@@ -47,7 +55,9 @@ public final class FabricEnchantingXpHandler {
                 int totalAdded = sumAddedEnchantLevels(stackBeforeEnchant, after);
                 xp *= totalAdded;
             } else if (unit.equals(UNIT_EXP_REQUIREMENT_TYPO) || unit.equals("{sources.units.exp_requirement}")) {
-                int spent = Math.max(0, xpLevelBefore - player.experienceLevel);
+                // Bukkit: EnchantItemEvent#getExpLevelCost() — the chosen row’s level cost, not a raw player delta
+                // (avoids misfire if the player’s level changed for another reason in the same tick).
+                int spent = resolveExpLevelCost(handler, buttonId, xpLevelBefore, player);
                 xp *= spent;
             }
         }
@@ -56,6 +66,21 @@ public final class FabricEnchantingXpHandler {
         }
         User user = plugin.getUserManager().getUser(player.getUuid());
         plugin.getLevelManager().addXp(user, skill, source, xp);
+    }
+
+    /**
+     * Matches Bukkit {@code EnchantItemEvent#getExpLevelCost()}: the enchantment table row cost for
+     * {@code buttonId}, with fallback to {@code xpLevelBefore - currentLevel} if the field is zero.
+     */
+    private static int resolveExpLevelCost(
+            EnchantmentScreenHandler handler, int buttonId, int xpLevelBefore, ServerPlayerEntity player) {
+        if (buttonId >= 0 && buttonId < handler.enchantmentPower.length) {
+            int fromTable = handler.enchantmentPower[buttonId];
+            if (fromTable > 0) {
+                return fromTable;
+            }
+        }
+        return Math.max(0, xpLevelBefore - player.experienceLevel);
     }
 
     private static SkillSource<EnchantingXpSource> findSource(FabricAuraSkills plugin, ItemStack item) {

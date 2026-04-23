@@ -233,7 +233,7 @@ Explicit registrations:
 
 **Fishing:** **Not** registered here. Documented in Javadoc: implemented by **`FishingBobberEntityMixin`** calling **`FabricFishingXpHandler.onFishCaughtStat`** when vanilla increments **`Stats.FISH_CAUGHT`** during bobber `use`.
 
-**Also mixin-driven (no `registerFabricXpHandlers` call):** **`LivingEntityConsumeMixin`** → **`FabricItemConsumeHandler`**; **`PotionEntityMixin`** → **`FabricPotionSplashHandler`**; **`ForgingScreenHandlerMixin`** → **`FabricAnvilXpHandler`**; **`ScreenHandlerGrindstoneXpMixin`** (grindstone-only branch on **`ScreenHandler.onSlotClick`**) → **`FabricGrindstoneXpHandler`**; **`EnchantmentScreenHandlerMixin`** → **`FabricEnchantingXpHandler`**; **`BrewingStandBlockEntityMixin`** → **`FabricBrewingXpHandler`** (`BREW` trigger only; see backlog for limits).
+**Also mixin-driven (no `registerFabricXpHandlers` call):** **`LivingEntityConsumeMixin`** → **`FabricItemConsumeHandler`**; **`PotionEntityMixin`** → **`FabricPotionSplashHandler`**; **`ForgingScreenHandlerMixin`** → **`FabricAnvilXpHandler`**; **`ScreenHandlerGrindstoneXpMixin`** (grindstone-only branch on **`ScreenHandler.onSlotClick`**) → **`FabricGrindstoneXpHandler`**; **`EnchantmentScreenHandlerMixin`** → **`FabricEnchantingXpHandler`** (Sprint 14: **`enchantmentPower`**-based level cost for `exp_requirement` unit, spectator skip); **`BrewingStandBlockEntityMixin`** → **`FabricBrewingXpHandler`** (`BREW` trigger only; see backlog for limits).
 
 ### 6.3 Not ported as Fabric handlers (no equivalent to listed Bukkit levelers)
 
@@ -350,7 +350,7 @@ Performed successfully in a clean-cache audit:
 | High | `BlockLeveler` + `BlockLevelerHelper` | Block **state** matching (`states` / `after_states` in YAML); **placed-block** / `check_replace` if configs depend on it. |
 | High | `EntityLeveler` | Spawner detection (mixins + `FabricSpawnerMobTracker`); kill/damage triggers + attribution (**Sprint 07**). Remaining: transform/split spawner tag copy, `EntityXpGainEvent`-class API, full reference edge cases. Third-party mob plugins: **out of default scope**. |
 | Medium | `StatisticLeveler` | **Sprint 10** — `FabricStatisticSourceResolver` + `FabricStatisticXpHandler`: aggregate + per-entity + dropped; Bukkit-enum-only config still maps via `custom/<name>`. Residual: strict enum-name-only parity, scoreboard criteria if any; **Partial** (manual `SPRINT_10_MANUAL_VALIDATION.md`). |
-| Medium | `AnvilLeveler`, `EnchantingLeveler`, `GrindstoneLeveler` | ScreenHandler / anvil / grindstone / enchant events on Fabric API or mixins. |
+| Medium | `AnvilLeveler`, `EnchantingLeveler`, `GrindstoneLeveler` | **Enchanting (Sprint 14)** — `FabricEnchantingXpHandler` + `enchantmentPower` for level-cost unit, spectator; **Partial** (Bukkit event cancel, WG-style region API). Anvil + grindstone via existing mixins. |
 | Medium | `BrewingLeveler` | **Sprint 11** — `BREW` owner + `TAKEOUT` + hopper **stale-state** clear on `setStack`; TAKEOUT XP still only on **player** GUI. **Partial** (optional edge cases: external automation mods). |
 | Medium | `ItemConsumeLeveler` | `UseItemCallback` / finish-using-item semantics. |
 | Medium | `PotionSplashLeveler` | Potion entity splash events. |
