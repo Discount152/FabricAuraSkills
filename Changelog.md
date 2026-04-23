@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.53
+
+### Changes
+
+- **Fabric: `GROWTH_AURA` batch 3 (Sprint 25 / `FarmingAbilities` tail):** Shared **`onGrowthAuraAfterAgeAtPos`** (random tick + bone meal) with **`BoneMealItemGrowthAuraMixin`** on **`BoneMealItem#useOnBlock`**. **`FarmingAgeableRandomTickGrowthAuraMixin`**: add **`BambooBlock`**, **`WeepingVinesBlock`**, **`WeepingVinesPlantBlock`**, **`TwistingVinesBlock`**, **`TwistingVinesPlantBlock`**. Documented **not** in scope: chorus, structure trees, all edge bone-meal mod blocks — see **`fabric/SPRINT_25_FARMING_GROWTH_AURA.md`**, manual **`fabric/SPRINT_25_MANUAL_VALIDATION.md`**. **`projectVersion` 2.3.52 → 2.3.53**.
+
 ## 2.3.52
 
 ### Changes

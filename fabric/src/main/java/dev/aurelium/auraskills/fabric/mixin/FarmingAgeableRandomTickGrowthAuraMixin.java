@@ -1,7 +1,12 @@
 package dev.aurelium.auraskills.fabric.mixin;
 
 import dev.aurelium.auraskills.fabric.ability.FabricFarmingAbilities;
+import net.minecraft.block.BambooBlock;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.TwistingVinesBlock;
+import net.minecraft.block.TwistingVinesPlantBlock;
+import net.minecraft.block.WeepingVinesBlock;
+import net.minecraft.block.WeepingVinesPlantBlock;
 import net.minecraft.block.CactusBlock;
 import net.minecraft.block.CocoaBlock;
 import net.minecraft.block.CaveVinesBodyBlock;
@@ -30,12 +35,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  * <p>Batch 1 (Sprint 23): {@link CropBlock}, {@link NetherWartBlock}. Batch 2 (Sprint 24) adds
  * cactus, sugar cane, cocoa, pumpkin/melon stem, sweet berry bush, kelp, cave vines, plus
  * crops/nether wart from Sprint 23.
- * <p><strong>Not mixed in:</strong> bamboo and chorus (growth often places or replaces non–single-age blocks);
- * most bonemeal paths; tree/sapling structure growth. See {@code SPRINT_24_*} docs.
+ * <p><strong>Batch 3 (Sprint 25):</strong> {@link BambooBlock}, weeping/twisting
+ * {@code *Vines*} blocks; bone meal in {@code BoneMealItemGrowthAuraMixin}. Still not: chorus, tree
+ * structure growth. See {@code SPRINT_25_*} docs.
  */
 @Mixin({
         CropBlock.class, NetherWartBlock.class, CactusBlock.class, SugarCaneBlock.class, CocoaBlock.class, StemBlock.class, SweetBerryBushBlock.class,
-        KelpBlock.class, KelpPlantBlock.class, CaveVinesHeadBlock.class, CaveVinesBodyBlock.class
+        KelpBlock.class, KelpPlantBlock.class, CaveVinesHeadBlock.class, CaveVinesBodyBlock.class, BambooBlock.class,
+        WeepingVinesBlock.class, WeepingVinesPlantBlock.class, TwistingVinesBlock.class, TwistingVinesPlantBlock.class
 })
 public class FarmingAgeableRandomTickGrowthAuraMixin {
 
@@ -65,7 +72,7 @@ public class FarmingAgeableRandomTickGrowthAuraMixin {
                 return;
             }
             BlockState end = world.getBlockState(pos);
-            FabricFarmingAbilities.onNaturalAgingAfterRandomTick(world, pos, start, end);
+            FabricFarmingAbilities.onGrowthAuraAfterAgeAtPos(world, pos, start, end);
         } finally {
             AURASKILLS$GROW_PRE.remove();
         }

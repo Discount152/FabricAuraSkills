@@ -39,7 +39,11 @@ All listed classes **override** `randomTick(BlockState, ServerWorld, BlockPos, R
 | **Bonemeal** | Bukkit’s event may fire for some bonemeal growth; this sprint remains aligned with **Sprint 23’s** `randomTick`–only hook (not a full `BlockFertilizeEvent` path). |
 | **Sapling / tree / huge mushroom structure growth** | `StructureGrowEvent` / multi-block, not the same as single-block `age` in `FarmingAbilities` on Bukkit for typical field crops. |
 
-## 5. Parity view
+## 5. Follow-up (Sprint 25)
+
+See **`SPRINT_25_FARMING_GROWTH_AURA.md`**: bone meal, bamboo, weeping/twisting vines, shared `onGrowthAuraAfterAgeAtPos`.
+
+## 6. Parity view (Sprint 24 snapshot)
 
 | | Status |
 |---|--------|
@@ -47,6 +51,6 @@ All listed classes **override** `randomTick(BlockState, ServerWorld, BlockPos, R
 | **Line-for-line with every Spigot `BlockGrowEvent` case** | **Partial** (bamboo, bonemeal nuance, mapping-specific vines, etc.). |
 | **Bedrock (Geyser/Floodgate)** | **Needs regression proof** (server math only; no client-only code). |
 
-## 6. Build evidence
+## 7. Build evidence
 
 - `.\gradlew -PfabricOnly=true :fabric:build`

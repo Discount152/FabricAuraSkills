@@ -39,6 +39,7 @@
     "ServerPlayerEntityTraitWorldMixin",
     "TreeFeatureGrowContextMixin",
     "FarmingAgeableRandomTickGrowthAuraMixin",
+    "BoneMealItemGrowthAuraMixin",
     "TreeFeatureSetBlockMixin",
     "ServerPlayerEntityParrySwingMixin",
     "ServerPlayerEntityShieldAbsorptionSwingMixin"

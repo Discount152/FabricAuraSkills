@@ -41,7 +41,7 @@ These are **product** requirements, not optional polish:
 
 ## Abilities (reference `BukkitAbilityManager`) — `registerAbilityImplementations()`
 
-- **Sprint 23 (audit + batch 1)** — **`SPRINT_23_ABILITY_PARITY.md`**, manual **`SPRINT_23_MANUAL_VALIDATION.md`**: all **14** skill ability classes registered on Fabric (same set/order as Bukkit). **Batch 1:** **`Geneticist`** + **`GROWTH_AURA`** for **`CropBlock` / `NetherWartBlock`**. **Sprint 24 (batch 2) —** **`SPRINT_24_FARMING_GROWTH_AURA.md`**, manual **`SPRINT_24_MANUAL_VALIDATION.md`**: **`GROWTH_AURA`** for cactus, sugar cane, cocoa, stem, sweet berry, kelp, cave vines + unified `age` handling. **Not** (documented in Sprint 24): bamboo, weeping/twisting vines in this build, full bonemeal path parity.
+- **Sprint 23 (audit + batch 1)** — **`SPRINT_23_ABILITY_PARITY.md`**, manual **`SPRINT_23_MANUAL_VALIDATION.md`**: all **14** skill ability classes registered on Fabric (same set/order as Bukkit). **Batch 1:** **`Geneticist`** + **`GROWTH_AURA`** for **`CropBlock` / `NetherWartBlock`**. **Sprint 24 (batch 2) —** **`SPRINT_24_FARMING_GROWTH_AURA.md`**, manual **`SPRINT_24_MANUAL_VALIDATION.md`**: **`GROWTH_AURA`** cactus, sugar cane, cocoa, stem, sweet berry, kelp, cave vines + unified `age` handling. **Sprint 25 (batch 3) —** **`SPRINT_25_FARMING_GROWTH_AURA.md`**, manual **`SPRINT_25_MANUAL_VALIDATION.md`**: bonemeal, bamboo, weeping/twisting vines; see doc for **not** in scope (chorus, trees, some bamboo).
 
 ## Menus and UI
 

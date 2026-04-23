@@ -117,6 +117,18 @@ public final class FabricFarmingAbilities extends FabricAbilityImpl implements F
             BlockPos pos,
             BlockState start,
             BlockState end) {
+        onGrowthAuraAfterAgeAtPos(world, pos, start, end);
+    }
+
+    /**
+     * Same Bukkit “Ageable at pos advanced” case when {@code "age"} increased after bone meal
+     * ({@code BoneMealItemGrowthAuraMixin}).
+     */
+    public static void onGrowthAuraAfterAgeAtPos(
+            ServerWorld world,
+            BlockPos pos,
+            BlockState start,
+            BlockState end) {
         if (ageDidNotAdvance(start, end)) {
             return;
         }
