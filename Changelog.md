@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.36
+
+### Changes
+
+- **Fabric: DamageLeveler / entity-DAMAGE path (Sprint 08 / Bukkit `DamageLeveler` + `EntityLeveler#resolveDamager` subset):** **`FabricCombatXpHandler`** — Bukkit **`onDamage` order** (matched source → per-source **cooldown** → **self-inflict** → **defense** shield: **`player.isBlocking()`** only, not Fabric `blocked` after damage) → damage / `mustSurvive` / defense min–max. **`DamageXpSource` damager / excluded** matching now handles **`ThrownItemEntity`** (splash / lingering / egg / snowball / ender pearl) for `include_projectiles` like Bukkit’s `Projectile` + **shooter**. **Entity `DAMAGE` trigger:** new **`FabricEntityDamageAttribution#resolveForEntityLevelerDamage`** (melee with attack/sweep causes only, `ProjectileEntity`, `PotionEntity` with optional `THROWN_POTION` for Alchemy, other thrown); **bleed** fallback unchanged; no loose **`getAttacker()`** for this path (Bukkit `resolveDamager` has no such fallback). **`FabricEntityXpSourceLookup#forEntityDamageOnly`** centralizes `DAMAGE` + `THROWN_POTION`→Alchemy. **`FabricXpHandlerUtil.shouldBlockXp`** for both branches. Manual: **`fabric/SPRINT_08_MANUAL_VALIDATION.md`**. **`projectVersion` 2.3.35 → 2.3.36**.
+
 ## 2.3.35
 
 ### Changes

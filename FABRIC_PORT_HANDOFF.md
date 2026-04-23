@@ -357,7 +357,7 @@ Performed successfully in a clean-cache audit:
 | Medium | `ItemConsumeLeveler` | `UseItemCallback` / finish-using-item semantics. |
 | Medium | `PotionSplashLeveler` | Potion entity splash events. |
 | Medium | `ManaAbilityUseLeveler` | Extend Fabric mana providers (Treecapitator, Terraform, Charged Shot, Absorption, …); several already call `FabricManaAbilityUseXpHandler`. |
-| Ongoing | `DamageLeveler` | Already partial via `FabricCombatXpHandler`; align edge cases (shield, cooldowns, damager filters) with **Bukkit** `DamageListener` / reference. |
+| Ongoing | `DamageLeveler` | **Sprint 08** aligned `FabricCombatXpHandler` to reference `DamageLeveler` (order, shield, `ThrownItemEntity` damagers) + `EntityLeveler` `DAMAGE` resolver / `forEntityDamageOnly` lookup. Remaining: Bukkit `DamageListener` **cancel** / **last-damage** correction (optional config) if product requires it. |
 
 ### Phase B — Gameplay systems (traits, abilities, mana)
 

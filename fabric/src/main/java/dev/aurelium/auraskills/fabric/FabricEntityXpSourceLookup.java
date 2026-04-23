@@ -57,6 +57,21 @@ public final class FabricEntityXpSourceLookup {
         return find(plugin, entity, eventDamager, EntityTriggers.DEATH, damageCause);
     }
 
+    /**
+     * Bukkit {@code EntityLeveler#getSource(..., EntityTriggers.DAMAGE, ...)} for {@link EntityTriggers#DAMAGE} hits only
+     * (used by live combat; no DEATH trigger).
+     */
+    public static @Nullable SkillSource<EntityXpSource> forEntityDamageOnly(
+            FabricAuraSkills plugin,
+            LivingEntity entity,
+            EntityDamagers eventDamager,
+            DamageCause damageCause) {
+        if (plugin == null || !plugin.isRuntimeReady()) {
+            return null;
+        }
+        return find(plugin, entity, eventDamager, EntityTriggers.DAMAGE, damageCause);
+    }
+
     private static @Nullable SkillSource<EntityXpSource> find(
             FabricAuraSkills plugin,
             LivingEntity entity,

@@ -134,7 +134,7 @@
 | ID | Bukkit class | Fabric mapping | Status | Notes |
 |----|--------------|----------------|--------|-------|
 | EVT-001 | `PlayerJoinQuit` | `FabricPlayerLifecycle` | Partial | |
-| EVT-002 | `DamageListener` | `FabricCombatXpHandler` + `FabricDamagePipeline` | Partial | |
+| EVT-002 | `DamageListener` + `DamageLeveler` | `FabricCombatXpHandler` + `FabricDamagePipeline` | Partial | **Sprint 08** — Bukkit `DamageLeveler` order + shield (`isBlocking` only), `DamageXpSource` damagers for `ThrownItemEntity` / potion shooters, `EntityLeveler#resolveDamager` live path via `FabricEntityDamageAttribution` + `FabricEntityXpSourceLookup#forEntityDamageOnly` (incl. `THROWN_POTION`→Alchemy). `DamageListener` cancel/correct last damage: **N/A** / partial on Fabric. |
 | EVT-003 | `CriticalHandler` | `FabricCriticalHandler` (via pipeline) | Partial | |
 | EVT-004 | `BlockInteractions` | `FabricBlockBreakHandler`, `FabricBlockInteractHandler`, etc. | Partial | |
 | EVT-005 | `BlockLootHandler` | `FabricBlockLootHandler` + `FabricBlockXpSourceLookup` + `FabricRegionManager` | Partial | Core pool + `override_vanilla_loot` + `check_replace` via placed-block NBT. Plugin-only loot gating: **out of scope**. |
@@ -186,6 +186,7 @@ CMD-001,Commands,SkillsRootCommand,FabricAuraSkillsCommands,Partial,ACF/Brigadie
 CMD-013,Commands,OpenMenuCommand,—,Missing,Slate-Fabric+ACF/Brigadier,
 MENU-003,Menus,Menu skills,—,Missing,Slate-Fabric,
 EVT-005,Listeners,BlockLootHandler,FabricBlockLootHandler+FabricRegionManager,Partial,None,Plugin loot gates out of scope; check_replace NBT; Sprint 04
+EVT-002,Listeners,DamageListener+DamageLeveler,FabricCombatXpHandler+pipeline,Partial,None,Sprint 08: resolver+lookup+damagers
 EVT-006,Listeners,FishingLootHandler,FabricFishingLootHandler,Partial,None,Hooked from fishing XP
 EVT-007,Listeners,MobLootHandler,FabricMobLootHandler,Partial,No Bukkit LootDropEvent cancel; Sprint 03,
 EVT-014,Listeners,PlayerDeath,FabricPlayerDeathHandler,Equivalent,None,on_death.* config; see Sprint 01 manual
