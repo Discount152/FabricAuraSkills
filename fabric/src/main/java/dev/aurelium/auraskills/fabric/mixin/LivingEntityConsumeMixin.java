@@ -1,6 +1,7 @@
 package dev.aurelium.auraskills.fabric.mixin;
 
 import dev.aurelium.auraskills.fabric.FabricItemConsumeHandler;
+import dev.aurelium.auraskills.fabric.ability.FabricFarmingAbilities;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -27,6 +28,8 @@ public abstract class LivingEntityConsumeMixin {
         if (active.isEmpty()) {
             return;
         }
-        FabricItemConsumeHandler.onConsumeItemCommit(player, active.copy());
+        ItemStack forHandlers = active.copy();
+        FabricItemConsumeHandler.onConsumeItemCommit(player, forHandlers);
+        FabricFarmingAbilities.applyGeneticist(player, forHandlers);
     }
 }

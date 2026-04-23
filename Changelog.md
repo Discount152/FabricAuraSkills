@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.51
+
+### Changes
+
+- **Fabric: ability parity audit + batch 1 (Sprint 23 / `BukkitAbilityManager` vs `FabricAbilityManager`):** All **14** per-skill `*Abilities` groups register on Fabric in the same order as Bukkit. **Batch 1** closes **`FarmingAbilities` gaps** missing vs reference: **`Abilities.GENETICIST`** (extra saturation for plant-based foods on consumption commit, alongside **`FabricItemConsumeHandler`**) and **`Abilities.GROWTH_AURA`** (extra crop ages after a natural **vanilla** age step on **`CropBlock`** and **`NetherWartBlock`**, 50ms deferred like Bukkit). Mixin: **`CropWartBlockGrowthAuraMixin`**. **`BOUNTIFUL_HARVEST`** / **`FARMER`** remain **gathering/XP-adjacent** in other handlers (as on Bukkit’s split). See **`fabric/SPRINT_23_ABILITY_PARITY.md`**. **Not** in this sprint: Bukkit `BlockGrowEvent` for non-`CropBlock` growth (cactus, sugar cane, stems, etc.). Test: **`FabricFarmingAbilitiesTest`**. Manual: **`fabric/SPRINT_23_MANUAL_VALIDATION.md`**. **`projectVersion` 2.3.50 → 2.3.51**.
+
 ## 2.3.50
 
 ### Changes

@@ -362,7 +362,7 @@ Performed successfully in a clean-cache audit:
 | Bukkit / reference | Fabric (runtime) goal |
 |-----------------|-------------|
 | `BukkitTraitManager.registerTraitImplementations()` | **Sprint 19–22:** all reference trait groups on Fabric, including core **`DoubleDropTrait`** — **`SPRINT_22_DOUBLE_DROP_PARITY.md`**. Optional Bukkit **WorldGuard** / **`LootDropEvent`** — out of default Granite scope. |
-| `BukkitAbilityManager` | Port ability implementations or equivalents. |
+| `BukkitAbilityManager` | **Sprint 23** — 14/14 `*Abilities` groups registered; batch 1 **farming** `Geneticist` + `GROWTH_AURA` — **`SPRINT_23_ABILITY_PARITY.md`**. |
 | `BukkitManaAbilityManager.registerProviders()` | Port mana abilities (`Replenish`, `Treecapitator`, …) with Fabric events/mixins. |
 
 ### Phase C — Items, modifiers, requirements

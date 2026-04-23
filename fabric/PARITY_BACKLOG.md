@@ -39,6 +39,10 @@ These are **product** requirements, not optional polish:
 - **Sprint 21 (batch 3)** — **`AnvilDiscountTrait`**: **`FabricAnvilDiscountTrait`**, **`FabricAnvilDiscount`**, **`AnvilScreenHandlerAnvilDiscountMixin`** — **`SPRINT_21_ANVIL_DISCOUNT_PARITY.md`**, manual **`SPRINT_21_MANUAL_VALIDATION.md`**.
 - **Sprint 22 (batch 4)** — **`DoubleDropTrait`** (core in-scope subset): **`FabricDoubleDropTrait`**, **`FabricDoubleDrop`**, `FabricLevelManager` registration order — **`SPRINT_22_DOUBLE_DROP_PARITY.md`**, manual **`SPRINT_22_MANUAL_VALIDATION.md`**. **Not** in default product: Bukkit **WorldGuard** + **`LootDropEvent`** hook surface.
 
+## Abilities (reference `BukkitAbilityManager`) — `registerAbilityImplementations()`
+
+- **Sprint 23 (audit + batch 1)** — **`SPRINT_23_ABILITY_PARITY.md`**, manual **`SPRINT_23_MANUAL_VALIDATION.md`**: all **14** skill ability classes registered on Fabric (same set/order as Bukkit). **Batch 1:** **`FabricFarmingAbilities`**: **`Geneticist`** (consume) + **`GROWTH_AURA`** (`CropBlock` / `NetherWartBlock` natural age step). **Follow-up (documented):** cactus, sugar cane, stems, cocoa, kelp, etc. (no `CropBlock` / different growth paths).
+
 ## Menus and UI
 
 - **Slate / inventory menus** — **In progress (Path A):** full **Slate** port to Fabric + Paper-parity **command tree**; see **`fabric/MENU_AND_COMMANDS_PORT.md`**. Until shipped, `FabricMenuHelper` remains a stub.
