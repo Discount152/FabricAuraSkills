@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.43
+
+### Changes
+
+- **Fabric: grindstone XP (Sprint 15 / Bukkit `GrindstoneLeveler` hardening):** `ScreenHandlerGrindstoneXpMixin` now tracks **server-side** result-slot clicks only; before awarding, `FabricGrindstoneXpHandler#allowsGrindstoneClickForXp` mirrors Bukkit `SourceLeveler#failsClickChecks` (empty **cursor** at click start, **main+hotbar full** gating for non-`PICKUP`/`PICKUP_ALL`-style actions, allow **shift/number key/drop**-style takes only when storage has room). **Spectators** do not receive grindstone XP. `FabricItemInventoryUtil#isPlayerStorageFull` matches Bukkit 36-slot storage fullness. Manual: **`fabric/SPRINT_15_MANUAL_VALIDATION.md`**. **`projectVersion` 2.3.42 → 2.3.43**.
+
 ## 2.3.42
 
 ### Changes

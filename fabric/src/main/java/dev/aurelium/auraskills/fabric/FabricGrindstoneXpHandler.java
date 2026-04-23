@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.EnchantmentTags;
 import net.minecraft.screen.GrindstoneScreenHandler;
+import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 import java.util.List;
@@ -24,11 +25,43 @@ public final class FabricGrindstoneXpHandler {
     }
 
     /**
-     * Called after the player successfully takes (or reduces) the grindstone result stack.
+     * Paper/Bukkit: {@code SourceLeveler#failsClickChecks} for {@code GrindstoneLeveler} (empty cursor, non-left/right
+     * clicks with full main storage, and a whitelist of successful takeout actions). When this returns false, the
+     * Fabric mixin must not call {@link #onGrindstoneTake} — mirrors non-awarding clicks on the reference leveler.
+     * <p>
+     * Call only after a confirmed result-slot take (output stack actually changed); this method does not look at
+     * item stacks — only the click + cursor/storage snapshot at {@code onSlotClick} start.
      */
-    public static void onGrindstoneTake(ServerPlayerEntity player, GrindstoneScreenHandler handler, ItemStack topBefore, ItemStack bottomBefore) {
+    public static boolean allowsGrindstoneClickForXp(
+            SlotActionType actionType, boolean cursorEmptyAtClickStart, boolean playerStorageFull) {
+        if (!cursorEmptyAtClickStart) {
+            return false;
+        }
+        if (actionType == SlotActionType.PICKUP || actionType == SlotActionType.PICKUP_ALL) {
+            return true;
+        }
+        if (playerStorageFull) {
+            return false;
+        }
+        return actionType == SlotActionType.QUICK_MOVE
+                || actionType == SlotActionType.SWAP
+                || actionType == SlotActionType.THROW;
+    }
+
+    /**
+     * Called from {@code ScreenHandlerGrindstoneXpMixin} after a confirmed take from the grindstone result slot,
+     * when {@link #allowsGrindstoneClickForXp} passed for that interaction.
+     */
+    public static void onGrindstoneTake(
+            ServerPlayerEntity player,
+            GrindstoneScreenHandler handler,
+            ItemStack topBefore,
+            ItemStack bottomBefore) {
         FabricAuraSkills plugin = FabricAuraSkills.getInstance();
         if (plugin == null) {
+            return;
+        }
+        if (player.isSpectator()) {
             return;
         }
         SkillSource<GrindstoneXpSource> skillSource = plugin.getSkillManager().getSingleSourceOfType(GrindstoneXpSource.class);

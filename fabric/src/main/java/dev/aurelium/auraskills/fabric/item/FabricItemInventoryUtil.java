@@ -12,6 +12,18 @@ public final class FabricItemInventoryUtil {
     private FabricItemInventoryUtil() {
     }
 
+    /**
+     * {@code true} when every main+hotbar slot (0–35) is non-empty — matches Bukkit {@code ItemUtils#isInventoryFull} storage contents.
+     */
+    public static boolean isPlayerStorageFull(PlayerInventory inventory) {
+        for (int slot = 0; slot < 36; slot++) {
+            if (inventory.getStack(slot).isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public static @Nullable ItemStack addItemToInventory(PlayerInventory inventory, ItemStack item) {
         if (item.isEmpty()) {
             return null;
