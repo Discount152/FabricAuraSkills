@@ -66,12 +66,42 @@ public final class FabricBrewingTakeoutTracker {
         return data.getSlot(slot0to2);
     }
 
+    /**
+     * When a bottle result slot (0–2) becomes <strong>empty</strong> without
+     * {@link FabricBrewingXpHandler#onPotionSlotClickFinish} (e.g. hopper pulls
+     * a potion, or a pipe mod removes it), clear {@code TAKEOUT} flags so a later
+     * player is not attributed stale ingredients. Bukkit’s leveler also only
+     * awards TAKEOUT on player inventory clicks, not on automated extraction.
+     */
+    public static void clearTakeoutStateIfOutputEmptied(ServerWorld world, BlockPos pos, int slot0to2) {
+        if (slot0to2 < 0 || slot0to2 > 2) {
+            return;
+        }
+        BrewStandKey key = new BrewStandKey(world.getRegistryKey(), pos.toImmutable());
+        BrewingStandData data = STANDS.get(key);
+        if (data == null) {
+            return;
+        }
+        data.clearTakeoutStateForSlot(slot0to2);
+    }
+
     public static final class BrewingStandData {
 
         private final Map<Integer, BrewingSlot> slots = new ConcurrentHashMap<>();
 
         public BrewingSlot getSlot(int slot) {
             return slots.computeIfAbsent(slot, s -> new BrewingSlot());
+        }
+
+        /**
+         * Does not create slot entries — only clears if this stand already had tracking.
+         */
+        public void clearTakeoutStateForSlot(int slot0to2) {
+            BrewingSlot s = slots.get(slot0to2);
+            if (s == null) {
+                return;
+            }
+            s.clearTakeoutTracking();
         }
     }
 
@@ -99,6 +129,12 @@ public final class FabricBrewingTakeoutTracker {
 
         public synchronized void resetIngredients() {
             ingredients.clear();
+        }
+
+        /** Clears {@code brewed} + ingredient history atomically (hopper / non-GUI extraction). */
+        public synchronized void clearTakeoutTracking() {
+            this.brewed = false;
+            this.ingredients.clear();
         }
     }
 }

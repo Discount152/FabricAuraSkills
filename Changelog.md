@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.39
+
+### Changes
+
+- **Fabric: brewing XP (Sprint 11 / Bukkit `BrewingLeveler` hardening):** **`BREW`** still requires a tracked stand owner and an **online** player (unchanged; `FabricBrewingOwnerTracker` + place / use-to-claim). **`TAKEOUT`:** new **`LockableContainerBrewingStandSetStackMixin`** on `LockableContainerBlockEntity#setStack` clears per-slot `TAKEOUT` metadata when a bottle result slot 0–2 becomes **empty** without a brewing GUI click—e.g. **hopper** extraction—so **stale** `brewed` / ingredient history cannot later mis-award a **player** takeout. Reference also only grants TAKEOUT on **player** inventory actions, not hoppers. `FabricBrewingTakeoutTracker.BrewingSlot#clearTakeoutTracking` + manual **`fabric/SPRINT_11_MANUAL_VALIDATION.md`**. **`projectVersion` 2.3.38 → 2.3.39**.
+
 ## 2.3.38
 
 ### Changes

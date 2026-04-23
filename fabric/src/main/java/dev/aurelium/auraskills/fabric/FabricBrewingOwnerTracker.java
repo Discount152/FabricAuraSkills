@@ -12,7 +12,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Tracks per-world brewing stand "owner" UUID for {@link dev.aurelium.auraskills.api.source.type.BrewingXpSource.BrewTriggers#BREW}
- * XP (Bukkit {@code skillsBrewingStandOwner} metadata). Claim on first GUI open; set on player placement.
+ * XP (Bukkit {@code skillsBrewingStandOwner} metadata). **Placer** on {@code BlockItem#place}; if missing (e.g. dispenser),
+ * **first player to use** the stand claims via {@link #claimIfAbsent}. {@code BREW} XP requires that owner to be **online**
+ * on the server (reference {@code BrewingLeveler#onBrew}).
  */
 public final class FabricBrewingOwnerTracker {
 

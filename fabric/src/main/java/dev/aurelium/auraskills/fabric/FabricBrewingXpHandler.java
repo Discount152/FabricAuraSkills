@@ -118,8 +118,7 @@ public final class FabricBrewingXpHandler {
         if (ingredients.isEmpty()) {
             return;
         }
-        brewingSlot.setBrewed(false);
-        brewingSlot.resetIngredients();
+        brewingSlot.clearTakeoutTracking();
 
         List<SkillSource<BrewingXpSource>> sources = new ArrayList<>();
         for (ItemStack ingredient : ingredients) {
