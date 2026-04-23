@@ -19,17 +19,38 @@ public final class FabricAnvilXpHandler {
     private FabricAnvilXpHandler() {
     }
 
+    /**
+     * Bukkit: {@code AnvilLeveler#onAnvilCombine} at {@code EventPriority.MONITOR} on the <strong>result</strong> slot
+     * after {@code failsClickChecks} (plus {@code failsChecks}). Fabric: one-shot at
+     * {@link net.minecraft.screen.AnvilScreenHandler#onTakeOutput} (only runs on a real output take; no preview).
+     * Left/right/level cost for matching and {@code {repair_cost}}: prefer
+     * {@link FabricAnvilTakeContext#takePending()} from {@code onTake} HEAD (pre-consumption); fallback to current slots
+     * if missing (e.g. another mod alters the flow).
+     */
     public static void onTakeOutput(ServerPlayerEntity player, ForgingScreenHandler handler) {
-        if (!(handler instanceof AnvilScreenHandler)) {
+        if (!(handler instanceof AnvilScreenHandler anvil)) {
             return;
         }
-        AnvilScreenHandler anvil = (AnvilScreenHandler) handler;
+        if (player.isSpectator()) {
+            return;
+        }
         FabricAuraSkills plugin = FabricAuraSkills.getInstance();
         if (plugin == null) {
             return;
         }
-        ItemStack left = handler.getSlot(0).getStack();
-        ItemStack right = handler.getSlot(1).getStack();
+        FabricAnvilTakeContext.Pending snap = FabricAnvilTakeContext.takePending();
+        ItemStack left;
+        ItemStack right;
+        int repairCost;
+        if (snap != null) {
+            left = snap.left();
+            right = snap.right();
+            repairCost = snap.levelCost();
+        } else {
+            left = handler.getSlot(AnvilScreenHandler.INPUT_1_ID).getStack();
+            right = handler.getSlot(AnvilScreenHandler.INPUT_2_ID).getStack();
+            repairCost = anvil.getLevelCost();
+        }
         if (left.isEmpty()) {
             return;
         }
@@ -42,7 +63,6 @@ public final class FabricAnvilXpHandler {
         if (FabricXpHandlerUtil.shouldBlockXp(plugin, player, skill, SourceTypes.ANVIL)) {
             return;
         }
-        int repairCost = anvil.getLevelCost();
         double multiplier = getRepairCostMultiplier(plugin, source, skill, repairCost);
         User user = plugin.getUserManager().getUser(player.getUuid());
         plugin.getLevelManager().addXp(user, skill, source, multiplier * source.getXp());

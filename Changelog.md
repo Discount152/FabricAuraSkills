@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.44
+
+### Changes
+
+- **Fabric: anvil XP (Sprint 16 / Bukkit `AnvilLeveler` hardening):** `FabricAnvilTakeContext` captures **left/right** stacks and **`getLevelCost()`** at **`ForgingScreenHandler#onTake`** HEAD for the **output** slot (via **`ForgingScreenHandlerAnvilOnTakeMixin`**, anvil-only; Loom cannot remap `onTake` on `AnvilScreenHandler` alone), so `FabricLootItemMatcher` + `{repair_cost}` match the same operation the player is taking. **`onTake` RETURN** clears any unconsumed pending take. **`onTakeOutput`:** **spectator** skip; fallback to current slots if no snapshot. Manual: **`fabric/SPRINT_16_MANUAL_VALIDATION.md`**. **`projectVersion` 2.3.43 → 2.3.44**.
+
 ## 2.3.43
 
 ### Changes
