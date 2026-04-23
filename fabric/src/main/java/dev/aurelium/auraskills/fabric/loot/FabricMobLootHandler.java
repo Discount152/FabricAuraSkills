@@ -22,16 +22,15 @@ import dev.aurelium.auraskills.common.util.data.Pair;
 import dev.aurelium.auraskills.common.util.text.TextUtil;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.FabricDamageCauseMapper;
+import dev.aurelium.auraskills.fabric.FabricEntityDamageAttribution;
 import dev.aurelium.auraskills.fabric.FabricEntityXpSourceLookup;
 import dev.aurelium.auraskills.fabric.FabricUser;
 import dev.aurelium.auraskills.fabric.FabricXpHandlerUtil;
 import dev.aurelium.auraskills.fabric.loot.context.FabricMobContext;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -76,7 +75,8 @@ public final class FabricMobLootHandler extends dev.aurelium.auraskills.common.l
         if (!plugin.isRuntimeReady()) {
             return;
         }
-        Pair<ServerPlayerEntity, EntityDamagers> killer = resolveKillerForMobLoot(damageSource);
+        Pair<ServerPlayerEntity, EntityDamagers> killer = FabricEntityDamageAttribution.resolveKillerOnDeath(
+                damageSource, entity, entity.getEntityWorld().getServer());
         if (killer == null) {
             return;
         }
@@ -282,20 +282,4 @@ public final class FabricMobLootHandler extends dev.aurelium.auraskills.common.l
         return plugin.getWorldManager().isBlockedWorld(worldName) || plugin.getWorldManager().isDisabledWorld(worldName);
     }
 
-    private static @Nullable Pair<ServerPlayerEntity, EntityDamagers> resolveKillerForMobLoot(net.minecraft.entity.damage.DamageSource source) {
-        Entity direct = source.getSource();
-        if (direct instanceof ServerPlayerEntity sp) {
-            return new Pair<>(sp, EntityDamagers.PLAYER);
-        }
-        if (direct instanceof ProjectileEntity proj) {
-            if (proj.getOwner() instanceof ServerPlayerEntity sp) {
-                return new Pair<>(sp, EntityDamagers.PROJECTILE);
-            }
-        }
-        Entity attacker = source.getAttacker();
-        if (attacker instanceof ServerPlayerEntity sp) {
-            return new Pair<>(sp, EntityDamagers.PLAYER);
-        }
-        return null;
-    }
 }

@@ -10,6 +10,7 @@ import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.FabricDamageCauseMapper;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.decoration.ArmorStandEntity;
@@ -37,6 +38,8 @@ public final class FabricBleedListener {
     private static final AtomicBoolean REGISTERED = new AtomicBoolean(false);
     private static final ConcurrentHashMap<UUID, Integer> BLEED_TICKS = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<UUID, Task> BLEED_TASKS = new ConcurrentHashMap<>();
+    /** Bukkit {@code EntityLeveler#getBleedDamager} parity: victim → attacker for death XP / mob loot when DoT is generic. */
+    private static final ConcurrentHashMap<UUID, UUID> BLEED_DAMAGER_BY_VICTIM = new ConcurrentHashMap<>();
     /**
      * While set, {@link FabricCombatXpHandler} attributes generic bleed DoT to this user for {@link EntityTriggers#DAMAGE}
      * XP (Bukkit bleed damager PDC parity).
@@ -64,6 +67,11 @@ public final class FabricBleedListener {
         return BLEED_ATTACKER_USER.get();
     }
 
+    @Nullable
+    public static UUID getBleedAttackerForVictim(LivingEntity victim) {
+        return BLEED_DAMAGER_BY_VICTIM.get(victim.getUuid());
+    }
+
     public static void register(FabricAuraSkills plugin) {
         if (!REGISTERED.compareAndSet(false, true)) {
             return;
@@ -71,6 +79,11 @@ public final class FabricBleedListener {
         ServerLivingEntityEvents.AFTER_DAMAGE.register(
                 (LivingEntity entity, DamageSource source, float baseDamageTaken, float damageTaken, boolean blocked) ->
                         onAfterDamage(plugin, entity, source, damageTaken, blocked));
+        ServerEntityEvents.ENTITY_UNLOAD.register((entity, world) -> {
+            if (entity instanceof LivingEntity living) {
+                BLEED_DAMAGER_BY_VICTIM.remove(living.getUuid());
+            }
+        });
     }
 
     private static void onAfterDamage(FabricAuraSkills plugin, LivingEntity entity, DamageSource source,
@@ -104,6 +117,7 @@ public final class FabricBleedListener {
     private static void applyOrStackBleed(FabricAuraSkills plugin, LivingEntity victim,
             User attackerUser, Ability ability) {
         UUID id = victim.getUuid();
+        BLEED_DAMAGER_BY_VICTIM.put(id, attackerUser.getUuid());
         if (!BLEED_TICKS.containsKey(id)) {
             int baseTicks = ability.optionInt("base_ticks", 3);
             BLEED_TICKS.put(id, baseTicks);
@@ -189,6 +203,7 @@ public final class FabricBleedListener {
             t.cancel();
         }
         BLEED_TICKS.remove(id);
+        BLEED_DAMAGER_BY_VICTIM.remove(id);
         if (sendStopToVictimPlayer && entity instanceof ServerPlayerEntity victimPlayer) {
             if (ability.optionBoolean("enable_stop_message", true)) {
                 User victimUser = plugin.getUserManager().getUser(victimPlayer.getUuid());

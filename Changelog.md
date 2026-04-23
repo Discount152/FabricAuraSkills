@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.35
+
+### Changes
+
+- **Fabric: entity death / spawner parity (Sprint 07 / Bukkit `EntityLeveler#onEntityDeath` subset):** Shared **`FabricEntityDamageAttribution#resolveKillerOnDeath`** for **`FabricEntityKillHandler`** and **`FabricMobLootHandler`**: direct **player** melee, **player-owned** `ProjectileEntity`, and **`ThrownItemEntity`** (splash/lingering potion and other thrown “non-projectile” projectiles in vanilla NMS), with **`getAttacker()`** fallback. **`FabricBleedListener`**: `BLEED_DAMAGER_BY_VICTIM` + unload cleanup so a **bleed** kill (generic/DoT) keeps credit for death XP and mob loot (Bukkit `getBleedDamager` / PDC parity). **`FabricEntityKillHandler`** now uses **`FabricEntityXpSourceLookup#forEntityDeathKill`** ( **`DEATH` only**, **no DAMAGE fallback** ) with **`FabricDamageCauseMapper`** cause filtering + **`FabricXpHandlerUtil#shouldBlockXp`**. **`FabricEntityXpSourceLookup`**: Bukkit `THROWN_POTION` → **Alchemy** `SkillSource` path aligned with `EntityLeveler#getSource`. **Imports:** `ServerEntityEvents` from **`net.fabricmc.fabric.api.event.lifecycle.v1`** (correct Fabric API location). Manual: **`fabric/SPRINT_07_MANUAL_VALIDATION.md`**. **`projectVersion` 2.3.34 → 2.3.35**.
+
 ## 2.3.34
 
 ### Changes

@@ -1,5 +1,6 @@
 package dev.aurelium.auraskills.fabric;
 
+import dev.aurelium.auraskills.api.skill.Skills;
 import dev.aurelium.auraskills.api.source.SkillSource;
 import dev.aurelium.auraskills.api.source.type.DamageXpSource.DamageCause;
 import dev.aurelium.auraskills.api.source.type.EntityXpSource;
@@ -39,6 +40,21 @@ public final class FabricEntityXpSourceLookup {
             return a;
         }
         return find(plugin, entity, eventDamager, EntityTriggers.DAMAGE, damageCause);
+    }
+
+    /**
+     * Bukkit {@code EntityLeveler#getSource(..., EntityTriggers.DEATH, damageCause)} — used for on-death XP only
+     * (no DAMAGE trigger, no fallback to DAMAGE).
+     */
+    public static @Nullable SkillSource<EntityXpSource> forEntityDeathKill(
+            FabricAuraSkills plugin,
+            LivingEntity entity,
+            EntityDamagers eventDamager,
+            DamageCause damageCause) {
+        if (plugin == null || !plugin.isRuntimeReady()) {
+            return null;
+        }
+        return find(plugin, entity, eventDamager, EntityTriggers.DEATH, damageCause);
     }
 
     private static @Nullable SkillSource<EntityXpSource> find(
@@ -91,6 +107,9 @@ public final class FabricEntityXpSourceLookup {
             }
             for (EntityDamagers sd : source.getDamagers()) {
                 if (sd == eventDamager) {
+                    if (eventDamager == EntityDamagers.THROWN_POTION) {
+                        return new SkillSource<>(source, Skills.ALCHEMY);
+                    }
                     return entry;
                 }
             }
