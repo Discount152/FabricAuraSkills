@@ -6,6 +6,7 @@ import dev.aurelium.auraskills.api.loot.LootContext;
 import dev.aurelium.auraskills.api.loot.LootPool;
 import dev.aurelium.auraskills.api.loot.LootTable;
 import dev.aurelium.auraskills.api.skill.Skill;
+import dev.aurelium.auraskills.api.skill.Skills;
 import dev.aurelium.auraskills.api.source.SkillSource;
 import dev.aurelium.auraskills.common.config.Option;
 import dev.aurelium.auraskills.api.source.XpSource;
@@ -37,7 +38,9 @@ import java.util.concurrent.ThreadLocalRandom;
 /**
  * Fabric counterpart to Bukkit {@link dev.aurelium.auraskills.bukkit.loot.handler.FishingLootHandler}: rolls bonus loot
  * from {@code loot/fishing.yml} pools (rare / epic with Treasure Hunter / Epic Catch, open-water option, command loot).
- * Entity loot entries are skipped until {@link FabricUnsupportedEntityLootParser} is replaced.
+ * Bukkit: pool {@code else} only supplies {@code XpSource} when {@code originalSource} from the catch is
+ * non-null; otherwise only rare / epic (with abilities) can roll. Bukkit **entity** loot: not on Fabric
+ * ({@link FabricUnsupportedEntityLootParser}).
  */
 public final class FabricFishingLootHandler extends AbstractLootHandler {
 
@@ -52,7 +55,7 @@ public final class FabricFishingLootHandler extends AbstractLootHandler {
      * {@code PlayerFishEvent.State.CAUGHT_FISH}).
      */
     public static void tryRollBonusLoot(FabricAuraSkills plugin, ServerPlayerEntity player, FishingBobberEntity bobber,
-            ItemStack caughtItem, SkillSource<FishingXpSource> matchedSource) {
+            ItemStack caughtItem, @Nullable SkillSource<FishingXpSource> matchedSource) {
         if (plugin == null || caughtItem == null || caughtItem.isEmpty()) {
             return;
         }
@@ -61,14 +64,13 @@ public final class FabricFishingLootHandler extends AbstractLootHandler {
             return;
         }
         User user = plugin.getUserManager().getUser(player.getUuid());
-        Skill skill = matchedSource.skill();
+        Skill skill = matchedSource != null ? matchedSource.skill() : Skills.FISHING;
         FabricLootManager lm = plugin.getFabricLootManager();
         LootTable table = lm.getLootTable(skill.getId());
         if (table == null || !table.checkRequirements(user.getUuid())) {
             return;
         }
-        FishingXpSource matchedFishSource = matchedSource.source();
-        XpSource contextXpSource = matchedFishSource;
+        @Nullable XpSource contextXpSource = matchedSource != null ? matchedSource.source() : null;
 
         for (LootPool pool : table.getPools()) {
             if (Boolean.TRUE.equals(pool.getOption("require_open_water", Boolean.class, false)) && !bobber.isInOpenWater()) {
@@ -85,8 +87,8 @@ public final class FabricFishingLootHandler extends AbstractLootHandler {
             } else if ("epic".equals(pool.getName()) && Abilities.EPIC_CATCH.isEnabled()) {
                 chance = h.getAbilityModifiedChance(chance, Abilities.EPIC_CATCH, user);
                 source = getSourceWithLootPool(plugin, "epic", skill);
-            } else {
-                source = matchedFishSource;
+            } else if (matchedSource != null) {
+                source = matchedSource.source();
             }
             if (source == null) {
                 continue;

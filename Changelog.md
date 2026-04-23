@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.37
+
+### Changes
+
+- **Fabric: fishing XP + bonus loot (Sprint 09 / Bukkit `FishingLeveler` + `FishingLootHandler` hardening):** **Bonus loot** runs **before** base fishing XP (Bukkit: `PlayerFishEvent` **HIGH** then **MONITOR**). `FabricFishingXpHandler` re-resolves the catch after `tryRollBonusLoot` and re-matches a `FishingXpSource` so base XP uses the **final** `ItemStack` (reference `getSource` at monitor; bonus may replace the hooked item). **Rare/epic** pools can run when the catch does **not** match any `FishingXpSource` (same as Bukkit: `originalSource` null → `skill` defaults to `Fishing`, pool `else` only sets `source` when `originalSource` was non-null). `FabricFishingLootHandler` open-water + `require_open_water` unchanged; Bukkit `entity` loot and `getExpToDrop` bonus gate still **N/A** on Fabric (see `SPRINT_09_MANUAL_VALIDATION.md`). Exposed `FabricFishingXpHandler#findFishingSource`. Manual: **`fabric/SPRINT_09_MANUAL_VALIDATION.md`**. **`projectVersion` 2.3.36 → 2.3.37**.
+
 ## 2.3.36
 
 ### Changes

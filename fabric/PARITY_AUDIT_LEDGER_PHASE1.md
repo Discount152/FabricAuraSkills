@@ -138,7 +138,7 @@
 | EVT-003 | `CriticalHandler` | `FabricCriticalHandler` (via pipeline) | Partial | |
 | EVT-004 | `BlockInteractions` | `FabricBlockBreakHandler`, `FabricBlockInteractHandler`, etc. | Partial | |
 | EVT-005 | `BlockLootHandler` | `FabricBlockLootHandler` + `FabricBlockXpSourceLookup` + `FabricRegionManager` | Partial | Core pool + `override_vanilla_loot` + `check_replace` via placed-block NBT. Plugin-only loot gating: **out of scope**. |
-| EVT-006 | `FishingLootHandler` | `FabricFishingLootHandler` (invoked from fishing XP path) | Partial | Not a Bukkit-style event listener. |
+| EVT-006 | `FishingLootHandler` + `FishingLeveler` | `FabricFishingLootHandler` + `FabricFishingXpHandler` (mixin + `Stats.FISH_CAUGHT`) | Partial | **Sprint 09** — HIGH-then-MONITOR order, null-`originalSource` rare/epic, `isInOpenWater` pool option; Bukkit `LootDropEvent` / `EntityLoot` / `getExpToDrop` gate: **N/A** or follow-up. |
 | EVT-007 | `MobLootHandler` | `FabricMobLootHandler` | Partial | No Bukkit `LootDropEvent` cancel; skill from `FabricEntityXpSourceLookup` (Fabric damage cause mapping). Plugin-only gates: **out of scope**. |
 | EVT-008 | `RequirementListener` | `FabricRequirementHandlers` | Partial | |
 | EVT-009 | `ItemListener` | Item/modifier stack | Partial | |
@@ -187,7 +187,7 @@ CMD-013,Commands,OpenMenuCommand,—,Missing,Slate-Fabric+ACF/Brigadier,
 MENU-003,Menus,Menu skills,—,Missing,Slate-Fabric,
 EVT-005,Listeners,BlockLootHandler,FabricBlockLootHandler+FabricRegionManager,Partial,None,Plugin loot gates out of scope; check_replace NBT; Sprint 04
 EVT-002,Listeners,DamageListener+DamageLeveler,FabricCombatXpHandler+pipeline,Partial,None,Sprint 08: resolver+lookup+damagers
-EVT-006,Listeners,FishingLootHandler,FabricFishingLootHandler,Partial,None,Hooked from fishing XP
+EVT-006,Listeners,FishingLootHandler+FishingLeveler,FabricFishing handlers,Partial,None,Sprint 09 order+open water
 EVT-007,Listeners,MobLootHandler,FabricMobLootHandler,Partial,No Bukkit LootDropEvent cancel; Sprint 03,
 EVT-014,Listeners,PlayerDeath,FabricPlayerDeathHandler,Equivalent,None,on_death.* config; see Sprint 01 manual
 EVT-017,Listeners,EntityLeveler,FabricEntityKillHandler+Combat+Spawner+Sprint07,Partial,None,Entity death XP + attribution; see Sprint 07 manual; gaps: transform, API event

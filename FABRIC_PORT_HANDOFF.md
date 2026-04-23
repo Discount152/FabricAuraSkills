@@ -270,12 +270,10 @@ Fabric has no Bukkit fish event. The port hooks **vanilla** behavior inside **`F
 
 ### 7.4 `FabricFishingXpHandler` (`fabric/.../FabricFishingXpHandler.java`)
 
-Mirrors **`FishingLeveler`** logic conceptually:
+Mirrors Bukkit event order: **`FishingLootHandler` @HIGH**-equivalent ( **`tryRollBonusLoot`** first), then **`FishingLeveler` @MONITOR** (re-resolve item, **`findFishingSource`**, **`FabricXpHandlerUtil.shouldBlockXp`**, `addXp`).
 
-- Respects source enabled, creative disable option, user/skill permission, blocked/disabled worlds.
 - Resolves item: prefers **`FabricFishingCatchHolder.take()`**; fallback **`bobber.getHookedEntity()`** if `ItemEntity`.
-- Finds first matching **`FishingXpSource`** via **`FabricLootItemMatcher.passesLootFilter`** (not Bukkit `ItemRegistry`).
-- **`levelManager.addXp(user, skill, source, source.getXp())`**.
+- **`SourceTypes.FISHING` enabled** check applies only to **base XP** (rare pool may still run with skill `Fishing` per Bukkit if loot table loads — **narrow** if both disabled, table may be empty).
 
 ### 7.5 `FabricLootItemMatcher` vs Bukkit `ItemRegistry.passesFilter`
 
@@ -287,8 +285,8 @@ Mirrors **`FishingLeveler`** logic conceptually:
 
 ### 7.6 Reference (Bukkit)-only fishing extras (not fully on Fabric)
 
-- **`FishingLootHandler` analog** — extra drops / open water / full parity: compare **`FabricFishingLootHandler`** to Bukkit; gaps may remain vs **`registerEvents()`**.
-- Bukkit **`PlayerFishEvent.State.CAUGHT_FISH`** timing vs mixin-on-stat — should be equivalent for “caught item” XP but not byte-for-byte verified.
+- **`FishingLootHandler`** — Bukkit `LootDropEvent` cancel, **`getExpToDrop() == 0`** early return for **bonus** only, and **`EntityLoot`**: not replicated on Fabric (see `SPRINT_09_MANUAL_VALIDATION.md`).
+- Bukkit **`PlayerFishEvent.State.CAUGHT_FISH`** timing vs **`Stats.FISH_CAUGHT`** in mixin — close enough for “successful reel”; not byte-for-byte.
 
 ---
 
@@ -348,7 +346,7 @@ Performed successfully in a clean-cache audit:
 
 | Priority | Bukkit / reference (audit source) | Fabric (runtime) goal |
 |----------|-----------------|-------------|
-| High | `FishingLeveler` + `FishingLootHandler` | Keep mixin approach; add **loot table loading** + **`FabricLootItemMatcher` pool support**; port open-water / bonus drop behavior if required by configs. |
+| High | `FishingLeveler` + `FishingLootHandler` | **Sprint 09** — bonus loot / open-water / pool-`else` and HIGH-before-MONITOR order on Fabric; Bukkit `LootDropEvent` / `EntityLoot` / `getExpToDrop` gate: optional / follow-up. |
 | High | `BlockLeveler` + `BlockLevelerHelper` | Block **state** matching (`states` / `after_states` in YAML); **placed-block** / `check_replace` if configs depend on it. |
 | High | `EntityLeveler` | Spawner detection (mixins + `FabricSpawnerMobTracker`); kill/damage triggers + attribution (**Sprint 07**). Remaining: transform/split spawner tag copy, `EntityXpGainEvent`-class API, full reference edge cases. Third-party mob plugins: **out of default scope**. |
 | Medium | `StatisticLeveler` | Map Bukkit statistic IDs to Minecraft stats / scoreboard / criteria not yet wired. |
