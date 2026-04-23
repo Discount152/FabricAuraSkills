@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.46
+
+### Changes
+
+- **Fabric: potion splash XP (Sprint 18 / Bukkit `PotionSplashLeveler` hardening):** `FabricPotionSplashHandler` now skips **null** `POTION_CONTENTS` and stacks with no base potion and no custom effects (Bukkit `ThrownPotion#getEffects().isEmpty()` parity) via **`lacksPotionEffectForParity`**, skips when **`SourceTypes.POTION_SPLASH`** is disabled, and skips **spectators**. Mixin and handler Javadoc: splash + **lingering** on the same `PotionEntity` at collision; Bukkit `ProjectileHitEvent` **cancel** / `LevelerContext` **region** remain **N/A** / `shouldBlockXp`. Test: `FabricPotionSplashHandlerTest`. Manual: **`fabric/SPRINT_18_MANUAL_VALIDATION.md`**. **`projectVersion` 2.3.45 → 2.3.46**.
+
 ## 2.3.45
 
 ### Changes

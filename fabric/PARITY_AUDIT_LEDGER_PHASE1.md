@@ -59,7 +59,7 @@
 | AS-007 | `ConfirmManager` | — | Missing | Slate-Fabric + ACF/Brigadier | Confirm flows tied to commands/menus. |
 | AS-008 | `CommandRegistrar.registerCommands` → `PaperCommandManager` | `FabricAuraSkillsCommands` | Partial | ACF/Brigadier | Small Brigadier subset vs full ACF tree (see §3). |
 | AS-009 | `messageProvider.setACFMessages` | — | Missing | ACF/Brigadier | No ACF message integration. |
-| AS-010 | `BukkitLevelManager` + `registerLevelers` | `FabricLevelManager` + `registerFabricXpHandlers` | Partial | None | Levelers wired via Fabric handlers/mixins; compare to Bukkit list. **Sprint 10** — `StatisticLeveler`. **Sprint 11** — `BrewingLeveler` hopper. **Sprint 12** — `EVT-021`. **Sprint 13** — `EVT-022` jumping. **Sprint 14** — `EVT-023` enchanting. **Sprint 15** — `EVT-024` grindstone. **Sprint 16** — `EVT-025` anvil. **Sprint 17** — `EVT-026` item consume. |
+| AS-010 | `BukkitLevelManager` + `registerLevelers` | `FabricLevelManager` + `registerFabricXpHandlers` | Partial | None | Levelers wired via Fabric handlers/mixins; compare to Bukkit list. **Sprint 10** — `StatisticLeveler`. **Sprint 11** — `BrewingLeveler` hopper. **Sprint 12** — `EVT-021`. **Sprint 13** — `EVT-022` jumping. **Sprint 14** — `EVT-023` enchanting. **Sprint 15** — `EVT-024` grindstone. **Sprint 16** — `EVT-025` anvil. **Sprint 17** — `EVT-026` item consume. **Sprint 18** — `EVT-027` potion splash. |
 | AS-011 | `BukkitAntiAfkManager` | `FabricAntiAfkManager` | Partial | None | `common` checks; verify parity with Bukkit listeners. |
 | AS-012 | `Metrics` + `MetricsUtil` | — | Missing | Out of scope | Reference optional metrics; not default Granite product scope. |
 | AS-013 | `UpdateChecker` | — | Missing | None | Optional product parity. |
@@ -156,6 +156,7 @@
 | EVT-024 | `GrindstoneLeveler` | `FabricGrindstoneXpHandler` + `ScreenHandlerGrindstoneXpMixin` | Partial | **Sprint 15** — `failsClickChecks`-style cursor + 36-slot fullness + `SlotActionType` allowlist, spectator; Bukkit `check_cancelled` / `LevelerContext` region: **N/A** / `shouldBlockXp` |
 | EVT-025 | `AnvilLeveler` | `FabricAnvilXpHandler` + `ForgingScreenHandlerMixin` + `ForgingScreenHandlerAnvilOnTakeMixin` | Partial | **Sprint 16** — `FabricAnvilTakeContext` + `onTake` HEAD/RETURN (anvil, output slot), spectator; Bukkit `failsClickChecks` on `InventoryClickEvent` / `check_cancelled` / region: **N/A** / `onTakeOutput` + `shouldBlockXp` |
 | EVT-026 | `ItemConsumeLeveler` | `FabricItemConsumeHandler` + `LivingEntityConsumeMixin` | Partial | **Sprint 17** — `isSourceEnabled(ITEM_CONSUME)`, spectator, `onConsumeItemCommit` javadoc; Bukkit `PlayerItemConsumeEvent` **cancel** / `LevelerContext` region: **N/A** / `shouldBlockXp` |
+| EVT-027 | `PotionSplashLeveler` | `FabricPotionSplashHandler` + `PotionEntityMixin` | Partial | **Sprint 18** — `lacksPotionEffectForParity` (Bukkit empty `getEffects`), `isSourceEnabled`, spectator, splash+lingering javadoc; Bukkit event **cancel** / region: **N/A** / `shouldBlockXp` |
 | EVT-015 | `JobsListener` | — | Missing | Out of scope | Reference jobs/economy listener; not default Granite scope. |
 | EVT-016 | `BukkitLeaderboardExclusion` (listener) | `FabricLeaderboardExclusion` | Partial | |
 
@@ -207,6 +208,7 @@ EVT-023,Listeners,EnchantingLeveler,FabricEnchantingXpHandler+mixin,Partial,None
 EVT-024,Listeners,GrindstoneLeveler,FabricGrindstoneXpHandler+mixin,Partial,None,Sprint 15 click gates; manual SPRINT_15
 EVT-025,Listeners,AnvilLeveler,FabricAnvilXpHandler+anvil onTake mixin,Partial,None,Sprint 16 take snapshot; manual SPRINT_16
 EVT-026,Listeners,ItemConsumeLeveler,FabricItemConsumeHandler+LivingEntityConsumeMixin,Partial,None,Sprint 17 commit+javadoc; manual SPRINT_17
+EVT-027,Listeners,PotionSplashLeveler,FabricPotionSplashHandler+PotionEntityMixin,Partial,None,Sprint 18 empty effects gate; manual SPRINT_18
 EVT-012,Listeners,RegionListener,—,Missing,Out of scope,Ref chunk load; ext region plugins N/A
 EVT-013,Listeners,RegionBlockListener,Placed block mixin+break+chunk load+Sprint05 integrity,Partial,Piston/fall/TreeFeature; ext region plugins N/A,
 ```

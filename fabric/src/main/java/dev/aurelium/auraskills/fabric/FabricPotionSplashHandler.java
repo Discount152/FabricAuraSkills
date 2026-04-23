@@ -17,6 +17,25 @@ public final class FabricPotionSplashHandler {
     private FabricPotionSplashHandler() {
     }
 
+    /**
+     * Bukkit: {@code ThrownPotion#getEffects()}.isEmpty() — no splash XP. Missing {@link PotionContentsComponent} is
+     * treated as no effect (Bukkit: empty or invalid stack).
+     */
+    public static boolean lacksPotionEffectForParity(PotionContentsComponent contents) {
+        if (contents == null) {
+            return true;
+        }
+        return contents.potion().isEmpty() && contents.customEffects().isEmpty();
+    }
+
+    /**
+     * Bukkit: {@code PotionSplashLeveler#handle(ProjectileHitEvent)} on {@code PotionSplashEvent} and
+     * {@code LingeringPotionSplashEvent} — only {@link net.minecraft.server.network.ServerPlayerEntity} thrower,
+     * non-empty effect list, first matching source. Fabric: start of
+     * {@link net.minecraft.entity.projectile.thrown.PotionEntity#onCollision} (splash + **lingering** throw share this
+     * entity; the cloud is a separate follow-up, not a second award here). Bukkit {@code ProjectileHitEvent#isCancelled} /
+     * location region: N/A; use {@link FabricXpHandlerUtil#shouldBlockXp} only.
+     */
     public static void onPotionCollision(PotionEntity potion) {
         if (potion.getEntityWorld().isClient()) {
             return;
@@ -25,13 +44,19 @@ public final class FabricPotionSplashHandler {
         if (plugin == null) {
             return;
         }
+        if (!plugin.getSkillManager().isSourceEnabled(SourceTypes.POTION_SPLASH)) {
+            return;
+        }
         Entity owner = potion.getOwner();
         if (!(owner instanceof ServerPlayerEntity player)) {
             return;
         }
+        if (player.isSpectator()) {
+            return;
+        }
         ItemStack stack = potion.getStack();
         PotionContentsComponent contents = stack.get(DataComponentTypes.POTION_CONTENTS);
-        if (contents != null && contents.potion().isEmpty() && contents.customEffects().isEmpty()) {
+        if (lacksPotionEffectForParity(contents)) {
             return;
         }
         SkillSource<PotionSplashXpSource> skillSource = findSource(plugin, stack);
