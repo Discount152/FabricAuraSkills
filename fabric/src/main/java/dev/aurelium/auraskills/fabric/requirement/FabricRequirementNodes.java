@@ -141,7 +141,7 @@ final class FabricBiomeNode extends FabricRequirementNode {
 }
 
 /**
- * WorldGuard-backed on Bukkit; without that hook on Fabric this node always passes (Bukkit returns true when WG absent).
+ * On the Bukkit reference this may query an external region provider when present. On Fabric, no such provider is bundled; this check always passes (config compatibility only).
  */
 final class FabricRegionNode extends FabricRequirementNode {
 

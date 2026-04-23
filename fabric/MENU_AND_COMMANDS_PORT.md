@@ -1,4 +1,8 @@
-# Paper-style menus + commands on Fabric — **Path A: full Slate port** (locked plan)
+# Menus + commands on Fabric (reference: Bukkit ACF + Slate) — **Path A: full Slate port** (locked plan)
+
+**Runtime:** **Fabric** only. This work implements **Fabric-native** menus and commands. The **reference** for *what* to cover is the **existing `bukkit` module** (ACF command tree, Slate menus) — **not** a goal of shipping Bukkit or Paper. **Final public** command roots, aliases, and **Granite Skills** copy are **TBD**; see **[PAPER_PARITY_PROGRAM.md](PAPER_PARITY_PROGRAM.md)**. This path is a **required** program track, not a side quest.
+
+**Cross-platform acceptance:** Menus and commands are **high risk** for **Java vs Bedrock** differences. The shipped mod must remain usable for **Bedrock players joining through Geyser + Floodgate** on the Fabric server — not only for direct **Java** clients. Do **not** assume Java-only inventory packets, click semantics, or chat UX; **validate** (or **document** known gaps) for the Bedrock path. See **§Geyser / Bedrock** in [PARITY_BACKLOG.md](PARITY_BACKLOG.md).
 
 This document is the **engineering plan** for shipping **menus and the full command tree together** (one release goal), by **porting Slate** to Fabric instead of writing a second menu engine.
 
@@ -10,8 +14,8 @@ Work still lands in **multiple commits/PRs**; “one big push” means **one coo
 
 | Topic | Choice |
 |--------|--------|
-| Menus | **Path A — full Slate port** (same engine concepts as Bukkit Slate, implemented for Fabric / `net.minecraft`). |
-| Commands | **Same tree and permissions as Paper**, implemented on Fabric using **ACF Brigadier** (`co.aikar:acf-brigadier`) where practical, registered from **`CommandRegistrationCallback`**. |
+| Menus | **Path A — full Slate port** (same engine concepts as Bukkit Slate, implemented for Fabric / `net.minecraft`). **Acceptance** includes **Java + Bedrock (Geyser/Floodgate)** where UIs can diverge. |
+| Commands | **Same capability coverage** as the **reference** ACF tree in the `bukkit` module, implemented on **Fabric** using **ACF Brigadier** (`co.aikar:acf-brigadier`) where practical, from **`CommandRegistrationCallback`**. Final **Granite Skills** public names/permissions: **TBD**; deliver **equivalent** admin/player capabilities first. **Validate** command feedback for **both** client paths. |
 | Delivery | **Menus + commands** ship in the **same release wave** (no “commands only” release first). |
 
 ---
@@ -42,16 +46,16 @@ That is **the real port surface** — not just “open a chest and set items.”
 
 ---
 
-## Commands (Paper parity)
+## Commands (reference ACF → Fabric)
 
-- **Root alias:** `skills|sk|skill` (same replacement as `%skills_alias%` in `CommandRegistrar`).
-- **Mirror** `bukkit/.../CommandRegistrar.java` + every registered command class (`SkillsRootCommand`, `StatsCommand`, `SkillCommand`, `XpCommand`, …).
-- **Permissions:** keep the same strings as `plugin.yml` / LuckPerms (`auraskills.command.*`, `auraskills.skill.*`, …).
-- **Implementation:** **`acf-brigadier`** + Fabric registration bridge; enable ACF unstable APIs as required for Brigadier (same pattern as Paper’s `enableUnstableAPI("help")` / brigadier flags).
+- **Reference aliases (Bukkit `CommandRegistrar`):** `skills|sk|skill` (as `%skills_alias%`). **Final Granite** roots/aliases: **TBD**; use reference for **capability** coverage.
+- **Coverage target:** `bukkit/.../CommandRegistrar.java` + every registered class (`SkillsRootCommand`, `StatsCommand`, `SkillCommand`, `XpCommand`, …) — **Fabric-native** handlers.
+- **Permissions:** reference uses `plugin.yml` / `auraskills.command.*` — treat as the **compatibility** baseline until the **Granite** public permission / node naming pass.
+- **Implementation:** **`acf-brigadier`** + Fabric registration bridge; enable ACF unstable APIs as required (reference: `enableUnstableAPI("help")` on Bukkit).
 
 ---
 
-## FabricAuraSkills integration (after Slate-Fabric exists)
+## FabricAuraSkills module wiring (after Slate-Fabric exists)
 
 1. **Dependency:** `:fabric` depends on **`slate-fabric`** (or the published Maven coordinate).
 2. **Resources:** ship **`menus/*.yml`** inside the Fabric jar (copy from `bukkit/src/main/resources/menus/` via Gradle `processResources`, or move menus to **`common`** once both platforms read the same files).

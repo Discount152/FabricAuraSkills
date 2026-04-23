@@ -14,7 +14,7 @@ public final class FabricConfigProvider extends ConfigProvider {
 
     @Override
     public void registerHooks(ConfigurationNode config) {
-        // Paper plugin hooks (WorldGuard, Vault, etc.) are not wired on Fabric in the MVP.
+        // Optional Bukkit/Paper plugin hooks from the reference build are not wired on Fabric in the default product.
     }
 
     @Override

@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.34
+
+### Changes
+
+- **Docs (Sprint 06): scope hard reset** — Active planning and control files (**`fabric/PAPER_PARITY_PROGRAM.md`**, **`fabric/PARITY_BACKLOG.md`**, **`fabric/PARITY_AUDIT_LEDGER_PHASE1.md`**, **`FABRIC_PORT_HANDOFF.md`**, **`fabric/RELEASE_GATES.md`**, sprint manual notes, **`fabric/PLAYER_GUIDE.md`**, **`fabric/FABRIC_QUICKSTART.md`**) no longer frame third-party Bukkit/Paper **ecosystems** as default roadmap. **Default product scope:** **Granite Skills** + **GraniteLib** on **Fabric** with **Java + Bedrock (Geyser/Floodgate)**; **`bukkit`** remains **reference only**. Ledger blocker tag **`Out of scope`** replaces integration-bridge language for non-Granite work. **Code comments:** `FabricRegionManager`, `FabricRequirementNodes` (region node), `FabricConfigProvider` — de-slanged. **`projectVersion` 2.3.33 → 2.3.34**.
+
 ## 2.3.33
 
 ### Changes

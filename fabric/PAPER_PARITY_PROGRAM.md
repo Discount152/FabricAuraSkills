@@ -1,6 +1,8 @@
 # Capability & reference-baseline program (Fabric)
 
 > **Filename:** `PAPER_PARITY_PROGRAM.md` (retained for links). **Runtime target:** **Fabric only** — not Paper, not Bukkit, not Spigot. The **`bukkit` module in this repository** is the **reference implementation** and **baseline capability inventory** (what to implement on Fabric), not a second platform the product runs on. **Shipped product identity:** [Granite Skills / GraniteLib](#granite-skills--granitelib--product-identity-read-second). **Supported players:** the mod must work for **Java clients** and for **Bedrock clients joining through Geyser + Floodgate** (see **Client & player access** below — cross-platform validation is part of “done”).
+>
+> **Hard product scope (default):** only **Granite Skills** (gameplay) + **GraniteLib** (Slate successor) on **Fabric**, validated for **Java and Bedrock (Geyser/Floodgate)**. Third-party Bukkit/Paper **ecosystem** plugins (region plugins, economy bridges, protocol shims, mob-stack plugins, etc.) are **out of scope** unless the owner explicitly re-adds them. Parity work means **reference behavior in this repo** implemented **Fabric-natively** — not “integrate every optional upstream plugin.”
 
 ## Runtime vs reference (read first)
 
@@ -46,22 +48,16 @@ A **single** mod JAR with a broken or stubbed **GraniteLib** does **not** count 
 | **Operator & player *capability* (inventory)** | **Coverage** and **flow classes** match the **reference `bukkit` implementation** (commands, menus, admin actions) — the audit list ([PARITY_AUDIT_LEDGER_PHASE1.md](PARITY_AUDIT_LEDGER_PHASE1.md) `CMD-*`, `MENU-*`). **Final** public command roots, aliases, and permission spellings for **Granite Skills** are **TBD**; the reference tree is a **scope checklist**, not the final namespace. **Acceptance:** usable for **Java** and, where applicable, for **Bedrock via Geyser/Floodgate**; track **Bedrock** status in the ledger optional columns. |
 | **Final public UX (Granite)** | Shipped **Granite Skills** copy and command names are **TBD** until the branding/rename sprint. Implementation work should complete **behavior**; **do not** treat legacy AuraSkills strings as immovable. |
 | **Storage & data** | Same `common` abstractions (YAML default, MySQL when enabled); shared migrations and layout. |
-| **Integrations (reference used plugins)** | The reference build uses **Bukkit-side plugins** (WorldGuard, Vault, jobs, …). The **Fabric** product implements **the same config knobs and behavior** via **Fabric mods and bridges** — not a Bukkit plugin classpath at runtime. |
+| **Optional reference hooks** | The **reference** JAR can register Bukkit **soft-dependencies** and plugin hooks. Those are **not** part of the default **Granite** product unless the owner adds them. Implement **in-repo** behavior on **Fabric**; treat unrelated upstream ecosystems as **out of scope** (see [PARITY_BACKLOG.md](PARITY_BACKLOG.md) *Out of scope*). |
 | **API** | `api-bukkit` is reference-only for this port. A **Fabric-native** API for mod authors may be added; re-exposing every Bukkit event is a **separate** deliverable (see [FABRIC_PORT_HANDOFF.md](../FABRIC_PORT_HANDOFF.md) §0.2). |
 
 ---
 
 ## 2. Gaps in the reference vs Fabric (tracked work)
 
-Some behaviors in the **reference** build depend on **Bukkit-only or third-party plugin APIs**. The Fabric product matches **behavior** where possible; it does **not** copy those classpaths. Implementation is **Fabric-native**.
+Some behaviors in the **reference** build are gated on **Bukkit-only APIs** or **optional** reference listeners. The Fabric product matches **core** **AuraSkills**/**Slate** behavior from this repository **Fabric-natively**; it does **not** install or plan for unrelated third-party plugin stacks.
 
-| Reference ecosystem (not shipped on Fabric) | Fabric approach |
-|---------------------------------------------|-----------------|
-| **PlaceholderAPI** | Fabric placeholder stack (e.g. server-side placeholder mods) or a small embedded resolver for documented `%` keys. |
-| **ProtocolLib** | Only if the **capability** requires raw packets; use Fabric networking APIs or document exclusion. |
-| **WorldGuard, Vault, …** (Bukkit plugins) | **Named Fabric mod** bridges or `common` + Fabric backends — not Bukkit JARs at runtime. |
-
-These items stay on the **same** parity backlog, with explicit “bridge mod” or “native implementation” decisions.
+**Out of scope (default):** see [PARITY_BACKLOG.md](PARITY_BACKLOG.md) — *Out of scope (explicit)*. Do **not** use the parity backlog to imply roadmap for external Paper/Bukkit-plugin ecosystems.
 
 ---
 
@@ -71,7 +67,7 @@ Use the **`bukkit` module** as the **feature and behavior inventory** to impleme
 - **Bootstrap:** `bukkit/.../AuraSkills.java` — `registerLevelers`, `registerEvents`, `registerAndLoadMenus`, hooks, `MenuRegistrar`, `CommandRegistrar`, `LootManager`, traits/abilities/mana registration.
 - **Commands:** `bukkit/.../commands/**`, especially `CommandRegistrar` and the ACF-registered tree (root aliases `skills` / `sk` / `skill` per `CommandRegistrar` / `plugin.yml`).
 - **Menus:** `bukkit/.../menus/**`, `MenuRegistrar`, Slate usage, YAML under Bukkit resources.
-- **Listeners / loot / regions:** e.g. `DamageListener`, `BlockLootHandler`, `FishingLootHandler`, `MobLootHandler`, `RegionListener`, `RegionBlockListener`, `ItemListener`, `ArmorListener`, `JobsListener`, … (same file as in `registerEvents()`).
+- **Listeners / loot / regions:** e.g. `DamageListener`, `BlockLootHandler`, `FishingLootHandler`, `MobLootHandler`, `RegionListener`, `RegionBlockListener`, `ItemListener`, `ArmorListener`, … (see `registerEvents()`; the reference may also register **optional** listeners such as jobs — **out of default Granite scope**).
 
 Any **Fabric** class that is still a **stub** or **no-op** relative to the **corresponding** reference class is **known debt** until this program closes (always within a **Fabric-native** design, not “embed Bukkit”).
 
@@ -79,14 +75,14 @@ Any **Fabric** class that is still a **stub** or **no-op** relative to the **cor
 
 ## 4. Major workstreams (map to handoff Phases A–G)
 
-The phased roadmap in [FABRIC_PORT_HANDOFF.md](../FABRIC_PORT_HANDOFF.md) **§11** is the technical breakdown. **Phase D (integrations)** and **Phase E (UI / commands)** are **in scope** for **equivalent coverage** (Fabric-native), not “only if a deployment asks.” Sequencing is by **risk and dependency** (e.g. stable levelers and persistence first).
+The phased roadmap in [FABRIC_PORT_HANDOFF.md](../FABRIC_PORT_HANDOFF.md) **§11** is the technical breakdown. **Phase D (requirements, permissions, reference-only hook parity)** and **Phase E (UI / commands)** are **in scope** for **equivalent coverage** (Fabric-native) where they are **in-repo** capabilities — not third-party Bukkit plugin ecosystems. Sequencing is by **risk and dependency** (e.g. stable levelers and persistence first).
 
 | Stream | Deliverable (on Fabric) | Primary references |
 |--------|------------------------|------------------|
 | **A** | Levelers, fishing/block/entity/damage, statistics (reference: `*Leveler`) | Reference `*Leveler`, `Fabric*Handler` / mixins |
 | **B** | Traits: register and wire **equivalent** handlers | `FabricTraitManager`, `BukkitTraitManager` (reference) |
 | **C** | Items, modifiers, armor, loot extras | Reference `ItemListener`, `Armor*`, `BukkitLootManager` + handlers |
-| **D** | Regions, economy, jobs, third-party mobs — **Fabric** bridges | `HookManager` (reference), `RegionListener`, `JobsListener` |
+| **D** | Remaining **reference** config & hooks that are still **in-repo** (not third-party plugin ecosystems) | `HookManager` (reference) patterns; **no** default roadmap for unrelated upstream bridges |
 | **E** | **Slate on Fabric** + full command **capability** (Brigadier/ACF) | [MENU_AND_COMMANDS_PORT.md](MENU_AND_COMMANDS_PORT.md) |
 | **F** | Public API for consumers (as needed) | `api`; `api-bukkit` is reference-only |
 | **G** | CI, tests, build hygiene | Handoff §11 Phase G |
@@ -99,7 +95,7 @@ The phased roadmap in [FABRIC_PORT_HANDOFF.md](../FABRIC_PORT_HANDOFF.md) **§11
 - **Config-driven regression:** Same default configs run on the **Fabric** mod → **comparable** XP curves, level-ups, and reward lines to the **reference** behavior (side-by-side check against the `bukkit` build or spec where useful; **Fabric** is the runtime under test).
 - **Command/menu *capability* matrix:** Every **reference** `CommandRegistrar` / `MenuRegistrar` item has a **Fabric-native** answer or a **documented** unsupported substitute. **Final Granite Skills** public names and copy: **separate** acceptance pass.
 - **Java + Bedrock (Geyser / Floodgate):** “Done” is **not** only “works for Java clients.” Features that surface as **chat, action bar, title, boss bar, commands, or inventory UIs** should be **verified** (or **explicitly** scoped as Java-only) on **Bedrock via Geyser + Floodgate** when behavior may diverge. **Equivalent capability** = correct for the **supported player population** (see §1), not a Java-only green check.
-- **Integrations:** Each **reference** integration is either a **Fabric** mod bridge or **explicitly** unsupported, with a clear alternative in [PARITY_BACKLOG.md](PARITY_BACKLOG.md).
+- **Third-party ecosystems:** **Out of scope** by default; see [PARITY_BACKLOG.md](PARITY_BACKLOG.md). Granite tracks **reference module** capability, not optional Bukkit plugin portfolios.
 - **Tests:** Expand `common` + `fabric` tests; server smoke for fragile mixins (e.g. fishing) after MC bumps; add **Geyser/Floodgate** to manual acceptance where UI or commands change.
 
 ---

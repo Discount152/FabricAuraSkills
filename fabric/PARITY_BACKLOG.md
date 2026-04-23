@@ -1,12 +1,24 @@
 # Fabric AuraSkills — Reference-baseline gap list (Fabric runtime)
 
-**Product target:** **Granite Skills** on **GraniteLib**, **Java Fabric** server only — with **equivalent capability** to the **reference `bukkit` module** in this repo (not Bukkit at runtime). **Supported players:** **Java** clients and **Bedrock** clients via **Geyser + Floodgate** on that Fabric server — see **[PAPER_PARITY_PROGRAM.md](PAPER_PARITY_PROGRAM.md)** (*Client / player access*). This file is a **living checklist**; shrink bullets as Fabric catches the reference.
+**Product target:** **Granite Skills** on **GraniteLib**, **Java Fabric** server only — with **equivalent capability** to the **in-repo** **reference `bukkit` module** (not Bukkit at runtime). **Supported players:** **Java** and **Bedrock (Geyser + Floodgate)**. This file is a **living checklist**; shrink bullets as Fabric catches the reference.
+
+**Hard scope rule:** the default product is **only** a Fabric- and Geyser/Floodgate-friendly port of **AuraSkills + Slate** behavior, shipped as **Granite Skills + GraniteLib**. Unrelated **Paper/Bukkit plugin ecosystems** are **out of default scope** — see *Out of scope (explicit)* below — and must **not** be read as a roadmap of future integrations.
 
 For **bootstrap order**, **Gradle `fabricOnly`**, **fishing mixin** notes, and **phased technical roadmap** (A–G), see **[FABRIC_PORT_HANDOFF.md](../FABRIC_PORT_HANDOFF.md)** in the repository root.
 
 **Baseline:** a **dedicated-server Fabric** mod can run skills, XP, storage, permissions, reload/save, and many sources; that is **not** the end state — it is the floor from which parity work continues.
 
-The sections below list behavior present in the **reference** (Bukkit-side) build that is **not yet** implemented on **Fabric**, or that differs. **Integrations** that were Bukkit plugins are in scope as **Fabric mod bridges** or shims.
+The sections below list behavior present in the **reference** module that is **not yet** implemented on **Fabric**, or that differs.
+
+## Out of scope (explicit)
+
+The following are **not** part of the default **Granite** product roadmap. The **reference** JAR may still mention or optionally hook them; that does **not** obligate this Fabric port. **Owner** may re-open any item later as a **separate** decision.
+
+- **Third-party Bukkit/Paper plugin stacks** (region plugins, generic economy/payment bridges, chat/protocol shims, optional metrics, other server-plugin ecosystems not required for core skills/Slate).
+- **Jobs / economy income** as implemented via reference **economy** hooks (reference `JobsListener` / `EconomyHook` are reference-only; not planned here by default).
+- **Reference-only** optional metrics/update checks — same rule: not default Granite scope.
+
+**In scope and staying:** **Fabric API**, **fabric-permissions-api** (bundled) + an optional **Fabric permission provider** in production, **Geyser + Floodgate** validation for cross-play, and all **in-repo** gameplay aligned with **`bukkit` as reference** (YAML, levelers, menus when ported, etc.).
 
 ## Geyser / Floodgate / Bedrock (cross-platform acceptance)
 
@@ -15,15 +27,6 @@ These are **product** requirements, not optional polish:
 - **Geyser + Floodgate** on the **same** Fabric server: Bedrock players must be able to use **core progression** (XP, skills, stats) without Java-only assumptions where avoidable.
 - **High-risk areas** for Java vs Bedrock divergence: **inventory menus**, **command UX**, **action bar / title / boss bar / chat** formatting, **click** behavior, **permission** resolution for linked Bedrock accounts (Floodgate), **item** interactions that assume Java edition client details.
 - **Definition of done:** a feature is not “finished” for the project if it only passes **Java-client** testing; either it is **verified** on Bedrock via Geyser/Floodgate or the **limitation is documented** and accepted (see [PAPER_PARITY_PROGRAM.md](PAPER_PARITY_PROGRAM.md) §5). Track per-row **Bedrock status** in [PARITY_AUDIT_LEDGER_PHASE1.md](PARITY_AUDIT_LEDGER_PHASE1.md) optional columns.
-
-## Integrations (reference: Bukkit soft-dependencies; Fabric = bridges)
-
-- **WorldGuard / regions** — no region flags or placed-block tracking; `check_replace` and similar behaviors from Paper are not replicated.
-- **Vault / economy hooks** — `EconomyHook` is never registered; jobs income and economy-tied rewards need a Fabric-specific hook later.
-- **PlaceholderAPI** — not applicable on Fabric as-is.
-- **LuckPerms / permissions** — **`fabric-permissions-api` is bundled (JiJ).** `FabricUser` uses `Permissions.check` (skill nodes `auraskills.skill.<name>` default **allow** if unset; arbitrary permission strings default **deny** if unset). Brigadier commands use `auraskills.command.*` nodes (see **`MOD_COMMANDS.txt`**). For production, install **LuckPerms Fabric** (or another provider) to manage nodes.
-- **ProtocolLib** — no protocol-level action bar overrides.
-- **MythicMobs, Slimefun, Towny, Nexo, hologram plugins** — not integrated; **in parity scope** with explicit Fabric mod bridges (see **PAPER_PARITY_PROGRAM.md** §2).
 
 ## Anti-exploit / balance
 
@@ -36,12 +39,12 @@ These are **product** requirements, not optional polish:
 
 ## Gameplay / sources
 
-- **Block skill loot (Bukkit `BlockLootHandler`)** — implemented on Fabric: **`FabricBlockLootHandler`** (pools, Excavation/Mining/Foraging/Farming providers, item + command loot, `override_vanilla_loot`). Manual: `SPRINT_02_MANUAL_VALIDATION.md`. **Gaps vs Bukkit:** no WorldGuard `CUSTOM_LOOT` flag, no Slimefun block skip; `override_vanilla_loot` clears vanilla `ItemEntity` instances in a small box in `AFTER` (not a inject of `Block.dropStacks`).
-- **Mob skill loot (Bukkit `MobLootHandler`)** — implemented on Fabric: **`FabricMobLootHandler`** + **`FabricMobContextProvider`** / **`FabricMobContext`** + **`FabricEntityXpSourceLookup`**. Manual: `SPRINT_03_MANUAL_VALIDATION.md`. **Gaps vs Bukkit:** no `LootDropEvent` cancel path, no WorldGuard `CUSTOM_LOOT`; last-hit `DamageSource` must be direct player or player-owned projectile (same class of cases as Bukkit’s `EntityDamageByEntityEvent` gate).
+- **Block skill loot (Bukkit `BlockLootHandler`)** — implemented on Fabric: **`FabricBlockLootHandler`** (pools, Excavation/Mining/Foraging/Farming providers, item + command loot, `override_vanilla_loot`). Manual: `SPRINT_02_MANUAL_VALIDATION.md`. **Gaps vs reference:** no Bukkit `LootDropEvent` cancel path; reference-only “custom loot” / plugin guards are **out of default scope**; `override_vanilla_loot` clears vanilla `ItemEntity` instances in a small box in `AFTER` (not a inject of `Block.dropStacks`).
+- **Mob skill loot (Bukkit `MobLootHandler`)** — implemented on Fabric: **`FabricMobLootHandler`** + **`FabricMobContextProvider`** / **`FabricMobContext`** + **`FabricEntityXpSourceLookup`**. Manual: `SPRINT_03_MANUAL_VALIDATION.md`. **Gaps vs reference:** no Bukkit `LootDropEvent` cancel; last-hit `DamageSource` must be direct player or player-owned projectile (same class of cases as Bukkit’s `EntityDamageByEntityEvent` gate). Plugin-only loot gating is **out of default scope**.
 - **On-death reset (`on_death.reset_skills` / `on_death.reset_xp` / `on_death.reset_xp_ratio`)** — implemented on Fabric: **`FabricPlayerDeathHandler`** (parity with Bukkit `PlayerDeath.java`). Validate Java + Geyser/Floodgate: `SPRINT_01_MANUAL_VALIDATION.md`.
 - **Block XP `states` on break** — `FabricBlockBreakHandler` + `FabricBlockStateMatcher` match YAML state maps, **`getBlocksBroken`** tall-plant multipliers, **`age` / `pickles`**, and **gathering-luck** after XP (`FabricBlockLevelerHelper`, `FabricInteractGatheringLuck`). **`INTERACT` / `COLLECT`** — `FabricBlockInteractHandler` (`UseBlockCallback`): same multipliers/luck; COLLECT item rules mirror Paper (shears / bottle / bucket on hive, nest, leveled cauldrons). Still not ported: Bukkit block metadata skips (`fertilized`, `filledManually`) and cauldron `filledManually` clearing.
-- **Placed-block exclusion (`check_replace`)** — **implemented:** **`FabricRegionManager`** + NBT `regiondata/` (Bukkit model), `BlockItemPlacedBlockMixin`, chunk load + save timer, break removal; **`FabricRegionBlockIntegrity`** + mixins (`PistonHandlerRegionMixin`, `FallingBlockEntityRegionMixin`, `TreeFeatureGrowContextMixin`, `TreeFeatureSetBlockMixin`) + tall-plant / support follow-up on break (`SPRINT_05_MANUAL_VALIDATION.md`). **Remaining gaps vs full Bukkit `RegionBlockListener`:** WorldGuard “blocked check replace regions” not on Fabric; mushroom / other non-`TreeFeature` grow paths may differ; rare piston/retract edge cases if reported.
-- **Entity death XP** — only **player-as-killer** + `DEATH` + `PLAYER` damager sources; **spawner_multiplier** is applied via `FabricSpawnerMobTracker` (no MythicMobs).
+- **Placed-block exclusion (`check_replace`)** — **implemented:** **`FabricRegionManager`** + NBT `regiondata/` (Bukkit model), `BlockItemPlacedBlockMixin`, chunk load + save timer, break removal; **`FabricRegionBlockIntegrity`** + mixins (`PistonHandlerRegionMixin`, `FallingBlockEntityRegionMixin`, `TreeFeatureGrowContextMixin`, `TreeFeatureSetBlockMixin`) + tall-plant / support follow-up on break (`SPRINT_05_MANUAL_VALIDATION.md`). **Remaining gaps vs reference `RegionBlockListener`:** config-driven “blocked check replace” via **external region plugins** is **out of default scope** (use `check_block_replace.blocked_worlds` and in-game rules); mushroom / other non-`TreeFeature` grow paths may differ; rare piston/retract edge cases if reported.
+- **Entity death XP** — only **player-as-killer** + `DEATH` + `PLAYER` damager sources; **spawner_multiplier** is applied via `FabricSpawnerMobTracker` (no third-party mob-plugin integration).
 - **Damage / defense / agility fall** — `DamageXpSource` is handled via `ServerLivingEntityEvents.AFTER_DAMAGE` (Minecraft damage types mapped to Bukkit-style `DamageCause`). Cooldowns, damager filters, shield blocking option, defense min/max, **mustSurvive**, and **no debuff** for splash **and lingering clouds** are mirrored; edge cases vs Paper may remain.
 - **Entity `DAMAGE` trigger** — Fabric awards XP for player melee/projectile hits; **spawner_multiplier** applies. **Bleed DoT** is attributed to the bleed applier via `FabricBleedListener` ThreadLocal for generic damage XP (no NBT persistence across restarts).
 - **Statistic sources** — `FabricStatisticXpHandler` supports **`Stats.CUSTOM`** ids (e.g. `walk_one_cm`) and typed keys **`mined/<block>`**, **`used/<item>`**, **`broken/<item>`**, **`picked_up/<item>`**, **`custom/<id>`** (registry ids or `minecraft:` paths). Mob-kills / damage-dealt style stats are not mapped yet.
@@ -59,7 +62,7 @@ These are **product** requirements, not optional polish:
 
 ## Commands
 
-- **ACF / full Paper `skills` root command tree** (aliases `sk` / `skill` per Bukkit) — **not** complete on Fabric. Current Brigadier surface: see **`MOD_COMMANDS.txt`**. **Planned:** **[MENU_AND_COMMANDS_PORT.md](MENU_AND_COMMANDS_PORT.md)** + **[PAPER_PARITY_PROGRAM.md](PAPER_PARITY_PROGRAM.md)**. Staff nodes **`auraskills.command.reload`** / **`auraskills.command.save`** (default **deny** when using LuckPerms).
+- **ACF / full reference `skills` root command tree** (aliases `sk` / `skill` per Bukkit) — **not** complete on Fabric. Current Brigadier surface: see **`MOD_COMMANDS.txt`**. **Planned:** **[MENU_AND_COMMANDS_PORT.md](MENU_AND_COMMANDS_PORT.md)** + **[PAPER_PARITY_PROGRAM.md](PAPER_PARITY_PROGRAM.md)**. Staff nodes **`auraskills.command.reload`** / **`auraskills.command.save`** (default **deny** with a **Fabric permission provider** in production, if you use one).
 
 ## API surface
 

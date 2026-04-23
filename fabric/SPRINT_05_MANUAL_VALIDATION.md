@@ -47,5 +47,5 @@
 ## Known gaps / caveats
 
 - **Huge mushroom** and other **non-`TreeFeature`** structure growth: not wired the same as Bukkit **`StructureGrowEvent`** for every feature type.
-- **WorldGuard** “blocked check replace” regions: not implemented on Fabric (unchanged).
+- **External region plugins** implementing “blocked check replace” like the reference: **out of default Granite scope** (use `check_block_replace.blocked_worlds` and server rules).
 - **Piston** logic follows **vanilla** `PistonHandler` moved/broken lists; if a mod changes piston behavior without going through this path, parity is not guaranteed.

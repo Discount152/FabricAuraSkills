@@ -15,12 +15,12 @@ This document is the **authoritative handoff** for the **Java Fabric** dedicated
 | **Runtime** | Dedicated **Java Fabric** server, **Minecraft 1.21.11**, **Java 21**. |
 | **Distribution** | **Two** standalone server-side **Fabric** JARs — **GraniteLib** (`:granitelib-fabric`) and **Granite Skills** (`:fabric`) — installed together; see **`fabric/PAPER_PARITY_PROGRAM.md`** *Two-JAR completion* and **`fabric/RELEASE_GATES.md`**. |
 | **Clients** | **Java** and **Bedrock** (via **Geyser** + **Floodgate** on the same server) join **without** client mods — server drives progression and UI. |
-| **Stack** | No Bukkit/Paper/Spigot at runtime. **Fabric API** + bundled **[fabric-permissions-api](https://github.com/lucko/fabric-permissions-api)** (JiJ); optional **LuckPerms Fabric** (or any provider) for real permission nodes. **Geyser** + **Floodgate** are **expected** in the supported deployment for cross-play; validate features on **both** player paths. |
+| **Stack** | No Bukkit/Paper/Spigot at runtime. **Fabric API** + bundled **[fabric-permissions-api](https://github.com/lucko/fabric-permissions-api)** (JiJ); optional **Fabric permission provider** in production for real allow/deny nodes. **Geyser** + **Floodgate** are **expected** in the supported deployment for cross-play; validate features on **both** player paths. |
 | **Config** | Same YAML / `config.yml` family as the reference layout, rooted at `<server>/config/auraskills/` via `FabricLoader`. |
 
 ### 0.2 Product target and how to measure progress
 
-**Primary engineering target (this repository):** a **Fabric-native** **Granite Skills** mod (with **GraniteLib**) with **equivalent player/operator capabilities** to the **reference `bukkit` module** in this monorepo — see **`fabric/PAPER_PARITY_PROGRAM.md`**. The **`bukkit` module** is the **reference implementation and feature inventory**; production runs **Fabric only** (no Bukkit/Paper/Spigot at runtime — see §0.1). **Supported clients:** **Java** and **Bedrock via Geyser + Floodgate** (see §0.1). Integrations are **Fabric mods/bridges**, not a Bukkit plugin stack.
+**Primary engineering target (this repository):** a **Fabric-native** **Granite Skills** mod (with **GraniteLib**) with **equivalent** core **AuraSkills + Slate** **capabilities** to the **reference `bukkit` module** in this monorepo — see **`fabric/PAPER_PARITY_PROGRAM.md`**. The **`bukkit` module** is the **reference implementation and feature inventory**; production runs **Fabric only** (no Bukkit/Paper/Spigot at runtime — see §0.1). **Supported clients:** **Java** and **Bedrock via Geyser + Floodgate** (see §0.1). Third-party Bukkit/Paper **plugin ecosystems** are **out of default scope** — see **`fabric/PARITY_BACKLOG.md`**.
 
 **Engineering axis (do not conflate with “we’re done”):** *Fabric stability* — load/save, permissions, no silent data loss, exploit resistance, mixin health after MC bumps — is tracked **alongside** reference-coverage work. Milestone releases can ship **intermediate** builds while gaps remain; the program goal is **full capability coverage on Fabric**, not “ship Bukkit.”
 
@@ -28,13 +28,13 @@ This document is the **authoritative handoff** for the **Java Fabric** dedicated
 
 ### 0.3 Milestones (intermediate vs program complete)
 
-**Intermediate milestone — “serious public Fabric server” (partial parity):** Join/load/save validated; **fabric-permissions-api** + recommended LuckPerms; core XP sources that are already ported behave; fishing mixin re-verified after MC/Yarn bumps; minimal **Brigadier** admin/player commands (see `fabric/MOD_COMMANDS.txt` / `fabric/FABRIC_QUICKSTART.md`) until the full tree lands. **Where feasible, spot-check** Bedrock (Geyser/Floodgate) for progression and chat/title surfaces.
+**Intermediate milestone — “serious public Fabric server” (partial parity):** Join/load/save validated; **fabric-permissions-api** + a **permission provider** in production if you need deny/allow; core XP sources that are already ported behave; fishing mixin re-verified after MC/Yarn bumps; minimal **Brigadier** admin/player commands (see `fabric/MOD_COMMANDS.txt` / `fabric/FABRIC_QUICKSTART.md`) until the full tree lands. **Where feasible, spot-check** Bedrock (Geyser/Floodgate) for progression and chat/title surfaces.
 
-**Program complete** — see **`fabric/PAPER_PARITY_PROGRAM.md` §5** and **two-JAR completion**: **GraniteLib** + **Granite Skills** are each **shippable**; together they match the **Bukkit reference** in **`fabric/RELEASE_GATES.md` Gate C**. Substantively: Slate-style menus and **full command capability** vs the **reference** tree (per **`fabric/MENU_AND_COMMANDS_PORT.md`**); traits/abilities/mana coverage aligned with the reference; loot/block/mob/region/jobs on **Fabric-native** handlers; integration gaps **closed** or **documented**; **final Granite** public command UX may still be a follow-up rebrand pass. **Acceptance** includes **Java and Bedrock-via-Geyser** for user-visible flows, or **explicit** documented limitations for Bedrock.
+**Program complete** — see **`fabric/PAPER_PARITY_PROGRAM.md` §5** and **two-JAR completion**: **GraniteLib** + **Granite Skills** are each **shippable**; together they match the **in-repo Bukkit reference** in **`fabric/RELEASE_GATES.md` Gate C**. Substantively: Slate-style menus and **full command capability** vs the **reference** tree (per **`fabric/MENU_AND_COMMANDS_PORT.md`**); traits/abilities/mana and core loot/block/mob/region behavior on **Fabric-native** handlers; **third-party Bukkit plugin ecosystems** remain **out of default scope** (see **`fabric/PARITY_BACKLOG.md`**); **final Granite** public command UX may still be a follow-up rebrand pass. **Acceptance** includes **Java and Bedrock-via-Geyser** for user-visible flows, or **explicit** documented limitations for Bedrock.
 
 **Test / acceptance expectation:** do not treat “passes on Java only” as sufficient for **menus, commands, or formatted messages**; include **Geyser + Floodgate** in manual (or automated where possible) test plans.
 
-Milestone checklists in older revisions of this file that said integrations or menus were “defer unless a deployment needs them” are **superseded** by **`PAPER_PARITY_PROGRAM.md`** for product intent; sequencing still follows **§11** below.
+Milestone checklists in older revisions of this file that suggested deferring **menus** unless a deployment needs them are **superseded** by **`PAPER_PARITY_PROGRAM.md`** for product intent; sequencing still follows **§11** below.
 
 ### 0.4 Anti-exploit and balance (first-class)
 
@@ -240,9 +240,9 @@ Explicit registrations:
 - `ManaAbilityUseLeveler` — **`FabricManaAbilityUseXpHandler`** implements YAML matching; **providers that call it after activation** include `FabricReplenish`, `FabricSpeedMine`, `FabricLightningBlade`, and **Sharp Hook** (`ServerPlayerEntitySharpHookMixin` + `FabricSharpHook`). **Still missing:** Treecapitator, Terraform, Charged Shot, Absorption, and any Bukkit-only `ManaAbilityActivateEvent` parity.
 - **Brewing** — **`BREW`** on stand **`craft`** (nearest open GUI); **`TAKEOUT`** via `FabricBrewingTakeoutTracker` + `ScreenHandlerBrewingTakeoutXpMixin`. **Not ported:** Bukkit **reference** stand **owner** metadata (place/open claim), hopper edge cases.
 - Previously missing but **now implemented** (see above): `AnvilLeveler`, `GrindstoneLeveler`, `ItemConsumeLeveler`, `PotionSplashLeveler`, `EnchantingLeveler`, partial `BrewingLeveler`
-- Full **`EntityLeveler`** (spawner tags, MythicMobs, all triggers)
+- Full **`EntityLeveler`** (spawner tags, all reference triggers; third-party mob plugins **out of default scope**)
 - Full **`StatisticLeveler`** (block/item mined/used stat mapping)
-- Full **`BlockLeveler`** — **state** matching is implemented (`FabricBlockStateMatcher`, `FabricBlockBreakHandler`); **`check_replace`** uses **`FabricRegionManager`** + placed-block NBT (Sprint 04) and **`FabricRegionBlockIntegrity`** + mixins for pistons, falling sand/gravel, `TreeFeature` grow-Y cleanup, and tall-plant / support follow-up (Sprint 05 — **`fabric/SPRINT_05_MANUAL_VALIDATION.md`**). Remaining gaps: WorldGuard-style blocked regions on Fabric, mushroom / non-`TreeFeature` grows, unreported edge cases.
+- Full **`BlockLeveler`** — **state** matching is implemented (`FabricBlockStateMatcher`, `FabricBlockBreakHandler`); **`check_replace`** uses **`FabricRegionManager`** + placed-block NBT (Sprint 04) and **`FabricRegionBlockIntegrity`** + mixins for pistons, falling sand/gravel, `TreeFeature` grow-Y cleanup, and tall-plant / support follow-up (Sprint 05 — **`fabric/SPRINT_05_MANUAL_VALIDATION.md`**). Remaining gaps: config that relied on **external region plugins** is **out of default scope** (use `blocked_worlds` / ops); mushroom / non-`TreeFeature` grows; unreported edge cases.
 
 ---
 
@@ -307,9 +307,9 @@ Mirrors **`FishingLeveler`** logic conceptually:
 | `FabricUser` (permissions) | `fabric-permissions-api`; Floodgate + LP | **Bedrock:** confirm permission nodes for linked accounts. See **`fabric/PARITY_BACKLOG.md`**. |
 | `FabricTraitManager` / `FabricAbilityManager` / `FabricManaAbilityManager` | Register implementations | Many handlers exist — diff vs Bukkit; **not** “empty” in the sense of a blank class (verify `FabricAuraSkills#finishEnable`). |
 | `FabricEventHandler` / `LevelManager` | Common events, XP | Bukkit still fires more explicit events; Fabric may use `addXp` without the same event API. |
-| `HookManager` | Soft-dependencies | **Reference** registers Bukkit plugin hooks; Fabric uses **mod bridges** or empty until ported. |
+| `HookManager` | Soft-dependencies (reference) | **Reference** may register optional hooks; default Granite scope is **in-repo** behavior on Fabric, not third-party plugin portfolios. |
 
-**Bukkit `AuraSkills#registerEvents()`** (non-leveler) lists **`BlockLootHandler`**, **`FishingLootHandler`**, **`MobLootHandler`**, region listeners, armor, requirements, jobs, etc. **Fabric** covers parts via handlers/mixins — **gaps** live in **`PARITY_BACKLOG.md`**. Reconcile this table when **`fabric/…` changes significantly.
+**Bukkit `AuraSkills#registerEvents()`** (non-leveler) lists **`BlockLootHandler`**, **`FishingLootHandler`**, **`MobLootHandler`**, region listeners, armor, requirements, and **optional** reference-only listeners. **Fabric** covers the **in-scope** subset via handlers/mixins — **gaps** live in **`PARITY_BACKLOG.md`** (and *Out of scope* for non-Granite ecosystems). Reconcile this table when **`fabric/…` changes significantly.
 
 ---
 
@@ -340,7 +340,7 @@ Performed successfully in a clean-cache audit:
 
 ## 11. Roadmap: Reference-baseline features on Fabric (sequenced)
 
-**Product target:** **Fabric-native** **Granite Skills** with **equivalent capability** to the **`bukkit` reference** — see **`fabric/PAPER_PARITY_PROGRAM.md`**. Phases order work by **dependency and risk** (levelers, persistence, anti-exploit before large UI). Phase D/E (integrations, Slate + full commands) are **in scope**; they are **sequenced**, not optional.
+**Product target:** **Fabric-native** **Granite Skills** with **equivalent capability** to the **`bukkit` reference** — see **`fabric/PAPER_PARITY_PROGRAM.md`**. Phases order work by **dependency and risk** (levelers, persistence, anti-exploit before large UI). Phase D/E (**requirements/permissions** where in-repo, **Slate** + full commands) are **in scope**; they are **sequenced**, not optional. Third-party plugin ecosystems: **out of default scope** per **`PARITY_BACKLOG.md`**.
 
 **Class names** in the tables point at the **reference** implementation under `bukkit/`.
 
@@ -350,7 +350,7 @@ Performed successfully in a clean-cache audit:
 |----------|-----------------|-------------|
 | High | `FishingLeveler` + `FishingLootHandler` | Keep mixin approach; add **loot table loading** + **`FabricLootItemMatcher` pool support**; port open-water / bonus drop behavior if required by configs. |
 | High | `BlockLeveler` + `BlockLevelerHelper` | Block **state** matching (`states` / `after_states` in YAML); **placed-block** / `check_replace` if configs depend on it. |
-| High | `EntityLeveler` | Spawner detection, full trigger set, MythicMobs integration (if still in scope), parity with `EntityXpGainEvent`. |
+| High | `EntityLeveler` | Spawner detection, full **reference** trigger set; `EntityXpGainEvent`-class parity on Fabric. Third-party mob plugins: **out of default scope**. |
 | Medium | `StatisticLeveler` | Map Bukkit statistic IDs to Minecraft stats / scoreboard / criteria not yet wired. |
 | Medium | `AnvilLeveler`, `EnchantingLeveler`, `GrindstoneLeveler` | ScreenHandler / anvil / grindstone / enchant events on Fabric API or mixins. |
 | Medium | `BrewingLeveler` | Brewing stand tick / inventory change hooks. |
@@ -372,16 +372,16 @@ Performed successfully in a clean-cache audit:
 | Bukkit / reference | Fabric (runtime) goal |
 |-----------------|-------------|
 | `ItemListener`, `ArmorListener`, `RequirementListener` | Harden `FabricItemRegistry` / `FabricModifierManager` vs **Bukkit** item/armor behavior; armor equip and requirements (see `PARITY_BACKLOG`). |
-| `BukkitLootManager` + block/mob **loot** handlers | **`FabricBlockLootHandler`** (block) + **`FabricMobLootHandler`** (mob) + **`FabricLootManager`**; **`FabricMobContextProvider`**; **`FabricRegionManager`** for block **`check_replace`**. Gaps: no `LootDropEvent`, no WorldGuard `CUSTOM_LOOT` (see ledger **`EVT-005`–`007`**, sprints 02–04). |
+| `BukkitLootManager` + block/mob **loot** handlers | **`FabricBlockLootHandler`** (block) + **`FabricMobLootHandler`** (mob) + **`FabricLootManager`**; **`FabricMobContextProvider`**; **`FabricRegionManager`** for block **`check_replace`**. Gaps: no Bukkit `LootDropEvent` cancel; plugin-only loot gating **out of default scope** (see ledger **`EVT-005`–`007`**, sprints 02–04). |
 
-### Phase D — Regions, economy, permissions, integrations
+### Phase D — Requirements, permissions, and reference-only hooks
 
 | Bukkit / reference | Fabric (runtime) goal |
 |-----------------|-------------|
-| `RegionListener`, `RegionBlockListener` | WorldGuard equivalent or Fabric region API; document if intentionally unsupported. |
-| `JobsListener`, economy hooks | Fabric economy / jobs mods or custom bridge. |
-| `FabricUser` permission checks | **Done (baseline):** fabric-permissions-api + JiJ; recommend **LuckPerms Fabric** in production. Extend for job-limit permission enumeration if needed (see Bukkit `getPermissionJobLimit`). |
-| Vault / PlaceholderAPI / ProtocolLib | N/A or mod-specific replacements; **in parity scope** with explicit Fabric/m bridge choices (see **`fabric/PAPER_PARITY_PROGRAM.md` §2**). |
+| `RegionListener`, region requirements, `RegionBlockListener` | **In-repo** behavior: `FabricRegionManager`, `FabricPlacedBlockBreakHandler`, `FabricRegionBlockIntegrity`, etc. Third-party “region mod” bridges: **out of default scope** (see **`PARITY_BACKLOG.md`**). |
+| `JobsListener` / reference jobs + economy | **Out of default Granite scope** — not a planned integration surface here. |
+| `FabricUser` permission checks | **Done (baseline):** fabric-permissions-api + JiJ; use a **Fabric permission provider** in production for real deny/allow. |
+| Optional reference hooks (chat/protocol/placeholders) | **Out of default scope** unless the owner re-opens; prefer **Fabric-native** text surfaces and document gaps. |
 
 ### Phase E — UI and commands
 
@@ -427,10 +427,10 @@ Performed successfully in a clean-cache audit:
 
 1. **The Fabric mod is a thin bridge:** most behavior still lives in **`common`**; Fabric supplies **events, mixins, commands, storage path, matchers, and permission checks**. **Product target:** **Fabric-native Granite Skills** for **Java + Bedrock (Geyser/Floodgate)** with **reference-level capability** — see **`fabric/PAPER_PARITY_PROGRAM.md`**.
 2. **Gaps until the program is complete:** many **reference-only** listeners, full command/menu surface, and third-party hooks are still **partial or missing** on Fabric — `fabric/PARITY_BACKLOG.md` and **§4–5** in this file.
-3. **Permissions:** **fabric-permissions-api** is bundled; skill XP uses **allow-by-default** on skill nodes so **vanilla** Fabric (no provider) still works — use **LuckPerms** (or similar) to deny nodes and to manage command nodes; test **Floodgate-linked** Bedrock if you rely on per-player nodes.
+3. **Permissions:** **fabric-permissions-api** is bundled; skill XP uses **allow-by-default** on skill nodes so **vanilla** Fabric (no provider) still works — use a **Fabric permission provider** to deny nodes and to manage command nodes; test **Floodgate-linked** Bedrock if you rely on per-player nodes.
 4. **Fishing XP is mixin-based** and sensitive to **Yarn** changes; keep **loot** and **loot_pool** behavior aligned with **Bukkit** fish/loot paths as work continues.
 5. **Builds:** use **`-PfabricOnly=true`** when the **Bukkit** `reference` toolchain or Gradle transforms break; use **full `./gradlew build`** for release confidence.
-6. **Roadmap:** use **Phases A–G** with **sequencing** from **§11**; see **`fabric/PAPER_PARITY_PROGRAM.md`**. Prioritize **levelers + anti-exploit + persistence** first, then **traits/rewards/loot depth**, then **integrations and UI/commands**; **user-visible** items need **Java + Bedrock** acceptance per §0.1 / `PARITY_BACKLOG`.
+6. **Roadmap:** use **Phases A–G** with **sequencing** from **§11**; see **`fabric/PAPER_PARITY_PROGRAM.md`**. Prioritize **levelers + anti-exploit + persistence** first, then **traits/rewards/loot depth**, then **in-repo requirements + UI/commands**; **user-visible** items need **Java + Bedrock** acceptance per §0.1 / `PARITY_BACKLOG`.
 
 ---
 

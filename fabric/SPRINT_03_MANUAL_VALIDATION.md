@@ -29,5 +29,5 @@
 ## Known differences vs Bukkit
 
 - **LootDropEvent:** Fabric does not fire Bukkit’s cancellable `LootDropEvent` before item spawn.
-- **WorldGuard** `CUSTOM_LOOT`: not applied on Fabric.
+- **Plugin-only** loot gating from the reference stack: **out of default Granite scope** on Fabric.
 - **Killer gating:** Bukkit only runs when the last damage is an `EntityDamageByEntityEvent`. Fabric uses the **killing** `DamageSource` from `AFTER_DEATH`; if the final hit is not attributable to a player/owned projectile, no skill loot (aligned intent; edge cases like bleed-only kills may differ from Bukkit if last cause differs).

@@ -8,7 +8,7 @@
 
 **Status values** (use in `Audit Matrix` → Status): `Missing` | `Stub` | `Partial` | `Equivalent` | `Needs Regression Proof` — prefer **Partial** or **Needs Regression Proof** over **Stub** when Fabric already implements real logic.
 
-**Blocker tags** (use in Blocker / dependency column): `Slate-Fabric` | `ACF/Brigadier` | `Integration bridge` | `Geyser/Bedrock` | `Common seam` | `None`
+**Blocker tags** (use in Blocker / dependency column): `Slate-Fabric` | `ACF/Brigadier` | `Out of scope` | `Geyser/Bedrock` | `Common seam` | `None` — use **`Out of scope`** for **third-party Bukkit/Paper plugin ecosystems** that are not part of the default Granite Skills / GraniteLib product; **`Common seam`** for **in-repo** shared API (e.g. `api-bukkit` reference) without implying an external plugin roadmap.
 
 ### Row family interpretation
 
@@ -61,11 +61,11 @@
 | AS-009 | `messageProvider.setACFMessages` | — | Missing | ACF/Brigadier | No ACF message integration. |
 | AS-010 | `BukkitLevelManager` + `registerLevelers` | `FabricLevelManager` + `registerFabricXpHandlers` | Partial | None | Levelers wired via Fabric handlers/mixins; compare to Bukkit list. |
 | AS-011 | `BukkitAntiAfkManager` | `FabricAntiAfkManager` | Partial | None | `common` checks; verify parity with Bukkit listeners. |
-| AS-012 | `Metrics` + `MetricsUtil` | — | Missing | Integration bridge | No bStats on Fabric in tree. |
+| AS-012 | `Metrics` + `MetricsUtil` | — | Missing | Out of scope | Reference optional metrics; not default Granite product scope. |
 | AS-013 | `UpdateChecker` | — | Missing | None | Optional product parity. |
-| AS-014 | `onLoad` → `WorldGuardFlags` | — | Missing | Integration bridge | Fabric has no WG; region requirements stub (see `FabricRegionNode`). |
+| AS-014 | `onLoad` → Bukkit region-flag hook (reference) | — | Missing | Out of scope | `FabricRegionNode` is a stub; third-party region plugins are not a default target. |
 | AS-015 | First-tick: `SkillsLoadEvent` | — | Missing | Common seam | No Bukkit event fired; add Fabric/common event if API parity required. |
-| AS-016 | First-tick: `requirementManager` after skills | `FabricRequirementManager` in `finishEnable` | Partial | Integration bridge | Region node always `true` without bridge. |
+| AS-016 | First-tick: `requirementManager` after skills | `FabricRequirementManager` in `finishEnable` | Partial | Out of scope | `region` requirement type: no external region provider in default scope; node passes. |
 | AS-017 | First-tick: `lootManager.loadLootTables` | `FabricLootManager.loadLootTables` | Partial | None | Compare to Bukkit loot + handler coverage. |
 | AS-018 | `traitManager.registerTraitImplementations` | `FabricTraitManager.registerTraitImplementations` | Partial | Needs Regression Proof | Many traits registered; verify full Bukkit set. |
 | AS-019 | `abilityManager.registerAbilityImplementations` | `FabricAbilityManager.registerAbilityImplementations` | Partial | Needs Regression Proof | Many skills covered; diff vs `BukkitAbilityManager`. |
@@ -101,7 +101,7 @@
 | CMD-013 | `OpenMenuCommand` | — | Missing | Slate-Fabric + ACF/Brigadier |
 | CMD-014 | `ManaAbilityCommand` | — | Missing | ACF/Brigadier |
 | CMD-015 | `TraitCommand` | — | Missing | ACF/Brigadier |
-| CMD-016 | `JobsCommand` | — | Missing | Integration bridge + ACF/Brigadier |
+| CMD-016 | `JobsCommand` | — | Missing | Out of scope + ACF/Brigadier | Reference jobs feature; not default Granite scope. |
 | CMD-017 | `AntiAfkCommand` | — | Missing | ACF/Brigadier |
 | CMD-018 | `registerSkillCommands` (per-skill `SkillCommands.*`) | — | Missing | ACF/Brigadier + config `ENABLE_SKILL_COMMANDS` |
 | CMD-019 | ACF: replacements (`skills_alias`, desc keys) | — | Missing | ACF/Brigadier | |
@@ -137,17 +137,17 @@
 | EVT-002 | `DamageListener` | `FabricCombatXpHandler` + `FabricDamagePipeline` | Partial | |
 | EVT-003 | `CriticalHandler` | `FabricCriticalHandler` (via pipeline) | Partial | |
 | EVT-004 | `BlockInteractions` | `FabricBlockBreakHandler`, `FabricBlockInteractHandler`, etc. | Partial | |
-| EVT-005 | `BlockLootHandler` | `FabricBlockLootHandler` + `FabricBlockXpSourceLookup` + `FabricRegionManager` | Partial | Bukkit `BlockLootHandler` parity: pools, providers, `override_vanilla_loot` (AFTER item clear + drops), `check_replace` via placed-block NBT. **Not** WG `CUSTOM_LOOT` / Slimefun. |
+| EVT-005 | `BlockLootHandler` | `FabricBlockLootHandler` + `FabricBlockXpSourceLookup` + `FabricRegionManager` | Partial | Core pool + `override_vanilla_loot` + `check_replace` via placed-block NBT. Plugin-only loot gating: **out of scope**. |
 | EVT-006 | `FishingLootHandler` | `FabricFishingLootHandler` (invoked from fishing XP path) | Partial | Not a Bukkit-style event listener. |
-| EVT-007 | `MobLootHandler` | `FabricMobLootHandler` | Partial | No `LootDropEvent`; no WorldGuard `CUSTOM_LOOT`; skill from `FabricEntityXpSourceLookup` (Fabric damage cause mapping). |
+| EVT-007 | `MobLootHandler` | `FabricMobLootHandler` | Partial | No Bukkit `LootDropEvent` cancel; skill from `FabricEntityXpSourceLookup` (Fabric damage cause mapping). Plugin-only gates: **out of scope**. |
 | EVT-008 | `RequirementListener` | `FabricRequirementHandlers` | Partial | |
 | EVT-009 | `ItemListener` | Item/modifier stack | Partial | |
 | EVT-010 | `ArmorListener` | Partial via modifier schedules | Partial | |
 | EVT-011 | `ArmorModifierListener` | `FabricItemModifierSchedules` / state | Partial | |
-| EVT-012 | `RegionListener` | — | Missing | Integration bridge |
-| EVT-013 | `RegionBlockListener` | `BlockItemPlacedBlockMixin` + `FabricPlacedBlockBreakHandler` + `FabricRegionLifecycle` + `FabricRegionBlockIntegrity` + piston/fall/tree mixins (Sprint 05) | Partial | Piston + fall + `TreeFeature` same-Y + tall/support; WG blocked regions N/A; mushroom grow & rare edges **Needs Regression Proof** |
+| EVT-012 | `RegionListener` | — | Missing | Out of scope | Reference chunk/region file load; third-party region stack not a default target. |
+| EVT-013 | `RegionBlockListener` | `BlockItemPlacedBlockMixin` + `FabricPlacedBlockBreakHandler` + `FabricRegionLifecycle` + `FabricRegionBlockIntegrity` + piston/fall/tree mixins (Sprint 05) | Partial | Piston + fall + `TreeFeature` same-Y + tall/support; external “blocked region” plugins **out of default scope**; mushroom grow & rare edges **Needs Regression Proof** |
 | EVT-014 | `PlayerDeath` (`ON_DEATH_RESET_SKILLS` / `ON_DEATH_RESET_XP` / `ON_DEATH_RESET_XP_RATIO`) | `FabricPlayerDeathHandler` | Equivalent | Bukkit `PlayerDeath.java` — `ServerLivingEntityEvents.AFTER_DEATH` for `ServerPlayerEntity`; Geyser/Floodgate = same server player path. |
-| EVT-015 | `JobsListener` | — | Missing | Integration bridge |
+| EVT-015 | `JobsListener` | — | Missing | Out of scope | Reference jobs/economy listener; not default Granite scope. |
 | EVT-016 | `BukkitLeaderboardExclusion` (listener) | `FabricLeaderboardExclusion` | Partial | |
 
 ---
@@ -161,11 +161,11 @@
 | **0** | **Player death reset** — `ON_DEATH_RESET_SKILLS` / `ON_DEATH_RESET_XP` (mirror `PlayerDeath.java`) | Config parity; `EVT-014`; **no** Slate/ACF dependency | Low — isolated listener |
 | **1** | **Slate-Fabric vertical slice** — one menu (`skills`) open/close, one YAML, `Text`/scheduler bridge | Unblocks `OpenMenuCommand`, `MENU-*`, `CMD-013` | High — sets architecture |
 | **2** | **ACF + Brigadier** — `CommandRegistrar` skeleton: `SkillsRootCommand` + `OpenMenuCommand` + shared contexts (`Skill`, `User`) | Unlocks `CMD-001`–`CMD-021` incrementally. **Caveat:** match **Paper command *capability***, not a premature freeze of final **Granite Skills** public names/aliases (see [PAPER_PARITY_PROGRAM.md](PAPER_PARITY_PROGRAM.md)). | Medium — dependency on (1) for menu commands |
-| **3** | **Loot: `BlockLootHandler` / `MobLootHandler` parity** | Gameplay + economy feel; `EVT-005`, `EVT-007` | Medium — no Slate dependency |
-| **4** | **WorldGuard / region bridge** (or chosen Fabric mod) + `FabricRegionNode` | Requirements + Paper configs; `AS-014`, `EVT-012`–`013` | Medium — external mod API |
+| **3** | **Loot: `BlockLootHandler` / `MobLootHandler` parity** | Gameplay feel; `EVT-005`, `EVT-007` | Medium — no Slate dependency |
+| **4** | **Requirement** `region` + `FabricRegionNode` clarity | Document stub vs reference; `AS-014`, `AS-016`, `EVT-012` | Low — no external mod API in default scope |
 | **5** | **SkillsLoadEvent (or common event)** on Fabric if API consumers need it | `AS-015` | Low–medium |
 
-**Defer to later wave (not first batch):** bStats (`AS-012`), `UpdateChecker` (`AS-013`), `JobsListener` / Vault (`EVT-015`), full `api-bukkit` (`AS-002`).
+**Not in default Granite roadmap:** optional reference metrics (`AS-012`), `UpdateChecker` (`AS-013`), reference jobs (`EVT-015` / `CMD-016`); full `api-bukkit` (`AS-002`) remains **common seam** for reference types only.
 
 ---
 
@@ -177,19 +177,19 @@ AS-001,Bootstrap,ApiRegistration,FabricAuraSkills+ApiRegistrationUtil,Equivalent
 AS-002,Bootstrap,ApiBukkit+ApiItemManager,—,Missing,Common seam,api-bukkit
 AS-006,Bootstrap,Slate+MenuFileManager+InventoryManager,FabricMenuHelper,Missing,Slate-Fabric,Stub menu helper
 AS-008,Bootstrap,CommandRegistrar→PaperCommandManager,FabricAuraSkillsCommands,Partial,ACF/Brigadier,Small command set
-AS-012,Bootstrap,Metrics+MetricsUtil,—,Missing,Integration bridge,bStats
-AS-014,Bootstrap,WorldGuardFlags onLoad,—,Missing,Integration bridge,WG 7.x
+AS-012,Bootstrap,Metrics+MetricsUtil,—,Missing,Out of scope,Optional reference metrics
+AS-014,Bootstrap,onLoad region flags hook ref,—,Missing,Out of scope,Stub FabricRegionNode
 AS-015,Bootstrap,SkillsLoadEvent,—,Missing,Common seam,API event
 AS-022,Bootstrap,registerAndLoadMenus,—,Missing,Slate-Fabric,
 CMD-001,Commands,SkillsRootCommand,FabricAuraSkillsCommands,Partial,ACF/Brigadier+Slate-Fabric,Aliases differ
 CMD-013,Commands,OpenMenuCommand,—,Missing,Slate-Fabric+ACF/Brigadier,
 MENU-003,Menus,Menu skills,—,Missing,Slate-Fabric,
-EVT-005,Listeners,BlockLootHandler,FabricBlockLootHandler+FabricRegionManager,Partial,None,No WG/Slimefun; check_replace via NBT; see Sprint 04
+EVT-005,Listeners,BlockLootHandler,FabricBlockLootHandler+FabricRegionManager,Partial,None,Plugin loot gates out of scope; check_replace NBT; Sprint 04
 EVT-006,Listeners,FishingLootHandler,FabricFishingLootHandler,Partial,None,Hooked from fishing XP
-EVT-007,Listeners,MobLootHandler,FabricMobLootHandler,Partial,No LootDropEvent / WG; see Sprint 03,
+EVT-007,Listeners,MobLootHandler,FabricMobLootHandler,Partial,No Bukkit LootDropEvent cancel; Sprint 03,
 EVT-014,Listeners,PlayerDeath,FabricPlayerDeathHandler,Equivalent,None,on_death.* config; see Sprint 01 manual
-EVT-012,Listeners,RegionListener,—,Missing,Integration bridge,
-EVT-013,Listeners,RegionBlockListener,Placed block mixin+break+chunk load+Sprint05 integrity,Partial,Piston/fall/TreeFeature grow Y+tall/support;WG N/A,
+EVT-012,Listeners,RegionListener,—,Missing,Out of scope,Ref chunk load; ext region plugins N/A
+EVT-013,Listeners,RegionBlockListener,Placed block mixin+break+chunk load+Sprint05 integrity,Partial,Piston/fall/TreeFeature; ext region plugins N/A,
 ```
 
 *(Extend this CSV with all rows from §2–5 as you grow the sheet.)*

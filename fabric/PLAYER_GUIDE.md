@@ -2,6 +2,8 @@
 
 This guide is for **people playing on a Minecraft Java server** that has **Fabric AuraSkills** installed. It explains what the mod does, what you will see, and what you can type. It matches **this Fabric port** (dedicated server). Some things differ from the original Paper plugin; those are called out at the end.
 
+**Quick command list (plain text):** **`MOD_COMMANDS.txt`** (same folder as this file).
+
 ---
 
 ## 1. What you need to play
@@ -205,7 +207,7 @@ Read this so you do not think the server is “broken”:
 - **No big inventory menu** from Slate for `/skills` like Paper; use **`/auraskills skills`** and chat messages.
 - **Boss bar XP display** is **not** implemented; XP feedback is mainly **action bar / chat** depending on config.
 - **Level-up “title”** may appear as **chat text**, not a cinematic title.
-- **Economy / Vault / WorldGuard / PlaceholderAPI** style hooks from Paper are **not** present here; jobs payouts tied to Vault will not work the same unless the server added something else.
+- **Optional Paper/Bukkit-only** hooks from the reference build (economy, external region plugins, protocol/placeholder shims) are **not** part of this Fabric product; core skills + config come from **`bukkit` as reference**, not from third-party plugin stacks.
 - **Item modifiers / custom NBT items** from the full Paper item pipeline are **not** ported; do not expect every item lore line from a Paper server to behave identically.
 
 For a shorter admin checklist, see **`fabric/FABRIC_QUICKSTART.md`**. For deep config keys, the official wiki is still helpful for **YAML shape**, but always trust the files actually on **your** server:  

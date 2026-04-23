@@ -84,7 +84,7 @@ public final class FabricRegionManager extends RegionManager {
     }
 
     /**
-     * Bukkit {@code BukkitRegionManager#addPlacedBlock} — for mod hooks (e.g. Slimefun) that need to mark a block
+     * Bukkit {@code BukkitRegionManager#addPlacedBlock} — for other mods that need to mark a block
      * without going through {@link #handleBlockPlace}.
      */
     public void addPlacedBlock(ServerWorld world, BlockPos pos) {

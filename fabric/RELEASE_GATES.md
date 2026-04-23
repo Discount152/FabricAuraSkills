@@ -36,7 +36,7 @@ This file gives a **hard** answer to “ready to run?” vs “100% complete?”
 |---|------------|--------|
 | B1 | **Known gaps** listed (see [PARITY_BACKLOG.md](PARITY_BACKLOG.md)); operators know what is missing vs **Bukkit `reference`** | Yes / No |
 | B2 | **Data:** storage, migrate, backup story acceptable for *your* audience | Yes / No |
-| B3 | **Permissions:** `fabric-permissions-api` / LP (and **Floodgate**-linked nodes if you use Bedrock) understood | Yes / No |
+| B3 | **Permissions:** `fabric-permissions-api` + your **Fabric permission provider** (and **Floodgate**-linked nodes if you use Bedrock) understood | Yes / No |
 | B4 | **Exploit posture:** anti-AFK and source coverage acceptable for *your* server size | Yes / No |
 | B5 | **Command surface:** operators know current commands ([MOD_COMMANDS.txt](MOD_COMMANDS.txt)) vs full **reference** tree | Yes / No |
 
