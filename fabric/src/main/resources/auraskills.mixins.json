@@ -16,6 +16,7 @@
     "BrewingStandBlockEntityMixin",
     "MobSpawnerLogicMixin",
     "EnchantmentScreenHandlerMixin",
+    "FallingBlockEntityRegionMixin",
     "FishingBobberEntityMixin",
     "ForgingScreenHandlerMixin",
     "ScreenHandlerBrewingTakeoutXpMixin",
@@ -25,11 +26,14 @@
     "LivingEntityArmorRequirementMixin",
     "LivingEntityConsumeMixin",
     "LivingEntityNoDebuffSplashMixin",
+    "PistonHandlerRegionMixin",
     "PotionEntityMixin",
     "ServerWorldSpawnerMixin",
     "ServerPlayerEntityChargedShotMixin",
     "ServerPlayerEntitySharpHookMixin",
     "ServerPlayerEntityTraitWorldMixin",
+    "TreeFeatureGrowContextMixin",
+    "TreeFeatureSetBlockMixin",
     "ServerPlayerEntityParrySwingMixin",
     "ServerPlayerEntityShieldAbsorptionSwingMixin"
   ]

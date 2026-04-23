@@ -1,5 +1,7 @@
 # Sprint 04 — Placed-block tracking / `check_replace` — manual validation
 
+> **Update:** Sprint 05 adds **`FabricRegionBlockIntegrity`** (pistons, fall, tree grow Y, tall/support). See **`SPRINT_05_MANUAL_VALIDATION.md`**.
+
 **Reference:** Bukkit `BukkitRegionManager` + `RegionBlockListener` (place + chunk load + save timer + break remove). See `bukkit/.../region/`.
 
 **Fabric:** `FabricRegionManager` + `FabricRegionLifecycle` (chunk load + 5m async save) + `BlockItemPlacedBlockMixin` + `FabricPlacedBlockBreakHandler`. Data: `config/auraskills/regiondata/<world>/r.<x>.<z>.asrg` (same as Bukkit).

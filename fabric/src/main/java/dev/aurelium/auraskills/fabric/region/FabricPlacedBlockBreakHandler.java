@@ -9,6 +9,7 @@ import net.minecraft.server.world.ServerWorld;
  * Bukkit {@code RegionBlockListener#checkBreak} — remove placed flags when the block is broken (after XP / loot
  * {@link dev.aurelium.auraskills.fabric.FabricBlockBreakHandler} / {@code FabricBlockLootHandler} run, since those
  * register earlier as {@code AFTER}).
+ * Tall-plant / support-tick follow-up: {@link FabricRegionBlockIntegrity#afterPlacedBlockRemovedOnBreak}.
  */
 public final class FabricPlacedBlockBreakHandler {
 
@@ -24,6 +25,7 @@ public final class FabricPlacedBlockBreakHandler {
                 return;
             }
             plugin.getFabricRegionManager().removePlacedBlock(sw, pos);
+            FabricRegionBlockIntegrity.afterPlacedBlockRemovedOnBreak(plugin, sw, pos);
         });
     }
 }

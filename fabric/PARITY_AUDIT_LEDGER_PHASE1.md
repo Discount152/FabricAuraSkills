@@ -145,7 +145,7 @@
 | EVT-010 | `ArmorListener` | Partial via modifier schedules | Partial | |
 | EVT-011 | `ArmorModifierListener` | `FabricItemModifierSchedules` / state | Partial | |
 | EVT-012 | `RegionListener` | — | Missing | Integration bridge |
-| EVT-013 | `RegionBlockListener` | `BlockItemPlacedBlockMixin` + `FabricPlacedBlockBreakHandler` + `FabricRegionLifecycle` | Partial | No pistons / sand fall / grow / support-tick (see Sprint 04) |
+| EVT-013 | `RegionBlockListener` | `BlockItemPlacedBlockMixin` + `FabricPlacedBlockBreakHandler` + `FabricRegionLifecycle` + `FabricRegionBlockIntegrity` + piston/fall/tree mixins (Sprint 05) | Partial | Piston + fall + `TreeFeature` same-Y + tall/support; WG blocked regions N/A; mushroom grow & rare edges **Needs Regression Proof** |
 | EVT-014 | `PlayerDeath` (`ON_DEATH_RESET_SKILLS` / `ON_DEATH_RESET_XP` / `ON_DEATH_RESET_XP_RATIO`) | `FabricPlayerDeathHandler` | Equivalent | Bukkit `PlayerDeath.java` — `ServerLivingEntityEvents.AFTER_DEATH` for `ServerPlayerEntity`; Geyser/Floodgate = same server player path. |
 | EVT-015 | `JobsListener` | — | Missing | Integration bridge |
 | EVT-016 | `BukkitLeaderboardExclusion` (listener) | `FabricLeaderboardExclusion` | Partial | |
@@ -189,7 +189,7 @@ EVT-006,Listeners,FishingLootHandler,FabricFishingLootHandler,Partial,None,Hooke
 EVT-007,Listeners,MobLootHandler,FabricMobLootHandler,Partial,No LootDropEvent / WG; see Sprint 03,
 EVT-014,Listeners,PlayerDeath,FabricPlayerDeathHandler,Equivalent,None,on_death.* config; see Sprint 01 manual
 EVT-012,Listeners,RegionListener,—,Missing,Integration bridge,
-EVT-013,Listeners,RegionBlockListener,Placed block mixin+break+chunk load,Partial,No pistons/sand grow full parity,
+EVT-013,Listeners,RegionBlockListener,Placed block mixin+break+chunk load+Sprint05 integrity,Partial,Piston/fall/TreeFeature grow Y+tall/support;WG N/A,
 ```
 
 *(Extend this CSV with all rows from §2–5 as you grow the sheet.)*

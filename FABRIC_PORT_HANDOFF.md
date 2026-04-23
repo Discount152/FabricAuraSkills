@@ -242,7 +242,7 @@ Explicit registrations:
 - Previously missing but **now implemented** (see above): `AnvilLeveler`, `GrindstoneLeveler`, `ItemConsumeLeveler`, `PotionSplashLeveler`, `EnchantingLeveler`, partial `BrewingLeveler`
 - Full **`EntityLeveler`** (spawner tags, MythicMobs, all triggers)
 - Full **`StatisticLeveler`** (block/item mined/used stat mapping)
-- Full **`BlockLeveler`** — **state** matching is implemented (`FabricBlockStateMatcher`, `FabricBlockBreakHandler`); **`check_replace`** uses **`FabricRegionManager`** + placed-block NBT (Sprint 04). **Still not** every Bukkit `RegionBlockListener` edge (pistons, falling sand, tree grow, support ticks) — see **`fabric/SPRINT_04_MANUAL_VALIDATION.md`**.
+- Full **`BlockLeveler`** — **state** matching is implemented (`FabricBlockStateMatcher`, `FabricBlockBreakHandler`); **`check_replace`** uses **`FabricRegionManager`** + placed-block NBT (Sprint 04) and **`FabricRegionBlockIntegrity`** + mixins for pistons, falling sand/gravel, `TreeFeature` grow-Y cleanup, and tall-plant / support follow-up (Sprint 05 — **`fabric/SPRINT_05_MANUAL_VALIDATION.md`**). Remaining gaps: WorldGuard-style blocked regions on Fabric, mushroom / non-`TreeFeature` grows, unreported edge cases.
 
 ---
 

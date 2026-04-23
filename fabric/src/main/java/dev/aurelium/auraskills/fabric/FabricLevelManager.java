@@ -29,7 +29,8 @@ public final class FabricLevelManager extends LevelManager {
      * (no explicit register call). Player config death resets use {@link FabricPlayerDeathHandler};
      * block break bonus loot / {@code override_vanilla_loot} use {@link FabricBlockLootHandler};
      * Bukkit {@code MobLootHandler} is {@link FabricMobLootHandler}; placed blocks / {@code check_replace} use
-     * {@link dev.aurelium.auraskills.fabric.region.FabricRegionManager}.
+     * {@link dev.aurelium.auraskills.fabric.region.FabricRegionManager} and integrity follow-up
+     * {@link dev.aurelium.auraskills.fabric.region.FabricRegionBlockIntegrity} (pistons / fall / tree / tall-support).
      */
     public void registerFabricXpHandlers() {
         FabricRegionLifecycle.register(plugin);

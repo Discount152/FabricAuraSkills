@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.33
+
+### Changes
+
+- **Fabric: placed-block integrity hardening (Sprint 05 / Bukkit `RegionBlockListener` subset):** **`PistonHandlerRegionMixin`** after **`PistonHandler#calculatePush`** transfers `check_replace` placed flags for moved blocks, clears flags for piston-broken blocks. **`FallingBlockEntityRegionMixin`** on **`spawnFromBlock`**: sand/red sand/gravel that was player-placed and loses support removes the flag, then polls (50 ms, Bukkit-style) to re-add if the block lands as the same type (cobweb in path cancels; 200-step cap). **`TreeFeatureGrowContextMixin`** + **`TreeFeatureSetBlockMixin`**: during **`TreeFeature#generate`**, clear placed at block positions that match the sapling **Y** (Bukkit **`StructureGrowEvent`** same-level rule). **`FabricPlacedBlockBreakHandler`** chains **`FabricRegionBlockIntegrity#afterPlacedBlockRemovedOnBreak`**: sugar cane / bamboo / cactus stack cleanup above a break, and 50 ms delayed **BELOW** / **SIDE** support checks using **`FabricBlockXpSourceLookup`** + source equality (Bukkit **`isDifferentSource`**). **`projectVersion` 2.3.32 → 2.3.33**. Manual: **`fabric/SPRINT_05_MANUAL_VALIDATION.md`**. **Gaps:** mushroom / non-`TreeFeature` structure grow, WorldGuard blocked regions, full Bukkit piston edge-for-edge (retract path) if any discrepancy appears in playtests.
+
 ## 2.3.32
 
 ### Changes
