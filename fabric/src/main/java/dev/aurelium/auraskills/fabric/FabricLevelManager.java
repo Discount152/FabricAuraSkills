@@ -22,7 +22,7 @@ public final class FabricLevelManager extends LevelManager {
 
     /**
      * Registers event-based XP handlers. Fishing uses {@link dev.aurelium.auraskills.fabric.mixin.FishingBobberEntityMixin}
-     * (no explicit register call).
+     * (no explicit register call). Player config death resets use {@link FabricPlayerDeathHandler}.
      */
     public void registerFabricXpHandlers() {
         FabricRequirementHandlers.register(plugin);
@@ -30,6 +30,7 @@ public final class FabricLevelManager extends LevelManager {
         FabricBlockBreakHandler.register(plugin);
         FabricBlockInteractHandler.register(plugin);
         FabricEntityKillHandler.register(plugin);
+        FabricPlayerDeathHandler.register(plugin);
         FabricCombatXpHandler.register(plugin);
         FabricStatisticXpHandler.start(plugin);
         FabricJumpingXpHandler.register(plugin);

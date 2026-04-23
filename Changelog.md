@@ -2,6 +2,52 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.29
+
+### Changes
+
+- **Fabric: player death config parity (EVT-014):** `on_death.reset_skills`, `on_death.reset_xp`, and `on_death.reset_xp_ratio` are applied on `ServerLivingEntityEvents.AFTER_DEATH` for `ServerPlayerEntity` via **`FabricPlayerDeathHandler`** (same control flow as Bukkit `PlayerDeath`). **`projectVersion` 2.3.28 → 2.3.29**. Manual steps: `fabric/SPRINT_01_MANUAL_VALIDATION.md`.
+
+## 2.3.28
+
+### Changes
+
+- **Docs: Fabric runtime + Granite + reference baseline + cross-play:** Parity program **H1** is **“Capability & reference-baseline program (Fabric)”** (file **`PAPER_PARITY_PROGRAM.md`**). **Runtime = Java Fabric only**; **`bukkit` = reference inventory**; **shipped = Granite Skills / GraniteLib**; **supported clients = Java + Bedrock via Geyser + Floodgate** (see **`fabric/PAPER_PARITY_PROGRAM.md`**, **`fabric/PARITY_BACKLOG.md`** §Geyser, **`FABRIC_PORT_HANDOFF.md` §0.1/0.3**, ledger **Bedrock** optional columns, **`MENU_AND_COMMANDS_PORT.md`**). **Ledger** = truth, **workbook** = dashboard.
+- **Docs: `FABRIC_PORT_HANDOFF.md` deep pass:** Replaced remaining **“vs Paper”**-style phrasing with **Bukkit `reference` / monorepo** language; **§8** stub table **rewritten** (removed obsolete **`FabricNoOpLootManager`** story; **§7.5** `loot_pool` now describes **`FabricLootManager`** path); **§6–7, §11** phases and **§13** summary aligned with **Java + Geyser/Bedrock** acceptance and `PARITY` docs.
+- **Release gates:** New **`fabric/RELEASE_GATES.md`** — separates **Gate A** (runnable), **Gate B** (limited production with known gaps), **Gate C** (release-grade: reference + cross-play + final Granite UX). Linked from **`PAPER_PARITY_PROGRAM.md`** and **`FABRIC_PORT_HANDOFF.md`**. Stops a single word “deployable” from standing in for “100% complete.”
+- **Chat / action bar / titles:** The Fabric port was using only legacy (§) Adventure deserialization while messages and `messages_*.yml` use **MiniMessage** (e.g. `<aqua>`, `<bold>`) like the Paper mod. `FabricMessageProvider` and `FabricPlatformUtil` now use a **MiniMessage** pipeline aligned with the upstream **Slate** `TextFormatter` (Bukkit). **Adventure** components are turned into NMS `Text` via `GsonComponentSerializer` + `TextCodecs` so colors and styles reach the client (not raw tag strings, not lossy `TextLiteral` of MiniMessage as plain text). **Action bar** and **UI** string paths in `FabricUiProvider` use the same path.
+- **Commands:** **Root** `/auraskills` (no subcommand) now shows a **usage** line. **`/auraskills help`** lists subcommands. **Top-level `/skills`** is registered as an alias of **`/auraskills skills`** (same permission) for players who expect a Paper-style `/skills` command. **`projectVersion` 2.3.27 → 2.3.28**.
+
+## 2.3.27
+
+### Changes
+
+- **Fabric entrypoint:** `FabricAuraSkillsMod` now uses the **`main`** entrypoint with **`ModInitializer`** instead of the **`server`** entrypoint with **`DedicatedServerModInitializer`**. The dedicated-server initializer does **not** run for a **singleplayer** or **Open to LAN (integrated) server** world, so chat commands ( `/auraskills` …) never registered there. The **`main`** entrypoint runs in those environments so the command tree and server lifecycle run when an integrated server starts. **Dedicated** Fabric servers are unchanged in behavior. Log line: `Registering /auraskills (version, skills, reload, save)` when commands attach to the server dispatcher. **`projectVersion` 2.3.26 → 2.3.27**.
+
+## 2.3.26
+
+### Changes
+
+- **GraniteLib dependency cutover (Sprint 95):** **FabricAuraSkills** now declares **`depends: granitelib`** ( **`>=0.1.0-alpha.1`**) in **`fabric.mod.json`**. The **default** remapped JAR **does not** Jar-in-Jar-embed **GraniteLib**; install **`granitelib-fabric-0.1.0-alpha.1.jar`** (or compatible) alongside the gameplay mod, **Fabric API**, etc. **Transitional** opt-in: **`-PembedGraniteJij=true`** on **`:fabric`** re-enables the **legacy** nested **`granitelib-fabric-*.jar`** for local or emergency testing only. **No** gameplay, menu, or YAML changes. **GraniteLib** version metadata unchanged. **`projectVersion` 2.3.25 → 2.3.26**.
+
+## 2.3.25
+
+### Changes
+
+- **Fabric / no-JiJ test build path:** **`-PnoGraniteJij=true`** on **`:fabric`** omits the **`granitelib-fabric-*.jar`** nested Jar-in-Jar; **`verifyFabricReleaseBundle`** then **requires** that no nested `granitelib` JAR is present, so strict **Test C** (external `granitelib` only) can be exercised without changing the default release layout. Default builds **unchanged** (still embed JiJ). **No** new **`depends: granitelib`**, **no** gameplay, menu, or YAML changes. **GraniteLib** version still **`0.1.0-alpha.1`**. **`projectVersion` 2.3.24 → 2.3.25** for this build plumbing.
+
+## 2.3.24
+
+### Changes
+
+- **Fabric / JiJ:** Bundle **runtime** dependencies that are **transitive in Gradle** but were **not** nested under **`META-INF/jars/`**, which broke a **plain** Fabric dedicated server before **`Done!`**: **`net.kyori:examination-api:1.3.0`** ( **`adventure-api`** / **`Examinable`**), **`io.leangen.geantyref:geantyref:1.3.11`** ( **Configurate** / **`TypeToken`**), **`org.yaml:snakeyaml:1.28`** ( **configurate-yaml** ). **`verifyFabricReleaseBundle`** requires the nested JARs. **No** `depends: granitelib` change, **no** JiJ removal, **no** gameplay or **Phase1YamlMenu** changes. **GraniteLib** standalone metadata remains **`0.1.0-alpha.1`**. **`projectVersion` 2.3.23 → 2.3.24**.
+
+## 2.3.23
+
+### Changes
+
+- **GraniteLib standalone metadata:** Added **`slate-fabric/src/main/resources/fabric.mod.json`** with mod **`id` `granitelib`**, **`granitelibVersion=0.1.0-alpha.1`** in **`gradle.properties`**, and **`:granitelib-fabric`** `version` + `processResources` so **`${version}`** expands for the remapped JAR. **FabricAuraSkills** still JiJ-embeds **`granitelib-fabric-*.jar`**; **`verifyFabricReleaseBundle`** unchanged (prefix match). **No** `depends: granitelib` on the gameplay mod yet, **no** JiJ removal, **no** gameplay or menu behavior changes. **`projectVersion` (FabricAuraSkills)** **2.3.22 → 2.3.23** to reflect the shipping layout change to the embedded library version line.
+
 ## 2.3.22
 
 ### Changes

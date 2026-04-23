@@ -1,19 +1,29 @@
-# Fabric AuraSkills — parity backlog (phase B)
+# Fabric AuraSkills — Reference-baseline gap list (Fabric runtime)
 
-For the **full handoff** (product goals, deployment assumptions, bootstrap order, Gradle `fabricOnly`, fishing mixin details, file index, and phased roadmap), see **`FABRIC_PORT_HANDOFF.md`** in the repository root.
+**Product target:** **Granite Skills** on **GraniteLib**, **Java Fabric** server only — with **equivalent capability** to the **reference `bukkit` module** in this repo (not Bukkit at runtime). **Supported players:** **Java** clients and **Bedrock** clients via **Geyser + Floodgate** on that Fabric server — see **[PAPER_PARITY_PROGRAM.md](PAPER_PARITY_PROGRAM.md)** (*Client / player access*). This file is a **living checklist**; shrink bullets as Fabric catches the reference.
 
-**Core Fabric port (skills, XP, storage, permissions, reload/save, default YAML sources, mana abilities wired in `FabricManaAbilityManager`) is treated as *complete* for dedicated-server use.** Remaining bullets are **Paper parity gaps**, **third-party integrations**, or **optional polish** — not blockers to run the mod.
+For **bootstrap order**, **Gradle `fabricOnly`**, **fishing mixin** notes, and **phased technical roadmap** (A–G), see **[FABRIC_PORT_HANDOFF.md](../FABRIC_PORT_HANDOFF.md)** in the repository root.
 
-This document tracks Paper/plugin behavior that is intentionally **not** implemented on Fabric, or differs enough that server configs may need adjustment. **Third-party parity** (WorldGuard, Mythic, jobs, …) is **optional** unless a named deployment needs it.
+**Baseline:** a **dedicated-server Fabric** mod can run skills, XP, storage, permissions, reload/save, and many sources; that is **not** the end state — it is the floor from which parity work continues.
 
-## Integrations (Paper soft-dependencies)
+The sections below list behavior present in the **reference** (Bukkit-side) build that is **not yet** implemented on **Fabric**, or that differs. **Integrations** that were Bukkit plugins are in scope as **Fabric mod bridges** or shims.
+
+## Geyser / Floodgate / Bedrock (cross-platform acceptance)
+
+These are **product** requirements, not optional polish:
+
+- **Geyser + Floodgate** on the **same** Fabric server: Bedrock players must be able to use **core progression** (XP, skills, stats) without Java-only assumptions where avoidable.
+- **High-risk areas** for Java vs Bedrock divergence: **inventory menus**, **command UX**, **action bar / title / boss bar / chat** formatting, **click** behavior, **permission** resolution for linked Bedrock accounts (Floodgate), **item** interactions that assume Java edition client details.
+- **Definition of done:** a feature is not “finished” for the project if it only passes **Java-client** testing; either it is **verified** on Bedrock via Geyser/Floodgate or the **limitation is documented** and accepted (see [PAPER_PARITY_PROGRAM.md](PAPER_PARITY_PROGRAM.md) §5). Track per-row **Bedrock status** in [PARITY_AUDIT_LEDGER_PHASE1.md](PARITY_AUDIT_LEDGER_PHASE1.md) optional columns.
+
+## Integrations (reference: Bukkit soft-dependencies; Fabric = bridges)
 
 - **WorldGuard / regions** — no region flags or placed-block tracking; `check_replace` and similar behaviors from Paper are not replicated.
 - **Vault / economy hooks** — `EconomyHook` is never registered; jobs income and economy-tied rewards need a Fabric-specific hook later.
 - **PlaceholderAPI** — not applicable on Fabric as-is.
-- **LuckPerms / permissions** — **`fabric-permissions-api` is bundled (JiJ).** `FabricUser` uses `Permissions.check` (skill nodes `auraskills.skill.<name>` default **allow** if unset; arbitrary permission strings default **deny** if unset). **`/auraskills version|skills`** use `auraskills.command.version` / `auraskills.command.skills` (default **allow** if unset). For production, install **LuckPerms Fabric** (or another provider) to manage nodes.
+- **LuckPerms / permissions** — **`fabric-permissions-api` is bundled (JiJ).** `FabricUser` uses `Permissions.check` (skill nodes `auraskills.skill.<name>` default **allow** if unset; arbitrary permission strings default **deny** if unset). Brigadier commands use `auraskills.command.*` nodes (see **`MOD_COMMANDS.txt`**). For production, install **LuckPerms Fabric** (or another provider) to manage nodes.
 - **ProtocolLib** — no protocol-level action bar overrides.
-- **MythicMobs, Slimefun, Towny, Nexo, hologram plugins** — not integrated (defer unless needed).
+- **MythicMobs, Slimefun, Towny, Nexo, hologram plugins** — not integrated; **in parity scope** with explicit Fabric mod bridges (see **PAPER_PARITY_PROGRAM.md** §2).
 
 ## Anti-exploit / balance
 
@@ -26,6 +36,7 @@ This document tracks Paper/plugin behavior that is intentionally **not** impleme
 
 ## Gameplay / sources
 
+- **On-death reset (`on_death.reset_skills` / `on_death.reset_xp` / `on_death.reset_xp_ratio`)** — implemented on Fabric: **`FabricPlayerDeathHandler`** (parity with Bukkit `PlayerDeath.java`). Validate Java + Geyser/Floodgate: `SPRINT_01_MANUAL_VALIDATION.md`.
 - **Block XP `states` on break** — `FabricBlockBreakHandler` + `FabricBlockStateMatcher` match YAML state maps, **`getBlocksBroken`** tall-plant multipliers, **`age` / `pickles`**, and **gathering-luck** after XP (`FabricBlockLevelerHelper`, `FabricInteractGatheringLuck`). **`INTERACT` / `COLLECT`** — `FabricBlockInteractHandler` (`UseBlockCallback`): same multipliers/luck; COLLECT item rules mirror Paper (shears / bottle / bucket on hive, nest, leveled cauldrons). Still not ported: Bukkit block metadata skips (`fertilized`, `filledManually`) and cauldron `filledManually` clearing.
 - **Placed-block exclusion (`check_replace`)** — not implemented without a region/placement tracker.
 - **Entity death XP** — only **player-as-killer** + `DEATH` + `PLAYER` damager sources; **spawner_multiplier** is applied via `FabricSpawnerMobTracker` (no MythicMobs).
@@ -42,11 +53,11 @@ This document tracks Paper/plugin behavior that is intentionally **not** impleme
 
 ## Items and NBT
 
-- **Custom items, modifiers, requirements on items/armor** — `FabricItemRegistryStub` and `FabricModifierManager` are no-ops; Paper NBT/item pipeline is not ported.
+- **Custom items, modifiers, requirements on items/armor** — Fabric has **`FabricItemRegistry`**, **`FabricModifierManager`**, and item state/schedules; **full** Paper NBT/legacy-behavior parity (every edge case in Bukkit `ItemListener` / armor) may still differ — track against Bukkit and shrink this bullet as coverage closes.
 
 ## Commands
 
-- **ACF / full Paper `/skills` command tree** — not ported. Fabric exposes **`/auraskills version`**, **`/auraskills skills`**, **`/auraskills reload`** (config + YAML data + online trait refresh), and **`/auraskills save`** (flush loaded profiles). Grant **`auraskills.command.reload`** / **`auraskills.command.save`** in LuckPerms (default **deny**).
+- **ACF / full Paper `skills` root command tree** (aliases `sk` / `skill` per Bukkit) — **not** complete on Fabric. Current Brigadier surface: see **`MOD_COMMANDS.txt`**. **Planned:** **[MENU_AND_COMMANDS_PORT.md](MENU_AND_COMMANDS_PORT.md)** + **[PAPER_PARITY_PROGRAM.md](PAPER_PARITY_PROGRAM.md)**. Staff nodes **`auraskills.command.reload`** / **`auraskills.command.save`** (default **deny** when using LuckPerms).
 
 ## API surface
 
