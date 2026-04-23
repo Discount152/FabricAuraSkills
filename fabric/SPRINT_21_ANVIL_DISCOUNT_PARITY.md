@@ -29,4 +29,4 @@
 
 - **In-repo, single-owner anvil, logical server:** **Equivalent** to the reference for cost math, formula, min cost **1**, and world/trait gates, modulo **viewer / Wisdom** (documented).
 - **Multi-viewer or strict Bukkit viewer-order semantics:** **Needs Regression Proof** or follow-up.
-- **Full Bukkit `BukkitTraitManager` (traits):** only **`DoubleDropTrait`** remains (see **`SPRINT_19_TRAIT_PARITY.md`**, *Out of scope* in backlog).
+- **Full Bukkit `BukkitTraitManager` (traits):** **`DoubleDropTrait`** core on Fabric since **Sprint 22** — **`SPRINT_22_DOUBLE_DROP_PARITY.md`**.

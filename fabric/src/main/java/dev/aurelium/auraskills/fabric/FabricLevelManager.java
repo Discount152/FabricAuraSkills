@@ -31,6 +31,8 @@ public final class FabricLevelManager extends LevelManager {
      * Bukkit {@code MobLootHandler} is {@link FabricMobLootHandler}; placed blocks / {@code check_replace} use
      * {@link dev.aurelium.auraskills.fabric.region.FabricRegionManager} and integrity follow-up
      * {@link dev.aurelium.auraskills.fabric.region.FabricRegionBlockIntegrity} (pistons / fall / tree / tall-support).
+     * {@link FabricDoubleDrop#register} runs before {@link FabricPlacedBlockBreakHandler} so
+     * {@code isPlacedBlock} is still set on break (Bukkit {@code DoubleDropTrait} vs {@code RegionBlockListener} order).
      */
     public void registerFabricXpHandlers() {
         FabricRegionLifecycle.register(plugin);
@@ -45,6 +47,7 @@ public final class FabricLevelManager extends LevelManager {
         FabricCombatXpHandler.register(plugin);
         FabricStatisticXpHandler.start(plugin);
         FabricJumpingXpHandler.register(plugin);
+        FabricDoubleDrop.register(plugin);
         FabricPlacedBlockBreakHandler.register(plugin);
     }
 

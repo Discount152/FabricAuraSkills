@@ -28,4 +28,4 @@
 ## Status
 
 - **HealthRegenTraits group (natural + custom options):** **Equivalent** in math and gates vs reference, except **no** `CustomRegenEvent` and possible edge divergence above.  
-- **Full Bukkit `BukkitTraitManager` set:** still **Partial** until `DoubleDropTrait` / `AnvilDiscountTrait` (and any follow-ups).
+- **Full Bukkit `BukkitTraitManager` set:** **Sprint 21** added `AnvilDiscountTrait`; **Sprint 22** added core `DoubleDropTrait` — see **`SPRINT_22_DOUBLE_DROP_PARITY.md`**. Remaining **Partial** notes are optional Bukkit/plugin surfaces, not missing handler classes.

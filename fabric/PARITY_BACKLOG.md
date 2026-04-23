@@ -37,7 +37,7 @@ These are **product** requirements, not optional polish:
 - **Sprint 19 (batch 1)** — Parity audit in **`fabric/SPRINT_19_TRAIT_PARITY.md`**. **`Traits.EXPERIENCE_BONUS`** on Fabric (`FabricExperienceBonus` + `FabricExperienceBonusTrait` + `PlayerEntityExperienceBonusMixin`).
 - **Sprint 20 (batch 2)** — **`HealthRegenTraits`**: **`FabricHealthRegenTraits`** + **`HungerManagerHealthRegenMixin`** + custom-delay tasks; Bukkit-only **`CustomRegenEvent`** not fired — **`fabric/SPRINT_20_HEALTH_REGEN_PARITY.md`**, manual **`SPRINT_20_MANUAL_VALIDATION.md`**.
 - **Sprint 21 (batch 3)** — **`AnvilDiscountTrait`**: **`FabricAnvilDiscountTrait`**, **`FabricAnvilDiscount`**, **`AnvilScreenHandlerAnvilDiscountMixin`** — **`SPRINT_21_ANVIL_DISCOUNT_PARITY.md`**, manual **`SPRINT_21_MANUAL_VALIDATION.md`**.
-- **Still not ported from the Bukkit reference set (core trait):** **`DoubleDropTrait`** (default **out of scope** for third-party region/loot; see parity doc).
+- **Sprint 22 (batch 4)** — **`DoubleDropTrait`** (core in-scope subset): **`FabricDoubleDropTrait`**, **`FabricDoubleDrop`**, `FabricLevelManager` registration order — **`SPRINT_22_DOUBLE_DROP_PARITY.md`**, manual **`SPRINT_22_MANUAL_VALIDATION.md`**. **Not** in default product: Bukkit **WorldGuard** + **`LootDropEvent`** hook surface.
 
 ## Menus and UI
 

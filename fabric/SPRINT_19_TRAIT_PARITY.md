@@ -27,7 +27,7 @@ Source: `bukkit/src/main/java/dev/aurelium/auraskills/bukkit/trait/BukkitTraitMa
 
 **Count:** 14 handler registrations.
 
-## 2. Fabric: registered classes (after Sprint 20; order in `FabricTraitManager` may differ)
+## 2. Fabric: registered classes (after Sprint 22; order in `FabricTraitManager` may differ)
 
 Source: `fabric/src/main/java/dev/aurelium/auraskills/fabric/FabricTraitManager.java`
 
@@ -45,9 +45,10 @@ Source: `fabric/src/main/java/dev/aurelium/auraskills/fabric/FabricTraitManager.
 | 10 | `FabricDamageReductionTrait` | Damage reduction |
 | 11 | `FabricAnvilDiscountTrait` | **ANVIL_DISCOUNT** (Sprint 21) |
 | 12 | `FabricExperienceBonusTrait` | **EXPERIENCE_BONUS** (Sprint 19) |
-| 13 | `FabricGatheringLuckTraits` | Gathering luck |
+| 13 | `FabricDoubleDropTrait` | **DOUBLE_DROP** (Sprint 22) — see **`SPRINT_22_DOUBLE_DROP_PARITY.md`** |
+| 14 | `FabricGatheringLuckTraits` | Gathering luck |
 
-**Count:** 13 handler groups.
+**Count:** 14 handler groups (matches Bukkit registration count).
 
 ## 3. Direct diff (reference naming)
 
@@ -57,7 +58,7 @@ Source: `fabric/src/main/java/dev/aurelium/auraskills/fabric/FabricTraitManager.
 | **Implemented in Sprint 19** | `ExperienceBonusTrait` | `FabricExperienceBonusTrait` + `PlayerEntityExperienceBonusMixin` + `FabricExperienceBonus#scaleForPlayer` |
 | **Implemented in Sprint 20** | `HealthRegenTraits` | `FabricHealthRegenTraits` + `HungerManagerHealthRegenMixin` + `FabricHealthRegen` — see **`SPRINT_20_HEALTH_REGEN_PARITY.md`** |
 | **Implemented in Sprint 21** | `AnvilDiscountTrait` | `FabricAnvilDiscountTrait` + `FabricAnvilDiscount` + `AnvilScreenHandlerAnvilDiscountMixin` — see **`SPRINT_21_ANVIL_DISCOUNT_PARITY.md`** |
-| **Missing on Fabric (reference still has)** | `DoubleDropTrait` | — (reference: block/loot/WorldGuard-style hooks; **default product scope** = no third-party Bukkit stack; see `PARITY_BACKLOG.md` *Out of scope*) |
+| **Implemented in Sprint 22** | `DoubleDropTrait` | `FabricDoubleDropTrait` + `FabricDoubleDrop` — see **`SPRINT_22_DOUBLE_DROP_PARITY.md`** (Bukkit **WorldGuard** / **`LootDropEvent`** out of default Granite scope) |
 | **Regression proof** | All trait math + attribute apply/remove paths, login → equip → reload | Spot-check **Sprint 19** in-game: vanilla XP orbs, mining, negative deltas (e.g. enchant cost), disabled worlds |
 
 **Behavioral note:** Bukkit’s `PlayerExpChangeEvent` tracks **point** changes; Fabric hooks **`PlayerEntity#addExperience(int)`** (logical server) so the same **int delta** is scaled once. Code paths that change XP **without** `addExperience` are outside this hook (and may differ from Spigot in edge cases; treat as *Needs Regression Proof* if reported).
@@ -67,7 +68,7 @@ Source: `fabric/src/main/java/dev/aurelium/auraskills/fabric/FabricTraitManager.
 | Row / topic | Status |
 |-------------|--------|
 | `Traits.EXPERIENCE_BONUS` (batch 1) | **Equivalent** to Bukkit reference for the `PlayerExpChangeEvent` math + disabled world skip (see manual validation) |
-| Full `BukkitTraitManager` set | **Partial** — one reference handler group still absent on Fabric (`DoubleDropTrait`; see table) |
+| Full `BukkitTraitManager` set (14 groups) | **Partial** — all groups registered; **`DoubleDropTrait`** optional Bukkit surfaces (`WorldGuard`, `LootDropEvent`) not in default Granite product (see **`SPRINT_22_DOUBLE_DROP_PARITY.md`**) |
 | Cross-play (Geyser/Floodgate) | **No extra UI;** server-side math only — **Needs Regression Proof** in production if anything odd is reported for Bedrock clients |
 
 ## 5. Build evidence (Sprint 19)

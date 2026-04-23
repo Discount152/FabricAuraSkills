@@ -361,7 +361,7 @@ Performed successfully in a clean-cache audit:
 
 | Bukkit / reference | Fabric (runtime) goal |
 |-----------------|-------------|
-| `BukkitTraitManager.registerTraitImplementations()` | **Sprint 19–21:** `EXPERIENCE_BONUS` + `HealthRegenTraits` + `AnvilDiscount` — see **`SPRINT_21_ANVIL_DISCOUNT_PARITY.md`**. **Still missing vs reference (trait):** `DoubleDropTrait` — **`SPRINT_19_TRAIT_PARITY.md`**. |
+| `BukkitTraitManager.registerTraitImplementations()` | **Sprint 19–22:** all reference trait groups on Fabric, including core **`DoubleDropTrait`** — **`SPRINT_22_DOUBLE_DROP_PARITY.md`**. Optional Bukkit **WorldGuard** / **`LootDropEvent`** — out of default Granite scope. |
 | `BukkitAbilityManager` | Port ability implementations or equivalents. |
 | `BukkitManaAbilityManager.registerProviders()` | Port mana abilities (`Replenish`, `Treecapitator`, …) with Fabric events/mixins. |
 

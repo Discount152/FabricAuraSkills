@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.50
+
+### Changes
+
+- **Fabric: double-drop trait (Sprint 22 / Bukkit `DoubleDropTrait` core):** **`FabricDoubleDropTrait`** + **`FabricDoubleDrop`** (`PlayerBlockBreakEvents.AFTER`) — same **block allowlist** and **max_percent** chance cap as Bukkit, **silk** rewrites for **stone** and **grass block**, `FabricRegionManager#isPlacedBlock` + **blocked world** + **`DO_TILE_DROPS`** + non-creative / non-spectator gates; extra stacks via **`FabricLootManager#toInventory`**. `FabricDoubleDrop#register` runs **before** **`FabricPlacedBlockBreakHandler`** (see `FabricLevelManager`). **Out of default Granite scope:** Bukkit **WorldGuard** and **`LootDropEvent`** (documented in **`fabric/SPRINT_22_DOUBLE_DROP_PARITY.md`**). Test: **`FabricDoubleDropTest`** (percent cap). Manual: **`fabric/SPRINT_22_MANUAL_VALIDATION.md`**. **`projectVersion` 2.3.49 → 2.3.50**.
+
 ## 2.3.49
 
 ### Changes

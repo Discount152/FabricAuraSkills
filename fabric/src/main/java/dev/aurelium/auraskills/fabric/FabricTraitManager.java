@@ -7,6 +7,7 @@ import dev.aurelium.auraskills.common.AuraSkillsPlugin;
 import dev.aurelium.auraskills.common.trait.TraitManager;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.trait.FabricAnvilDiscountTrait;
+import dev.aurelium.auraskills.fabric.trait.FabricDoubleDropTrait;
 import dev.aurelium.auraskills.fabric.trait.FabricAttackDamageTrait;
 import dev.aurelium.auraskills.fabric.trait.FabricCritChanceTrait;
 import dev.aurelium.auraskills.fabric.trait.FabricCritDamageTrait;
@@ -53,6 +54,7 @@ public final class FabricTraitManager extends TraitManager {
         registerTraitImpl(new FabricDamageReductionTrait(plugin));
         registerTraitImpl(new FabricAnvilDiscountTrait(plugin));
         registerTraitImpl(new FabricExperienceBonusTrait(plugin));
+        registerTraitImpl(new FabricDoubleDropTrait(plugin));
         registerTraitImpl(new FabricGatheringLuckTraits(plugin));
     }
 
