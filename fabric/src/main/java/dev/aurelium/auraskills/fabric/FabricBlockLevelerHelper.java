@@ -10,8 +10,8 @@ import net.minecraft.util.math.Direction;
 
 /**
  * Mirrors Bukkit {@link dev.aurelium.auraskills.bukkit.source.BlockLevelerHelper#getBlocksBroken} for interact (and
- * other) XP. Fabric has no placed-block API yet; {@code isPlaced} is always treated as {@code false} (same as
- * {@link FabricTreecapitator#isPlayerPlacedBlock}).
+ * other) XP. Uses {@link dev.aurelium.auraskills.fabric.region.FabricRegionManager#isPlacedBlock} when
+ * {@link dev.aurelium.auraskills.common.config.Option#CHECK_BLOCK_REPLACE_ENABLED} is on.
  */
 public final class FabricBlockLevelerHelper {
 
@@ -26,25 +26,25 @@ public final class FabricBlockLevelerHelper {
         boolean checkReplace = plugin.configBoolean(Option.CHECK_BLOCK_REPLACE_ENABLED);
 
         if ("sugar_cane".equals(path)) {
-            return sugarCaneColumn(world, pos, checkReplace);
+            return sugarCaneColumn(plugin, world, pos, checkReplace);
         }
         if ("bamboo".equals(path) || "cactus".equals(path) || "kelp".equals(path) || "kelp_plant".equals(path)) {
-            return tallPlantColumn(world, pos, source, checkReplace);
+            return tallPlantColumn(plugin, world, pos, source, checkReplace);
         }
         return 1;
     }
 
-    private static int sugarCaneColumn(ServerWorld world, BlockPos pos, boolean checkReplace) {
+    private static int sugarCaneColumn(FabricAuraSkills plugin, ServerWorld world, BlockPos pos, boolean checkReplace) {
         int num = 1;
         BlockPos.Mutable m = pos.mutableCopy().move(Direction.UP);
         if (!isSugarCane(world, m)) {
             return num;
         }
-        if (!isPlaced(world, m) || !checkReplace) {
+        if (!isPlaced(plugin, world, m) || !checkReplace) {
             num++;
         }
         m.move(Direction.UP);
-        if (isSugarCane(world, m) && (!isPlaced(world, m) || !checkReplace)) {
+        if (isSugarCane(world, m) && (!isPlaced(plugin, world, m) || !checkReplace)) {
             num++;
         }
         return num;
@@ -54,27 +54,28 @@ public final class FabricBlockLevelerHelper {
         return "sugar_cane".equals(Registries.BLOCK.getId(world.getBlockState(pos).getBlock()).getPath());
     }
 
-    private static int tallPlantColumn(ServerWorld world, BlockPos pos, BlockXpSource source, boolean checkReplace) {
+    private static int tallPlantColumn(FabricAuraSkills plugin, ServerWorld world, BlockPos pos, BlockXpSource source,
+            boolean checkReplace) {
         int num = 1;
-        if (checkReplace && isPlaced(world, pos)) {
+        if (checkReplace && isPlaced(plugin, world, pos)) {
             BlockPos up = pos.up();
-            if (!blockMatchesSource(world, up, source) || isPlaced(world, up)) {
+            if (!blockMatchesSource(world, up, source) || isPlaced(plugin, world, up)) {
                 return 0;
             }
             num = 0;
         }
-        return num + countMatchingColumnAbove(world, pos.up(), source, checkReplace);
+        return num + countMatchingColumnAbove(plugin, world, pos.up(), source, checkReplace);
     }
 
-    private static int countMatchingColumnAbove(ServerWorld world, BlockPos start, BlockXpSource source,
-            boolean checkReplace) {
+    private static int countMatchingColumnAbove(FabricAuraSkills plugin, ServerWorld world, BlockPos start,
+            BlockXpSource source, boolean checkReplace) {
         BlockPos.Mutable m = start.mutableCopy();
         int num = 0;
         for (int i = 0; i < MAX_TALL_SCAN; i++) {
             if (!blockMatchesSource(world, m, source)) {
                 break;
             }
-            if (checkReplace && isPlaced(world, m)) {
+            if (checkReplace && isPlaced(plugin, world, m)) {
                 break;
             }
             num++;
@@ -93,7 +94,10 @@ public final class FabricBlockLevelerHelper {
         return false;
     }
 
-    private static boolean isPlaced(ServerWorld world, BlockPos pos) {
-        return false;
+    private static boolean isPlaced(FabricAuraSkills plugin, ServerWorld world, BlockPos pos) {
+        if (!plugin.configBoolean(Option.CHECK_BLOCK_REPLACE_ENABLED)) {
+            return false;
+        }
+        return plugin.getFabricRegionManager().isPlacedBlock(world, pos);
     }
 }

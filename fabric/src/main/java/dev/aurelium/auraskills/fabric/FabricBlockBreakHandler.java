@@ -1,10 +1,13 @@
 package dev.aurelium.auraskills.fabric;
 
 import dev.aurelium.auraskills.api.skill.Skill;
+import dev.aurelium.auraskills.fabric.FabricInteractGatheringLuck;
 import dev.aurelium.auraskills.api.source.SkillSource;
 import dev.aurelium.auraskills.api.source.type.BlockXpSource;
+import dev.aurelium.auraskills.common.config.Option;
 import dev.aurelium.auraskills.common.source.SourceTypes;
 import dev.aurelium.auraskills.common.user.User;
+import dev.aurelium.auraskills.fabric.ability.FabricMiningAbilities;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -26,6 +29,15 @@ public final class FabricBlockBreakHandler {
             }
             BlockXpSource xpSource = match.source();
             Skill skill = match.skill();
+            if (plugin.configBoolean(Option.CHECK_BLOCK_REPLACE_ENABLED) && xpSource.checkReplace()
+                    && plugin.getFabricRegionManager().isPlacedBlock(sw, pos)) {
+                FabricMiningAbilities mining = plugin.getAbilityManager().getAbilityImpl(FabricMiningAbilities.class);
+                if (mining.dropsMineralDirectly(state)) {
+                    User userL = plugin.getUserManager().getUser(sp.getUuid());
+                    FabricInteractGatheringLuck.tryApply(plugin, sp, userL, skill, xpSource, sw, pos, state);
+                }
+                return;
+            }
             if (FabricXpHandlerUtil.shouldBlockXp(plugin, sp, skill, SourceTypes.BLOCK)) {
                 return;
             }

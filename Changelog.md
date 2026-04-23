@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.32
+
+### Changes
+
+- **Fabric: placed-block tracking + `check_replace` foundation (Sprint 04):** **`FabricRegionManager`** (common `regiondata/*.asrg` NBT, same 32×32 region model as Bukkit) with **`BlockItemPlacedBlockMixin`** (`handleBlockPlace` when a block type matches a `BREAK` `BlockXpSource` with `check_replace`), **`ServerChunkEvents.CHUNK_LOAD`** + **async save** (5 min, Bukkit `RegionListener`), break cleanup via **`FabricPlacedBlockBreakHandler`** (registered last on `PlayerBlockBreakEvents.AFTER`). Wired into **block break XP** (`FabricBlockBreakHandler`—placed blocks skip base XP, **Lucky Miner** direct-ore path still gets **`FabricInteractGatheringLuck`**), **block skill loot** (`FabricBlockLootHandler`), **`FabricBlockLevelerHelper`**, **Speed Mine**, and **Treecapitator**. **`FabricWorldManager`** loads **`check_block_replace.blocked_worlds`**; **`FabricUser#worldNameCompat(ServerWorld)`** for dimension names. **`projectVersion` 2.3.31 → 2.3.32**. Manual: **`fabric/SPRINT_04_MANUAL_VALIDATION.md`**. **Not** full Bukkit `RegionBlockListener` parity (pistons, falling sand, structure grow, support-block tick cleanup remain backlog).
+
 ## 2.3.31
 
 ### Changes

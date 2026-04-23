@@ -51,6 +51,7 @@ import dev.aurelium.auraskills.common.antiafk.AntiAfkManager;
 import dev.aurelium.auraskills.common.config.Option;
 import dev.aurelium.auraskills.fabric.ability.FabricDefenseAbilities;
 import dev.aurelium.auraskills.fabric.item.FabricItemRegistry;
+import dev.aurelium.auraskills.fabric.region.FabricRegionManager;
 import dev.aurelium.auraskills.fabric.loot.FabricApiLootBridge;
 import dev.aurelium.auraskills.fabric.loot.FabricLootManager;
 import dev.aurelium.auraskills.fabric.requirement.FabricRequirementManager;
@@ -98,6 +99,7 @@ public final class FabricAuraSkills implements AuraSkillsPlugin {
     private FabricUserManager userManager;
     private XpRequirements xpRequirements;
     private FabricWorldManager worldManager;
+    private FabricRegionManager regionManager;
     private LeaderboardManager leaderboardManager;
     private FabricUiProvider uiProvider;
     private RewardManager rewardManager;
@@ -179,6 +181,7 @@ public final class FabricAuraSkills implements AuraSkillsPlugin {
 
         worldManager = new FabricWorldManager(this);
         worldManager.loadWorlds();
+        regionManager = new FabricRegionManager(this);
 
         backupProvider = new BackupProvider(this);
         xpRequirements = new XpRequirements(this);
@@ -246,6 +249,9 @@ public final class FabricAuraSkills implements AuraSkillsPlugin {
     }
 
     public void disable() {
+        if (regionManager != null) {
+            regionManager.saveAllRegions(false, true);
+        }
         if (scheduler != null) {
             scheduler.shutdown();
         }
@@ -321,6 +327,10 @@ public final class FabricAuraSkills implements AuraSkillsPlugin {
 
     public FabricLootManager getFabricLootManager() {
         return lootManager;
+    }
+
+    public FabricRegionManager getFabricRegionManager() {
+        return regionManager;
     }
 
     public FabricRequirementManager getFabricRequirementManager() {

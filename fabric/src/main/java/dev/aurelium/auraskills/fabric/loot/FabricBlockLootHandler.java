@@ -122,7 +122,8 @@ public final class FabricBlockLootHandler extends dev.aurelium.auraskills.common
         if (!skill.isEnabled()) {
             return;
         }
-        if (plugin.configBoolean(Option.CHECK_BLOCK_REPLACE_ENABLED) && isPlayerPlacedBlock(world, pos) && source.checkReplace()) {
+        if (plugin.configBoolean(Option.CHECK_BLOCK_REPLACE_ENABLED) && source.checkReplace()
+                && plugin.getFabricRegionManager().isPlacedBlock(world, pos)) {
             return;
         }
         if (failsChecks(player)) {
@@ -327,11 +328,6 @@ public final class FabricBlockLootHandler extends dev.aurelium.auraskills.common
         for (ItemEntity e : world.getNonSpectatingEntities(ItemEntity.class, box)) {
             e.remove(Entity.RemovalReason.DISCARDED);
         }
-    }
-
-    /** Placeholder until RegionManager-style placed-block tracking exists on Fabric (see PARITY_BACKLOG). */
-    private static boolean isPlayerPlacedBlock(ServerWorld world, BlockPos pos) {
-        return false;
     }
 
     private record DeferredBlockLoot(

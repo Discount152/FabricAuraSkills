@@ -137,7 +137,7 @@
 | EVT-002 | `DamageListener` | `FabricCombatXpHandler` + `FabricDamagePipeline` | Partial | |
 | EVT-003 | `CriticalHandler` | `FabricCriticalHandler` (via pipeline) | Partial | |
 | EVT-004 | `BlockInteractions` | `FabricBlockBreakHandler`, `FabricBlockInteractHandler`, etc. | Partial | |
-| EVT-005 | `BlockLootHandler` | `FabricBlockLootHandler` + `FabricBlockXpSourceLookup` | Partial | Bukkit `BlockLootHandler` parity: pools, providers, `override_vanilla_loot` (AFTER item clear + drops). **Not** WG `CUSTOM_LOOT` / Slimefun; placed `check_replace` needs placed-block API. |
+| EVT-005 | `BlockLootHandler` | `FabricBlockLootHandler` + `FabricBlockXpSourceLookup` + `FabricRegionManager` | Partial | Bukkit `BlockLootHandler` parity: pools, providers, `override_vanilla_loot` (AFTER item clear + drops), `check_replace` via placed-block NBT. **Not** WG `CUSTOM_LOOT` / Slimefun. |
 | EVT-006 | `FishingLootHandler` | `FabricFishingLootHandler` (invoked from fishing XP path) | Partial | Not a Bukkit-style event listener. |
 | EVT-007 | `MobLootHandler` | `FabricMobLootHandler` | Partial | No `LootDropEvent`; no WorldGuard `CUSTOM_LOOT`; skill from `FabricEntityXpSourceLookup` (Fabric damage cause mapping). |
 | EVT-008 | `RequirementListener` | `FabricRequirementHandlers` | Partial | |
@@ -145,7 +145,7 @@
 | EVT-010 | `ArmorListener` | Partial via modifier schedules | Partial | |
 | EVT-011 | `ArmorModifierListener` | `FabricItemModifierSchedules` / state | Partial | |
 | EVT-012 | `RegionListener` | — | Missing | Integration bridge |
-| EVT-013 | `RegionBlockListener` | — | Missing | Integration bridge |
+| EVT-013 | `RegionBlockListener` | `BlockItemPlacedBlockMixin` + `FabricPlacedBlockBreakHandler` + `FabricRegionLifecycle` | Partial | No pistons / sand fall / grow / support-tick (see Sprint 04) |
 | EVT-014 | `PlayerDeath` (`ON_DEATH_RESET_SKILLS` / `ON_DEATH_RESET_XP` / `ON_DEATH_RESET_XP_RATIO`) | `FabricPlayerDeathHandler` | Equivalent | Bukkit `PlayerDeath.java` — `ServerLivingEntityEvents.AFTER_DEATH` for `ServerPlayerEntity`; Geyser/Floodgate = same server player path. |
 | EVT-015 | `JobsListener` | — | Missing | Integration bridge |
 | EVT-016 | `BukkitLeaderboardExclusion` (listener) | `FabricLeaderboardExclusion` | Partial | |
@@ -184,11 +184,12 @@ AS-022,Bootstrap,registerAndLoadMenus,—,Missing,Slate-Fabric,
 CMD-001,Commands,SkillsRootCommand,FabricAuraSkillsCommands,Partial,ACF/Brigadier+Slate-Fabric,Aliases differ
 CMD-013,Commands,OpenMenuCommand,—,Missing,Slate-Fabric+ACF/Brigadier,
 MENU-003,Menus,Menu skills,—,Missing,Slate-Fabric,
-EVT-005,Listeners,BlockLootHandler,FabricBlockLootHandler,Partial,None,No WG/Slimefun; override_vanilla is AFTER box clear
+EVT-005,Listeners,BlockLootHandler,FabricBlockLootHandler+FabricRegionManager,Partial,None,No WG/Slimefun; check_replace via NBT; see Sprint 04
 EVT-006,Listeners,FishingLootHandler,FabricFishingLootHandler,Partial,None,Hooked from fishing XP
 EVT-007,Listeners,MobLootHandler,FabricMobLootHandler,Partial,No LootDropEvent / WG; see Sprint 03,
 EVT-014,Listeners,PlayerDeath,FabricPlayerDeathHandler,Equivalent,None,on_death.* config; see Sprint 01 manual
 EVT-012,Listeners,RegionListener,—,Missing,Integration bridge,
+EVT-013,Listeners,RegionBlockListener,Placed block mixin+break+chunk load,Partial,No pistons/sand grow full parity,
 ```
 
 *(Extend this CSV with all rows from §2–5 as you grow the sheet.)*

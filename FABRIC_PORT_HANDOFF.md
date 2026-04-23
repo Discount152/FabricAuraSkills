@@ -242,7 +242,7 @@ Explicit registrations:
 - Previously missing but **now implemented** (see above): `AnvilLeveler`, `GrindstoneLeveler`, `ItemConsumeLeveler`, `PotionSplashLeveler`, `EnchantingLeveler`, partial `BrewingLeveler`
 - Full **`EntityLeveler`** (spawner tags, MythicMobs, all triggers)
 - Full **`StatisticLeveler`** (block/item mined/used stat mapping)
-- Full **`BlockLeveler`** (YAML `states` / `after_states`, `check_replace`)
+- Full **`BlockLeveler`** — **state** matching is implemented (`FabricBlockStateMatcher`, `FabricBlockBreakHandler`); **`check_replace`** uses **`FabricRegionManager`** + placed-block NBT (Sprint 04). **Still not** every Bukkit `RegionBlockListener` edge (pistons, falling sand, tree grow, support ticks) — see **`fabric/SPRINT_04_MANUAL_VALIDATION.md`**.
 
 ---
 
@@ -372,7 +372,7 @@ Performed successfully in a clean-cache audit:
 | Bukkit / reference | Fabric (runtime) goal |
 |-----------------|-------------|
 | `ItemListener`, `ArmorListener`, `RequirementListener` | Harden `FabricItemRegistry` / `FabricModifierManager` vs **Bukkit** item/armor behavior; armor equip and requirements (see `PARITY_BACKLOG`). |
-| `BukkitLootManager` + block/mob **loot** handlers | **`FabricBlockLootHandler`** (block) + **`FabricMobLootHandler`** (mob) + **`FabricLootManager`**; **`FabricMobContextProvider`** for `mobs:` YAML contexts. Gaps: no `LootDropEvent`, no WorldGuard `CUSTOM_LOOT` (see ledger **`EVT-005`–`007`**, `SPRINT_02/03` manuals). |
+| `BukkitLootManager` + block/mob **loot** handlers | **`FabricBlockLootHandler`** (block) + **`FabricMobLootHandler`** (mob) + **`FabricLootManager`**; **`FabricMobContextProvider`**; **`FabricRegionManager`** for block **`check_replace`**. Gaps: no `LootDropEvent`, no WorldGuard `CUSTOM_LOOT` (see ledger **`EVT-005`–`007`**, sprints 02–04). |
 
 ### Phase D — Regions, economy, permissions, integrations
 

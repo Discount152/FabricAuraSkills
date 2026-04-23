@@ -58,7 +58,7 @@ public final class FabricSpeedMine {
             if (world.isClient() || !(player instanceof ServerPlayerEntity sp) || !(world instanceof ServerWorld)) {
                 return true;
             }
-            if (plugin.configBoolean(Option.CHECK_BLOCK_REPLACE_ENABLED) && isPlayerPlacedBlock((ServerWorld) world, pos)) {
+            if (plugin.configBoolean(Option.CHECK_BLOCK_REPLACE_ENABLED) && isPlayerPlacedBlock(plugin, (ServerWorld) world, pos)) {
                 return true;
             }
             User user = plugin.getUserManager().getUser(sp.getUuid());
@@ -314,12 +314,11 @@ public final class FabricSpeedMine {
         return false;
     }
 
-    /**
-     * Player-placed block tracking (Bukkit {@code RegionManager#isPlacedBlock}) is not on Fabric yet; when
-     * {@link Option#CHECK_BLOCK_REPLACE_ENABLED} is true, this hook returns false so Speed Mine is not suppressed.
-     */
-    private static boolean isPlayerPlacedBlock(ServerWorld world, BlockPos pos) {
-        return false;
+    private static boolean isPlayerPlacedBlock(FabricAuraSkills plugin, ServerWorld world, BlockPos pos) {
+        if (!plugin.configBoolean(Option.CHECK_BLOCK_REPLACE_ENABLED)) {
+            return false;
+        }
+        return plugin.getFabricRegionManager().isPlacedBlock(world, pos);
     }
 
     private static boolean isDisabled() {

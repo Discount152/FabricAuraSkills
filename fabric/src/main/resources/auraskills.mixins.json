@@ -10,6 +10,7 @@
     "BeehiveHarvestRequirementMixin",
     "CaveVinesHarvestRequirementMixin",
     "BlockItemBrewingStandOwnerMixin",
+    "BlockItemPlacedBlockMixin",
     "BlockEntityBrewingCleanupMixin",
     "BrewingStandBlockMixin",
     "BrewingStandBlockEntityMixin",

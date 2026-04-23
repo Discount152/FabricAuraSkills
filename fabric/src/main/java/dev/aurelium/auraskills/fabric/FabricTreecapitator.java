@@ -63,7 +63,7 @@ public final class FabricTreecapitator {
             if (world.isClient() || !(player instanceof ServerPlayerEntity sp) || !(world instanceof ServerWorld sw)) {
                 return;
             }
-            if (plugin.configBoolean(Option.CHECK_BLOCK_REPLACE_ENABLED) && isPlayerPlacedBlock(sw, pos)) {
+            if (plugin.configBoolean(Option.CHECK_BLOCK_REPLACE_ENABLED) && isPlayerPlacedBlock(plugin, sw, pos)) {
                 return;
             }
             SkillSource<BlockXpSource> skillSource = getNonStrippedBreakSkillSource(plugin, state);
@@ -302,7 +302,7 @@ public final class FabricTreecapitator {
             if (!plugin.getSkillManager().hasTag(adjSource, SourceTag.TREECAPITATOR_APPLICABLE)) {
                 continue;
             }
-            if (plugin.configBoolean(Option.CHECK_BLOCK_REPLACE_ENABLED) && isPlayerPlacedBlock(world, adj)) {
+            if (plugin.configBoolean(Option.CHECK_BLOCK_REPLACE_ENABLED) && isPlayerPlacedBlock(plugin, world, adj)) {
                 continue;
             }
 
@@ -467,8 +467,11 @@ public final class FabricTreecapitator {
         return player.getMainHandStack().isIn(ItemTags.AXES);
     }
 
-    private static boolean isPlayerPlacedBlock(ServerWorld world, BlockPos pos) {
-        return false;
+    private static boolean isPlayerPlacedBlock(FabricAuraSkills plugin, ServerWorld world, BlockPos pos) {
+        if (!plugin.configBoolean(Option.CHECK_BLOCK_REPLACE_ENABLED)) {
+            return false;
+        }
+        return plugin.getFabricRegionManager().isPlacedBlock(world, pos);
     }
 
     private static boolean isDisabled() {

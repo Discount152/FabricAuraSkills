@@ -3,6 +3,7 @@ package dev.aurelium.auraskills.fabric;
 import dev.aurelium.auraskills.api.skill.Skill;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.item.FabricUserEquipment;
+import dev.aurelium.auraskills.fabric.text.FabricTextAdapter;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.kyori.adventure.text.Component;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -45,6 +46,13 @@ public final class FabricUser extends User {
         if (!(player.getEntityWorld() instanceof ServerWorld world)) {
             return "world";
         }
+        return worldNameCompat(world);
+    }
+
+    /**
+     * Bukkit world folder / {@code config.yml} world name alignment for a dimension (overworld → {@code "world"}).
+     */
+    public static String worldNameCompat(ServerWorld world) {
         if (world.getRegistryKey().equals(World.OVERWORLD)) {
             return "world";
         }
@@ -66,7 +74,9 @@ public final class FabricUser extends User {
     @Override
     public void sendMessage(String message) {
         if (player != null) {
-            player.sendMessage(Text.literal(message), false);
+            player.sendMessage(
+                    FabricTextAdapter.toNativeText(plugin.getMessageProvider().stringToComponent(message), plugin.getServer()),
+                    false);
         }
     }
 
@@ -75,10 +85,10 @@ public final class FabricUser extends User {
         if (player == null) {
             return;
         }
-        if (plugin.getMessageProvider().componentToString(component).isEmpty()) {
+        if (Component.empty().equals(component)) {
             return;
         }
-        player.sendMessage(Text.literal(plugin.getMessageProvider().componentToString(component)), false);
+        player.sendMessage(FabricTextAdapter.toNativeText(component, plugin.getServer()), false);
     }
 
     @Override

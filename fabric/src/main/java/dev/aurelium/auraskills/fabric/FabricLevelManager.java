@@ -4,6 +4,8 @@ import dev.aurelium.auraskills.common.level.LevelManager;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.loot.FabricBlockLootHandler;
 import dev.aurelium.auraskills.fabric.loot.FabricMobLootHandler;
+import dev.aurelium.auraskills.fabric.region.FabricPlacedBlockBreakHandler;
+import dev.aurelium.auraskills.fabric.region.FabricRegionLifecycle;
 import dev.aurelium.auraskills.fabric.requirement.FabricRequirementHandlers;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvents;
@@ -26,9 +28,11 @@ public final class FabricLevelManager extends LevelManager {
      * Registers event-based XP handlers. Fishing uses {@link dev.aurelium.auraskills.fabric.mixin.FishingBobberEntityMixin}
      * (no explicit register call). Player config death resets use {@link FabricPlayerDeathHandler};
      * block break bonus loot / {@code override_vanilla_loot} use {@link FabricBlockLootHandler};
-     * Bukkit {@code MobLootHandler} is {@link FabricMobLootHandler}.
+     * Bukkit {@code MobLootHandler} is {@link FabricMobLootHandler}; placed blocks / {@code check_replace} use
+     * {@link dev.aurelium.auraskills.fabric.region.FabricRegionManager}.
      */
     public void registerFabricXpHandlers() {
+        FabricRegionLifecycle.register(plugin);
         FabricRequirementHandlers.register(plugin);
         FabricBrewingOwnerTracker.register();
         FabricBlockBreakHandler.register(plugin);
@@ -40,6 +44,7 @@ public final class FabricLevelManager extends LevelManager {
         FabricCombatXpHandler.register(plugin);
         FabricStatisticXpHandler.start(plugin);
         FabricJumpingXpHandler.register(plugin);
+        FabricPlacedBlockBreakHandler.register(plugin);
     }
 
     @Override
