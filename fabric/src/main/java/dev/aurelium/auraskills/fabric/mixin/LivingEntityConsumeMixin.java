@@ -12,6 +12,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityConsumeMixin {
 
+    /**
+     * {@code LivingEntity#consumeItem} is the vanilla consumption <strong>commit</strong> for the active item
+     * (post–use-duration), not the start of “using” the item. Only {@link ServerPlayerEntity} is handled; mobs and
+     * other {@link LivingEntity} types are ignored.
+     */
     @Inject(method = "consumeItem", at = @At("HEAD"))
     private void auraskills$onConsumeItem(CallbackInfo ci) {
         LivingEntity self = (LivingEntity) (Object) this;
@@ -22,6 +27,6 @@ public abstract class LivingEntityConsumeMixin {
         if (active.isEmpty()) {
             return;
         }
-        FabricItemConsumeHandler.onConsumeStarting(player, active.copy());
+        FabricItemConsumeHandler.onConsumeItemCommit(player, active.copy());
     }
 }

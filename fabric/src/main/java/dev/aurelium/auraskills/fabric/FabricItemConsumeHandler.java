@@ -14,11 +14,22 @@ public final class FabricItemConsumeHandler {
     }
 
     /**
-     * Called from {@link dev.aurelium.auraskills.fabric.mixin.LivingEntityConsumeMixin} at start of {@code LivingEntity.consumeItem()}.
+     * Bukkit: {@code ItemConsumeLeveler} on {@code PlayerItemConsumeEvent} at Bukkit
+     * {@code EventPriority.HIGHEST} (runs after lower priorities, so {@code LevelerContext#failsChecks} can observe a
+     * prior cancel). Match uses {@code event.getItem()} (the stack being consumed). Fabric:
+     * {@link net.minecraft.entity.LivingEntity#consumeItem()}
+     * is invoked when vanilla <strong>commits</strong> consumption (food/potion/milk completion), not when the client
+     * starts using the item; this is not a hook for {@code UseItemCallback} “start use” or interrupted mid-tick use.
      */
-    public static void onConsumeStarting(ServerPlayerEntity player, ItemStack consumedStack) {
+    public static void onConsumeItemCommit(ServerPlayerEntity player, ItemStack consumedStack) {
         FabricAuraSkills plugin = FabricAuraSkills.getInstance();
         if (plugin == null || consumedStack.isEmpty()) {
+            return;
+        }
+        if (player.isSpectator()) {
+            return;
+        }
+        if (!plugin.getSkillManager().isSourceEnabled(SourceTypes.ITEM_CONSUME)) {
             return;
         }
         SkillSource<ItemConsumeXpSource> match = null;

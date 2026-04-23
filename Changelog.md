@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.45
+
+### Changes
+
+- **Fabric: item consume XP (Sprint 17 / Bukkit `ItemConsumeLeveler` hardening):** `FabricItemConsumeHandler` (renamed entrypoint from `onConsumeStarting` to `onConsumeItemCommit`) now skips **spectators** and bails when **`SourceTypes.ITEM_CONSUME`** is disabled, before item matching. Mixin and handler Javadoc describe Bukkit `PlayerItemConsumeEvent` + `HIGHEST` vs `LivingEntity#consumeItem` (consumption <strong>commit</strong>, not use-tick / interrupted start-use). Bukkit `PlayerItemConsumeEvent#isCancelled` / `LevelerContext` location region: still **N/A** / `shouldBlockXp` on Fabric. Manual: **`fabric/SPRINT_17_MANUAL_VALIDATION.md`**. **`projectVersion` 2.3.44 → 2.3.45**.
+
 ## 2.3.44
 
 ### Changes
