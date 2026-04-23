@@ -237,7 +237,7 @@ Explicit registrations:
 
 ### 6.3 Not ported as Fabric handlers (no equivalent to listed Bukkit levelers)
 
-- `ManaAbilityUseLeveler` — **`FabricManaAbilityUseXpHandler`** implements YAML matching; **providers that call it after activation** include `FabricReplenish`, `FabricSpeedMine`, `FabricLightningBlade`, and **Sharp Hook** (`ServerPlayerEntitySharpHookMixin` + `FabricSharpHook`). **Still missing:** Treecapitator, Terraform, Charged Shot, Absorption, and any Bukkit-only `ManaAbilityActivateEvent` parity.
+- `ManaAbilityUseLeveler` — **`FabricManaAbilityUseXpHandler`**: YAML match on `ManaAbility` (same rules as Bukkit); **all** registered providers call it after mana use — `FabricReplenish`, `FabricSpeedMine`, `FabricLightningBlade`, `FabricTreecapitator`, `FabricTerraform`, `FabricChargedShot`, `FabricAbsorption`, **Sharp Hook** (`ServerPlayerEntitySharpHookMixin` + `FabricSharpHook`). **Sprint 12** — `isSourceEnabled(MANA_ABILITY_USE)` gate. **Not replicated:** Bukkit `ManaAbilityActivateEvent` **cancel** / modified `manaUsed` from plugins (no event bus on Fabric). Manual: `SPRINT_12_MANUAL_VALIDATION.md`.
 - **Brewing (Sprint 11)** — **`BREW`** in `BrewingStandBlockEntity#craft` when YAML’s first matching row is `BREW`; **`FabricBrewingOwnerTracker`**: placer on `BlockItem#place` + **claim-if-absent** on `BrewingStandBlock#onUse` (Bukkit: place + `InventoryOpen` unclaimed). **Online owner only**; offline / hopper-only brew: no BREW XP (like Bukkit). **`TAKEOUT`:** `FabricBrewingTakeoutTracker` + `ScreenHandlerBrewingTakeoutXpMixin`; **`LockableContainerBrewingStandSetStackMixin`** clears `TAKEOUT` slot state when result slots 0–2 are **set empty** (e.g. hopper), so the next **manual** take is not mis-attributed. Hoppers do **not** award TAKEOUT XP (Bukkit: player `InventoryClickEvent` only). Manual: `SPRINT_11_MANUAL_VALIDATION.md`.
 - Previously missing but **now implemented** (see above): `AnvilLeveler`, `GrindstoneLeveler`, `ItemConsumeLeveler`, `PotionSplashLeveler`, `EnchantingLeveler`, partial `BrewingLeveler`
 - **`EntityLeveler`** — **partial** on Fabric: kill + damage paths + spawner tagging; **Sprint 07** closed attribution/cause gaps for death/mob loot; transform/split spawner inheritance + third-party mob plugins **out of default scope**
@@ -354,7 +354,7 @@ Performed successfully in a clean-cache audit:
 | Medium | `BrewingLeveler` | **Sprint 11** — `BREW` owner + `TAKEOUT` + hopper **stale-state** clear on `setStack`; TAKEOUT XP still only on **player** GUI. **Partial** (optional edge cases: external automation mods). |
 | Medium | `ItemConsumeLeveler` | `UseItemCallback` / finish-using-item semantics. |
 | Medium | `PotionSplashLeveler` | Potion entity splash events. |
-| Medium | `ManaAbilityUseLeveler` | Extend Fabric mana providers (Treecapitator, Terraform, Charged Shot, Absorption, …); several already call `FabricManaAbilityUseXpHandler`. |
+| Medium | `ManaAbilityUseLeveler` | **Sprint 12** — provider inventory complete + source-type gate; Bukkit `ManaAbilityActivateEvent` **cancel** = **N/A** on Fabric. **Partial** (event API / plugin rewrites). |
 | Ongoing | `DamageLeveler` | **Sprint 08** aligned `FabricCombatXpHandler` to reference `DamageLeveler` (order, shield, `ThrownItemEntity` damagers) + `EntityLeveler` `DAMAGE` resolver / `forEntityDamageOnly` lookup. Remaining: Bukkit `DamageListener` **cancel** / **last-damage** correction (optional config) if product requires it. |
 
 ### Phase B — Gameplay systems (traits, abilities, mana)

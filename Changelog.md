@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.40
+
+### Changes
+
+- **Fabric: mana-ability use XP (Sprint 12 / Bukkit `ManaAbilityUseLeveler` hardening):** `FabricManaAbilityUseXpHandler` now returns early when **`SourceTypes.MANA_ABILITY_USE`** is not in use (same “no such sources in enabled skills” idea as Bukkit’s empty source list + leveler inactivity). In-repo, **all** `FabricManaAbilityManager` providers — Replenish, Speed Mine, Lightning Blade, **Treecapitator**, **Terraform**, **Charged Shot**, **Absorption**, and **Sharp Hook** (mixin) — already called `onManaAbilityActivated` after consumption; this sprint **documents** the full set and rewrites stale handoff text. Bukkit’s **`ManaAbilityActivateEvent` cancel** / plugin-modified `manaUsed` is **N/A** on Fabric (no event bus). Manual: **`fabric/SPRINT_12_MANUAL_VALIDATION.md`**. **`projectVersion` 2.3.39 → 2.3.40**.
+
 ## 2.3.39
 
 ### Changes

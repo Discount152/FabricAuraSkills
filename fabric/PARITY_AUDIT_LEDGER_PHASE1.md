@@ -59,7 +59,7 @@
 | AS-007 | `ConfirmManager` | — | Missing | Slate-Fabric + ACF/Brigadier | Confirm flows tied to commands/menus. |
 | AS-008 | `CommandRegistrar.registerCommands` → `PaperCommandManager` | `FabricAuraSkillsCommands` | Partial | ACF/Brigadier | Small Brigadier subset vs full ACF tree (see §3). |
 | AS-009 | `messageProvider.setACFMessages` | — | Missing | ACF/Brigadier | No ACF message integration. |
-| AS-010 | `BukkitLevelManager` + `registerLevelers` | `FabricLevelManager` + `registerFabricXpHandlers` | Partial | None | Levelers wired via Fabric handlers/mixins; compare to Bukkit list. **Sprint 10** — `StatisticLeveler` stat strings. **Sprint 11** — `BrewingLeveler` TAKEOUT hopper stale clear. |
+| AS-010 | `BukkitLevelManager` + `registerLevelers` | `FabricLevelManager` + `registerFabricXpHandlers` | Partial | None | Levelers wired via Fabric handlers/mixins; compare to Bukkit list. **Sprint 10** — `StatisticLeveler`. **Sprint 11** — `BrewingLeveler` hopper. **Sprint 12** — `EVT-021` mana-ability use XP. |
 | AS-011 | `BukkitAntiAfkManager` | `FabricAntiAfkManager` | Partial | None | `common` checks; verify parity with Bukkit listeners. |
 | AS-012 | `Metrics` + `MetricsUtil` | — | Missing | Out of scope | Reference optional metrics; not default Granite product scope. |
 | AS-013 | `UpdateChecker` | — | Missing | None | Optional product parity. |
@@ -69,7 +69,7 @@
 | AS-017 | First-tick: `lootManager.loadLootTables` | `FabricLootManager.loadLootTables` | Partial | None | Compare to Bukkit loot + handler coverage. |
 | AS-018 | `traitManager.registerTraitImplementations` | `FabricTraitManager.registerTraitImplementations` | Partial | Needs Regression Proof | Many traits registered; verify full Bukkit set. |
 | AS-019 | `abilityManager.registerAbilityImplementations` | `FabricAbilityManager.registerAbilityImplementations` | Partial | Needs Regression Proof | Many skills covered; diff vs `BukkitAbilityManager`. |
-| AS-020 | `manaAbilityManager.registerProviders` | `FabricManaAbilityManager.registerProviders` | Partial | None | Several providers; compare list to Bukkit. |
+| AS-020 | `manaAbilityManager.registerProviders` | `FabricManaAbilityManager.registerProviders` | Partial | None | All major abilities + XP hook (see `FabricManaAbilityUseXpHandler` javadoc, Sprint 12). **Gaps:** Bukkit `ManaAbilityActivateEvent` for plugins — **N/A** on Fabric. |
 | AS-021 | `registerEvents()` (see §4) | Scattered Fabric API + mixins | Partial | None | Not 1:1 class mapping; see listener table. |
 | AS-022 | `registerAndLoadMenus` | — | Missing | Slate-Fabric | |
 | AS-023 | `registerPriorityEvents` → `PlayerJoinQuit` | `FabricPlayerLifecycle` | Partial | None | Join/disconnect; compare full Bukkit behavior. |
@@ -150,6 +150,7 @@
 | EVT-017 | `EntityLeveler` (entity `DEATH` / `DAMAGE` XP + spawner) | `FabricEntityKillHandler` + `FabricCombatXpHandler` + `FabricSpawnerMobTracker` + mixins; `FabricEntityDamageAttribution` + `FabricEntityXpSourceLookup` | Partial | **Sprint 07** — kill/mob-loot killer resolution + `DEATH`-only source lookup + bleed PDC-style map. **Gaps:** Bukkit `onMobTransform` spawner copy (slime/drowned), `EntityXpGainEvent` API, MythicMobs — **out of default scope** or follow-up. |
 | EVT-018 | `StatisticLeveler` | `FabricStatisticXpHandler` + `FabricStatisticSourceResolver` (timer + stat resolution) | Partial | **Sprint 10** — `Stats.CUSTOM` known ids + `killed/` + `killed_by/` + `dropped/` + block/item types; Bukkit’s enum-only `Statistic` surface is a subset. Double-count vs entity levelers: **config**; cross-play: **Needs Regression Proof** in optional columns. |
 | EVT-019 | `BrewingLeveler` | `FabricBrewingXpHandler` + `FabricBrewingTakeoutTracker` + `FabricBrewingOwnerTracker` + mixins (incl. `LockableContainerBrewingStandSetStackMixin`) | Partial | **Sprint 11** — BREW + owner + TAKEOUT; TAKEOUT **clear** on hopper empty of result slots; TAKEOUT XP only on **player** GUI. Rare automation-mod paths: **Needs Regression Proof** if reported. |
+| EVT-021 | `ManaAbilityUseLeveler` | `FabricManaAbilityUseXpHandler` (called from all mana providers after consumption) | Partial | **Sprint 12** — full provider set + `isSourceEnabled(MANA_ABILITY_USE)`; Bukkit `ManaAbilityActivateEvent` **cancel** / third-party rewrites: **N/A** |
 | EVT-015 | `JobsListener` | — | Missing | Out of scope | Reference jobs/economy listener; not default Granite scope. |
 | EVT-016 | `BukkitLeaderboardExclusion` (listener) | `FabricLeaderboardExclusion` | Partial | |
 
@@ -195,6 +196,7 @@ EVT-014,Listeners,PlayerDeath,FabricPlayerDeathHandler,Equivalent,None,on_death.
 EVT-017,Listeners,EntityLeveler,FabricEntityKillHandler+Combat+Spawner+Sprint07,Partial,None,Entity death XP + attribution; see Sprint 07 manual; gaps: transform, API event
 EVT-018,Listeners,StatisticLeveler,FabricStatisticXpHandler+FabricStatisticSourceResolver,Partial,None,Sprint 10: custom+killed/dropped; manual SPRINT_10
 EVT-019,Listeners,BrewingLeveler,FabricBrewing handlers+setStack mixin,Partial,None,Sprint 11 TAKEOUT hopper clear; manual SPRINT_11
+EVT-021,Listeners,ManaAbilityUseLeveler,FabricManaAbilityUseXpHandler+providers,Partial,None,Sprint 12 source gate; Bukkit event N/A; manual SPRINT_12
 EVT-012,Listeners,RegionListener,—,Missing,Out of scope,Ref chunk load; ext region plugins N/A
 EVT-013,Listeners,RegionBlockListener,Placed block mixin+break+chunk load+Sprint05 integrity,Partial,Piston/fall/TreeFeature; ext region plugins N/A,
 ```

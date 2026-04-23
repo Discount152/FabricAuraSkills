@@ -16,13 +16,19 @@ public final class FabricManaAbilityManager extends ManaAbilityManager {
 
     /**
      * Port Bukkit {@link dev.aurelium.auraskills.bukkit.mana.BukkitManaAbilityManager#registerProviders()} here.
-     * {@link FabricSharpHook} is wired via {@code ServerPlayerEntitySharpHookMixin} (not listed below).
-     * {@link FabricChargedShot} (bow draw + {@code LivingEntity#damage} mixin for projectile hits; toggle on main-hand bow swing).
-     * {@link FabricTerraform} chains horizontal same-block breaks via {@code PlayerBlockBreakEvents.BEFORE}.
-     * {@link FabricAbsorption} uses {@code ServerLivingEntityEvents.ALLOW_DAMAGE} (shield ready: block attack only).
-     * {@link FabricTreecapitator} — no WorldEdit wand exclusion (Bukkit {@code Treecapitator#materialMatches}).
-     * Each provider, after a successful activation and mana consumption, should call
-     * {@link FabricManaAbilityUseXpHandler#onManaAbilityActivated}.
+     * All listed providers (plus {@link FabricSharpHook} via {@code ServerPlayerEntitySharpHookMixin}) call
+     * {@link FabricManaAbilityUseXpHandler#onManaAbilityActivated} after mana consumption, matching
+     * {@code ManaAbilityUseLeveler} on {@code ManaAbilityActivateEvent} for their ability.
+     * <ul>
+     *   <li>{@link FabricTimerCountdown} — cooldown / error tick only, not an activation path.
+     *   <li>{@link FabricAbsorption} — block-attacks while shield-ready, duration ability.
+     *   <li>{@link FabricReplenish} — crop bone-meal
+     *   <li>{@link FabricSpeedMine} — insta-break ore
+     *   <li>{@link FabricTerraform} — linked horizontal break
+     *   <li>{@link FabricTreecapitator} — tree (no Bukkit WorldEdit wand exclusion; see that class)
+     *   <li>{@link FabricLightningBlade} — click attack
+     *   <li>{@link FabricChargedShot} — bow shot after pull (damage mixin applies multiplier; XP on fire)
+     * </ul>
      */
     public void registerProviders() {
         new FabricTimerCountdown(plugin);
