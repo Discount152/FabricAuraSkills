@@ -34,7 +34,9 @@ These are **product** requirements, not optional polish:
 
 ## Traits (reference `BukkitTraitManager`)
 
-- **Sprint 19 (batch 1)** — Parity audit vs `bukkit/.../BukkitTraitManager.java` and `fabric/.../FabricTraitManager.java` in **`fabric/SPRINT_19_TRAIT_PARITY.md`**. **`Traits.EXPERIENCE_BONUS`** is now implemented on Fabric (`FabricExperienceBonus` + `FabricExperienceBonusTrait` + `PlayerEntityExperienceBonusMixin`). **Still not ported from the Bukkit reference set:** **`HealthRegenTraits`**, **`DoubleDropTrait`** (reference hooks include third-party region/loot surfaces — default **out of scope**; see parity doc), **`AnvilDiscountTrait`**. **Bedrock:** server-side vanilla XP math only; no separate client UI in this sprint.
+- **Sprint 19 (batch 1)** — Parity audit in **`fabric/SPRINT_19_TRAIT_PARITY.md`**. **`Traits.EXPERIENCE_BONUS`** on Fabric (`FabricExperienceBonus` + `FabricExperienceBonusTrait` + `PlayerEntityExperienceBonusMixin`).
+- **Sprint 20 (batch 2)** — **`HealthRegenTraits`**: **`FabricHealthRegenTraits`** + **`HungerManagerHealthRegenMixin`** + custom-delay tasks; Bukkit-only **`CustomRegenEvent`** not fired — **`fabric/SPRINT_20_HEALTH_REGEN_PARITY.md`**, manual **`SPRINT_20_MANUAL_VALIDATION.md`**.
+- **Still not ported from the Bukkit reference set:** **`DoubleDropTrait`** (default **out of scope** for third-party region/loot; see parity doc), **`AnvilDiscountTrait`**.
 
 ## Menus and UI
 

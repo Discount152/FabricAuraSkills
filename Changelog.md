@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.48
+
+### Changes
+
+- **Fabric: health regen traits (Sprint 20 / Bukkit `HealthRegenTraits`):** **`FabricHealthRegenTraits`** registers **`HUNGER_REGEN`** + **`SATURATION_REGEN`**. Natural food regen: **`HungerManagerHealthRegenMixin`** `@Redirect` on the two **`ServerPlayerEntity#heal`** call sites in **`HungerManager#update`**, with **`FabricHealthRegen`** matching Bukkit **`EntityRegainHealthEvent`–style addition (`getBonusTraitLevel`) and disabled-world / **`use_custom_delay`** (skip vanilla `heal`) behavior. Custom-delay regen: timer tasks mirror Bukkit period (**ticks × 50 ms**) and **`base` + bonus** with food decrement; **Bukkit `CustomRegenEvent` is not fired** (api-bukkit; document until Fabric ability hooks exist). Test: **`FabricHealthRegenTest`**. Manual: **`fabric/SPRINT_20_MANUAL_VALIDATION.md`**, diff **`fabric/SPRINT_20_HEALTH_REGEN_PARITY.md`**. **`projectVersion` 2.3.47 → 2.3.48**.
+
 ## 2.3.47
 
 ### Changes

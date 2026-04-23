@@ -27,25 +27,26 @@ Source: `bukkit/src/main/java/dev/aurelium/auraskills/bukkit/trait/BukkitTraitMa
 
 **Count:** 14 handler registrations.
 
-## 2. Fabric: registered classes (after Sprint 19)
+## 2. Fabric: registered classes (after Sprint 20; order in `FabricTraitManager` may differ)
 
 Source: `fabric/src/main/java/dev/aurelium/auraskills/fabric/FabricTraitManager.java`
 
 | # | Class | Trait(s) / notes |
 |---|--------|------------------|
 | 1 | `FabricLuckTrait` | Luck |
-| 2 | `FabricHpTrait` | HP |
-| 3 | `FabricMovementSpeedTrait` | Movement speed |
-| 4 | `FabricMaxManaTrait` | Max mana |
-| 5 | `FabricManaRegenTrait` | Mana regen |
-| 6 | `FabricCritChanceTrait` | Crit chance |
-| 7 | `FabricCritDamageTrait` | Crit damage |
-| 8 | `FabricAttackDamageTrait` | Attack damage |
-| 9 | `FabricDamageReductionTrait` | Damage reduction |
-| 10 | `FabricExperienceBonusTrait` | **EXPERIENCE_BONUS** (Sprint 19) |
-| 11 | `FabricGatheringLuckTraits` | Gathering luck |
+| 2 | `FabricHealthRegenTraits` | `HUNGER_REGEN` + `SATURATION_REGEN` (Sprint 20) |
+| 3 | `FabricHpTrait` | HP |
+| 4 | `FabricMovementSpeedTrait` | Movement speed |
+| 5 | `FabricMaxManaTrait` | Max mana |
+| 6 | `FabricManaRegenTrait` | Mana regen |
+| 7 | `FabricCritChanceTrait` | Crit chance |
+| 8 | `FabricCritDamageTrait` | Crit damage |
+| 9 | `FabricAttackDamageTrait` | Attack damage |
+| 10 | `FabricDamageReductionTrait` | Damage reduction |
+| 11 | `FabricExperienceBonusTrait` | **EXPERIENCE_BONUS** (Sprint 19) |
+| 12 | `FabricGatheringLuckTraits` | Gathering luck |
 
-**Count:** 11 handler groups.
+**Count:** 12 handler groups.
 
 ## 3. Direct diff (reference naming)
 
@@ -53,8 +54,8 @@ Source: `fabric/src/main/java/dev/aurelium/auraskills/fabric/FabricTraitManager.
 |----------|--------|--------|
 | **Equivalent / implemented** | `HpTrait`, `LuckTrait`, `ManaRegenTrait`, `AttackDamageTrait`, `MaxManaTrait`, `DamageReductionTrait`, `CritChanceTrait`, `CritDamageTrait`, `MovementSpeedTrait`, `GatheringLuckTraits` | `Fabric*Trait` counterparts registered |
 | **Implemented in Sprint 19** | `ExperienceBonusTrait` | `FabricExperienceBonusTrait` + `PlayerEntityExperienceBonusMixin` + `FabricExperienceBonus#scaleForPlayer` |
-| **Missing on Fabric (reference still has; not in batch 1)** | `HealthRegenTraits` | — |
-| | `DoubleDropTrait` | — (reference: block/loot/WorldGuard-style hooks; **default product scope** = no third-party Bukkit stack; see `PARITY_BACKLOG.md` *Out of scope*) |
+| **Implemented in Sprint 20** | `HealthRegenTraits` | `FabricHealthRegenTraits` + `HungerManagerHealthRegenMixin` + `FabricHealthRegen` — see **`SPRINT_20_HEALTH_REGEN_PARITY.md`** |
+| **Missing on Fabric (reference still has)** | `DoubleDropTrait` | — (reference: block/loot/WorldGuard-style hooks; **default product scope** = no third-party Bukkit stack; see `PARITY_BACKLOG.md` *Out of scope*) |
 | | `AnvilDiscountTrait` | — (follow-up: `ForgingScreenHandler` / anvil result cost; compare `PrepareAnvilEvent` behavior) |
 | **Regression proof** | All trait math + attribute apply/remove paths, login → equip → reload | Spot-check **Sprint 19** in-game: vanilla XP orbs, mining, negative deltas (e.g. enchant cost), disabled worlds |
 
@@ -65,7 +66,7 @@ Source: `fabric/src/main/java/dev/aurelium/auraskills/fabric/FabricTraitManager.
 | Row / topic | Status |
 |-------------|--------|
 | `Traits.EXPERIENCE_BONUS` (batch 1) | **Equivalent** to Bukkit reference for the `PlayerExpChangeEvent` math + disabled world skip (see manual validation) |
-| Full `BukkitTraitManager` set | **Partial** — three reference handler groups still absent on Fabric (see table above) |
+| Full `BukkitTraitManager` set | **Partial** — two reference handler groups still absent on Fabric (see table above) |
 | Cross-play (Geyser/Floodgate) | **No extra UI;** server-side math only — **Needs Regression Proof** in production if anything odd is reported for Bedrock clients |
 
 ## 5. Build evidence (Sprint 19)

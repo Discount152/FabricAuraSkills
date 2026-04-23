@@ -18,6 +18,7 @@
     "MobSpawnerLogicMixin",
     "EnchantmentScreenHandlerMixin",
     "FallingBlockEntityRegionMixin",
+    "HungerManagerHealthRegenMixin",
     "FishingBobberEntityMixin",
     "ForgingScreenHandlerMixin",
     "ForgingScreenHandlerAnvilOnTakeMixin",
