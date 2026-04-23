@@ -77,7 +77,7 @@ Reusing **`common`** saves time but inherits **Bukkit-first** seams. Stubs in **
 | Item | Detail |
 |------|--------|
 | **Upstream** | [Archy-X/AuraSkills](https://github.com/Archy-X/AuraSkills) — this tree is a fork/clone with an added **`fabric`** module. |
-| **Version** | `gradle.properties` → `projectVersion` (e.g. **2.3.29** — aligned with upstream release tagging intent). |
+| **Version** | `gradle.properties` → `projectVersion` (e.g. **2.3.30** — aligned with upstream release tagging intent). |
 | **Goal of the port** | Reuse **`api`** + **`common`** (shared logic, YAML, storage, leveling math) on **Fabric 1.21.11** with a **dedicated-server** mod, without rewriting the core plugin brain. |
 
 **Modules:**
@@ -224,6 +224,7 @@ Explicit registrations:
 |---------|-----------|
 | `FabricBlockBreakHandler` | Fabric world/block events → block break XP (id-based; state predicates limited — see backlog). |
 | `FabricEntityKillHandler` | Entity death → XP when player is killer (subset of `EntityLeveler` behavior). |
+| `FabricBlockLootHandler` | Block break → roll skill `loot/*.yml` pools (Bukkit `BlockLootHandler`); `override_vanilla_loot` via `AFTER` item-entity clear near block, then custom drops. |
 | `FabricPlayerDeathHandler` | Player death → optional skill / XP reset from `on_death.*` in `config.yml` (Bukkit `PlayerDeath` parity). |
 | `FabricCombatXpHandler` | Damage XP via `ServerLivingEntityEvents.AFTER_DAMAGE` + `FabricDamageCauseMapper`. |
 | `FabricStatisticXpHandler` | Custom stats only (subset of `StatisticLeveler`). |
@@ -370,7 +371,7 @@ Performed successfully in a clean-cache audit:
 | Bukkit / reference | Fabric (runtime) goal |
 |-----------------|-------------|
 | `ItemListener`, `ArmorListener`, `RequirementListener` | Harden `FabricItemRegistry` / `FabricModifierManager` vs **Bukkit** item/armor behavior; armor equip and requirements (see `PARITY_BACKLOG`). |
-| `BukkitLootManager` + block/mob **loot** handlers | Extend **`FabricLootManager`** and Fabric handler coverage for parity with **Bukkit** `BlockLootHandler` / `MobLootHandler` where still missing. |
+| `BukkitLootManager` + block/mob **loot** handlers | **`FabricBlockLootHandler`** + **`FabricLootManager`** cover Bukkit **`BlockLootHandler`**-style block loot; **mob** loot still follows **`MobLootHandler`** parity (see ledger **`EVT-007`** / backlog). |
 
 ### Phase D — Regions, economy, permissions, integrations
 

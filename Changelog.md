@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.30
+
+### Changes
+
+- **Fabric: block skill loot (EVT-005 / Bukkit `BlockLootHandler`):** `FabricBlockLootHandler` rolls pool loot on `PlayerBlockBreakEvents` (Excavation / Mining / Foraging / Farming providers; item + command loot; `override_vanilla_loot` removes vanilla `ItemEntity` drops near the block in `AFTER` then applies skill drops). Shared block XP source resolution: **`FabricBlockXpSourceLookup`**. **`projectVersion` 2.3.29 → 2.3.30**. Manual: **`fabric/SPRINT_02_MANUAL_VALIDATION.md`**. WorldGuard “custom loot” and Slimefun block guards are not replicated on Fabric; placed-block `check_replace` still waits on placed-block tracking.
+
 ## 2.3.29
 
 ### Changes
