@@ -26,6 +26,7 @@
     "LivingEntityAuraSkillsDamageMixin",
     "LivingEntityChargedShotDamageMixin",
     "LivingEntityArmorRequirementMixin",
+    "PlayerEntityExperienceBonusMixin",
     "LivingEntityConsumeMixin",
     "LivingEntityNoDebuffSplashMixin",
     "PistonHandlerRegionMixin",

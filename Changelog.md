@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.47
+
+### Changes
+
+- **Fabric: trait parity (Sprint 19 / batch 1 — `EXPERIENCE_BONUS`):** Audited `BukkitTraitManager.registerTraitImplementations()` vs `FabricTraitManager.registerTraitImplementations()`. Implemented Bukkit **`ExperienceBonusTrait`** parity: **`FabricExperienceBonusTrait`** registered in **`FabricTraitManager`**, with vanilla point scaling in **`PlayerEntityExperienceBonusMixin`** (`@ModifyVariable` on **`PlayerEntity#addExperience(int)`**, server players only; matches Bukkit `PlayerExpChangeEvent` math and disabled-world skip). Unit test: **`FabricExperienceBonusTest`** (pure math). Audit + diff: **`fabric/SPRINT_19_TRAIT_PARITY.md`**. Manual: **`fabric/SPRINT_19_MANUAL_VALIDATION.md`**. **Remaining reference traits on Fabric:** `HealthRegenTraits`, `DoubleDropTrait`, `AnvilDiscountTrait` (see parity doc). **`projectVersion` 2.3.46 → 2.3.47**.
+
 ## 2.3.46
 
 ### Changes

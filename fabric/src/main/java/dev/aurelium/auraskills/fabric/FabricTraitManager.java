@@ -10,6 +10,7 @@ import dev.aurelium.auraskills.fabric.trait.FabricAttackDamageTrait;
 import dev.aurelium.auraskills.fabric.trait.FabricCritChanceTrait;
 import dev.aurelium.auraskills.fabric.trait.FabricCritDamageTrait;
 import dev.aurelium.auraskills.fabric.trait.FabricDamageReductionTrait;
+import dev.aurelium.auraskills.fabric.trait.FabricExperienceBonusTrait;
 import dev.aurelium.auraskills.fabric.trait.FabricGatheringLuckTraits;
 import dev.aurelium.auraskills.fabric.trait.FabricHpTrait;
 import dev.aurelium.auraskills.fabric.trait.FabricLuckTrait;
@@ -47,6 +48,7 @@ public final class FabricTraitManager extends TraitManager {
         registerTraitImpl(new FabricCritDamageTrait(plugin));
         registerTraitImpl(new FabricAttackDamageTrait(plugin));
         registerTraitImpl(new FabricDamageReductionTrait(plugin));
+        registerTraitImpl(new FabricExperienceBonusTrait(plugin));
         registerTraitImpl(new FabricGatheringLuckTraits(plugin));
     }
 

@@ -186,7 +186,7 @@ Then **`scheduler.executeSync(this::finishEnable)`** — **critical**: skills an
 1. `loadSkills()` — `SkillLoader` + `StatLoader` (from YAML under config folder).
 2. `levelManager.loadXpRequirements()` — **`FabricXpRequirementsLoader`**.
 3. **`levelManager.registerFabricXpHandlers()`** — see §6 (does **not** register fishing explicitly).
-4. Boss bar options load, rewards, **trait / ability / mana ability “registration”** (see §8 — traits/abilities still no-op; mana providers partially wired).
+4. Boss bar options load, rewards, **trait / ability / mana ability “registration”** (see §8 — traits via **`FabricTraitManager`**; **`EXPERIENCE_BONUS`** wired in Sprint 19 — see **`fabric/SPRINT_19_TRAIT_PARITY.md`**; remaining Bukkit-only trait classes still listed there; mana providers partially wired).
 5. Leaderboards, stat temp modifier task, log line summarizing enabled XP paths.
 
 **Invariant:** `FabricAuraSkills.getInstance()` is non-null **after** `SERVER_STARTING` enable completes; mixins that run during early world load must still tolerate null if called before that point (fishing mixin checks `plugin == null`).
@@ -361,7 +361,7 @@ Performed successfully in a clean-cache audit:
 
 | Bukkit / reference | Fabric (runtime) goal |
 |-----------------|-------------|
-| `BukkitTraitManager.registerTraitImplementations()` | Implement Fabric trait handlers (HP, regen, luck, damage, crit, movespeed, etc.) using Fabric/MC attribute and event APIs; register in **`FabricTraitManager.registerTraitImplementations()`**. |
+| `BukkitTraitManager.registerTraitImplementations()` | **Sprint 19:** `EXPERIENCE_BONUS` parity (`FabricExperienceBonusTrait` + `PlayerEntityExperienceBonusMixin`). **Still missing vs reference:** `HealthRegenTraits`, `DoubleDropTrait`, `AnvilDiscountTrait` — **`fabric/SPRINT_19_TRAIT_PARITY.md`**. |
 | `BukkitAbilityManager` | Port ability implementations or equivalents. |
 | `BukkitManaAbilityManager.registerProviders()` | Port mana abilities (`Replenish`, `Treecapitator`, …) with Fabric events/mixins. |
 

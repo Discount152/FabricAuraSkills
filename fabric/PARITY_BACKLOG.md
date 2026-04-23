@@ -32,6 +32,10 @@ These are **product** requirements, not optional polish:
 
 - **Exploit resistance** for supported XP sources should be tracked alongside feature parity (farming loops, spawner/tagging, stat/jump/damage spam, fishing automation). `AntiAfkManager` is registered from `common` but does not cover all cases.
 
+## Traits (reference `BukkitTraitManager`)
+
+- **Sprint 19 (batch 1)** — Parity audit vs `bukkit/.../BukkitTraitManager.java` and `fabric/.../FabricTraitManager.java` in **`fabric/SPRINT_19_TRAIT_PARITY.md`**. **`Traits.EXPERIENCE_BONUS`** is now implemented on Fabric (`FabricExperienceBonus` + `FabricExperienceBonusTrait` + `PlayerEntityExperienceBonusMixin`). **Still not ported from the Bukkit reference set:** **`HealthRegenTraits`**, **`DoubleDropTrait`** (reference hooks include third-party region/loot surfaces — default **out of scope**; see parity doc), **`AnvilDiscountTrait`**. **Bedrock:** server-side vanilla XP math only; no separate client UI in this sprint.
+
 ## Menus and UI
 
 - **Slate / inventory menus** — **In progress (Path A):** full **Slate** port to Fabric + Paper-parity **command tree**; see **`fabric/MENU_AND_COMMANDS_PORT.md`**. Until shipped, `FabricMenuHelper` remains a stub.
