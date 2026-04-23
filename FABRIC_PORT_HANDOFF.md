@@ -13,7 +13,8 @@ This document is the **authoritative handoff** for the **Java Fabric** dedicated
 | Assumption | Detail |
 |------------|--------|
 | **Runtime** | Dedicated **Java Fabric** server, **Minecraft 1.21.11**, **Java 21**. |
-| **Distribution** | **Server-side mod** only (see `fabric.mod.json` server entrypoint); **Java clients** and **Bedrock clients** (via **Geyser** + **Floodgate** on the same server) join **without** installing Granite Skills on the client — server drives progression and UI. |
+| **Distribution** | **Two** standalone server-side **Fabric** JARs — **GraniteLib** (`:granitelib-fabric`) and **Granite Skills** (`:fabric`) — installed together; see **`fabric/PAPER_PARITY_PROGRAM.md`** *Two-JAR completion* and **`fabric/RELEASE_GATES.md`**. |
+| **Clients** | **Java** and **Bedrock** (via **Geyser** + **Floodgate** on the same server) join **without** client mods — server drives progression and UI. |
 | **Stack** | No Bukkit/Paper/Spigot at runtime. **Fabric API** + bundled **[fabric-permissions-api](https://github.com/lucko/fabric-permissions-api)** (JiJ); optional **LuckPerms Fabric** (or any provider) for real permission nodes. **Geyser** + **Floodgate** are **expected** in the supported deployment for cross-play; validate features on **both** player paths. |
 | **Config** | Same YAML / `config.yml` family as the reference layout, rooted at `<server>/config/auraskills/` via `FabricLoader`. |
 
@@ -29,7 +30,7 @@ This document is the **authoritative handoff** for the **Java Fabric** dedicated
 
 **Intermediate milestone — “serious public Fabric server” (partial parity):** Join/load/save validated; **fabric-permissions-api** + recommended LuckPerms; core XP sources that are already ported behave; fishing mixin re-verified after MC/Yarn bumps; minimal **Brigadier** admin/player commands (see `fabric/MOD_COMMANDS.txt` / `fabric/FABRIC_QUICKSTART.md`) until the full tree lands. **Where feasible, spot-check** Bedrock (Geyser/Floodgate) for progression and chat/title surfaces.
 
-**Program complete** — see **`fabric/PAPER_PARITY_PROGRAM.md` §5:** same as intermediate, plus: Slate-style menus and **full command capability** vs the **reference** tree (per **`fabric/MENU_AND_COMMANDS_PORT.md`**); traits/abilities/mana coverage aligned with the reference; loot/block/mob/region/jobs on **Fabric-native** handlers; integration gaps **closed** or **documented**; **final Granite** public command UX may still be a follow-up rebrand pass. **Acceptance** includes **Java and Bedrock-via-Geyser** for user-visible flows, or **explicit** documented limitations for Bedrock.
+**Program complete** — see **`fabric/PAPER_PARITY_PROGRAM.md` §5** and **two-JAR completion**: **GraniteLib** + **Granite Skills** are each **shippable**; together they match the **Bukkit reference** in **`fabric/RELEASE_GATES.md` Gate C**. Substantively: Slate-style menus and **full command capability** vs the **reference** tree (per **`fabric/MENU_AND_COMMANDS_PORT.md`**); traits/abilities/mana coverage aligned with the reference; loot/block/mob/region/jobs on **Fabric-native** handlers; integration gaps **closed** or **documented**; **final Granite** public command UX may still be a follow-up rebrand pass. **Acceptance** includes **Java and Bedrock-via-Geyser** for user-visible flows, or **explicit** documented limitations for Bedrock.
 
 **Test / acceptance expectation:** do not treat “passes on Java only” as sufficient for **menus, commands, or formatted messages**; include **Geyser + Floodgate** in manual (or automated where possible) test plans.
 
