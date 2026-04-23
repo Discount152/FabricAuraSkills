@@ -43,10 +43,11 @@ Source: `fabric/src/main/java/dev/aurelium/auraskills/fabric/FabricTraitManager.
 | 8 | `FabricCritDamageTrait` | Crit damage |
 | 9 | `FabricAttackDamageTrait` | Attack damage |
 | 10 | `FabricDamageReductionTrait` | Damage reduction |
-| 11 | `FabricExperienceBonusTrait` | **EXPERIENCE_BONUS** (Sprint 19) |
-| 12 | `FabricGatheringLuckTraits` | Gathering luck |
+| 11 | `FabricAnvilDiscountTrait` | **ANVIL_DISCOUNT** (Sprint 21) |
+| 12 | `FabricExperienceBonusTrait` | **EXPERIENCE_BONUS** (Sprint 19) |
+| 13 | `FabricGatheringLuckTraits` | Gathering luck |
 
-**Count:** 12 handler groups.
+**Count:** 13 handler groups.
 
 ## 3. Direct diff (reference naming)
 
@@ -55,8 +56,8 @@ Source: `fabric/src/main/java/dev/aurelium/auraskills/fabric/FabricTraitManager.
 | **Equivalent / implemented** | `HpTrait`, `LuckTrait`, `ManaRegenTrait`, `AttackDamageTrait`, `MaxManaTrait`, `DamageReductionTrait`, `CritChanceTrait`, `CritDamageTrait`, `MovementSpeedTrait`, `GatheringLuckTraits` | `Fabric*Trait` counterparts registered |
 | **Implemented in Sprint 19** | `ExperienceBonusTrait` | `FabricExperienceBonusTrait` + `PlayerEntityExperienceBonusMixin` + `FabricExperienceBonus#scaleForPlayer` |
 | **Implemented in Sprint 20** | `HealthRegenTraits` | `FabricHealthRegenTraits` + `HungerManagerHealthRegenMixin` + `FabricHealthRegen` — see **`SPRINT_20_HEALTH_REGEN_PARITY.md`** |
+| **Implemented in Sprint 21** | `AnvilDiscountTrait` | `FabricAnvilDiscountTrait` + `FabricAnvilDiscount` + `AnvilScreenHandlerAnvilDiscountMixin` — see **`SPRINT_21_ANVIL_DISCOUNT_PARITY.md`** |
 | **Missing on Fabric (reference still has)** | `DoubleDropTrait` | — (reference: block/loot/WorldGuard-style hooks; **default product scope** = no third-party Bukkit stack; see `PARITY_BACKLOG.md` *Out of scope*) |
-| | `AnvilDiscountTrait` | — (follow-up: `ForgingScreenHandler` / anvil result cost; compare `PrepareAnvilEvent` behavior) |
 | **Regression proof** | All trait math + attribute apply/remove paths, login → equip → reload | Spot-check **Sprint 19** in-game: vanilla XP orbs, mining, negative deltas (e.g. enchant cost), disabled worlds |
 
 **Behavioral note:** Bukkit’s `PlayerExpChangeEvent` tracks **point** changes; Fabric hooks **`PlayerEntity#addExperience(int)`** (logical server) so the same **int delta** is scaled once. Code paths that change XP **without** `addExperience` are outside this hook (and may differ from Spigot in edge cases; treat as *Needs Regression Proof* if reported).
@@ -66,7 +67,7 @@ Source: `fabric/src/main/java/dev/aurelium/auraskills/fabric/FabricTraitManager.
 | Row / topic | Status |
 |-------------|--------|
 | `Traits.EXPERIENCE_BONUS` (batch 1) | **Equivalent** to Bukkit reference for the `PlayerExpChangeEvent` math + disabled world skip (see manual validation) |
-| Full `BukkitTraitManager` set | **Partial** — two reference handler groups still absent on Fabric (see table above) |
+| Full `BukkitTraitManager` set | **Partial** — one reference handler group still absent on Fabric (`DoubleDropTrait`; see table) |
 | Cross-play (Geyser/Floodgate) | **No extra UI;** server-side math only — **Needs Regression Proof** in production if anything odd is reported for Bedrock clients |
 
 ## 5. Build evidence (Sprint 19)

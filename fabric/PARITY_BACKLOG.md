@@ -36,7 +36,8 @@ These are **product** requirements, not optional polish:
 
 - **Sprint 19 (batch 1)** — Parity audit in **`fabric/SPRINT_19_TRAIT_PARITY.md`**. **`Traits.EXPERIENCE_BONUS`** on Fabric (`FabricExperienceBonus` + `FabricExperienceBonusTrait` + `PlayerEntityExperienceBonusMixin`).
 - **Sprint 20 (batch 2)** — **`HealthRegenTraits`**: **`FabricHealthRegenTraits`** + **`HungerManagerHealthRegenMixin`** + custom-delay tasks; Bukkit-only **`CustomRegenEvent`** not fired — **`fabric/SPRINT_20_HEALTH_REGEN_PARITY.md`**, manual **`SPRINT_20_MANUAL_VALIDATION.md`**.
-- **Still not ported from the Bukkit reference set:** **`DoubleDropTrait`** (default **out of scope** for third-party region/loot; see parity doc), **`AnvilDiscountTrait`**.
+- **Sprint 21 (batch 3)** — **`AnvilDiscountTrait`**: **`FabricAnvilDiscountTrait`**, **`FabricAnvilDiscount`**, **`AnvilScreenHandlerAnvilDiscountMixin`** — **`SPRINT_21_ANVIL_DISCOUNT_PARITY.md`**, manual **`SPRINT_21_MANUAL_VALIDATION.md`**.
+- **Still not ported from the Bukkit reference set (core trait):** **`DoubleDropTrait`** (default **out of scope** for third-party region/loot; see parity doc).
 
 ## Menus and UI
 

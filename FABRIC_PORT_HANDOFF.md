@@ -361,7 +361,7 @@ Performed successfully in a clean-cache audit:
 
 | Bukkit / reference | Fabric (runtime) goal |
 |-----------------|-------------|
-| `BukkitTraitManager.registerTraitImplementations()` | **Sprint 19–20:** `EXPERIENCE_BONUS` + `HealthRegenTraits` (see **`SPRINT_20_HEALTH_REGEN_PARITY.md`**; no Bukkit `CustomRegenEvent`). **Still missing vs reference:** `DoubleDropTrait`, `AnvilDiscountTrait` — trait audit **`SPRINT_19_TRAIT_PARITY.md`**. |
+| `BukkitTraitManager.registerTraitImplementations()` | **Sprint 19–21:** `EXPERIENCE_BONUS` + `HealthRegenTraits` + `AnvilDiscount` — see **`SPRINT_21_ANVIL_DISCOUNT_PARITY.md`**. **Still missing vs reference (trait):** `DoubleDropTrait` — **`SPRINT_19_TRAIT_PARITY.md`**. |
 | `BukkitAbilityManager` | Port ability implementations or equivalents. |
 | `BukkitManaAbilityManager.registerProviders()` | Port mana abilities (`Replenish`, `Treecapitator`, …) with Fabric events/mixins. |
 

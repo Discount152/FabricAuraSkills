@@ -16,6 +16,7 @@
     "BrewingStandBlockEntityMixin",
     "LockableContainerBrewingStandSetStackMixin",
     "MobSpawnerLogicMixin",
+    "AnvilScreenHandlerAnvilDiscountMixin",
     "EnchantmentScreenHandlerMixin",
     "FallingBlockEntityRegionMixin",
     "HungerManagerHealthRegenMixin",

@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.49
+
+### Changes
+
+- **Fabric: anvil discount trait (Sprint 21 / Bukkit `AnvilDiscountTrait`):** **`FabricAnvilDiscountTrait`** + **`FabricAnvilDiscount`** (Evalex `formula` + Bukkit fallback curve, `resetFormula` on trait reload) + **`AnvilScreenHandlerAnvilDiscountMixin`** (`@Inject` TAIL of **`AnvilScreenHandler#updateResult`**) to scale **`Property` level cost** as Bukkit’s **`PrepareAnvilEvent`** (rounded `repairCost * (1 - discount)`; a rounded cost of 0 becomes **1**). Disabled-world and trait-enabled gates; screen **owner** only — Bukkit’s **highest-`WISDOM` among viewers** and **`CustomRegenEvent` N/A** noted in **`fabric/SPRINT_21_ANVIL_DISCOUNT_PARITY.md`**. Reuses SPRINT 16 take/cost path (`getLevelCost` / `FabricAnvilTakeContext`). Test: **`FabricAnvilDiscountTest`**. Manual: **`fabric/SPRINT_21_MANUAL_VALIDATION.md`**. **`projectVersion` 2.3.48 → 2.3.49**.
+
 ## 2.3.48
 
 ### Changes
