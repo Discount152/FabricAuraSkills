@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.41
+
+### Changes
+
+- **Fabric: jumping XP (Sprint 13 / Bukkit `JumpingLeveler` hardening):** `FabricJumpingXpHandler` now uses **`FabricXpHandlerUtil.shouldBlockXp(..., JUMPING)`** (shared permission / creative / world / source-type gate with other levelers) instead of a one-off check. **Spectators** and **climbing** players (`LivingEntity#isClimbing`) are skipped before velocity matching to cut false positives; ladder-at-feet and vanilla jump-impulse heuristics remain. **Bukkit** `PlayerMoveEvent` **cancel** / location-API blocks are still **N/A** on the default Fabric path. Manual: **`fabric/SPRINT_13_MANUAL_VALIDATION.md`**. **`projectVersion` 2.3.40 → 2.3.41**.
+
 ## 2.3.40
 
 ### Changes

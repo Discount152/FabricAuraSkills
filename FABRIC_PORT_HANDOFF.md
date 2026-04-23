@@ -229,7 +229,7 @@ Explicit registrations:
 | `FabricPlayerDeathHandler` | Player death → optional skill / XP reset from `on_death.*` in `config.yml` (Bukkit `PlayerDeath` parity). |
 | `FabricCombatXpHandler` | Damage XP via `ServerLivingEntityEvents.AFTER_DAMAGE` + `FabricDamageCauseMapper`. |
 | `FabricStatisticXpHandler` | Bukkit `StatisticLeveler` timer + delta; **`FabricStatisticSourceResolver`** — `Stats.CUSTOM` (incl. `mob_kills` / `damage_dealt` / deaths / shield-damage), typed **`killed/`**, **`killed_by/`**, **`dropped/`**, plus mined/used/broken/picked_up (Sprint 10). |
-| `FabricJumpingXpHandler` | Jump detection (subset of `JumpingLeveler`). |
+| `FabricJumpingXpHandler` | End-tick jump impulse matching (Bukkit `JumpingLeveler`); **Sprint 13** — `shouldBlockXp`, spectator + climb skip. **Partial** vs `PlayerMoveEvent` + Bukkit `LevelerContext` location blocks. |
 
 **Fishing:** **Not** registered here. Documented in Javadoc: implemented by **`FishingBobberEntityMixin`** calling **`FabricFishingXpHandler.onFishCaughtStat`** when vanilla increments **`Stats.FISH_CAUGHT`** during bobber `use`.
 

@@ -3,9 +3,7 @@ package dev.aurelium.auraskills.fabric;
 import dev.aurelium.auraskills.api.skill.Skill;
 import dev.aurelium.auraskills.api.source.SkillSource;
 import dev.aurelium.auraskills.api.source.type.JumpingXpSource;
-import dev.aurelium.auraskills.common.config.Option;
 import dev.aurelium.auraskills.common.source.SourceTypes;
-import dev.aurelium.auraskills.common.user.User;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -20,7 +18,20 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Counts vanilla-style jump impulses each tick, matching Paper {@code JumpingLeveler} heuristics.
+ * Per–end-tick jump detection aligned with Bukkit {@code JumpingLeveler#handleJump}:
+ * <ul>
+ *   <li>Upward velocity ({@code vy &gt; 0}) and initial jump speed {0.42} + Jump Boost (amplifier × 0.1)
+ *   <li>Previous tick “on ground” tracking (Bukkit {@code prevPlayersOnGround})
+ *   <li>Block at feet is ladder → no count (Bukkit {@code Material.LADDER})
+ *   <li>Not on ground and {@code vy} exactly equals expected jump impulse (vanilla jump, not knockback)
+ *   <li>Interval counter (Bukkit {@code skillsJumps} metadata) before {@link JumpingXpSource#getInterval} awards
+ * </ul>
+ * Uses {@link ServerTickEvents#END_SERVER_TICK} instead of Bukkit {@code PlayerMoveEvent}; core velocity rules match.
+ * <p>
+ * <strong>Fabric hardening (Sprint 13):</strong> {@link FabricXpHandlerUtil#shouldBlockXp} (same gates as other
+ * Fabric levelers where applicable), skip {@linkplain ServerPlayerEntity#isSpectator() spectators}, skip
+ * {@linkplain net.minecraft.entity.LivingEntity#isClimbing() climbing} (reduces false positives not covered by the
+ * ladder-at-feet check). Bukkit location-based XP blocks (WorldGuard, etc.) are not on Fabric by default.
  */
 public final class FabricJumpingXpHandler {
 
@@ -61,6 +72,14 @@ public final class FabricJumpingXpHandler {
 
     private void tickPlayer(ServerPlayerEntity player, JumpingXpSource source, Skill skill) {
         UUID id = player.getUuid();
+        if (player.isSpectator()) {
+            updateGroundState(player, id);
+            return;
+        }
+        if (player.isClimbing()) {
+            updateGroundState(player, id);
+            return;
+        }
         double vy = player.getVelocity().y;
         if (vy <= 0) {
             updateGroundState(player, id);
@@ -76,14 +95,13 @@ public final class FabricJumpingXpHandler {
             updateGroundState(player, id);
             return;
         }
-        if (failsPlayerSkillCheck(plugin, player, skill)) {
+        if (FabricXpHandlerUtil.shouldBlockXp(plugin, player, skill, SourceTypes.JUMPING)) {
             updateGroundState(player, id);
             return;
         }
         int next = jumpsAccumulated.merge(id, 1, Integer::sum);
         if (next >= source.getInterval()) {
-            User user = plugin.getUserManager().getUser(id);
-            plugin.getLevelManager().addXp(user, skill, source, source.getXp());
+            plugin.getLevelManager().addXp(plugin.getUserManager().getUser(id), skill, source, source.getXp());
             jumpsAccumulated.remove(id);
         }
         updateGroundState(player, id);
@@ -111,15 +129,4 @@ public final class FabricJumpingXpHandler {
         return player.getEntityWorld().getBlockState(pos).isOf(Blocks.LADDER);
     }
 
-    private static boolean failsPlayerSkillCheck(FabricAuraSkills plugin, ServerPlayerEntity player, Skill skill) {
-        if (plugin.configBoolean(Option.DISABLE_IN_CREATIVE_MODE) && player.getAbilities().creativeMode) {
-            return true;
-        }
-        User user = plugin.getUserManager().getUser(player.getUuid());
-        if (!user.hasSkillPermission(skill)) {
-            return true;
-        }
-        String worldName = FabricUser.worldNameCompat(player);
-        return plugin.getWorldManager().isBlockedWorld(worldName) || plugin.getWorldManager().isDisabledWorld(worldName);
-    }
 }
