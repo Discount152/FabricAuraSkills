@@ -228,7 +228,7 @@ Explicit registrations:
 | `FabricBlockLootHandler` | Block break → roll skill `loot/*.yml` pools (Bukkit `BlockLootHandler`); `override_vanilla_loot` via `AFTER` item-entity clear near block, then custom drops. |
 | `FabricPlayerDeathHandler` | Player death → optional skill / XP reset from `on_death.*` in `config.yml` (Bukkit `PlayerDeath` parity). |
 | `FabricCombatXpHandler` | Damage XP via `ServerLivingEntityEvents.AFTER_DAMAGE` + `FabricDamageCauseMapper`. |
-| `FabricStatisticXpHandler` | Custom stats only (subset of `StatisticLeveler`). |
+| `FabricStatisticXpHandler` | Bukkit `StatisticLeveler` timer + delta; **`FabricStatisticSourceResolver`** — `Stats.CUSTOM` (incl. `mob_kills` / `damage_dealt` / deaths / shield-damage), typed **`killed/`**, **`killed_by/`**, **`dropped/`**, plus mined/used/broken/picked_up (Sprint 10). |
 | `FabricJumpingXpHandler` | Jump detection (subset of `JumpingLeveler`). |
 
 **Fishing:** **Not** registered here. Documented in Javadoc: implemented by **`FishingBobberEntityMixin`** calling **`FabricFishingXpHandler.onFishCaughtStat`** when vanilla increments **`Stats.FISH_CAUGHT`** during bobber `use`.
@@ -241,7 +241,7 @@ Explicit registrations:
 - **Brewing** — **`BREW`** on stand **`craft`** (nearest open GUI); **`TAKEOUT`** via `FabricBrewingTakeoutTracker` + `ScreenHandlerBrewingTakeoutXpMixin`. **Not ported:** Bukkit **reference** stand **owner** metadata (place/open claim), hopper edge cases.
 - Previously missing but **now implemented** (see above): `AnvilLeveler`, `GrindstoneLeveler`, `ItemConsumeLeveler`, `PotionSplashLeveler`, `EnchantingLeveler`, partial `BrewingLeveler`
 - **`EntityLeveler`** — **partial** on Fabric: kill + damage paths + spawner tagging; **Sprint 07** closed attribution/cause gaps for death/mob loot; transform/split spawner inheritance + third-party mob plugins **out of default scope**
-- Full **`StatisticLeveler`** (block/item mined/used stat mapping)
+- Full **`StatisticLeveler`** 1:1 with only Bukkit `Statistic` enum names — **N/A** on Fabric: YAML can use **slash-typed** stats Bukkit’s enum could not; core aggregate + per-entity + dropped coverage is **in** (Sprint 10); any remaining Bukkit scoreboard / criteria edge cases: **Partial** (see `SPRINT_10_MANUAL_VALIDATION.md`).
 - Full **`BlockLeveler`** — **state** matching is implemented (`FabricBlockStateMatcher`, `FabricBlockBreakHandler`); **`check_replace`** uses **`FabricRegionManager`** + placed-block NBT (Sprint 04) and **`FabricRegionBlockIntegrity`** + mixins for pistons, falling sand/gravel, `TreeFeature` grow-Y cleanup, and tall-plant / support follow-up (Sprint 05 — **`fabric/SPRINT_05_MANUAL_VALIDATION.md`**). Remaining gaps: config that relied on **external region plugins** is **out of default scope** (use `blocked_worlds` / ops); mushroom / non-`TreeFeature` grows; unreported edge cases.
 
 ---
@@ -349,7 +349,7 @@ Performed successfully in a clean-cache audit:
 | High | `FishingLeveler` + `FishingLootHandler` | **Sprint 09** — bonus loot / open-water / pool-`else` and HIGH-before-MONITOR order on Fabric; Bukkit `LootDropEvent` / `EntityLoot` / `getExpToDrop` gate: optional / follow-up. |
 | High | `BlockLeveler` + `BlockLevelerHelper` | Block **state** matching (`states` / `after_states` in YAML); **placed-block** / `check_replace` if configs depend on it. |
 | High | `EntityLeveler` | Spawner detection (mixins + `FabricSpawnerMobTracker`); kill/damage triggers + attribution (**Sprint 07**). Remaining: transform/split spawner tag copy, `EntityXpGainEvent`-class API, full reference edge cases. Third-party mob plugins: **out of default scope**. |
-| Medium | `StatisticLeveler` | Map Bukkit statistic IDs to Minecraft stats / scoreboard / criteria not yet wired. |
+| Medium | `StatisticLeveler` | **Sprint 10** — `FabricStatisticSourceResolver` + `FabricStatisticXpHandler`: aggregate + per-entity + dropped; Bukkit-enum-only config still maps via `custom/<name>`. Residual: strict enum-name-only parity, scoreboard criteria if any; **Partial** (manual `SPRINT_10_MANUAL_VALIDATION.md`). |
 | Medium | `AnvilLeveler`, `EnchantingLeveler`, `GrindstoneLeveler` | ScreenHandler / anvil / grindstone / enchant events on Fabric API or mixins. |
 | Medium | `BrewingLeveler` | Brewing stand tick / inventory change hooks. |
 | Medium | `ItemConsumeLeveler` | `UseItemCallback` / finish-using-item semantics. |

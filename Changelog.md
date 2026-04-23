@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.38
+
+### Changes
+
+- **Fabric: statistic XP source mapping (Sprint 10 / Bukkit `StatisticLeveler` hardening):** Extracted **`FabricStatisticSourceResolver`** (stat string → vanilla `Stat`). New typed forms: **`killed/<entity>`**, **`killed_by/<entity>`** (`Stats.KILLED` / `Stats.KILLED_BY`), **`dropped/<item>`** (`Stats.DROPPED`). **Known `Stats.CUSTOM` ids** resolved without relying on `hasStat` alone: `damage_dealt`, `damage_taken`, damage shield/resist/absorb variants, `mob_kills`, `player_kills`, `deaths` (see resolver Javadoc). **`FabricStatisticXpHandler`** delegates to the resolver. Duplicate awards vs entity-kill/damage levelers remain a **configuration** concern if both are enabled for the same action. Manual: **`fabric/SPRINT_10_MANUAL_VALIDATION.md`**. **`projectVersion` 2.3.37 → 2.3.38**.
+
 ## 2.3.37
 
 ### Changes

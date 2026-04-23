@@ -25,7 +25,7 @@ Output: `fabric/build/libs/FabricAuraSkills-<version>.jar` (version from root `g
 
 ### Optional: statistic sources in YAML
 
-Besides vanilla custom stats (`walk_one_cm`), Fabric accepts **`mined/minecraft:stone`**, **`used/minecraft:diamond_pickaxe`**, **`broken/...`**, **`picked_up/...`**, or **`custom/walk_one_cm`** (see `FabricStatisticXpHandler`).
+Besides vanilla custom stats (`walk_one_cm`, `mob_kills`, `damage_dealt`, …), Fabric accepts **`mined/minecraft:stone`**, **`used/...`**, **`broken/...`**, **`picked_up/...`**, **`dropped/...`**, **`killed/minecraft:zombie`**, **`killed_by/...`**, or **`custom/walk_one_cm`** (see `FabricStatisticSourceResolver` / `FabricStatisticXpHandler`).
 
 ## Commands
 
