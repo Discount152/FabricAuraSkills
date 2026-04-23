@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.52
+
+### Changes
+
+- **Fabric: `GROWTH_AURA` batch 2 (Sprint 24 / `FarmingAbilities` parity):** Generalized `FabricFarmingAbilities` growth aura to any block state with an integer **`"age"`** (Bukkit `Ageable`–equivalent) for **`ageDidNotAdvance` / `applyExtraGrowthAfterAura`**, with **`maxAgeForBlockState`** for crops, nether wart, and generic `IntProperty` domains. Mixin **renamed** to **`FarmingAgeableRandomTickGrowthAuraMixin`**, **replacing** `CropWartBlockGrowthAuraMixin`, adding **`CactusBlock`**, **`SugarCaneBlock`**, **`CocoaBlock`**, **`StemBlock`**, **`SweetBerryBushBlock`**, **`KelpBlock`**, **`KelpPlantBlock`**, **`CaveVinesHeadBlock`**, **`CaveVinesBodyBlock`**. **Not** in scope: bamboo-style column growth, weeping/twisting vines (class mapping), full bonemeal parity — see **`fabric/SPRINT_24_FARMING_GROWTH_AURA.md`**, manual **`fabric/SPRINT_24_MANUAL_VALIDATION.md`**. **`projectVersion` 2.3.51 → 2.3.52**.
+
 ## 2.3.51
 
 ### Changes

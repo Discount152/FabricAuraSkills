@@ -38,7 +38,7 @@
     "ServerPlayerEntitySharpHookMixin",
     "ServerPlayerEntityTraitWorldMixin",
     "TreeFeatureGrowContextMixin",
-    "CropWartBlockGrowthAuraMixin",
+    "FarmingAgeableRandomTickGrowthAuraMixin",
     "TreeFeatureSetBlockMixin",
     "ServerPlayerEntityParrySwingMixin",
     "ServerPlayerEntityShieldAbsorptionSwingMixin"

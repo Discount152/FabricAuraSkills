@@ -11,15 +11,16 @@ import dev.aurelium.auraskills.fabric.damage.FabricDamageMeta;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CropBlock;
 import net.minecraft.block.NetherWartBlock;
-import net.minecraft.state.property.IntProperty;
-import net.minecraft.state.property.Property;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.state.property.IntProperty;
+import net.minecraft.state.property.Property;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -108,7 +109,8 @@ public final class FabricFarmingAbilities extends FabricAbilityImpl implements F
     }
 
     /**
-     * Called at {@code TAIL} of {@link CropBlock} / {@link NetherWartBlock} {@code randomTick} (compare before/after).
+     * Bukkit {@code BlockGrowEvent} for {@code Ageable} new state — at {@code TAIL} of {@code randomTick}
+     * for blocks (see {@code FarmingAgeableRandomTickGrowthAuraMixin}).
      */
     public static void onNaturalAgingAfterRandomTick(
             ServerWorld world,
@@ -141,13 +143,22 @@ public final class FabricFarmingAbilities extends FabricAbilityImpl implements F
         if (start.getBlock() != end.getBlock()) {
             return true;
         }
-        if (start.getBlock() instanceof CropBlock crop) {
-            return crop.getAge(end) <= crop.getAge(start);
+        IntProperty ap = intAgeProperty(start);
+        if (ap == null || !start.contains(ap) || !end.contains(ap)) {
+            return true;
         }
-        if (start.getBlock() instanceof NetherWartBlock) {
-            return end.get(NetherWartBlock.AGE) <= start.get(NetherWartBlock.AGE);
+        return end.get(ap) <= start.get(ap);
+    }
+
+    @Nullable
+    @VisibleForTesting
+    static IntProperty intAgeProperty(BlockState state) {
+        for (Property<?> p : state.getBlock().getStateManager().getProperties()) {
+            if ("age".equals(p.getName()) && p instanceof IntProperty ip) {
+                return ip;
+            }
         }
-        return true;
+        return null;
     }
 
     private static void handleGrowthAura(
@@ -167,7 +178,6 @@ public final class FabricFarmingAbilities extends FabricAbilityImpl implements F
             if (extraStages <= 0) {
                 return;
             }
-            // One tick (50ms) after vanilla, matching Bukkit scheduleAtLocation
             plugin.getScheduler()
                     .scheduleSync(
                             () -> applyExtraGrowthAfterAura(world, pos, newState, extraStages),
@@ -192,15 +202,6 @@ public final class FabricFarmingAbilities extends FabricAbilityImpl implements F
         return guaranteed + extra;
     }
 
-    private static BlockState withCropAge(BlockState state, int age) {
-        for (Property<?> p : state.getBlock().getStateManager().getProperties()) {
-            if ("age".equals(p.getName()) && p instanceof IntProperty ip) {
-                return state.with(ip, age);
-            }
-        }
-        return state;
-    }
-
     private static void applyExtraGrowthAfterAura(
             ServerWorld world, BlockPos pos, BlockState endAfterVanilla, int extraStages) {
         if (!world.isChunkLoaded(pos)) {
@@ -210,25 +211,33 @@ public final class FabricFarmingAbilities extends FabricAbilityImpl implements F
         if (at.getBlock() != endAfterVanilla.getBlock()) {
             return;
         }
-        if (at.getBlock() instanceof CropBlock c) {
-            if (c.getAge(at) != c.getAge(endAfterVanilla)) {
-                return;
-            }
-            int n = Math.min(c.getAge(at) + extraStages, c.getMaxAge());
-            if (n > c.getAge(at)) {
-                world.setBlockState(pos, withCropAge(at, n), 3);
-            }
+        IntProperty ap = intAgeProperty(at);
+        if (ap == null || !at.contains(ap) || !endAfterVanilla.contains(ap)) {
             return;
         }
-        if (at.getBlock() instanceof NetherWartBlock) {
-            int a0 = at.get(NetherWartBlock.AGE);
-            if (a0 != endAfterVanilla.get(NetherWartBlock.AGE)) {
-                return;
-            }
-            int n = Math.min(a0 + extraStages, NetherWartBlock.MAX_AGE);
-            if (n > a0) {
-                world.setBlockState(pos, at.with(NetherWartBlock.AGE, n), 3);
-            }
+        if (at.get(ap) != endAfterVanilla.get(ap)) {
+            return;
         }
+        int current = at.get(ap);
+        int cap = maxAgeForBlockState(at, ap);
+        int n = Math.min(current + extraStages, cap);
+        if (n > current) {
+            world.setBlockState(pos, at.with(ap, n), 3);
+        }
+    }
+
+    @VisibleForTesting
+    static int maxAgeForBlockState(BlockState at, IntProperty ap) {
+        if (at.getBlock() instanceof CropBlock c) {
+            return c.getMaxAge();
+        }
+        if (at.getBlock() instanceof NetherWartBlock) {
+            return NetherWartBlock.MAX_AGE;
+        }
+        int m = 0;
+        for (int v : ap.getValues()) {
+            m = Math.max(m, v);
+        }
+        return m;
     }
 }
