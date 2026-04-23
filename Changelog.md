@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.31
+
+### Changes
+
+- **Fabric: mob skill loot (EVT-007 / Bukkit `MobLootHandler`):** `FabricMobLootHandler` registers on `ServerLivingEntityEvents.AFTER_DEATH`, resolves **player** killers (melee or `ProjectileEntity` owner), rolls the default **`mob`** loot table (`NamespacedId.fromDefault("mob")` / `loot/mob.yml`) with **DEATH → DAMAGE** entity source resolution via **`FabricEntityXpSourceLookup`**, **`mobs:`** contexts via **`FabricMobContext` + `FabricMobContextProvider`**, and item/command delivery aligned with **`FabricBlockLootHandler`** (telekinesis-style to-inventory option, optional loot-table XP). **`projectVersion` 2.3.30 → 2.3.31**. Manual: **`fabric/SPRINT_03_MANUAL_VALIDATION.md`**. Same caveats as block loot: no Bukkit `LootDropEvent`, no WorldGuard `CUSTOM_LOOT` flag.
+
 ## 2.3.30
 
 ### Changes

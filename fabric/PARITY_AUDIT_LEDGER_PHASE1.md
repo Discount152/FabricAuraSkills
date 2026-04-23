@@ -139,7 +139,7 @@
 | EVT-004 | `BlockInteractions` | `FabricBlockBreakHandler`, `FabricBlockInteractHandler`, etc. | Partial | |
 | EVT-005 | `BlockLootHandler` | `FabricBlockLootHandler` + `FabricBlockXpSourceLookup` | Partial | Bukkit `BlockLootHandler` parity: pools, providers, `override_vanilla_loot` (AFTER item clear + drops). **Not** WG `CUSTOM_LOOT` / Slimefun; placed `check_replace` needs placed-block API. |
 | EVT-006 | `FishingLootHandler` | `FabricFishingLootHandler` (invoked from fishing XP path) | Partial | Not a Bukkit-style event listener. |
-| EVT-007 | `MobLootHandler` | — | Missing | |
+| EVT-007 | `MobLootHandler` | `FabricMobLootHandler` | Partial | No `LootDropEvent`; no WorldGuard `CUSTOM_LOOT`; skill from `FabricEntityXpSourceLookup` (Fabric damage cause mapping). |
 | EVT-008 | `RequirementListener` | `FabricRequirementHandlers` | Partial | |
 | EVT-009 | `ItemListener` | Item/modifier stack | Partial | |
 | EVT-010 | `ArmorListener` | Partial via modifier schedules | Partial | |
@@ -186,7 +186,7 @@ CMD-013,Commands,OpenMenuCommand,—,Missing,Slate-Fabric+ACF/Brigadier,
 MENU-003,Menus,Menu skills,—,Missing,Slate-Fabric,
 EVT-005,Listeners,BlockLootHandler,FabricBlockLootHandler,Partial,None,No WG/Slimefun; override_vanilla is AFTER box clear
 EVT-006,Listeners,FishingLootHandler,FabricFishingLootHandler,Partial,None,Hooked from fishing XP
-EVT-007,Listeners,MobLootHandler,—,Missing,None,
+EVT-007,Listeners,MobLootHandler,FabricMobLootHandler,Partial,No LootDropEvent / WG; see Sprint 03,
 EVT-014,Listeners,PlayerDeath,FabricPlayerDeathHandler,Equivalent,None,on_death.* config; see Sprint 01 manual
 EVT-012,Listeners,RegionListener,—,Missing,Integration bridge,
 ```

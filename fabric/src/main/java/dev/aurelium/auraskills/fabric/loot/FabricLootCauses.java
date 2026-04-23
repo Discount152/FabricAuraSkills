@@ -13,5 +13,9 @@ public enum FabricLootCauses implements LootDropCause {
     MINING_OTHER_LOOT,
     FORAGING_OTHER_LOOT,
     FARMING_OTHER_LOOT,
+    /**
+     * Bukkit {@code LootDropEvent.Cause#MOB_LOOT_TABLE} (reserved for any future event-style wiring).
+     */
+    MOB_LOOT_TABLE,
     UNKNOWN
 }

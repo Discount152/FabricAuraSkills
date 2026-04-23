@@ -372,7 +372,7 @@ Performed successfully in a clean-cache audit:
 | Bukkit / reference | Fabric (runtime) goal |
 |-----------------|-------------|
 | `ItemListener`, `ArmorListener`, `RequirementListener` | Harden `FabricItemRegistry` / `FabricModifierManager` vs **Bukkit** item/armor behavior; armor equip and requirements (see `PARITY_BACKLOG`). |
-| `BukkitLootManager` + block/mob **loot** handlers | **`FabricBlockLootHandler`** + **`FabricLootManager`** cover Bukkit **`BlockLootHandler`**-style block loot; **mob** loot still follows **`MobLootHandler`** parity (see ledger **`EVT-007`** / backlog). |
+| `BukkitLootManager` + block/mob **loot** handlers | **`FabricBlockLootHandler`** (block) + **`FabricMobLootHandler`** (mob) + **`FabricLootManager`**; **`FabricMobContextProvider`** for `mobs:` YAML contexts. Gaps: no `LootDropEvent`, no WorldGuard `CUSTOM_LOOT` (see ledger **`EVT-005`–`007`**, `SPRINT_02/03` manuals). |
 
 ### Phase D — Regions, economy, permissions, integrations
 

@@ -2,6 +2,7 @@ package dev.aurelium.auraskills.fabric.loot;
 
 import dev.aurelium.auraskills.common.config.Option;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
+import dev.aurelium.auraskills.fabric.loot.context.FabricMobContextProvider;
 import dev.aurelium.auraskills.common.loot.CustomItemParser;
 import dev.aurelium.auraskills.common.loot.LootManager;
 import net.minecraft.item.ItemStack;
@@ -20,6 +21,7 @@ public final class FabricLootManager extends LootManager {
         super(plugin);
         this.plugin = plugin;
         this.lootLoader = new FabricLootLoader(plugin, this);
+        registerContextProvider(new FabricMobContextProvider());
     }
 
     @Override
