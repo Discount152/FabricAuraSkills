@@ -1,5 +1,5 @@
 {
-  "auraskills.granite.command.auraskills_usage": "Use: /auraskills <version|help|skills|stats|mana|skilllevel|xp|reload|save>  —  /skills / /stats = menus  —  /mana  —  /skilllevel  —  /xp  (see fabric/COMMAND_PARITY_AUDIT.md)",
+  "auraskills.granite.command.auraskills_usage": "Use: /auraskills <version|help|skills|stats|mana|skilllevel|xp|reload|save>  —  /skills / /stats = menus  —  /mana  —  /skilllevel (view, add, set, remove, setall, reset)  —  /xp  (see fabric/COMMAND_PARITY_AUDIT.md)",
   "auraskills.granite.command.help": "Fabric AuraSkills: /auraskills version | /skills | /stats | /mana | /skilllevel | /xp | reload | save (staff)",
   "auraskills.granite.command.level.count_positive": "The level count must be greater than 0 (for add and remove).",
   "auraskills.granite.command.skilllevel.view_line": "%s — %s: level %s, XP in level %s",

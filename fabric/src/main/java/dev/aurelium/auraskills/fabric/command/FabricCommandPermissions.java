@@ -56,10 +56,13 @@ public final class FabricCommandPermissions {
     public static final String SKILL_LEVEL_VIEW = "auraskills.command.skilllevel.view";
 
     /**
-     * Bukkit: {@code skill setlevel} / {@code addlevel} share {@code
-     * auraskills.command.skill.setlevel} — used for add/set/remove level here (**Sprint 42**).
+     * Bukkit: {@code skill setlevel} / {@code addlevel} / {@code setall} share {@code
+     * auraskills.command.skill.setlevel} — used for add/set/remove/setall (**Sprints 42–43**).
      */
     public static final String SKILL_SETLEVEL = "auraskills.command.skill.setlevel";
+
+    /** Bukkit: {@code skill reset} (single skill or all). **Sprint 43** */
+    public static final String SKILL_RESET = "auraskills.command.skill.reset";
 
     private FabricCommandPermissions() {}
 }

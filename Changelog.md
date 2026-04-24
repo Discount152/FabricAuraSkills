@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.71
+
+### Changes
+
+- **Fabric: skilllevel `setall` + `reset` (Sprint 43):** **`FabricSkillLevelCommands`** — **`skilllevel setall <player> <level>`** (`auraskills.command.skill.setlevel`); **`skilllevel reset <player>`** / **`… <player> <skill>`** (`auraskills.command.skill.reset`). **`FabricCommandSkillLevelApply.setAllEnabledSkillsToLevel`** (Bukkit batch order); **`User#resetSkill`** + **`afterSkillResetApplyModifiers`**. **Docs** `SPRINT_43_MANUAL_SKILLLEVEL_SETALL_RESET.md`, `COMMAND_PARITY_AUDIT`, `MENU_AND_COMMANDS_PORT`, ledger **CMD-003**, backlog, **usage** string. **Tests** permissions. **`projectVersion` 2.3.70 → 2.3.71**. **Not in scope:** ACF `skills|sk|skill`+`skill` path; offline targets.
+
 ## 2.3.70
 
 ### Changes

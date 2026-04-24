@@ -88,7 +88,7 @@
 |----|-----------------------------------|--------|--------|---------|
 | CMD-001 | `SkillsRootCommand` | `FabricBrigadierCommands` + `FabricAuraSkillsCommands` (`/auraskills*`, `/skills` → **Skills** GUI); **`fabric/COMMAND_PARITY_AUDIT.md`** | Partial | ACF/Brigadier + Slate-Fabric (full tree) | **Sprint 39** — shared scaffold; not `sk`/`skill` / most subcommands |
 | CMD-002 | `StatsCommand` | `FabricBrigadierCommands` (`/stats` → **Stats** GUI) | Partial | ACF/Brigadier | **Sprint 39** — same scaffold |
-| CMD-003 | `SkillCommand` | `FabricSkillLevelCommands` + `FabricCommandSkillLevelApply` — **`/skilllevel`**, **`/auraskills skilllevel`** (view, add, set, remove; Bukkit perms for mutations) | Partial | ACF/Brigadier | **Sprint 42** — `setall` / `reset` not ported; no `skills\|sk\|skill` prefix here |
+| CMD-003 | `SkillCommand` | `FabricSkillLevelCommands` + `FabricCommandSkillLevelApply` — **`/skilllevel`**, **`/auraskills skilllevel`** (view, add, set, remove, setall, reset; + Fabric remove) | Partial | ACF/Brigadier | **Sprint 42–43** — ACF `skills\|sk\|skill`+`skill` path not the Fabric root |
 | CMD-004 | `ManaCommand` (common) | `FabricManaCommands` + `FabricBrigadierCommands`: **`/mana`**, **`/auraskills mana`** — self, `view`, `add` / `set` / `remove` (online; shared amount rules + mutation feedback) | Partial | ACF/Brigadier + ACF `silent` / `allowOverMax` | **Sprint 41** — bounded family; ACF extra flags not ported |
 | CMD-005 | `ModifierCommand` | — | Missing | ACF/Brigadier |
 | CMD-006 | `ItemCommand` | — | Missing | ACF/Brigadier + item pipeline |

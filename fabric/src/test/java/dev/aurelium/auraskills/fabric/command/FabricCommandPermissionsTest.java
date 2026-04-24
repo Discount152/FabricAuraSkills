@@ -29,7 +29,8 @@ class FabricCommandPermissionsTest {
             FabricCommandPermissions.XP_SET,
             FabricCommandPermissions.XP_REMOVE,
             FabricCommandPermissions.SKILL_LEVEL_VIEW,
-            FabricCommandPermissions.SKILL_SETLEVEL
+            FabricCommandPermissions.SKILL_SETLEVEL,
+            FabricCommandPermissions.SKILL_RESET
         };
         Set<String> seen = new HashSet<>();
         for (String s : all) {

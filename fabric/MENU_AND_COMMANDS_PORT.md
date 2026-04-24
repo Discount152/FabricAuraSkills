@@ -295,3 +295,14 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Manual** | **`SPRINT_42_MANUAL_SKILLLEVEL_COMMANDS.md`** |
 
 **Not in Sprint 42:** ACF `setall` / `reset` / `skills`+`skill` Bukkit path; max-level capping; offline targets.
+
+## Sprint 43 — **skilllevel** `setall` + `reset` (shipped, partial)
+
+| Piece | Where |
+|-------|--------|
+| **setall** | **`skilllevel setall <player> <level>`** — `auraskills.command.skill.setlevel`; **`FabricCommandSkillLevelApply.setAllEnabledSkillsToLevel`** (Bukkit order: per enabled skill revert/level-up, then one stats / modifiers / permissions) |
+| **reset** | **`skilllevel reset <player>`** (all skills) and **`… reset <player> <skill>`** — `auraskills.command.skill.reset`; uses **`User#resetSkill`**, then **`afterSkillResetApplyModifiers`**; feedback **`SKILL_SETALL_SET`** / **`SKILL_SETLEVEL_SET`** |
+| **Manual** | **`SPRINT_43_MANUAL_SKILLLEVEL_SETALL_RESET.md`** (full **skilllevel** family checklist) |
+| **Perms** | Adds **`auraskills.command.skill.reset`** |
+
+**Not in Sprint 43:** ACF `skills\|sk\|skill` + `skill` path; max-level capping; offline targets; changing the **`/skilllevel`** root/alias design.
