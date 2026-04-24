@@ -49,5 +49,17 @@ public final class FabricCommandPermissions {
 
     public static final String XP_REMOVE = "auraskills.command.xp.remove";
 
+    /**
+     * Read-only: {@code /skilllevel view <player> <skill>} — not a separate Bukkit node; use a
+     * dedicated Fabric name (default <strong>allow</strong> like {@link #XP_VIEW}).
+     */
+    public static final String SKILL_LEVEL_VIEW = "auraskills.command.skilllevel.view";
+
+    /**
+     * Bukkit: {@code skill setlevel} / {@code addlevel} share {@code
+     * auraskills.command.skill.setlevel} — used for add/set/remove level here (**Sprint 42**).
+     */
+    public static final String SKILL_SETLEVEL = "auraskills.command.skill.setlevel";
+
     private FabricCommandPermissions() {}
 }

@@ -283,3 +283,15 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Manual** | **`SPRINT_41_MANUAL_MANA_COMMANDS.md`** |
 
 **Not in Sprint 41:** ACF `silent` / `allowOverMax` on **mana**; **offline** target UUIDs; non-Geyser-specific command UX beyond shared translatables and prefix formatting.
+
+## Sprint 42 — **skill level** command family (shipped, partial)
+
+| Piece | Where |
+|-------|--------|
+| **Level** | **`FabricSkillLevelCommands#skillLevelRoot`**: **`/skilllevel`** and **`/auraskills skilllevel`** — **view** + **add** / **set** / **remove** (same player + skill arg pattern as **xp**; **add**/**remove** use a positive **count**; **set** takes absolute level); **`FabricCommandSkillLevelApply.setSkillLevel`** (stats, permissions, reward revert/level-up, `FabricModifierManager`) like Bukkit `SkillCommand` |
+| **Shared** | **`FabricCommandAmountRules.requirePositiveIntForAdd`** (add/remove level **count**); **`FabricCommandMutationFeedback`** for **`SKILL_SETLEVEL_SET`**, **`SKILL_AT_LEAST`** |
+| **Perms** | **`auraskills.command.skilllevel.view`** (read); **`auraskills.command.skill.setlevel`** (add/set/remove — same string as Bukkit) |
+| **Lang** | **`…level.count_positive`**, **`…skilllevel.view_line`**, **usage** / **help** list **`skilllevel`** |
+| **Manual** | **`SPRINT_42_MANUAL_SKILLLEVEL_COMMANDS.md`** |
+
+**Not in Sprint 42:** ACF `setall` / `reset` / `skills`+`skill` Bukkit path; max-level capping; offline targets.

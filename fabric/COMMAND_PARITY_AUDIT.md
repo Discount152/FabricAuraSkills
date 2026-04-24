@@ -2,7 +2,7 @@
 
 **Runtime product:** **Fabric** + **Geyser/Floodgate**; **Bukkit** `CommandRegistrar` + ACF is the **in-repo reference only**, not a second shipped runtime.
 
-**Sprint 39** establishes this audit and a **shared Brigadier scaffold** (`fabric/.../command/FabricBrigadierCommands` and helpers). **Sprint 40** adds **shared online player + skill parsing** (`FabricCommandPlayerTarget`, `FabricCommandSkillParser`, `FabricCommandSuggestionProviders`) and the first **`xp`** batch. **Sprint 41** adds the bounded **`/mana`** family (self + `view` + add/set/remove), shared **`FabricCommandAmountRules`** and **`FabricCommandMutationFeedback`**, and perms `auraskills.command.mana.*` (Sprint 41). **Final** public **Granite** command names/aliases are **not frozen** in this document.
+**Sprint 39** establishes this audit and a **shared Brigadier scaffold** (`fabric/.../command/FabricBrigadierCommands` and helpers). **Sprint 40** adds **shared online player + skill parsing** (`FabricCommandPlayerTarget`, `FabricCommandSkillParser`, `FabricCommandSuggestionProviders`) and the first **`xp`** batch. **Sprint 41** adds the bounded **`/mana`** family (self + `view` + add/set/remove), shared **`FabricCommandAmountRules`** and **`FabricCommandMutationFeedback`**, and perms `auraskills.command.mana.*` (Sprint 41). **Sprint 42** adds the bounded **`/skilllevel`** family (view, add, set, remove) + **`FabricCommandSkillLevelApply`**, and perms `auraskills.command.skilllevel.view` / `auraskills.command.skill.setlevel`. **Final** public **Granite** command names/aliases are **not frozen** in this document.
 
 **Reference root:** ACF `skills_alias` = `skills|sk|skill` (`CommandRegistrar#registerReplacements`) → commands attach under **`/skills`**, `/sk`, `/skill` **plus** dedicated classes noted below.
 
@@ -41,7 +41,7 @@
 | `SkillsRootCommand` `claimitems` | — | Missing | |
 | `SkillsRootCommand` `transfer` | — | Missing | |
 | `SkillsRootCommand` `updateleaderboards` | — | Missing | |
-| `SkillCommand` `skill setlevel\|addlevel\|setall\|reset` | — | Missing | |
+| `SkillCommand` `skill setlevel\|addlevel` (+ Fabric **`remove`**) | `/skilllevel` and `/auraskills skilllevel` — **view** / **add** / **set** / **remove** (online; same skill resolution as **xp**; **remove** = subtract levels, floor at start) | Partial | Bukkit: under `skills\|sk\|skill` + `skill` sub; no **`setall`** / **`reset`**; Bukkit has no `remove` sub — Fabric-only delta |
 | `XpCommand` `xp add\|set\|remove` | `/auraskills xp …`, `/xp …` — **add** / **set** / **remove** `<player> <skill> <amount>`; permissions `auraskills.command.xp.*` (defaults like Bukkit **op** for mutations) | Partial | **Sprint 40:** no `silent` flag; no `skills\|sk\|skill` prefix (use `/xp` or `/auraskills xp`) |
 | `XpCommand` (extra) | `/xp view <player> <skill>` | Partial | **Sprint 40:** read-only; not in reference Bukkit file; uses `auraskills.command.xp.view` (default **allow**) — lock down with LP if needed |
 | `ModifierCommand` | — | Missing | |

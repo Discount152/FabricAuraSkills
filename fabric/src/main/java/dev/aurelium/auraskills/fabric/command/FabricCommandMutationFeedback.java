@@ -2,7 +2,6 @@ package dev.aurelium.auraskills.fabric.command;
 
 import dev.aurelium.auraskills.common.message.MessageBuilder;
 import dev.aurelium.auraskills.common.message.type.CommandMessage;
-import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
@@ -11,8 +10,8 @@ import java.util.Locale;
 
 /**
  * Shared command **success** lines that go through the common {@link MessageBuilder} path (so
- * placeholders like {@code {mana_unit}} resolve like Bukkit) — used by **xp** and **mana** (Sprint
- * 41).
+ * placeholders like {@code {mana_unit}} resolve like Bukkit) — used by **xp**, **mana**, and
+ * **skill level** (Sprints 41–42).
  */
 public final class FabricCommandMutationFeedback {
 

@@ -1,6 +1,8 @@
 {
-  "auraskills.granite.command.auraskills_usage": "Use: /auraskills <version|help|skills|stats|mana|xp|reload|save>  —  /skills / /stats = menus  —  /mana (Sprint 41)  —  /xp (Sprint 40)",
-  "auraskills.granite.command.help": "Fabric AuraSkills: /auraskills version | /skills | /stats | /mana | /xp | reload | save (staff)",
+  "auraskills.granite.command.auraskills_usage": "Use: /auraskills <version|help|skills|stats|mana|skilllevel|xp|reload|save>  —  /skills / /stats = menus  —  /mana  —  /skilllevel  —  /xp  (see fabric/COMMAND_PARITY_AUDIT.md)",
+  "auraskills.granite.command.help": "Fabric AuraSkills: /auraskills version | /skills | /stats | /mana | /skilllevel | /xp | reload | save (staff)",
+  "auraskills.granite.command.level.count_positive": "The level count must be greater than 0 (for add and remove).",
+  "auraskills.granite.command.skilllevel.view_line": "%s — %s: level %s, XP in level %s",
   "auraskills.granite.command.permission_denied": "You don't have permission for that.",
   "auraskills.granite.command.mana.console_specify": "Console: use /mana view <player> (or join the world to use /mana).",
   "auraskills.granite.command.xp.view_line": "%s — %s: level %s, XP %s",

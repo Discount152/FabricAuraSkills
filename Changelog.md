@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.70
+
+### Changes
+
+- **Fabric: skill **level** command family (Sprint 42):** **`FabricSkillLevelCommands`** — **`/skilllevel`** and **`/auraskills skilllevel`**: **view**; **add** / **set** / **remove** (online + skill); **`FabricCommandSkillLevelApply.setSkillLevel`** (stats, rewards, modifiers) aligned with Bukkit `SkillCommand`. **Shared:** **`FabricCommandAmountRules.requirePositiveIntForAdd`**, **`FabricCommandMutationFeedback`** for **`SKILL_SETLEVEL_SET`** / **`SKILL_AT_LEAST`**. **Perms** `auraskills.command.skilllevel.view`, `auraskills.command.skill.setlevel` (Bukkit name for mutations). **Lang** `…level.count_positive`, `…skilllevel.view_line`, usage/help. **Tests** `FabricCommandSkillLevelApplyTest`, permissions list. **Docs** `SPRINT_42_MANUAL_SKILLLEVEL_COMMANDS.md`, `COMMAND_PARITY_AUDIT`, `MENU_AND_COMMANDS_PORT`, ledger **CMD-003**, backlog, **`projectVersion` 2.3.69 → 2.3.70**. **Not in scope:** `setall` / `reset` / ACF `skills|sk|skill` + `skill` subcommand path; offline targets.
+
 ## 2.3.69
 
 ### Changes

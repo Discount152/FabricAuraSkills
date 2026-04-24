@@ -5,7 +5,7 @@ import net.minecraft.text.Text;
 
 /**
  * Shared validation and error feedback for numeric command arguments used by
- * **xp** and **mana** (Sprint 41).
+ * **xp** and **mana** (Sprint 41) and integer **level deltas** (Sprint 42).
  */
 public final class FabricCommandAmountRules {
 
@@ -30,6 +30,17 @@ public final class FabricCommandAmountRules {
     public static boolean requireNonNegative(double amount, ServerCommandSource source) {
         if (amount < 0.0) {
             source.sendError(Text.translatable("auraskills.granite.command.xp.amount_non_negative"));
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * For add/remove level **count**; must be &gt; 0 (Bukkit addlevel uses positive deltas).
+     */
+    public static boolean requirePositiveIntForAdd(int amount, ServerCommandSource source) {
+        if (amount <= 0) {
+            source.sendError(Text.translatable("auraskills.granite.command.level.count_positive"));
             return false;
         }
         return true;
