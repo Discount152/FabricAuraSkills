@@ -148,9 +148,19 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 
 | Piece | Where |
 |-------|--------|
-| **Reusable top-slot primitive** | **`GraniteClickable9x6Handler`** + **`GraniteTopSlotClickHandler`**; **`GraniteContainerMenus#openClickable9x6`**; read-only top grid = `topClick == null` (used by **Stats** unchanged) |
+| **Reusable top-slot primitive** | **`GraniteClickable9x6Handler`** + **`GraniteTopSlotClickHandler`**; **`GraniteContainerMenus#openClickable9x6`**; read-only top grid = `topClick == null` |
 | **Flow** | **Skills** top-slot click (permission-checked) → **`FabricAuraSkillsMenus#openLevelProgression(Skill,…)`** → **`FabricLevelProgressionMenuGui`** (live level + XP to next; **Back** → Skills via registry `open(SKILLS)`) — next-tick `executeSync` to avoid re-entrancy |
 | **IDs** | **`FabricMenuKeys#LEVEL_PROGRESSION`** (parity name only; not registered without context) |
 | **Manual** | **`SPRINT_30_MANUAL_LEVEL_PROGRESSION.md`** |
 
 **Not in Sprint 30:** full Slate click/template/YAML, reward list parity with `level_progression.yml`, registering `level_progression` in **`FabricMenuRegistry`** without a **`Skill`** context.
+
+## Sprint 31 — Stats click + Stat Info detail (shipped, partial)
+
+| Piece | Where |
+|-------|--------|
+| **Flow** | **Stats** top-slot click (when **`menus.stat_info.enabled`**) → **`FabricAuraSkillsMenus#openStatInfo(Stat,…)`** → **`FabricStatInfoMenuGui`**; **Back** → **Stats** via `open(STATS)`; if stat_info **disabled**, Stats stays **read-only** (matches Bukkit `StatsMenu` gate) |
+| **IDs** | **`FabricMenuKeys#STAT_INFO`** (parity; not registered without **`Stat`**) |
+| **Manual** | **`SPRINT_31_MANUAL_STAT_INFO.md`** |
+
+**Not in Sprint 31:** full **`stat_info.yml`**, modifier instance grid (`ModifierInstances`), trait paging — same scope discipline as Sprints 30–31.

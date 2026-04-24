@@ -15,6 +15,11 @@ public final class FabricMenuKeys {
      * {@link FabricAuraSkillsMenus#openLevelProgression} with a {@link dev.aurelium.auraskills.api.skill.Skill}.
      */
     public static final String LEVEL_PROGRESSION = "level_progression";
+    /**
+     * Bukkit default {@code menus/stat_info.yml} — ID parity; Fabric opens via
+     * {@link FabricAuraSkillsMenus#openStatInfo} with a {@link dev.aurelium.auraskills.api.stat.Stat}.
+     */
+    public static final String STAT_INFO = "stat_info";
 
     private FabricMenuKeys() {
     }

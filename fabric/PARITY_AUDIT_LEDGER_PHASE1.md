@@ -119,12 +119,12 @@
 | MENU-001 | Slate `ContextManager`: Skill, Stat, Source, SortType, Ability, ManaAbility, Trait | — | Missing | Slate-Fabric |
 | MENU-002 | `PlaceholderHelper` global replacer + locale | — | Missing | Slate-Fabric |
 | MENU-003 | Menu `skills` | `FabricSkillsMenuGui` + `GraniteClickable9x6Handler` (clicks; static rows) | Partial | Slate-Fabric + NRP | **Sprint 27** slice + **Sprint 30** click → detail — not Slate YAML; **NRP** (Bedrock). |
-| MENU-004 | Menu `stats` | `FabricStatsMenuGui` + `GraniteClickable9x6Handler` (read-only top) | Partial | Slate-Fabric + NRP | **Sprint 28** — not full Slate; **NRP** Bedrock. |
+| MENU-004 | Menu `stats` | `FabricStatsMenuGui` + `GraniteClickable9x6Handler` (clicks when stat_info enabled) | Partial | Slate-Fabric + NRP | **Sprint 28** + **Sprint 31** click → detail — not full Slate; **NRP** Bedrock. |
 | MENU-005 | Menu `level_progression` | `FabricLevelProgressionMenuGui` + `FabricAuraSkillsMenus#openLevelProgression` (not file-backed) | Partial | Slate-Fabric + NRP | **Sprint 30** — one-skill live level/XP view + Back; not full `level_progression.yml` / rewards; **NRP** Bedrock. |
 | MENU-006 | Menu `leaderboard` | — | Missing | Slate-Fabric |
 | MENU-007 | Menu `sources` | — | Missing | Slate-Fabric |
 | MENU-008 | Menu `abilities` | — | Missing | Slate-Fabric |
-| MENU-009 | Menu `stat_info` | — | Missing | Slate-Fabric |
+| MENU-009 | Menu `stat_info` | `FabricStatInfoMenuGui` + `FabricAuraSkillsMenus#openStatInfo` (gated by `menus.stat_info.enabled`) | Partial | Slate-Fabric + NRP | **Sprint 31** — one-stat + traits slice; not full `stat_info.yml` / modifier grid; **NRP** Bedrock. |
 | MENU-010 | `ApiMenuManager` non-default menu names | — | Missing | Slate-Fabric + api-bukkit |
 
 ---

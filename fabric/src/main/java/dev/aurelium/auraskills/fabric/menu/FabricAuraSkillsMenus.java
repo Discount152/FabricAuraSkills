@@ -1,6 +1,7 @@
 package dev.aurelium.auraskills.fabric.menu;
 
 import dev.aurelium.auraskills.api.skill.Skill;
+import dev.aurelium.auraskills.api.stat.Stat;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import net.minecraft.server.network.ServerPlayerEntity;
 
@@ -42,5 +43,13 @@ public final class FabricAuraSkillsMenus {
      */
     public static void openLevelProgression(Skill skill, ServerPlayerEntity player, FabricAuraSkills plugin) {
         FabricLevelProgressionMenuGui.open(player, plugin, skill);
+    }
+
+    /**
+     * Bukkit id {@code stat_info} (see {@link FabricMenuKeys#STAT_INFO}): not in {@link FabricMenuRegistry}
+     * (needs a {@link Stat}); opened from the Stats menu when {@code menus.stat_info.enabled} is true.
+     */
+    public static void openStatInfo(Stat stat, ServerPlayerEntity player, FabricAuraSkills plugin) {
+        FabricStatInfoMenuGui.open(player, plugin, stat);
     }
 }

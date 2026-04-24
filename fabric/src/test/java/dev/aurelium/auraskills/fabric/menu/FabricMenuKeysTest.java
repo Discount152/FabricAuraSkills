@@ -10,4 +10,9 @@ class FabricMenuKeysTest {
     void levelProgression_idMatchesBukkitDefaultFileName() {
         assertEquals("level_progression", FabricMenuKeys.LEVEL_PROGRESSION);
     }
+
+    @Test
+    void statInfo_idMatchesBukkitDefaultFileName() {
+        assertEquals("stat_info", FabricMenuKeys.STAT_INFO);
+    }
 }

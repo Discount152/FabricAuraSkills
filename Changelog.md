@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.59
+
+### Changes
+
+- **Fabric: Stats click + Stat Info detail (Sprint 31):** **`FabricStatsMenuGui`** — when **`menus.stat_info.enabled`**, `GraniteContainerMenus#openClickable9x6` + slot-ordered `Stat` list; otherwise read-only (Bukkit `StatsMenu` gate). **`FabricStatInfoMenuGui`**: one-stat name, value, description, trait lines; **Back** → **Stats** via **`FabricAuraSkillsMenus#open(STATS,…)`**. **`FabricAuraSkillsMenus#openStatInfo(Stat,…)`**; **`FabricMenuKeys#STAT_INFO`**. **Lang** `en_us.json`. **Docs/ledger** + **`SPRINT_31_MANUAL_STAT_INFO.md`**. **Test:** `FabricMenuKeysTest` (`stat_info`). **`projectVersion` 2.3.58 → 2.3.59**. Not in scope: full `stat_info.yml` / `ModifierInstances` grid.
+
 ## 2.3.58
 
 ### Changes
