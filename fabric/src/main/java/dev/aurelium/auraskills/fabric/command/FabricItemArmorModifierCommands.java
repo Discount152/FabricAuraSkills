@@ -2,18 +2,22 @@ package dev.aurelium.auraskills.fabric.command;
 
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import dev.aurelium.auraskills.api.item.ModifierType;
+import dev.aurelium.auraskills.api.skill.Multiplier;
+import dev.aurelium.auraskills.api.skill.Skill;
 import dev.aurelium.auraskills.api.stat.Stat;
 import dev.aurelium.auraskills.api.stat.StatModifier;
 import dev.aurelium.auraskills.api.trait.Trait;
 import dev.aurelium.auraskills.api.trait.TraitModifier;
 import dev.aurelium.auraskills.api.util.AuraSkillsModifier;
 import dev.aurelium.auraskills.common.message.type.CommandMessage;
+import dev.aurelium.auraskills.common.util.text.TextUtil;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.item.FabricItemIgnoreTags;
@@ -26,19 +30,28 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import org.jetbrains.annotations.Nullable;
 
 import static net.minecraft.server.command.CommandManager.literal;
 
 /**
  * **Sprint 51+** — Bukkit-shaped {@code /item} and {@code /armor} stat/trait <strong>modifier</strong> subtrees
  * (main-hand held item; {@code item.modifier} / {@code armor.modifier}) plus {@code /item ignore …}
- * (Sprint 52, {@code item.ignore}).
+ * (Sprint 52, {@code item.ignore}); {@code /item requirement|multiplier …} (Sprint 53, {@code
+ * item.requirement} / {@code item.multiplier}).
  */
 public final class FabricItemArmorModifierCommands {
 
     private static final String ARG_STAT = "stat";
     private static final String ARG_TRAIT = "trait";
+    private static final String ARG_SKILL = "skill";
+    private static final String ARG_LEVEL = "level";
+    private static final String ARG_TARGET = "target";
     private static final String ARG_VALUE = "value";
     private static final String ARG_OP = "operation";
     private static final String ARG_LORE = "lore";
@@ -49,6 +62,8 @@ public final class FabricItemArmorModifierCommands {
     private static final String LIT_MODIFIER = "modifier";
     private static final String LIT_TRAIT = "trait";
     private static final String LIT_IGNORE = "ignore";
+    private static final String LIT_REQUIREMENT = "requirement";
+    private static final String LIT_MULTIPLIER = "multiplier";
 
     private static final SuggestionProvider<ServerCommandSource> OPERATIONS =
             (c, b) -> {
@@ -111,7 +126,150 @@ public final class FabricItemArmorModifierCommands {
                                         literal(LIT_REMOVE)
                                                 .executes(
                                                         FabricItemArmorModifierCommands
-                                                                ::runItemIgnoreRemove)));
+                                                                ::runItemIgnoreRemove)))
+                .then(
+                        literal(LIT_REQUIREMENT)
+                                .requires(
+                                        FabricCommandRequirements.permission(
+                                                FabricCommandPermissions.ITEM_REQUIREMENT, false))
+                                .then(
+                                        literal(LIT_ADD)
+                                                .then(
+                                                        CommandManager.argument(
+                                                                        ARG_SKILL,
+                                                                        StringArgumentType
+                                                                                .word())
+                                                                .suggests(
+                                                                        FabricCommandSuggestionProviders
+                                                                                .enabledSkillKeys())
+                                                                .then(
+                                                                        CommandManager
+                                                                                .argument(
+                                                                                        ARG_LEVEL,
+                                                                                        IntegerArgumentType
+                                                                                                .integer(
+                                                                                                        1))
+                                                                                .executes(
+                                                                                        ctx ->
+                                                                                                runItemRequirementAdd(
+                                                                                                        ctx,
+                                                                                                        true))
+                                                                                .then(
+                                                                                        CommandManager
+                                                                                                .argument(
+                                                                                                        ARG_LORE,
+                                                                                                        BoolArgumentType
+                                                                                                                .bool())
+                                                                                                .executes(
+                                                                                                        ctx ->
+                                                                                                                runItemRequirementAdd(
+                                                                                                                        ctx,
+                                                                                                                        BoolArgumentType
+                                                                                                                                .getBool(
+                                                                                                                                        ctx,
+                                                                                                                                        ARG_LORE)))))))
+                                .then(
+                                        literal(LIT_REMOVE)
+                                                .then(
+                                                        CommandManager.argument(
+                                                                        ARG_SKILL,
+                                                                        StringArgumentType
+                                                                                .word())
+                                                                .suggests(
+                                                                        FabricCommandSuggestionProviders
+                                                                                .enabledSkillKeys())
+                                                                .executes(
+                                                                        ctx ->
+                                                                                runItemRequirementRemove(
+                                                                                        ctx,
+                                                                                        true))
+                                                                .then(
+                                                                        CommandManager
+                                                                                .argument(
+                                                                                        ARG_LORE,
+                                                                                        BoolArgumentType
+                                                                                                .bool())
+                                                                                .executes(
+                                                                                        ctx ->
+                                                                                                runItemRequirementRemove(
+                                                                                                        ctx,
+                                                                                                        BoolArgumentType
+                                                                                                                .getBool(
+                                                                                                                        ctx,
+                                                                                                                        ARG_LORE))))))
+                                .then(
+                                        literal(LIT_LIST)
+                                                .executes(
+                                                        FabricItemArmorModifierCommands
+                                                                ::listItemRequirement))
+                                .then(
+                                        literal(LIT_REMOVEALL)
+                                                .executes(
+                                                        FabricItemArmorModifierCommands
+                                                                ::removeAllItemRequirement)))
+                .then(
+                        literal(LIT_MULTIPLIER)
+                                .requires(
+                                        FabricCommandRequirements.permission(
+                                                FabricCommandPermissions.ITEM_MULTIPLIER, false))
+                                .then(
+                                        literal(LIT_ADD)
+                                                .then(
+                                                        CommandManager.argument(
+                                                                        ARG_TARGET,
+                                                                        StringArgumentType
+                                                                                .word())
+                                                                .suggests(
+                                                                        FabricCommandSuggestionProviders
+                                                                                .enabledSkillKeysOrGlobal())
+                                                                .then(
+                                                                        CommandManager
+                                                                                .argument(
+                                                                                        ARG_VALUE,
+                                                                                        DoubleArgumentType
+                                                                                                .doubleArg())
+                                                                                .executes(
+                                                                                        ctx ->
+                                                                                                runItemMultiplierAdd(
+                                                                                                        ctx,
+                                                                                                        true))
+                                                                                .then(
+                                                                                        CommandManager
+                                                                                                .argument(
+                                                                                                        ARG_LORE,
+                                                                                                        BoolArgumentType
+                                                                                                                .bool())
+                                                                                                .executes(
+                                                                                                        ctx ->
+                                                                                                                runItemMultiplierAdd(
+                                                                                                                        ctx,
+                                                                                                                        BoolArgumentType
+                                                                                                                                .getBool(
+                                                                                                                                        ctx,
+                                                                                                                                        ARG_LORE)))))))
+                                .then(
+                                        literal(LIT_REMOVE)
+                                                .then(
+                                                        CommandManager.argument(
+                                                                        ARG_TARGET,
+                                                                        StringArgumentType
+                                                                                .word())
+                                                                .suggests(
+                                                                        FabricCommandSuggestionProviders
+                                                                                .enabledSkillKeysOrGlobal())
+                                                                .executes(
+                                                                        FabricItemArmorModifierCommands
+                                                                                ::runItemMultiplierRemove)))
+                                .then(
+                                        literal(LIT_LIST)
+                                                .executes(
+                                                        FabricItemArmorModifierCommands
+                                                                ::listItemMultiplier))
+                                .then(
+                                        literal(LIT_REMOVEALL)
+                                                .executes(
+                                                        FabricItemArmorModifierCommands
+                                                                ::removeAllItemMultiplier)));
     }
 
     public static LiteralArgumentBuilder<ServerCommandSource> armorCommandRoot() {
@@ -810,6 +968,466 @@ public final class FabricItemArmorModifierCommands {
                             return 1;
                         })
                 .orElseGet(() -> notReady(ctx));
+    }
+
+    private static int runItemRequirementAdd(CommandContext<ServerCommandSource> ctx, boolean lore) {
+        if (!(ctx.getSource().getEntity() instanceof ServerPlayerEntity player)) {
+            return notPlayer(ctx.getSource());
+        }
+        return FabricCommandPluginState.runtimeReadyOrEmpty()
+                .map(
+                        p -> {
+                            if (player.getMainHandStack().isEmpty()) {
+                                return emptyHand(ctx.getSource());
+                            }
+                            String raw = StringArgumentType.getString(ctx, ARG_SKILL);
+                            Skill skill = FabricCommandSkillParser.parse(p, raw);
+                            if (skill == null) {
+                                return unknownSkill(ctx, p);
+                            }
+                            int level = IntegerArgumentType.getInteger(ctx, ARG_LEVEL);
+                            ItemStack work = player.getMainHandStack().copy();
+                            Map<Skill, Integer> m =
+                                    new HashMap<>(
+                                            FabricSkillsItemReader.getRequirements(
+                                                    p, work, ModifierType.ITEM));
+                            if (m.containsKey(skill)) {
+                                User u = p.getUserManager().getUser(player.getUuid());
+                                Locale lo = u != null ? u.getLocale() : p.getDefaultLanguage();
+                                String err =
+                                        TextUtil.replace(
+                                                p.getMsg(
+                                                        CommandMessage
+                                                                .ITEM_REQUIREMENT_ADD_ALREADY_EXISTS,
+                                                        lo),
+                                                "{skill}",
+                                                skill.getDisplayName(lo, false));
+                                ctx.getSource()
+                                        .sendError(
+                                                Text.literal(
+                                                        p.getMessageProvider()
+                                                                .applyFormatting(err)));
+                                return 0;
+                            }
+                            m.put(skill, level);
+                            FabricSkillsItemWriter.putRequirements(work, ModifierType.ITEM, m);
+                            if (lore) {
+                                User u = p.getUserManager().getUser(player.getUuid());
+                                Locale lo = u != null ? u.getLocale() : p.getDefaultLanguage();
+                                FabricItemModifierLore.addRequirementLore(
+                                        p, work, ModifierType.ITEM, skill, level, lo);
+                            }
+                            player.equipStack(EquipmentSlot.MAINHAND, work);
+                            User u = p.getUserManager().getUser(player.getUuid());
+                            Locale lo = u != null ? u.getLocale() : p.getDefaultLanguage();
+                            String out =
+                                    p.getMessageProvider()
+                                            .applyFormatting(
+                                                    TextUtil.replace(
+                                                            p.getMsg(
+                                                                    CommandMessage
+                                                                            .ITEM_REQUIREMENT_ADD_ADDED,
+                                                                    lo),
+                                                            "{skill}",
+                                                            skill.getDisplayName(lo, false),
+                                                            "{level}",
+                                                            String.valueOf(level)));
+                            ctx.getSource().sendFeedback(() -> Text.literal(out), false);
+                            return 1;
+                        })
+                .orElseGet(() -> notReady(ctx));
+    }
+
+    private static int runItemRequirementRemove(CommandContext<ServerCommandSource> ctx, boolean lore) {
+        if (!(ctx.getSource().getEntity() instanceof ServerPlayerEntity player)) {
+            return notPlayer(ctx.getSource());
+        }
+        return FabricCommandPluginState.runtimeReadyOrEmpty()
+                .map(
+                        p -> {
+                            if (player.getMainHandStack().isEmpty()) {
+                                return emptyHand(ctx.getSource());
+                            }
+                            String raw = StringArgumentType.getString(ctx, ARG_SKILL);
+                            Skill skill = FabricCommandSkillParser.parse(p, raw);
+                            if (skill == null) {
+                                return unknownSkill(ctx, p);
+                            }
+                            ItemStack work = player.getMainHandStack().copy();
+                            Map<Skill, Integer> m =
+                                    new HashMap<>(
+                                            FabricSkillsItemReader.getRequirements(
+                                                    p, work, ModifierType.ITEM));
+                            User u = p.getUserManager().getUser(player.getUuid());
+                            Locale lo = u != null ? u.getLocale() : p.getDefaultLanguage();
+                            if (!m.containsKey(skill)) {
+                                String err =
+                                        TextUtil.replace(
+                                                p.getMsg(
+                                                        CommandMessage
+                                                                .ITEM_REQUIREMENT_REMOVE_DOES_NOT_EXIST,
+                                                        lo),
+                                                "{skill}",
+                                                skill.getDisplayName(lo, false));
+                                ctx.getSource()
+                                        .sendError(
+                                                Text.literal(
+                                                        p.getMessageProvider()
+                                                                .applyFormatting(err)));
+                                return 0;
+                            }
+                            m.remove(skill);
+                            FabricSkillsItemWriter.putRequirements(work, ModifierType.ITEM, m);
+                            if (lore) {
+                                FabricItemModifierLore.removeRequirementLore(skill, work);
+                            }
+                            player.equipStack(EquipmentSlot.MAINHAND, work);
+                            String ok =
+                                    p.getMessageProvider()
+                                            .applyFormatting(
+                                                    TextUtil.replace(
+                                                            p.getMsg(
+                                                                    CommandMessage
+                                                                            .ITEM_REQUIREMENT_REMOVE_REMOVED,
+                                                                    lo),
+                                                            "{skill}",
+                                                            skill.getDisplayName(lo, false)));
+                            ctx.getSource().sendFeedback(() -> Text.literal(ok), false);
+                            return 1;
+                        })
+                .orElseGet(() -> notReady(ctx));
+    }
+
+    private static int listItemRequirement(CommandContext<ServerCommandSource> ctx) {
+        if (!(ctx.getSource().getEntity() instanceof ServerPlayerEntity player)) {
+            return notPlayer(ctx.getSource());
+        }
+        return FabricCommandPluginState.runtimeReadyOrEmpty()
+                .map(
+                        p -> {
+                            if (player.getMainHandStack().isEmpty()) {
+                                return emptyHand(ctx.getSource());
+                            }
+                            User u = p.getUserManager().getUser(player.getUuid());
+                            Locale lo = u != null ? u.getLocale() : p.getDefaultLanguage();
+                            Map<Skill, Integer> map =
+                                    FabricSkillsItemReader.getRequirements(
+                                            p, player.getMainHandStack(), ModifierType.ITEM);
+                            StringBuilder sb =
+                                    new StringBuilder(
+                                            p.getMsg(CommandMessage.ITEM_REQUIREMENT_LIST_HEADER, lo));
+                            for (Map.Entry<Skill, Integer> e : map.entrySet()) {
+                                sb.append("\n")
+                                        .append(
+                                                TextUtil.replace(
+                                                        p.getMsg(
+                                                                CommandMessage
+                                                                        .ITEM_REQUIREMENT_LIST_ENTRY,
+                                                                lo),
+                                                        "{skill}",
+                                                        e.getKey().getDisplayName(lo, false),
+                                                        "{level}",
+                                                        String.valueOf(e.getValue())));
+                            }
+                            String out = sb.toString();
+                            ctx.getSource().sendFeedback(() -> Text.literal(out), false);
+                            return 1;
+                        })
+                .orElseGet(() -> notReady(ctx));
+    }
+
+    private static int removeAllItemRequirement(CommandContext<ServerCommandSource> ctx) {
+        if (!(ctx.getSource().getEntity() instanceof ServerPlayerEntity player)) {
+            return notPlayer(ctx.getSource());
+        }
+        return FabricCommandPluginState.runtimeReadyOrEmpty()
+                .map(
+                        p -> {
+                            if (player.getMainHandStack().isEmpty()) {
+                                return emptyHand(ctx.getSource());
+                            }
+                            ItemStack work = player.getMainHandStack().copy();
+                            FabricSkillsItemWriter.putRequirements(
+                                    work, ModifierType.ITEM, Map.of());
+                            player.equipStack(EquipmentSlot.MAINHAND, work);
+                            User u = p.getUserManager().getUser(player.getUuid());
+                            Locale lo = u != null ? u.getLocale() : p.getDefaultLanguage();
+                            String out =
+                                    p.getMessageProvider()
+                                            .applyFormatting(
+                                                    p.getMsg(
+                                                            CommandMessage
+                                                                    .ITEM_REQUIREMENT_REMOVEALL_REMOVED,
+                                                            lo));
+                            ctx.getSource().sendFeedback(() -> Text.literal(out), false);
+                            return 1;
+                        })
+                .orElseGet(() -> notReady(ctx));
+    }
+
+    private static int runItemMultiplierAdd(CommandContext<ServerCommandSource> ctx, boolean lore) {
+        if (!(ctx.getSource().getEntity() instanceof ServerPlayerEntity player)) {
+            return notPlayer(ctx.getSource());
+        }
+        return FabricCommandPluginState.runtimeReadyOrEmpty()
+                .map(
+                        p -> {
+                            if (player.getMainHandStack().isEmpty()) {
+                                return emptyHand(ctx.getSource());
+                            }
+                            String rawTarget = StringArgumentType.getString(ctx, ARG_TARGET);
+                            double value = DoubleArgumentType.getDouble(ctx, ARG_VALUE);
+                            boolean global = rawTarget.equalsIgnoreCase("global");
+                            @Nullable Skill skill =
+                                    global ? null : FabricCommandSkillParser.parse(p, rawTarget);
+                            User u0 = p.getUserManager().getUser(player.getUuid());
+                            Locale lo0 = u0 != null ? u0.getLocale() : p.getDefaultLanguage();
+                            if (!global && skill == null) {
+                                ctx.getSource()
+                                        .sendError(
+                                                Text.literal(
+                                                        "Target must be valid skill name or global"));
+                                return 0;
+                            }
+                            ItemStack work = player.getMainHandStack().copy();
+                            List<Multiplier> list =
+                                    new ArrayList<>(
+                                            FabricSkillsItemReader.getMultipliers(
+                                                    p, work, ModifierType.ITEM, false));
+                            for (Multiplier m : list) {
+                                if (global && m.skill() == null) {
+                                    String globalName = p.getMsg(CommandMessage.MULTIPLIER_GLOBAL, lo0);
+                                    String err =
+                                            TextUtil.replace(
+                                                    p.getMsg(
+                                                            CommandMessage
+                                                                    .ITEM_MULTIPLIER_ADD_ALREADY_EXISTS,
+                                                            lo0),
+                                                    "{target}",
+                                                    globalName);
+                                    ctx.getSource()
+                                            .sendError(
+                                                    Text.literal(
+                                                            p.getMessageProvider()
+                                                                    .applyFormatting(err)));
+                                    return 0;
+                                }
+                                if (!global && m.skill() == skill) {
+                                    String err =
+                                            TextUtil.replace(
+                                                    p.getMsg(
+                                                            CommandMessage
+                                                                    .ITEM_MULTIPLIER_ADD_ALREADY_EXISTS,
+                                                            lo0),
+                                                    "{target}",
+                                                    skill.getDisplayName(lo0, false));
+                                    ctx.getSource()
+                                            .sendError(
+                                                    Text.literal(
+                                                            p.getMessageProvider()
+                                                                    .applyFormatting(err)));
+                                    return 0;
+                                }
+                            }
+                            list.add(new Multiplier("item_cmd_mult", skill, value));
+                            FabricSkillsItemWriter.putMultipliers(work, ModifierType.ITEM, list);
+                            if (lore) {
+                                User u = p.getUserManager().getUser(player.getUuid());
+                                Locale lo = u != null ? u.getLocale() : p.getDefaultLanguage();
+                                FabricItemModifierLore.addMultiplierLore(
+                                        p, work, ModifierType.ITEM, skill, value, lo);
+                            }
+                            player.equipStack(EquipmentSlot.MAINHAND, work);
+                            User u2 = p.getUserManager().getUser(player.getUuid());
+                            Locale lo2 = u2 != null ? u2.getLocale() : p.getDefaultLanguage();
+                            String targetLabel =
+                                    global
+                                            ? p.getMsg(CommandMessage.MULTIPLIER_GLOBAL, lo2)
+                                            : skill.getDisplayName(lo2, false);
+                            String out =
+                                    p.getMessageProvider()
+                                            .applyFormatting(
+                                                    TextUtil.replace(
+                                                            p.getMsg(
+                                                                    CommandMessage
+                                                                            .ITEM_MULTIPLIER_ADD_ADDED,
+                                                                    lo2),
+                                                            "{target}",
+                                                            targetLabel,
+                                                            "{value}",
+                                                            String.valueOf(value)));
+                            ctx.getSource().sendFeedback(() -> Text.literal(out), false);
+                            return 1;
+                        })
+                .orElseGet(() -> notReady(ctx));
+    }
+
+    private static int runItemMultiplierRemove(CommandContext<ServerCommandSource> ctx) {
+        if (!(ctx.getSource().getEntity() instanceof ServerPlayerEntity player)) {
+            return notPlayer(ctx.getSource());
+        }
+        return FabricCommandPluginState.runtimeReadyOrEmpty()
+                .map(
+                        p -> {
+                            if (player.getMainHandStack().isEmpty()) {
+                                return emptyHand(ctx.getSource());
+                            }
+                            String rawTarget = StringArgumentType.getString(ctx, ARG_TARGET);
+                            boolean global = rawTarget.equalsIgnoreCase("global");
+                            @Nullable Skill skill =
+                                    global ? null : FabricCommandSkillParser.parse(p, rawTarget);
+                            User u0 = p.getUserManager().getUser(player.getUuid());
+                            Locale lo0 = u0 != null ? u0.getLocale() : p.getDefaultLanguage();
+                            if (!global && skill == null) {
+                                ctx.getSource()
+                                        .sendError(
+                                                Text.literal(
+                                                        "Target must be valid skill name or global"));
+                                return 0;
+                            }
+                            ItemStack work = player.getMainHandStack().copy();
+                            List<Multiplier> list =
+                                    new ArrayList<>(
+                                            FabricSkillsItemReader.getMultipliers(
+                                                    p, work, ModifierType.ITEM, false));
+                            boolean removed = false;
+                            for (int i = 0; i < list.size(); i++) {
+                                Multiplier m = list.get(i);
+                                if (global && m.skill() == null) {
+                                    list.remove(i);
+                                    removed = true;
+                                    break;
+                                }
+                                if (!global && m.skill() == skill) {
+                                    list.remove(i);
+                                    removed = true;
+                                    break;
+                                }
+                            }
+                            String targetName =
+                                    global
+                                            ? p.getMsg(CommandMessage.MULTIPLIER_GLOBAL, lo0)
+                                            : skill.getDisplayName(lo0, false);
+                            if (!removed) {
+                                String err =
+                                        TextUtil.replace(
+                                                p.getMsg(
+                                                        CommandMessage
+                                                                .ITEM_MULTIPLIER_REMOVE_DOES_NOT_EXIST,
+                                                        lo0),
+                                                "{target}",
+                                                targetName);
+                                ctx.getSource()
+                                        .sendError(
+                                                Text.literal(
+                                                        p.getMessageProvider()
+                                                                .applyFormatting(err)));
+                                return 0;
+                            }
+                            FabricSkillsItemWriter.putMultipliers(work, ModifierType.ITEM, list);
+                            player.equipStack(EquipmentSlot.MAINHAND, work);
+                            String ok =
+                                    TextUtil.replace(
+                                            p.getMsg(
+                                                    CommandMessage.ITEM_MULTIPLIER_REMOVE_REMOVED, lo0),
+                                            "{target}",
+                                            targetName);
+                            ctx.getSource()
+                                    .sendFeedback(
+                                            () ->
+                                                    Text.literal(
+                                                            p.getMessageProvider()
+                                                                    .applyFormatting(ok)),
+                                            false);
+                            return 1;
+                        })
+                .orElseGet(() -> notReady(ctx));
+    }
+
+    private static int listItemMultiplier(CommandContext<ServerCommandSource> ctx) {
+        if (!(ctx.getSource().getEntity() instanceof ServerPlayerEntity player)) {
+            return notPlayer(ctx.getSource());
+        }
+        return FabricCommandPluginState.runtimeReadyOrEmpty()
+                .map(
+                        p -> {
+                            if (player.getMainHandStack().isEmpty()) {
+                                return emptyHand(ctx.getSource());
+                            }
+                            User u = p.getUserManager().getUser(player.getUuid());
+                            Locale lo = u != null ? u.getLocale() : p.getDefaultLanguage();
+                            List<Multiplier> list =
+                                    FabricSkillsItemReader.getMultipliers(
+                                            p, player.getMainHandStack(), ModifierType.ITEM, false);
+                            StringBuilder sb =
+                                    new StringBuilder(
+                                            p.getMsg(CommandMessage.ITEM_MULTIPLIER_LIST_HEADER, lo));
+                            for (Multiplier m : list) {
+                                String targetName =
+                                        m.skill() != null
+                                                ? m.skill().getDisplayName(lo, false)
+                                                : p.getMsg(CommandMessage.MULTIPLIER_GLOBAL, lo);
+                                sb.append("\n")
+                                        .append(
+                                                TextUtil.replace(
+                                                        p.getMsg(
+                                                                CommandMessage
+                                                                        .ITEM_MULTIPLIER_LIST_ENTRY,
+                                                                lo),
+                                                        "{target}",
+                                                        targetName,
+                                                        "{value}",
+                                                        String.valueOf(m.value())));
+                            }
+                            String out = sb.toString();
+                            ctx.getSource().sendFeedback(() -> Text.literal(out), false);
+                            return 1;
+                        })
+                .orElseGet(() -> notReady(ctx));
+    }
+
+    private static int removeAllItemMultiplier(CommandContext<ServerCommandSource> ctx) {
+        if (!(ctx.getSource().getEntity() instanceof ServerPlayerEntity player)) {
+            return notPlayer(ctx.getSource());
+        }
+        return FabricCommandPluginState.runtimeReadyOrEmpty()
+                .map(
+                        p -> {
+                            if (player.getMainHandStack().isEmpty()) {
+                                return emptyHand(ctx.getSource());
+                            }
+                            ItemStack work = player.getMainHandStack().copy();
+                            FabricSkillsItemWriter.putMultipliers(
+                                    work, ModifierType.ITEM, List.of());
+                            player.equipStack(EquipmentSlot.MAINHAND, work);
+                            User u = p.getUserManager().getUser(player.getUuid());
+                            Locale lo = u != null ? u.getLocale() : p.getDefaultLanguage();
+                            String out =
+                                    p.getMessageProvider()
+                                            .applyFormatting(
+                                                    p.getMsg(
+                                                            CommandMessage
+                                                                    .ITEM_MULTIPLIER_REMOVEALL_REMOVED,
+                                                            lo));
+                            ctx.getSource().sendFeedback(() -> Text.literal(out), false);
+                            return 1;
+                        })
+                .orElseGet(() -> notReady(ctx));
+    }
+
+    private static int unknownSkill(CommandContext<ServerCommandSource> ctx, FabricAuraSkills p) {
+        User u = null;
+        if (ctx.getSource().getEntity() instanceof ServerPlayerEntity sp) {
+            u = p.getUserManager().getUser(sp.getUuid());
+        }
+        Locale lo = u != null ? u.getLocale() : p.getDefaultLanguage();
+        ctx.getSource()
+                .sendError(
+                        Text.literal(
+                                p.getMessageProvider()
+                                        .applyFormatting(
+                                                p.getMsg(CommandMessage.UNKNOWN_SKILL, lo))));
+        return 0;
     }
 
     private static void refreshModifiers(FabricAuraSkills p, ServerPlayerEntity player) {

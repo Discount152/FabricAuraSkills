@@ -41,6 +41,8 @@ class FabricCommandPermissionsTest {
             FabricCommandPermissions.MODIFIER,
             FabricCommandPermissions.ITEM_MODIFIER,
             FabricCommandPermissions.ITEM_IGNORE,
+            FabricCommandPermissions.ITEM_REQUIREMENT,
+            FabricCommandPermissions.ITEM_MULTIPLIER,
             FabricCommandPermissions.ARMOR_MODIFIER
         };
         Set<String> seen = new HashSet<>();

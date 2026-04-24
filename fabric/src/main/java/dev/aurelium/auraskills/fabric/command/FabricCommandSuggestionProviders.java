@@ -75,6 +75,34 @@ public final class FabricCommandSuggestionProviders {
         };
     }
 
+    /**
+     * Bukkit {@code @skills_global} — enabled skill keys plus {@code global} (item held multiplier).
+     * **Sprint 53**
+     */
+    public static SuggestionProvider<ServerCommandSource> enabledSkillKeysOrGlobal() {
+        return (CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) -> {
+            String remaining = builder.getRemaining();
+            if (remaining.isEmpty()
+                    || "global"
+                            .toLowerCase(Locale.ROOT)
+                            .startsWith(remaining.toLowerCase(Locale.ROOT))) {
+                builder.suggest("global");
+            }
+            FabricAuraSkills p = FabricAuraSkills.getInstance();
+            if (p == null) {
+                return builder.buildFuture();
+            }
+            for (Skill s : p.getSkillManager().getEnabledSkills()) {
+                String k = s.getId().getKey();
+                if (remaining.isEmpty()
+                        || k.toLowerCase().startsWith(remaining.toLowerCase())) {
+                    builder.suggest(k);
+                }
+            }
+            return builder.buildFuture();
+        };
+    }
+
     /** Enabled stats (registry key) for {@code openmenu stat_info …} (**Sprint 45**). */
     public static SuggestionProvider<ServerCommandSource> enabledStatKeys() {
         return (CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) -> {

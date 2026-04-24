@@ -392,7 +392,7 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **State** | **`FabricSkillsItemWriter`** (PDC list; strips legacy `AuraSkills/Modifiers/…` for the same `ModifierType` on write) + **`FabricItemModifierLore`** (prepend lore / stat-based strip on remove) + **`User`** refresh via **`FabricModifierManager#applyModifiers`** |
 | **Perms** | `auraskills.command.item.modifier`, `auraskills.command.armor.modifier` (Bukkit `plugin.yml` names) |
 
-| **Not in Sprint 51** | Reference **ItemCommand** / **ArmorCommand** **requirement**, **multiplier**, item **register**/**give** ( **`ignore`** — **Sprint 52**). **Manual:** `SPRINT_51_MANUAL_ITEM_ARMOR_MODIFIERS.md`. |
+| **Not in Sprint 51** | Reference item **register**/**give**; **requirement** / **multiplier** / **ignore** — Sprints **52–53**. **Manual:** `SPRINT_51_MANUAL_ITEM_ARMOR_MODIFIERS.md`. |
 
 ## Sprint 52 — **`/item ignore`** (held mana-ability ignore) (shipped, partial)
 
@@ -402,4 +402,16 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **State** | **`FabricItemIgnoreTags`** — `custom_data` / `PublicBukkitValues` **`auraskills:ignore_interact`** (Bukkit PDC parity); **`FabricManaAbilityItemTags`** delegates read to same class |
 | **Perms** | **`auraskills.command.item.ignore`** (separate from **`item.modifier`**) |
 
-| **Not in Sprint 52** | **item** `requirement` / `multiplier` / **register** / **give**; **ArmorCommand** `ignore` (none in reference). **Manual:** `SPRINT_52_MANUAL_ITEM_IGNORE.md`. |
+| **Not in Sprint 52** | **item** `requirement` / `multiplier` ( **Sprint 53**), **register** / **give**; **ArmorCommand** `ignore` (none in reference). **Manual:** `SPRINT_52_MANUAL_ITEM_IGNORE.md`. |
+
+## Sprint 53 — **`/item requirement`** + **`/item multiplier`** (shipped, partial)
+
+| Area | Shipped on Fabric (bounded) |
+|------|-----------------------------|
+| **Commands** | **`/item requirement`** — **add** `<skill> <level> [lore]`, **remove** `<skill> [lore]`, **list**, **removeall**; **`/item multiplier`** — **add** `<skill or global> <value> [lore]`, **remove** `<target>`, **list**, **removeall**; **main hand**; same mirrors as **`/item`** |
+| **State** | **`FabricSkillsItemWriter#putRequirements` / `#putMultipliers`** — PDC `auraskills:item_requirements` / `auraskills:item_multipliers`; strip legacy `AuraSkills/…/Requirements` & `…/Multipliers` for `ModifierType.ITEM` on write; **`FabricSkillsItemReader`** (unchanged) |
+| **Lore** | **`FabricItemModifierLore`** — requirement line append; multiplier line append (matches Bukkit **add** lines); requirement **remove** uses **Requires** + skill **name** heuristic (same as Bukkit) |
+| **Perms** | **`auraskills.command.item.requirement`**, **`auraskills.command.item.multiplier`** (separate from **modifier** / **ignore**) |
+| **Suggestions** | **`FabricCommandSuggestionProviders#enabledSkillKeysOrGlobal`** (multiplier **add** / **remove** first arg) |
+
+| **Not in Sprint 53** | **Armor** `requirement` / `multiplier` (Bukkit has **`ArmorCommand`**); **item** **register** / **give**. **Manual:** `SPRINT_53_MANUAL_ITEM_REQ_MULT.md`. |

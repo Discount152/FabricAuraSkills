@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.81
+
+### Changes
+
+- **Fabric: `item requirement` + `item multiplier` (Sprint 53):** Bukkit-shaped **held main-hand** **`/item requirement`** (**add** `<skill> <level>` [lore], **remove** [lore], **list**, **removeall**) and **`/item multiplier`** (**add** `<skill|global> <value>` [lore], **remove**, **list**, **removeall**). **PDC** `auraskills:item_requirements` / `auraskills:item_multipliers` via **`FabricSkillsItemWriter.putRequirements` / `putMultipliers`** (legacy **`AuraSkills/…/Requirements|Multipliers`** strip); **`FabricSkillsItemReader`** unchanged. **Lore:** **`FabricItemModifierLore`** (requirement + multiplier append). **Perms** **`auraskills.command.item.requirement`**, **`auraskills.command.item.multiplier`**. Suggestions: **`enabledSkillKeysOrGlobal`**. **Tests** permissions. **Docs** `SPRINT_53_MANUAL_ITEM_REQ_MULT.md`, audit/MENU/ledger/backlog, **`projectVersion` 2.3.80 → 2.3.81**. **Not in this sprint:** **armor** `requirement` / `multiplier` (reference has them; Fabric next); **item** **register** / **give**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test`.
+
 ## 2.3.80
 
 ### Changes

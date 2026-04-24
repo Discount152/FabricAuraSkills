@@ -1,6 +1,7 @@
 package dev.aurelium.auraskills.fabric.item;
 
 import dev.aurelium.auraskills.api.item.ModifierType;
+import dev.aurelium.auraskills.api.skill.Skill;
 import dev.aurelium.auraskills.api.stat.Stat;
 import dev.aurelium.auraskills.api.trait.Trait;
 import dev.aurelium.auraskills.api.util.AuraSkillsModifier.Operation;
@@ -93,6 +94,116 @@ public final class FabricItemModifierLore {
             FabricAuraSkills plugin, ItemStack stack, Stat stat, Locale lo) {
         String needle = stat.getDisplayName(lo, false);
         filterLoreRemoveIfContains(stack, needle);
+    }
+
+    /** Bukkit: {@code addRequirementLore} — appends a line (with blank separator if lore exists). */
+    public static void addRequirementLore(
+            FabricAuraSkills plugin,
+            ItemStack stack,
+            ModifierType type,
+            Skill skill,
+            int level,
+            Locale lo) {
+        CommandMessage key =
+                type == ModifierType.ITEM
+                        ? CommandMessage.ITEM_REQUIREMENT_ADD_LORE
+                        : CommandMessage.ARMOR_REQUIREMENT_ADD_LORE;
+        String raw =
+                TextUtil.replace(
+                        plugin.getMsg(key, lo),
+                        "{skill}",
+                        skill.getDisplayName(lo, false),
+                        "{level}",
+                        String.valueOf(level));
+        String line = plugin.getMessageProvider().applyFormatting(raw);
+        appendLoreBlock(stack, Text.literal(line));
+    }
+
+    /** Bukkit: {@code removeRequirementLore} heuristic — {@code Requires} + capitalized {@link Skill#name()}. */
+    public static void removeRequirementLore(Skill skill, ItemStack stack) {
+        String cap = TextUtil.capitalize(skill.name().toLowerCase(Locale.ROOT));
+        LoreComponent existing = stack.get(DataComponentTypes.LORE);
+        if (existing == null) {
+            return;
+        }
+        List<Text> out = new ArrayList<>();
+        for (Text t : existing.lines()) {
+            String s = t.getString();
+            if (s.contains("Requires") && s.contains(cap)) {
+                continue;
+            }
+            out.add(t);
+        }
+        if (out.isEmpty()) {
+            stack.remove(DataComponentTypes.LORE);
+        } else {
+            stack.set(DataComponentTypes.LORE, new LoreComponent(out));
+        }
+    }
+
+    /** Bukkit: {@code addMultiplierLore} — appends. */
+    public static void addMultiplierLore(
+            FabricAuraSkills plugin,
+            ItemStack stack,
+            ModifierType type,
+            @Nullable Skill skill,
+            double value,
+            Locale lo) {
+        CommandMessage key;
+        if (skill != null) {
+            if (value >= 0) {
+                key =
+                        type == ModifierType.ITEM
+                                ? CommandMessage.ITEM_MULTIPLIER_ADD_SKILL_LORE
+                                : CommandMessage.ARMOR_MULTIPLIER_ADD_SKILL_LORE;
+            } else {
+                key =
+                        type == ModifierType.ITEM
+                                ? CommandMessage.ITEM_MULTIPLIER_ADD_SKILL_LORE_SUBTRACT
+                                : CommandMessage.ARMOR_MULTIPLIER_ADD_SKILL_LORE_SUBTRACT;
+            }
+            String raw =
+                    TextUtil.replace(
+                            plugin.getMsg(key, lo),
+                            "{skill}",
+                            skill.getDisplayName(lo, false),
+                            "{value}",
+                            NumberUtil.format1(Math.abs(value)));
+            String line = plugin.getMessageProvider().applyFormatting(raw);
+            appendLoreBlock(stack, Text.literal(line));
+        } else {
+            if (value >= 0) {
+                key =
+                        type == ModifierType.ITEM
+                                ? CommandMessage.ITEM_MULTIPLIER_ADD_GLOBAL_LORE
+                                : CommandMessage.ARMOR_MULTIPLIER_ADD_GLOBAL_LORE;
+            } else {
+                key =
+                        type == ModifierType.ITEM
+                                ? CommandMessage.ITEM_MULTIPLIER_ADD_GLOBAL_LORE_SUBTRACT
+                                : CommandMessage.ARMOR_MULTIPLIER_ADD_GLOBAL_LORE_SUBTRACT;
+            }
+            String raw =
+                    TextUtil.replace(
+                            plugin.getMsg(key, lo),
+                            "{value}",
+                            NumberUtil.format1(Math.abs(value)));
+            String line = plugin.getMessageProvider().applyFormatting(raw);
+            appendLoreBlock(stack, Text.literal(line));
+        }
+    }
+
+    private static void appendLoreBlock(ItemStack stack, Text line) {
+        List<Text> lines = new ArrayList<>();
+        LoreComponent existing = stack.get(DataComponentTypes.LORE);
+        if (existing != null) {
+            lines.addAll(existing.lines());
+        }
+        if (!lines.isEmpty()) {
+            lines.add(Text.literal(" "));
+        }
+        lines.add(line);
+        stack.set(DataComponentTypes.LORE, new LoreComponent(lines));
     }
 
     private static CommandMessage messageKeyForOp(

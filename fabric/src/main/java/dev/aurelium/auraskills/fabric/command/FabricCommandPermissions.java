@@ -122,6 +122,18 @@ public final class FabricCommandPermissions {
     public static final String ITEM_IGNORE = "auraskills.command.item.ignore";
 
     /**
+     * Bukkit {@code ItemCommand} {@code item requirement …}. **Sprint 53** — see {@code
+     * plugin.yml} {@code auraskills.command.item.requirement}.
+     */
+    public static final String ITEM_REQUIREMENT = "auraskills.command.item.requirement";
+
+    /**
+     * Bukkit {@code ItemCommand} {@code item multiplier …}. **Sprint 53** — see {@code plugin.yml}
+     * {@code auraskills.command.item.multiplier}.
+     */
+    public static final String ITEM_MULTIPLIER = "auraskills.command.item.multiplier";
+
+    /**
      * Bukkit {@code ArmorCommand} {@code armor modifier …} / {@code armor trait …}. **Sprint 51**
      */
     public static final String ARMOR_MODIFIER = "auraskills.command.armor.modifier";

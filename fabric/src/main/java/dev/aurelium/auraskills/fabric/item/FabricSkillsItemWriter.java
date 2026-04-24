@@ -1,6 +1,8 @@
 package dev.aurelium.auraskills.fabric.item;
 
 import dev.aurelium.auraskills.api.item.ModifierType;
+import dev.aurelium.auraskills.api.skill.Multiplier;
+import dev.aurelium.auraskills.api.skill.Skill;
 import dev.aurelium.auraskills.api.stat.Stat;
 import dev.aurelium.auraskills.api.stat.StatModifier;
 import dev.aurelium.auraskills.api.trait.Trait;
@@ -12,12 +14,14 @@ import net.minecraft.component.type.NbtComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtDouble;
+import net.minecraft.nbt.NbtInt;
 import net.minecraft.nbt.NbtList;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Writes stat/trait item modifier lists into {@code custom_data} / {@code PublicBukkitValues} (Bukkit
@@ -143,6 +147,48 @@ public final class FabricSkillsItemWriter {
         putTraitList(stack, type, List.of());
     }
 
+    /**
+     * Replaces the held-item (or armor) PDC <strong>requirement</strong> compound for
+     * {@code PublicBukkitValues} / {@link FabricSkillsItemReader} — clears legacy
+     * {@code AuraSkills/…/Requirements} for the same {@link ModifierType}.
+     */
+    public static void putRequirements(
+            ItemStack stack,
+            ModifierType type,
+            Map<Skill, Integer> requirements) {
+        NbtCompound compound = new NbtCompound();
+        for (Map.Entry<Skill, Integer> e : requirements.entrySet()) {
+            if (e.getValue() == null || e.getValue() == 0) {
+                continue;
+            }
+            compound.put(requirementNbtKey(e.getKey()), NbtInt.of(e.getValue()));
+        }
+        applyPdcMap(
+                stack,
+                type,
+                FabricSkillsItemReader.SkillsItemMeta.REQUIREMENT,
+                compound.getSize() == 0 ? null : compound);
+    }
+
+    /**
+     * Replaces the PDC <strong>multiplier</strong> compound (skill id or {@code global}) — clears
+     * legacy {@code AuraSkills/…/Multipliers} for the same {@link ModifierType}.
+     */
+    public static void putMultipliers(ItemStack stack, ModifierType type, List<Multiplier> multipliers) {
+        NbtCompound compound = new NbtCompound();
+        for (Multiplier m : multipliers) {
+            if (m.value() == 0.0) {
+                continue;
+            }
+            compound.put(multiplierNbtKey(m.skill()), NbtDouble.of(m.value()));
+        }
+        applyPdcMap(
+                stack,
+                type,
+                FabricSkillsItemReader.SkillsItemMeta.MULTIPLIER,
+                compound.getSize() == 0 ? null : compound);
+    }
+
     private static void putStatList(
             ItemStack stack, ModifierType type, List<StatModifier> modifiers) {
         NbtList list = new NbtList();
@@ -186,7 +232,38 @@ public final class FabricSkillsItemWriter {
         }
         root.put(PUBLIC_BUKKIT_VALUES, pbv);
         stripLegacyInRoot(root, type);
+        stripLegacyReqMultInRoot(root, type);
         stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(root));
+    }
+
+    private static void applyPdcMap(
+            ItemStack stack,
+            ModifierType type,
+            FabricSkillsItemReader.SkillsItemMeta meta,
+            @Nullable NbtCompound mapOrNull) {
+        NbtCompound root = copyOrNewRoot(stack);
+        NbtCompound pbv = root.getCompound(PUBLIC_BUKKIT_VALUES).orElseGet(NbtCompound::new);
+        String key = pdcKey(type, meta);
+        if (mapOrNull == null || mapOrNull.getSize() == 0) {
+            pbv.remove(key);
+        } else {
+            pbv.put(key, mapOrNull);
+        }
+        root.put(PUBLIC_BUKKIT_VALUES, pbv);
+        stripLegacyInRoot(root, type);
+        stripLegacyReqMultInRoot(root, type);
+        stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(root));
+    }
+
+    private static String requirementNbtKey(Skill skill) {
+        return PLUGIN_NS + ":" + skill.getId();
+    }
+
+    private static String multiplierNbtKey(@Nullable Skill skill) {
+        if (skill == null) {
+            return PLUGIN_NS + ":global";
+        }
+        return PLUGIN_NS + ":" + skill.getId();
     }
 
     private static NbtCompound copyOrNewRoot(ItemStack stack) {
@@ -221,6 +298,33 @@ public final class FabricSkillsItemWriter {
             }
             if (mods.getSize() == 0) {
                 brandRoot.remove("Modifiers");
+            }
+            if (brandRoot.getSize() == 0) {
+                root.remove(brand);
+            }
+        }
+    }
+
+    private static void stripLegacyReqMultInRoot(NbtCompound root, ModifierType type) {
+        String cap = type == ModifierType.ITEM ? "Item" : "Armor";
+        for (String brand : new String[] {"AuraSkills", "AureliumSkills"}) {
+            NbtCompound brandRoot = root.getCompound(brand).orElse(null);
+            if (brandRoot == null) {
+                continue;
+            }
+            NbtCompound req = brandRoot.getCompound("Requirements").orElse(null);
+            if (req != null && req.contains(cap)) {
+                req.remove(cap);
+                if (req.getSize() == 0) {
+                    brandRoot.remove("Requirements");
+                }
+            }
+            NbtCompound mult = brandRoot.getCompound("Multipliers").orElse(null);
+            if (mult != null && mult.contains(cap)) {
+                mult.remove(cap);
+                if (mult.getSize() == 0) {
+                    brandRoot.remove("Multipliers");
+                }
             }
             if (brandRoot.getSize() == 0) {
                 root.remove(brand);
