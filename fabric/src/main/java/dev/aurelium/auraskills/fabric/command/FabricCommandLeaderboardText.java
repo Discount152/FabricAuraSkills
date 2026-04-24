@@ -1,13 +1,18 @@
 package dev.aurelium.auraskills.fabric.command;
 
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.PlayerConfigEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.NameToIdCache;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Shared 1-based rank indexing and **player name** display. Online players get live names; others
- * {@code ?} in this bounded sprint (no duplicate session-service / profile plumbing).
+ * Shared 1-based rank indexing and **player name** display. Online players use live names; offline
+ * entries use the server API services {@link NameToIdCache} when a name is known (typical for
+ * players who have joined before). If there is no cache entry, {@code ?} — we do not store
+ * usernames in {@code UserState}.
  */
 public final class FabricCommandLeaderboardText {
 
@@ -34,6 +39,11 @@ public final class FabricCommandLeaderboardText {
         if (online != null) {
             return online.getName().getString();
         }
-        return "?";
+        NameToIdCache cache = server.getApiServices().nameToIdCache();
+        if (cache == null) {
+            return "?";
+        }
+        Optional<PlayerConfigEntry> entry = cache.getByUuid(id);
+        return entry.map(PlayerConfigEntry::name).orElse("?");
     }
 }

@@ -96,5 +96,11 @@ public final class FabricCommandPermissions {
     /** Bukkit {@code /sk lang <code>}. **Sprint 48** */
     public static final String LANG = "auraskills.command.lang";
 
+    /**
+     * Bukkit {@code /sk updateleaderboards [samples]} — default <strong>op</strong> in reference
+     * {@code plugin.yml}. **Sprint 49**
+     */
+    public static final String UPDATE_LEADERBOARDS = "auraskills.command.updateleaderboards";
+
     private FabricCommandPermissions() {}
 }

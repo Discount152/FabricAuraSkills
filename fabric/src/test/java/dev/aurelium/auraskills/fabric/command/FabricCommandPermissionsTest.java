@@ -36,7 +36,8 @@ class FabricCommandPermissionsTest {
             FabricCommandPermissions.RANK,
             FabricCommandPermissions.MULTIPLIER,
             FabricCommandPermissions.ABTOGGLE,
-            FabricCommandPermissions.LANG
+            FabricCommandPermissions.LANG,
+            FabricCommandPermissions.UPDATE_LEADERBOARDS
         };
         Set<String> seen = new HashSet<>();
         for (String s : all) {

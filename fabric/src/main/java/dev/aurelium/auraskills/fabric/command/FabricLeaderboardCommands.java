@@ -5,10 +5,12 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import dev.aurelium.auraskills.api.skill.Skill;
+import dev.aurelium.auraskills.api.util.NumberUtil;
 import dev.aurelium.auraskills.common.leaderboard.LeaderboardManager;
 import dev.aurelium.auraskills.common.leaderboard.SkillValue;
 import dev.aurelium.auraskills.common.message.type.CommandMessage;
 import dev.aurelium.auraskills.common.user.User;
+import dev.aurelium.auraskills.common.util.text.TextUtil;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -22,7 +24,8 @@ import java.util.UUID;
 import static net.minecraft.server.command.CommandManager.literal;
 
 /**
- * Top / skill / rank commands (**Sprint 47**). Uses {@link LeaderboardManager} (same as Bukkit) and
+ * Top / skill / rank commands (**Sprint 47**). **Sprint 49:** {@code /top average [page]},
+ * {@code /updateleaderboards [samples]}. Uses {@link LeaderboardManager} (same as Bukkit) and
  * {@link CommandMessage} keys. Bukkit tangles {@code top}/{@code skilltop} and {@code rank}/{@code
  * skillrank} as <strong>aliases</strong> of the same subcommands; Granite exposes
  * {@code /top}, {@code /skilltop <skill>}, {@code /rank}, {@code /skillrank <skill>} as separate
@@ -33,17 +36,54 @@ public final class FabricLeaderboardCommands {
 
     private static final String ARG_PAGE = "page";
     private static final String ARG_SKILL = "skill";
+    private static final String ARG_SAMPLES = "samples";
+    private static final String LIT_AVERAGE = "average";
 
     private FabricLeaderboardCommands() {}
 
     public static LiteralArgumentBuilder<ServerCommandSource> topRoot() {
         return literal("top")
                 .requires(FabricCommandRequirements.permission(FabricCommandPermissions.TOP, true))
-                .executes(ctx -> executeTop(ctx, 1))
+                .executes(ctx -> executeTopPower(ctx, 1))
+                .then(
+                        literal(LIT_AVERAGE)
+                                .executes(ctx -> executeTopAverage(ctx, 1))
+                                .then(
+                                        CommandManager.argument(
+                                                        ARG_PAGE, IntegerArgumentType.integer(1))
+                                                .executes(
+                                                        ctx ->
+                                                                executeTopAverage(
+                                                                        ctx,
+                                                                        IntegerArgumentType
+                                                                                .getInteger(
+                                                                                        ctx,
+                                                                                        ARG_PAGE)))))
                 .then(
                         CommandManager.argument(ARG_PAGE, IntegerArgumentType.integer(1))
                                 .executes(
-                                        ctx -> executeTop(ctx, IntegerArgumentType.getInteger(ctx, ARG_PAGE))));
+                                        ctx ->
+                                                executeTopPower(
+                                                        ctx,
+                                                        IntegerArgumentType.getInteger(
+                                                                ctx, ARG_PAGE))));
+    }
+
+    public static LiteralArgumentBuilder<ServerCommandSource> updateLeaderboardsRoot() {
+        return literal("updateleaderboards")
+                .requires(
+                        FabricCommandRequirements.permission(
+                                FabricCommandPermissions.UPDATE_LEADERBOARDS, false))
+                .executes(ctx -> executeUpdateLeaderboards(ctx, 1))
+                .then(
+                        CommandManager.argument(
+                                        ARG_SAMPLES, IntegerArgumentType.integer(1, 64))
+                                .executes(
+                                        ctx ->
+                                                executeUpdateLeaderboards(
+                                                        ctx,
+                                                        IntegerArgumentType.getInteger(
+                                                                ctx, ARG_SAMPLES))));
     }
 
     public static LiteralArgumentBuilder<ServerCommandSource> skillTopRoot() {
@@ -82,7 +122,7 @@ public final class FabricLeaderboardCommands {
                                 .executes(FabricLeaderboardCommands::executeSkillRank));
     }
 
-    private static int executeTop(CommandContext<ServerCommandSource> ctx, int page) {
+    private static int executeTopPower(CommandContext<ServerCommandSource> ctx, int page) {
         return FabricCommandPluginState.runtimeReadyOrEmpty()
                 .map(
                         p -> {
@@ -119,6 +159,113 @@ public final class FabricLeaderboardCommands {
                                 final String out = line;
                                 source.sendFeedback(() -> Text.literal(out), false);
                             }
+                            return 1;
+                        })
+                .orElseGet(
+                        () -> {
+                            ctx.getSource()
+                                    .sendError(Text.literal("AuraSkills is still starting."));
+                            return 0;
+                        });
+    }
+
+    private static int executeTopAverage(CommandContext<ServerCommandSource> ctx, int page) {
+        return FabricCommandPluginState.runtimeReadyOrEmpty()
+                .map(
+                        p -> {
+                            ServerCommandSource source = ctx.getSource();
+                            LeaderboardManager lb = p.getLeaderboardManager();
+                            List<SkillValue> list =
+                                    lb.getAverageLeaderboard(
+                                            page, FabricCommandLeaderboardText.ENTRIES_PER_PAGE);
+                            Locale lo = localeForSource(source, p);
+                            if (page <= 1) {
+                                source.sendFeedback(
+                                        () -> Text.literal(
+                                                p.getMsg(CommandMessage.TOP_AVERAGE_HEADER, lo)),
+                                        false);
+                            } else {
+                                String header =
+                                        p.getMsg(CommandMessage.TOP_AVERAGE_HEADER_PAGE, lo)
+                                                .replace("{page}", String.valueOf(page));
+                                source.sendFeedback(() -> Text.literal(header), false);
+                            }
+                            for (int i = 0; i < list.size(); i++) {
+                                SkillValue sv = list.get(i);
+                                int rank =
+                                        FabricCommandLeaderboardText.globalRank1Based(page, i);
+                                String name =
+                                        FabricCommandLeaderboardText.resolvePlayerName(
+                                                source.getServer(), sv.id());
+                                String line =
+                                        TextUtil.replace(
+                                                p.getMsg(CommandMessage.TOP_AVERAGE_ENTRY, lo),
+                                                "{rank}",
+                                                String.valueOf(rank),
+                                                "{player}",
+                                                name,
+                                                "{level}",
+                                                NumberUtil.format2(sv.xp()));
+                                final String out = line;
+                                source.sendFeedback(() -> Text.literal(out), false);
+                            }
+                            return 1;
+                        })
+                .orElseGet(
+                        () -> {
+                            ctx.getSource()
+                                    .sendError(Text.literal("AuraSkills is still starting."));
+                            return 0;
+                        });
+    }
+
+    private static int executeUpdateLeaderboards(CommandContext<ServerCommandSource> ctx, int samples) {
+        return FabricCommandPluginState.runtimeReadyOrEmpty()
+                .map(
+                        p -> {
+                            ServerCommandSource source = ctx.getSource();
+                            LeaderboardManager lb = p.getLeaderboardManager();
+                            Locale lo = localeForSource(source, p);
+                            if (!lb.isNotSorting()) {
+                                source.sendError(
+                                        Text.literal(
+                                                p.getMsg(
+                                                        CommandMessage
+                                                                .UPDATELEADERBOARDS_ALREADY_UPDATING,
+                                                        lo)));
+                                return 0;
+                            }
+                            p.getScheduler()
+                                    .executeAsync(
+                                            () -> {
+                                                long sum = 0L;
+                                                for (int i = 0; i < samples; i++) {
+                                                    sum += lb.updateLeaderboards();
+                                                }
+                                                double avg = sum / (double) samples;
+                                                p.getScheduler()
+                                                        .executeSync(
+                                                                () -> {
+                                                                    source.sendFeedback(
+                                                                            () ->
+                                                                                    Text.literal(
+                                                                                            p.getMsg(
+                                                                                                    CommandMessage
+                                                                                                            .UPDATELEADERBOARDS_UPDATED,
+                                                                                                    lo)),
+                                                                            false);
+                                                                    if (samples > 1) {
+                                                                        source.sendFeedback(
+                                                                                () ->
+                                                                                        Text.translatable(
+                                                                                                "auraskills.granite.command.updateleaderboards.samples",
+                                                                                                samples,
+                                                                                                Math.round(
+                                                                                                        avg)),
+                                                                                false);
+                                                                    }
+                                                                });
+                                            });
                             return 1;
                         })
                 .orElseGet(

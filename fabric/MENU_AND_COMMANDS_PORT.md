@@ -362,3 +362,13 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Shared** | **`FabricCommandLocaleArgs`**; **`setShouldSave(true)`** on **lang** + **toggle** after mutation. |
 | **Manual** | **`SPRINT_48_MANUAL_PLAYER_UTILITY.md`** |
 | **Not in Sprint 48** | Rich **Bukkit** **`CommandManager#setPlayerLocale`** client sync; full **LP** **multiplier** perm walk on **Fabric** (see **`FabricUser`**). |
+
+## Sprint 49 — **top average**, **updateleaderboards**, name cache (shipped, partial)
+
+| Piece | Where |
+|-------|--------|
+| **Commands** | **`FabricLeaderboardCommands`**: **`/top average`**, **`/top average <page>`** (skill-average leaderboard via **`LeaderboardManager#getAverageLeaderboard`**); **`/updateleaderboards`**, **`/updateleaderboards <samples>`** (**1–64**), **`auraskills.command.updateleaderboards`**. |
+| **Mirrors** | Same `*Root()` trees under **`/auraskills`**, **`/sk`**, **`/skill`**, plus top-level **`/updateleaderboards`**. |
+| **Shared** | **`FabricCommandLeaderboardText#resolvePlayerName`**: **online** → live name; else **`ApiServices#nameToIdCache#getByUuid`** → **`PlayerConfigEntry#name`**; else **`?`**. **Average** rows: **`TextUtil.replace`** + **`NumberUtil.format2(sv.xp())`**. |
+| **Manual** | **`SPRINT_49_MANUAL_LEADERBOARD_BATCH2.md`** |
+| **Not in Sprint 49** | Bukkit **unbounded** `samples` on **`updateleaderboards`** (Fabric caps **64**); **Mojang** name fetch for UUIDs not in **usercache**; **`UserState`** has no **username** field. |

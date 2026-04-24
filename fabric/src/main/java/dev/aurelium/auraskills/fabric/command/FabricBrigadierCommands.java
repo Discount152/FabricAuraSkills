@@ -22,7 +22,7 @@ public final class FabricBrigadierCommands {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         FabricAuraSkillsMod.LOGGER.info(
-                "Registering Brigadier: /auraskills (…), /skills, /sk|skill, /stats, /openmenu, leaderboard, /multiplier|/toggle|/abtoggle|/lang, /mana, /skilllevel, /xp — see fabric/COMMAND_PARITY_AUDIT.md");
+                "Registering Brigadier: /auraskills (…), /skills, /sk|skill, /stats, /openmenu, leaderboard (top average, updateleaderboards), /multiplier|/toggle|/abtoggle|/lang, /mana, /skilllevel, /xp — see fabric/COMMAND_PARITY_AUDIT.md");
 
         registerAuraskillsAndAliases(dispatcher);
         dispatcher.register(FabricOpenMenuCommands.openMenuRoot());
@@ -30,6 +30,7 @@ public final class FabricBrigadierCommands {
         dispatcher.register(FabricLeaderboardCommands.skillTopRoot());
         dispatcher.register(FabricLeaderboardCommands.rankRoot());
         dispatcher.register(FabricLeaderboardCommands.skillRankRoot());
+        dispatcher.register(FabricLeaderboardCommands.updateLeaderboardsRoot());
         dispatcher.register(FabricPlayerUtilityCommands.multiplierRoot());
         dispatcher.register(FabricPlayerUtilityCommands.toggleRoot());
         dispatcher.register(FabricPlayerUtilityCommands.abToggleRoot());
@@ -60,6 +61,7 @@ public final class FabricBrigadierCommands {
                 .then(FabricLeaderboardCommands.skillTopRoot())
                 .then(FabricLeaderboardCommands.rankRoot())
                 .then(FabricLeaderboardCommands.skillRankRoot())
+                .then(FabricLeaderboardCommands.updateLeaderboardsRoot())
                 .then(FabricPlayerUtilityCommands.multiplierRoot())
                 .then(FabricPlayerUtilityCommands.toggleRoot())
                 .then(FabricPlayerUtilityCommands.abToggleRoot())
@@ -107,6 +109,7 @@ public final class FabricBrigadierCommands {
                 .then(FabricLeaderboardCommands.skillTopRoot())
                 .then(FabricLeaderboardCommands.rankRoot())
                 .then(FabricLeaderboardCommands.skillRankRoot())
+                .then(FabricLeaderboardCommands.updateLeaderboardsRoot())
                 .then(FabricPlayerUtilityCommands.multiplierRoot())
                 .then(FabricPlayerUtilityCommands.toggleRoot())
                 .then(FabricPlayerUtilityCommands.abToggleRoot())

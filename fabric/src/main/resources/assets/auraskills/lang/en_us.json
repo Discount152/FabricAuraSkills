@@ -1,6 +1,6 @@
 {
   "auraskills.granite.command.auraskills_usage": "Use: /auraskills <…> — also /openmenu, /sk, /skill (Sprint 46: /sk|skill can mirror xp, mana, skilllevel)  —  see fabric/COMMAND_PARITY_AUDIT.md",
-  "auraskills.granite.command.help": "Fabric AuraSkills: /auraskills … | /skills, /sk, /skill (subcommands) | /stats | /openmenu | leaderboard / utility (multiplier, toggle, abtoggle, lang) | /mana | /skilllevel | /xp | staff: reload, save",
+  "auraskills.granite.command.help": "Fabric AuraSkills: /auraskills … | /skills, /sk, /skill (subcommands) | /stats | /openmenu | leaderboard (top, top average, skilltop, rank, updateleaderboards) / utility (multiplier, toggle, abtoggle, lang) | /mana | /skilllevel | /xp | staff: reload, save",
   "auraskills.granite.command.leaderboard.players_only": "This command is for players only.",
   "auraskills.granite.command.utility.players_only": "This command is for players only.",
   "auraskills.granite.command.openmenu.console_specify": "Console: /openmenu <skills|stats> <player>  —  for level_progression/stat_info: /openmenu <menu> <player> <skill|stat>",
@@ -47,5 +47,6 @@
   "auraskills.granite.menu.paging_prev": "Previous page",
   "auraskills.granite.menu.paging_prev_lore": "Go to the previous page of entries",
   "auraskills.granite.menu.paging_next": "Next page",
-  "auraskills.granite.menu.paging_next_lore": "Go to the next page of entries"
+  "auraskills.granite.menu.paging_next_lore": "Go to the next page of entries",
+  "auraskills.granite.command.updateleaderboards.samples": "Average update time over %s samples: %s ms"
 }

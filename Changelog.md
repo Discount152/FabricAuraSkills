@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.77
+
+### Changes
+
+- **Fabric: leaderboard batch 2 (Sprint 49):** **`/top average`**, **`/top average <page>`**; **`/updateleaderboards`**, **`/updateleaderboards <samples>`** (**1–64**); async **`LeaderboardManager#updateLeaderboards`** with **server-thread** feedback. **`FabricCommandLeaderboardText#resolvePlayerName`** — **name-to-id cache** via **`MinecraftServer#getApiServices()#nameToIdCache`**, else **`?`**. Perms **`auraskills.command.updateleaderboards`**. **Lang** `updateleaderboards.samples`, help. **Tests** permissions. **Docs** `SPRINT_49_MANUAL_LEADERBOARD_BATCH2.md`, `COMMAND_PARITY_AUDIT`, `MENU_AND_COMMANDS_PORT`, ledger/backlog, **`projectVersion` 2.3.76 → 2.3.77**. **Not in scope:** unbounded **samples**; offline names with **no** **usercache** entry; usernames in **`UserState`**.
+
 ## 2.3.76
 
 ### Changes
