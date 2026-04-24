@@ -198,3 +198,15 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Manual** | **`SPRINT_34_MANUAL_BUILT_IN_MENU_LAYOUT.md`** |
 
 **Not in Sprint 34:** full Slate **position** / **paging** / **template** resolution; custom **item** types per row from YAML.
+
+## Sprint 35 — Context menus on the registry (shipped, partial)
+
+| Piece | Where |
+|-------|--------|
+| **Context** | **`FabricMenuContext`**: `none()`, `ofSkill(Skill)`, `ofStat(Stat)` — optional fields for a future Slate-style context row without claiming full `ContextManager` parity |
+| **Opener** | **`FabricMenuOpener#open(…, Text title, FabricMenuContext context)`** — list GUIs ignore `context`; `level_progression` / `stat_info` build titles in-GUI; registry passes **`Text.empty()`** for those ids after validating context |
+| **Registry** | **`#open(menuId, player, plugin)`** delegates to **`open(…, FabricMenuContext.none())`**. Opening **`level_progression` / `stat_info`** without a **Skill** / **Stat** logs a **warn** and no-ops. **`FabricMenuLoaders`**: `skills`, `stats`, `level_progression`, `stat_info` (startup log lists **four** ids) |
+| **Public API** | **`FabricAuraSkillsMenus#open(…, FabricMenuContext)`**; existing **`openLevelProgression` / `openStatInfo`** unchanged for callers in **Skills/Stats** GUIs |
+| **Manual** | **`SPRINT_35_MANUAL_CONTEXT_MENUS.md`** |
+
+**Not in Sprint 35:** arbitrary placeholder strings, Bukkit `ContextManager` / `SortType` coverage, or registering more contextual menus.

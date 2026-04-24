@@ -24,7 +24,8 @@ final class FabricSkillsMenuGui {
     private FabricSkillsMenuGui() {
     }
 
-    static void open(ServerPlayerEntity player, FabricAuraSkills plugin, Text title) {
+    static void open(
+            ServerPlayerEntity player, FabricAuraSkills plugin, Text title, FabricMenuContext context) {
         User user = plugin.getUserManager().getUser(player.getUuid());
         var locale = user.getLocale();
         var msg = plugin.getMessageProvider();

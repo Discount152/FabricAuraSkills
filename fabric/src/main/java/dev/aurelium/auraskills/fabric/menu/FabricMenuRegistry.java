@@ -13,7 +13,8 @@ import java.util.Set;
 /**
  * Central registry for Granite slice menus. Lookup by ID and dispatch to the registered
  * {@link FabricMenuOpener}. **Sprint 32:** Skills/Stats titles and enablement read from
- * {@link FabricBuiltInMenuConfig} when present.
+ * {@link FabricBuiltInMenuConfig} when present. **Sprint 35:** {@code level_progression} and
+ * {@code stat_info} require {@link FabricMenuContext#ofSkill} / {@link FabricMenuContext#ofStat}.
  */
 public final class FabricMenuRegistry {
 
@@ -32,9 +33,46 @@ public final class FabricMenuRegistry {
     }
 
     public void open(String id, ServerPlayerEntity player, FabricAuraSkills plugin) {
+        open(id, player, plugin, FabricMenuContext.none());
+    }
+
+    public void open(
+            String id, ServerPlayerEntity player, FabricAuraSkills plugin, FabricMenuContext context) {
         FabricMenuDefinition def = byId.get(id);
         if (def == null) {
-            plugin.logger().warn("Unknown menu id '" + id + "'; registered: " + byId.keySet());
+            if (plugin != null) {
+                plugin.logger().warn("Unknown menu id '" + id + "'; registered: " + byId.keySet());
+            }
+            return;
+        }
+        if (FabricMenuKeys.LEVEL_PROGRESSION.equals(id)) {
+            if (plugin == null) {
+                return;
+            }
+            if (context.skill() == null) {
+                plugin.logger()
+                        .warn(
+                                "Menu '"
+                                        + id
+                                        + "' requires FabricMenuContext.ofSkill(Skill); use FabricAuraSkillsMenus#openLevelProgression or the registry with context.");
+                return;
+            }
+            def.opener().open(player, plugin, Text.empty(), context);
+            return;
+        }
+        if (FabricMenuKeys.STAT_INFO.equals(id)) {
+            if (plugin == null) {
+                return;
+            }
+            if (context.stat() == null) {
+                plugin.logger()
+                        .warn(
+                                "Menu '"
+                                        + id
+                                        + "' requires FabricMenuContext.ofStat(Stat); use FabricAuraSkillsMenus#openStatInfo or the registry with context.");
+                return;
+            }
+            def.opener().open(player, plugin, Text.empty(), context);
             return;
         }
         Text title;
@@ -63,6 +101,6 @@ public final class FabricMenuRegistry {
         } else {
             title = Text.translatable(def.titleTranslationKey());
         }
-        def.opener().open(player, plugin, title);
+        def.opener().open(player, plugin, title, context);
     }
 }

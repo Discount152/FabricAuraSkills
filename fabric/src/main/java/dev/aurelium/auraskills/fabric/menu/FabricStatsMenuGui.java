@@ -34,7 +34,8 @@ final class FabricStatsMenuGui {
     private FabricStatsMenuGui() {
     }
 
-    static void open(ServerPlayerEntity player, FabricAuraSkills plugin, Text title) {
+    static void open(
+            ServerPlayerEntity player, FabricAuraSkills plugin, Text title, FabricMenuContext context) {
         User user = plugin.getUserManager().getUser(player.getUuid());
         Locale locale = user.getLocale();
         MessageProvider msg = plugin.getMessageProvider();

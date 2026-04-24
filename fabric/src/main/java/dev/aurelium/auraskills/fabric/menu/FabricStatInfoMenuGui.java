@@ -24,14 +24,23 @@ import java.util.Locale;
  * One-stat “stat_info” view: live name, value/level, description, and trait lines — not Bukkit
  * {@code stat_info.yml} + modifier grids. **Sprint 33:** titles/format keys from
  * {@link FabricBuiltInMenuConfig} / {@code menus/stat_info.yml} {@code granite:}. **Sprint 34:** main/back
- * slots from {@code granite.layout}.
+ * slots from {@code granite.layout}. **Sprint 35:** opened via {@link FabricMenuRegistry} with
+ * {@link FabricMenuContext#ofStat(Stat)}.
  */
 final class FabricStatInfoMenuGui {
 
     private FabricStatInfoMenuGui() {
     }
 
-    static void open(ServerPlayerEntity player, FabricAuraSkills plugin, Stat stat) {
+    static void open(
+            ServerPlayerEntity player, FabricAuraSkills plugin, Text titleUnused, FabricMenuContext context) {
+        Stat stat = context.stat();
+        if (stat == null) {
+            if (plugin != null) {
+                plugin.logger().warn("stat_info menu: missing Stat in FabricMenuContext");
+            }
+            return;
+        }
         if (!plugin.configBoolean(Option.MENUS_STAT_INFO_ENABLED)) {
             FabricAuraSkillsMenus.open(FabricAuraSkillsMenus.Id.STATS, player, plugin);
             return;

@@ -20,14 +20,23 @@ import java.util.Locale;
  * One-skill “level progression” view: live level + XP from {@link User}, not full Bukkit
  * {@code level_progression.yml} / reward tables. **Sprint 33:** titles/format keys from
  * {@link FabricBuiltInMenuConfig} / {@code menus/level_progression.yml} {@code granite:}. **Sprint 34:**
- * main/back slots from {@code granite.layout}.
+ * main/back slots from {@code granite.layout}. **Sprint 35:** opened only via
+ * {@link FabricMenuRegistry} with {@link FabricMenuContext#ofSkill(Skill)}.
  */
 final class FabricLevelProgressionMenuGui {
 
     private FabricLevelProgressionMenuGui() {
     }
 
-    static void open(ServerPlayerEntity player, FabricAuraSkills plugin, Skill skill) {
+    static void open(
+            ServerPlayerEntity player, FabricAuraSkills plugin, Text titleUnused, FabricMenuContext context) {
+        Skill skill = context.skill();
+        if (skill == null) {
+            if (plugin != null) {
+                plugin.logger().warn("level_progression menu: missing Skill in FabricMenuContext");
+            }
+            return;
+        }
         FabricMenuYamlSlice def = FabricMenuYamlSlice.defaultLevelProgression();
         FabricMenuYamlSlice cfg = plugin
                 .getBuiltInMenuConfig()

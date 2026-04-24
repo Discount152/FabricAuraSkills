@@ -8,6 +8,9 @@ import net.minecraft.server.network.ServerPlayerEntity;
 /**
  * Dispatch helpers for built-in menus. **Sprint 29+:** resolution goes through
  * {@link FabricMenuRegistry} (ids match {@link FabricMenuKeys} / Bukkit {@code MenuFileManager} names).
+ * **Sprint 35:** contextual ids {@code level_progression} and {@code stat_info} use
+ * {@link FabricMenuContext} — prefer {@link #open(String, ServerPlayerEntity, FabricAuraSkills, FabricMenuContext)}
+ * or the typed helpers.
  */
 public final class FabricAuraSkillsMenus {
 
@@ -30,7 +33,15 @@ public final class FabricAuraSkillsMenus {
     }
 
     public static void open(String menuId, ServerPlayerEntity player, FabricAuraSkills plugin) {
-        plugin.getMenuRegistry().open(menuId, player, plugin);
+        open(menuId, player, plugin, FabricMenuContext.none());
+    }
+
+    public static void open(
+            String menuId,
+            ServerPlayerEntity player,
+            FabricAuraSkills plugin,
+            FabricMenuContext context) {
+        plugin.getMenuRegistry().open(menuId, player, plugin, context);
     }
 
     public static void open(Id id, ServerPlayerEntity player, FabricAuraSkills plugin) {
@@ -38,18 +49,19 @@ public final class FabricAuraSkillsMenus {
     }
 
     /**
-     * Bukkit id {@code level_progression} (see {@link FabricMenuKeys#LEVEL_PROGRESSION}): not registered in
-     * {@link FabricMenuRegistry} (needs a {@link Skill}); opened programmatically from the Skills menu.
+     * Bukkit id {@code level_progression} (see {@link FabricMenuKeys#LEVEL_PROGRESSION}): {@link Skill}
+     * context is required; routes through {@link FabricMenuRegistry}.
      */
     public static void openLevelProgression(Skill skill, ServerPlayerEntity player, FabricAuraSkills plugin) {
-        FabricLevelProgressionMenuGui.open(player, plugin, skill);
+        open(FabricMenuKeys.LEVEL_PROGRESSION, player, plugin, FabricMenuContext.ofSkill(skill));
     }
 
     /**
-     * Bukkit id {@code stat_info} (see {@link FabricMenuKeys#STAT_INFO}): not in {@link FabricMenuRegistry}
-     * (needs a {@link Stat}); opened from the Stats menu when {@code menus.stat_info.enabled} is true.
+     * Bukkit id {@code stat_info} (see {@link FabricMenuKeys#STAT_INFO}): {@link Stat} context is required;
+     * still gated in {@code FabricStatInfoMenuGui} by {@code menus.stat_info.enabled}. Routes through
+     * {@link FabricMenuRegistry}.
      */
     public static void openStatInfo(Stat stat, ServerPlayerEntity player, FabricAuraSkills plugin) {
-        FabricStatInfoMenuGui.open(player, plugin, stat);
+        open(FabricMenuKeys.STAT_INFO, player, plugin, FabricMenuContext.ofStat(stat));
     }
 }

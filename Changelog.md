@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.63
+
+### Changes
+
+- **Fabric: context-aware menu registry for `level_progression` + `stat_info` (Sprint 35):** **`FabricMenuContext`** (`none` / `ofSkill` / `ofStat`); **`FabricMenuOpener`** and **`FabricMenuRegistry#open(…, FabricMenuContext)`**; static **Skills/Stats** receive unused empty context. **`FabricMenuLoaders`** registers **four** ids; **`FabricAuraSkillsMenus#open(String,…,context)`**; **`openLevelProgression` / `openStatInfo`** delegate to the registry. **Tests:** `FabricMenuContextTest`, **`FabricMenuRegistryTest`**. **Docs** `SPRINT_35_MANUAL_CONTEXT_MENUS.md`, `MENU_AND_COMMANDS_PORT`, parity, backlog, handoff. **`projectVersion` 2.3.62 → 2.3.63**. Not in scope: full Slate **PlaceholderHelper** or template **context** parity.
+
 ## 2.3.62
 
 ### Changes

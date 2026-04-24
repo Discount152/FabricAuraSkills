@@ -300,7 +300,7 @@ Mirrors Bukkit event order: **`FishingLootHandler` @HIGH**-equivalent ( **`tryRo
 | `FabricLootManager` | Skill loot tables / loaders | **Reference:** `BukkitLootManager` — still compare block/mob **handler** coverage. |
 | `FabricItemRegistry` | Custom items (registry path) | **Reference:** Bukkit NBT stack differs; edge cases: **`fabric/PARITY_BACKLOG.md`**. |
 | `FabricModifierManager` | Item/armor modifiers (schedules) | **Reference:** Bukkit `ItemListener` / armor — may still differ. |
-| `FabricMenuHelper` | Menus | **Sprint 27–34** — partial: format map + **`FabricMenuRegistry`/`FabricMenuLoaders`** + **`FabricBuiltInMenuConfig`** (list + **level_progression** / **stat_info** `granite` + **`granite.layout`** slot bounds); full **Slate** merge/templates still **`MENU_AND_COMMANDS_PORT.md`**. **Bedrock:** validate chest GUIs + reload via Geyser. |
+| `FabricMenuHelper` | Menus | **Sprint 27–35** — partial: format map + **`FabricMenuRegistry`** (four built-in ids + **`FabricMenuContext`**) + **`FabricBuiltInMenuConfig`**; full **Slate** merge/templates still **`MENU_AND_COMMANDS_PORT.md`**. **Bedrock:** validate chest GUIs + reload via Geyser. |
 | `FabricUiProvider` / `FabricBossBarManager` | UI: titles, action bar, boss bar | **Reference:** Bukkit `BukkitUiProvider` options — **validate both client paths** for formatted text. |
 | `FabricUser` (permissions) | `fabric-permissions-api`; Floodgate + LP | **Bedrock:** confirm permission nodes for linked accounts. See **`fabric/PARITY_BACKLOG.md`**. |
 | `FabricTraitManager` / `FabricAbilityManager` / `FabricManaAbilityManager` | Register implementations | Many handlers exist — diff vs Bukkit; **not** “empty” in the sense of a blank class (verify `FabricAuraSkills#finishEnable`). |
@@ -385,7 +385,7 @@ Performed successfully in a clean-cache audit:
 
 | Bukkit / reference | Fabric (runtime) goal |
 |-----------------|-------------|
-| `MenuRegistrar`, Slate menus | **Sprint 28–34** — built-in `menus/*.yml` **granite** slice (including **layout** slot positions) + `FabricMenuRegistry` + click detail flows; full **Slate** `loadMenus` / merge dirs still in flight. **Acceptance:** **Java + Bedrock (Geyser/Floodgate)** for inventory UX + reload. |
+| `MenuRegistrar`, Slate menus | **Sprint 28–35** — built-in `menus/*.yml` **granite** (layout + text) + **`FabricMenuRegistry`** (context-aware **`open(menuId,…, context)`** for `level_progression` / `stat_info`); full **Slate** `loadMenus` / merge dirs still in flight. **Acceptance:** **Java + Bedrock (Geyser/Floodgate)** for inventory UX + reload. |
 | `BukkitUiProvider`, boss bar, action bar | Complete **`FabricUiProvider`** / **`FabricBossBarManager`** / (if present) **action bar** paths to **reference** options. **Validate** text surfaces on **both** client paths. |
 | ACF command tree | Port to Brigadier / **acf-brigadier** ( **`MENU_AND_COMMANDS_PORT.md`**) — capability vs **Bukkit** `CommandRegistrar`, **Granite** names **TBD**. **Cross-play:** command feedback for **Java and Bedrock**. |
 

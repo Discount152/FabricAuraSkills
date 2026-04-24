@@ -11,13 +11,13 @@ public final class FabricMenuKeys {
     /** Bukkit default {@code menus/stats.yml} */
     public static final String STATS = "stats";
     /**
-     * Bukkit default {@code menus/level_progression.yml} — ID parity only; Fabric opens via
-     * {@link FabricAuraSkillsMenus#openLevelProgression} with a {@link dev.aurelium.auraskills.api.skill.Skill}.
+     * Bukkit default {@code menus/level_progression.yml} — registered in {@link FabricMenuRegistry} (Sprint
+     * 35+); open with {@link FabricMenuContext#ofSkill} or {@link FabricAuraSkillsMenus#openLevelProgression}.
      */
     public static final String LEVEL_PROGRESSION = "level_progression";
     /**
-     * Bukkit default {@code menus/stat_info.yml} — ID parity; Fabric opens via
-     * {@link FabricAuraSkillsMenus#openStatInfo} with a {@link dev.aurelium.auraskills.api.stat.Stat}.
+     * Bukkit default {@code menus/stat_info.yml} — registered in {@link FabricMenuRegistry} (Sprint 35+); open
+     * with {@link FabricMenuContext#ofStat} or {@link FabricAuraSkillsMenus#openStatInfo}.
      */
     public static final String STAT_INFO = "stat_info";
 
