@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * First Vertical slice: read-only 6×9 chest showing enabled skills, level, and XP (server state)
- * for the opening player. Future: Slate templates, click → level_progression, placeholder pipeline.
+ * 6×9 chest: enabled skills with level/XP; top-slot click opens
+ * {@link FabricLevelProgressionMenuGui} for the skill in that cell (Sprint 30).
  */
 final class FabricSkillsMenuGui {
 
@@ -28,7 +28,8 @@ final class FabricSkillsMenuGui {
         User user = plugin.getUserManager().getUser(player.getUuid());
         var locale = user.getLocale();
         var msg = plugin.getMessageProvider();
-        GraniteContainerMenus.openReadOnly9x6(
+        List<Skill> skillsInOrder = new ArrayList<>();
+        GraniteContainerMenus.openClickable9x6(
                 player,
                 title,
                 inv -> {
@@ -37,6 +38,7 @@ final class FabricSkillsMenuGui {
                         if (i >= inv.size()) {
                             break;
                         }
+                        skillsInOrder.add(skill);
                         ItemStack stack = new ItemStack(Items.BOOK);
                         String name = msg.getSkillDisplayName(skill, locale, true);
                         stack.set(DataComponentTypes.ITEM_NAME, Text.literal(name));
@@ -45,12 +47,24 @@ final class FabricSkillsMenuGui {
                         List<Text> lore = new ArrayList<>();
                         lore.add(Text.translatable("auraskills.granite.menu.skills_lore_level", level));
                         lore.add(Text.translatable("auraskills.granite.menu.skills_lore_xp", NumberUtil.format2(xp)));
+                        lore.add(Text.translatable("auraskills.granite.menu.skills_lore_open_detail"));
                         if (!user.hasSkillPermission(skill)) {
                             lore.add(Text.translatable("auraskills.granite.menu.skills_lore_no_permission"));
                         }
                         stack.set(DataComponentTypes.LORE, new LoreComponent(lore));
                         inv.setStack(i++, stack);
                     }
+                },
+                (topSlot, p, b, t) -> {
+                    if (topSlot < 0 || topSlot >= skillsInOrder.size()) {
+                        return;
+                    }
+                    Skill skill = skillsInOrder.get(topSlot);
+                    if (!user.hasSkillPermission(skill)) {
+                        return;
+                    }
+                    plugin.getScheduler()
+                            .executeSync(() -> FabricAuraSkillsMenus.openLevelProgression(skill, p, plugin));
                 });
     }
 }

@@ -7,25 +7,36 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.server.network.ServerPlayerEntity;
+import org.jetbrains.annotations.Nullable;
 
 /**
- * A {@value #ROWS}×9 chest-style menu using {@link ScreenHandlerType#GENERIC_9X6} so the vanilla client
- * and Geyser (large chest) see a standard container. Container slots (indices {@code 0..ROWS*9-1})
- * are read-only; player inventory and hotbar remain normal.
+ * 6×9 {@link ScreenHandlerType#GENERIC_9X6} container. Top slots never allow item movement; when
+ * {@code topClick != null}, it is notified for each container click (read-only + interaction).
+ * When {@code topClick == null}, behavior matches the former read-only handler.
  */
-public final class GraniteReadOnly9x6Handler extends GenericContainerScreenHandler {
+public final class GraniteClickable9x6Handler extends GenericContainerScreenHandler {
 
     public static final int ROWS = 6;
-    private static final int CONTAINER_SLOTS = ROWS * 9;
+    public static final int CONTAINER_SLOTS = ROWS * 9;
 
-    public GraniteReadOnly9x6Handler(int syncId, PlayerInventory playerInventory, Inventory containerInventory) {
+    private final @Nullable GraniteTopSlotClickHandler topClick;
+
+    public GraniteClickable9x6Handler(
+            int syncId,
+            PlayerInventory playerInventory,
+            Inventory containerInventory,
+            @Nullable GraniteTopSlotClickHandler topClick) {
         super(ScreenHandlerType.GENERIC_9X6, syncId, playerInventory, containerInventory, ROWS);
+        this.topClick = topClick;
     }
 
     @Override
     public void onSlotClick(int slotIndex, int button, SlotActionType actionType, PlayerEntity player) {
         if (slotIndex >= 0 && slotIndex < CONTAINER_SLOTS) {
-            // Block interaction with the top container (items are display-only; still synced from server)
+            if (topClick != null && player instanceof ServerPlayerEntity sp) {
+                topClick.onTopSlot(slotIndex, sp, button, actionType);
+            }
             return;
         }
         super.onSlotClick(slotIndex, button, actionType, player);

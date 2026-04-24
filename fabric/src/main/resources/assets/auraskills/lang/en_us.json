@@ -2,8 +2,17 @@
   "auraskills.granite.menu.skills_title": "Skills",
   "auraskills.granite.menu.skills_lore_level": "Level: %s",
   "auraskills.granite.menu.skills_lore_xp": "XP: %s",
+  "auraskills.granite.menu.skills_lore_open_detail": "Click: level progression",
   "auraskills.granite.menu.skills_lore_no_permission": "No permission for this skill",
   "auraskills.granite.menu.skills_opened": "Opened skills menu (E to close).",
   "auraskills.granite.menu.stats_title": "Stats",
-  "auraskills.granite.menu.stats_opened": "Opened stats menu (E to close)."
+  "auraskills.granite.menu.stats_opened": "Opened stats menu (E to close).",
+  "auraskills.granite.menu.level_progression_title": "Level Progression: %s",
+  "auraskills.granite.menu.level_progression_main_title": "%s",
+  "auraskills.granite.menu.level_progression_lore_level": "Level: %s",
+  "auraskills.granite.menu.level_progression_lore_xp": "XP in this level: %s",
+  "auraskills.granite.menu.level_progression_lore_to_next": "Progress: %1$s / %2$s to next level",
+  "auraskills.granite.menu.level_progression_lore_maxed": "Max level reached",
+  "auraskills.granite.menu.level_progression_back": "Back",
+  "auraskills.granite.menu.level_progression_back_lore": "Return to Skills"
 }

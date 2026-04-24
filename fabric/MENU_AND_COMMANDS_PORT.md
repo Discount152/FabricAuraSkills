@@ -112,7 +112,7 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 
 | Piece | Where |
 |-------|--------|
-| **Read-only 6×9** (vanilla `GENERIC_9X6` — Geyser-friendly large chest) | **`granitelib`**: `dev.granitelib.fabric.menu.GraniteReadOnly9x6Handler`, `GraniteContainerMenus#openReadOnly9x6` |
+| **6×9 container** (vanilla `GENERIC_9X6` — Geyser-friendly large chest) | **`granitelib`**: `GraniteClickable9x6Handler` (`GraniteTopSlotClickHandler` optional; `null` = read-only top), `GraniteContainerMenus#openReadOnly9x6` / `#openClickable9x6` |
 | **Skills data + book rows** | **`FabricSkillsMenuGui`** — `/skills` and `/auraskills skills` (temporary; **not** final Granite public command design) |
 | **MenuHelper / StatReward** | **`FabricMenuHelper`** — at least `level_progression` / `stat_reward_entry` string |
 | **Manual** | **`SPRINT_27_MANUAL_SKILLS_MENU.md`** |
@@ -143,3 +143,14 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Manual** | **`SPRINT_29_MANUAL_MENU_REGISTRY.md`** |
 
 **Not in Sprint 29:** file-backed YAML menu load, Slate `MenuLoader`, `menuFileManager.loadMenus`, merge directories, reload-time re-registration (future: call loader after reload).
+
+## Sprint 30 — Clickable top slots + Skills → Level Progression (shipped, partial)
+
+| Piece | Where |
+|-------|--------|
+| **Reusable top-slot primitive** | **`GraniteClickable9x6Handler`** + **`GraniteTopSlotClickHandler`**; **`GraniteContainerMenus#openClickable9x6`**; read-only top grid = `topClick == null` (used by **Stats** unchanged) |
+| **Flow** | **Skills** top-slot click (permission-checked) → **`FabricAuraSkillsMenus#openLevelProgression(Skill,…)`** → **`FabricLevelProgressionMenuGui`** (live level + XP to next; **Back** → Skills via registry `open(SKILLS)`) — next-tick `executeSync` to avoid re-entrancy |
+| **IDs** | **`FabricMenuKeys#LEVEL_PROGRESSION`** (parity name only; not registered without context) |
+| **Manual** | **`SPRINT_30_MANUAL_LEVEL_PROGRESSION.md`** |
+
+**Not in Sprint 30:** full Slate click/template/YAML, reward list parity with `level_progression.yml`, registering `level_progression` in **`FabricMenuRegistry`** without a **`Skill`** context.

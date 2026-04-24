@@ -4,12 +4,12 @@ import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
 /**
- * Minimal GraniteLib entry point for server-side block-entity style menus. Future Slate-like menus
- * can compose multiple builders on top; this is the first shared primitive.
+ * Server-side 6×9 menu entry points. Read-only = {@code topClick == null}.
  */
 public final class GraniteContainerMenus {
 
@@ -17,15 +17,26 @@ public final class GraniteContainerMenus {
     }
 
     /**
-     * Opens a 6×9 read-only {@link GraniteReadOnly9x6Handler} filled by {@code populate} on the
-     * main thread before the screen opens.
+     * Opens a 6×9 menu with no top-slot click handling (items are display-only in the top grid).
      */
     public static void openReadOnly9x6(ServerPlayerEntity player, Text title, Consumer<SimpleInventory> populate) {
-        SimpleInventory inv = new SimpleInventory(GraniteReadOnly9x6Handler.ROWS * 9);
+        openClickable9x6(player, title, populate, null);
+    }
+
+    /**
+     * Opens a 6×9 menu; {@code topClick} is invoked for interactions in the top 54 slots (items are
+     * never moved by the handler).
+     */
+    public static void openClickable9x6(
+            ServerPlayerEntity player,
+            Text title,
+            Consumer<SimpleInventory> populate,
+            @Nullable GraniteTopSlotClickHandler topClick) {
+        SimpleInventory inv = new SimpleInventory(GraniteClickable9x6Handler.CONTAINER_SLOTS);
         populate.accept(inv);
         player.openHandledScreen(new SimpleNamedScreenHandlerFactory(
                 (syncId, playerInventory, playerEntity) ->
-                        new GraniteReadOnly9x6Handler(syncId, playerInventory, inv),
+                        new GraniteClickable9x6Handler(syncId, playerInventory, inv, topClick),
                 title));
     }
 }

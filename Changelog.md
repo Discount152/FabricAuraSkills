@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.58
+
+### Changes
+
+- **GraniteLib + Fabric: clickable 6×9 top slots + Skills → Level Progression (Sprint 30):** **`granitelib`**: `GraniteClickable9x6Handler` (optional `GraniteTopSlotClickHandler`), `GraniteReadOnly9x6Handler` removed; **`GraniteContainerMenus#openClickable9x6`**; read-only = `topClick == null`. **Fabric**: **`FabricSkillsMenuGui`** (click skill book → `FabricAuraSkillsMenus#openLevelProgression`); **`FabricLevelProgressionMenuGui`** (live level/XP, **Back** → Skills via registry); **`FabricMenuKeys#LEVEL_PROGRESSION`** (naming only). **Lang** `en_us.json`. **Docs/ledger:** `MENU_AND_COMMANDS_PORT.md`, `PARITY_*`, **`SPRINT_30_MANUAL_LEVEL_PROGRESSION.md`**. **Tests:** `FabricMenuKeysTest`. **`granitelibVersion` 0.1.0-alpha.1 → 0.1.0-alpha.2**; **`projectVersion` 2.3.57 → 2.3.58**. Not in scope: full Slate/YAML `level_progression` rewards.
+
 ## 2.3.57
 
 ### Changes
