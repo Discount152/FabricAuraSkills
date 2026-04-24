@@ -392,4 +392,14 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **State** | **`FabricSkillsItemWriter`** (PDC list; strips legacy `AuraSkills/Modifiers/…` for the same `ModifierType` on write) + **`FabricItemModifierLore`** (prepend lore / stat-based strip on remove) + **`User`** refresh via **`FabricModifierManager#applyModifiers`** |
 | **Perms** | `auraskills.command.item.modifier`, `auraskills.command.armor.modifier` (Bukkit `plugin.yml` names) |
 
-| **Not in Sprint 51** | Reference **ItemCommand** / **ArmorCommand** **requirement**, **multiplier**, **ignore**, item **register**/**give**. **Manual:** `SPRINT_51_MANUAL_ITEM_ARMOR_MODIFIERS.md`. |
+| **Not in Sprint 51** | Reference **ItemCommand** / **ArmorCommand** **requirement**, **multiplier**, item **register**/**give** ( **`ignore`** — **Sprint 52**). **Manual:** `SPRINT_51_MANUAL_ITEM_ARMOR_MODIFIERS.md`. |
+
+## Sprint 52 — **`/item ignore`** (held mana-ability ignore) (shipped, partial)
+
+| Area | Shipped on Fabric (bounded) |
+|------|-----------------------------|
+| **Commands** | **`/item ignore add`**, **`/item ignore remove`** (main hand; same mirrors as **`/item`**) |
+| **State** | **`FabricItemIgnoreTags`** — `custom_data` / `PublicBukkitValues` **`auraskills:ignore_interact`** (Bukkit PDC parity); **`FabricManaAbilityItemTags`** delegates read to same class |
+| **Perms** | **`auraskills.command.item.ignore`** (separate from **`item.modifier`**) |
+
+| **Not in Sprint 52** | **item** `requirement` / `multiplier` / **register** / **give**; **ArmorCommand** `ignore` (none in reference). **Manual:** `SPRINT_52_MANUAL_ITEM_IGNORE.md`. |

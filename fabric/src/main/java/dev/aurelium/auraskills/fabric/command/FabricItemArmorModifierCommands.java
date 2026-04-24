@@ -16,6 +16,7 @@ import dev.aurelium.auraskills.api.util.AuraSkillsModifier;
 import dev.aurelium.auraskills.common.message.type.CommandMessage;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
+import dev.aurelium.auraskills.fabric.item.FabricItemIgnoreTags;
 import dev.aurelium.auraskills.fabric.item.FabricItemModifierLore;
 import dev.aurelium.auraskills.fabric.item.FabricSkillsItemReader;
 import dev.aurelium.auraskills.fabric.item.FabricSkillsItemWriter;
@@ -30,8 +31,9 @@ import java.util.Locale;
 import static net.minecraft.server.command.CommandManager.literal;
 
 /**
- * **Sprint 51** — Bukkit-shaped {@code /item} and {@code /armor} stat/trait <strong>modifier</strong> subtrees
- * (main-hand held item; same permission split as Bukkit: {@code item.modifier} / {@code armor.modifier}).
+ * **Sprint 51+** — Bukkit-shaped {@code /item} and {@code /armor} stat/trait <strong>modifier</strong> subtrees
+ * (main-hand held item; {@code item.modifier} / {@code armor.modifier}) plus {@code /item ignore …}
+ * (Sprint 52, {@code item.ignore}).
  */
 public final class FabricItemArmorModifierCommands {
 
@@ -46,6 +48,7 @@ public final class FabricItemArmorModifierCommands {
     private static final String LIT_REMOVEALL = "removeall";
     private static final String LIT_MODIFIER = "modifier";
     private static final String LIT_TRAIT = "trait";
+    private static final String LIT_IGNORE = "ignore";
 
     private static final SuggestionProvider<ServerCommandSource> OPERATIONS =
             (c, b) -> {
@@ -59,11 +62,11 @@ public final class FabricItemArmorModifierCommands {
 
     public static LiteralArgumentBuilder<ServerCommandSource> itemCommandRoot() {
         return literal("item")
-                .requires(
-                        FabricCommandRequirements.permission(
-                                FabricCommandPermissions.ITEM_MODIFIER, false))
                 .then(
                         literal(LIT_MODIFIER)
+                                .requires(
+                                        FabricCommandRequirements.permission(
+                                                FabricCommandPermissions.ITEM_MODIFIER, false))
                                 .then(literal(LIT_ADD).then(itemOrArmorStatAdd(ModifierType.ITEM)))
                                 .then(literal(LIT_REMOVE).then(itemOrArmorStatRemove(ModifierType.ITEM)))
                                 .then(
@@ -81,6 +84,9 @@ public final class FabricItemArmorModifierCommands {
                                                                         ModifierType.ITEM))))
                 .then(
                         literal(LIT_TRAIT)
+                                .requires(
+                                        FabricCommandRequirements.permission(
+                                                FabricCommandPermissions.ITEM_MODIFIER, false))
                                 .then(literal(LIT_ADD).then(itemOrArmorTraitAdd(ModifierType.ITEM)))
                                 .then(literal(LIT_REMOVE).then(itemOrArmorTraitRemove(ModifierType.ITEM)))
                                 .then(
@@ -94,8 +100,18 @@ public final class FabricItemArmorModifierCommands {
                                                 .executes(
                                                         ctx ->
                                                                 removeAllTrait(
-                                                                        ctx,
-                                                                        ModifierType.ITEM))));
+                                                                        ctx, ModifierType.ITEM))))
+                .then(
+                        literal(LIT_IGNORE)
+                                .requires(
+                                        FabricCommandRequirements.permission(
+                                                FabricCommandPermissions.ITEM_IGNORE, false))
+                                .then(literal(LIT_ADD).executes(FabricItemArmorModifierCommands::runItemIgnoreAdd))
+                                .then(
+                                        literal(LIT_REMOVE)
+                                                .executes(
+                                                        FabricItemArmorModifierCommands
+                                                                ::runItemIgnoreRemove)));
     }
 
     public static LiteralArgumentBuilder<ServerCommandSource> armorCommandRoot() {
@@ -735,6 +751,62 @@ public final class FabricItemArmorModifierCommands {
                                             () -> Text.literal(
                                                     p.getMessageProvider().applyFormatting(out)),
                                             false);
+                            return 1;
+                        })
+                .orElseGet(() -> notReady(ctx));
+    }
+
+    private static int runItemIgnoreAdd(CommandContext<ServerCommandSource> ctx) {
+        if (!(ctx.getSource().getEntity() instanceof ServerPlayerEntity player)) {
+            return notPlayer(ctx.getSource());
+        }
+        if (player.getMainHandStack().isEmpty()) {
+            return emptyHand(ctx.getSource());
+        }
+        return FabricCommandPluginState.runtimeReadyOrEmpty()
+                .map(
+                        p -> {
+                            ItemStack work = player.getMainHandStack().copy();
+                            FabricItemIgnoreTags.setIgnoreManaAbilityInteract(work, true);
+                            player.equipStack(EquipmentSlot.MAINHAND, work);
+                            User u = p.getUserManager().getUser(player.getUuid());
+                            Locale lo = u != null ? u.getLocale() : p.getDefaultLanguage();
+                            String out =
+                                    p.getMessageProvider()
+                                            .applyFormatting(
+                                                    p.getMsg(
+                                                            CommandMessage.ITEM_IGNORE_ADD_ADDED, lo));
+                            ctx.getSource()
+                                    .sendFeedback(() -> Text.literal(out), false);
+                            return 1;
+                        })
+                .orElseGet(() -> notReady(ctx));
+    }
+
+    private static int runItemIgnoreRemove(CommandContext<ServerCommandSource> ctx) {
+        if (!(ctx.getSource().getEntity() instanceof ServerPlayerEntity player)) {
+            return notPlayer(ctx.getSource());
+        }
+        if (player.getMainHandStack().isEmpty()) {
+            return emptyHand(ctx.getSource());
+        }
+        return FabricCommandPluginState.runtimeReadyOrEmpty()
+                .map(
+                        p -> {
+                            ItemStack work = player.getMainHandStack().copy();
+                            FabricItemIgnoreTags.setIgnoreManaAbilityInteract(work, false);
+                            player.equipStack(EquipmentSlot.MAINHAND, work);
+                            User u = p.getUserManager().getUser(player.getUuid());
+                            Locale lo = u != null ? u.getLocale() : p.getDefaultLanguage();
+                            String out =
+                                    p.getMessageProvider()
+                                            .applyFormatting(
+                                                    p.getMsg(
+                                                            CommandMessage
+                                                                    .ITEM_IGNORE_REMOVE_REMOVED,
+                                                            lo));
+                            ctx.getSource()
+                                    .sendFeedback(() -> Text.literal(out), false);
                             return 1;
                         })
                 .orElseGet(() -> notReady(ctx));

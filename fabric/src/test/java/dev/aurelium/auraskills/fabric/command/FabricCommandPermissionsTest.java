@@ -40,6 +40,7 @@ class FabricCommandPermissionsTest {
             FabricCommandPermissions.UPDATE_LEADERBOARDS,
             FabricCommandPermissions.MODIFIER,
             FabricCommandPermissions.ITEM_MODIFIER,
+            FabricCommandPermissions.ITEM_IGNORE,
             FabricCommandPermissions.ARMOR_MODIFIER
         };
         Set<String> seen = new HashSet<>();

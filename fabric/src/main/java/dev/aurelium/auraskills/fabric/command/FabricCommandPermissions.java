@@ -116,6 +116,12 @@ public final class FabricCommandPermissions {
     public static final String ITEM_MODIFIER = "auraskills.command.item.modifier";
 
     /**
+     * Bukkit {@code ItemCommand} {@code item ignore add|remove} (mana-ability “ignore hold” on main-hand
+     * item). **Sprint 52** — see {@code plugin.yml} {@code auraskills.command.item.ignore}.
+     */
+    public static final String ITEM_IGNORE = "auraskills.command.item.ignore";
+
+    /**
      * Bukkit {@code ArmorCommand} {@code armor modifier …} / {@code armor trait …}. **Sprint 51**
      */
     public static final String ARMOR_MODIFIER = "auraskills.command.armor.modifier";

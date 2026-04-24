@@ -12,7 +12,7 @@ public enum MessageUpdates implements MessageUpdate {
             "The message has been reset and moved to commands.mana.set.set"),
     COMMANDS_ITEM_IGNORE_ADD(36, "commands.item.ignore.add", "Key commands.item.ignore.add has been converted to a mapping. " +
             "The message has been reset and moved to commands.item.ignore.add.added"),
-    COMMANDS_ITEM_IGNORE_REMOVE(36, "commands.item.ignore.add", "Key commands.item.ignore.remove has been converted to a mapping. " +
+    COMMANDS_ITEM_IGNORE_REMOVE(36, "commands.item.ignore.remove", "Key commands.item.ignore.remove has been converted to a mapping. " +
             "The message has been reset and moved to commands.item.ignore.remove.removed"),
     COMMANDS_RELOAD(36, "commands.reload", "Key commands.reload has been converted to a mapping. " +
             "The message has been reset and moved to commands.reload.reloaded"),

@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.80
+
+### Changes
+
+- **Fabric: `item ignore` (Sprint 52):** **`/item ignore add`**, **`/item ignore remove`** on **main hand**; **`FabricItemIgnoreTags`** (`auraskills:ignore_interact` in PDC; **`FabricManaAbilityItemTags`** delegates). **`/item`/`modifier`/`trait`** now **`requires`** **`item.modifier`** per subtree; **`item ignore`** uses **`auraskills.command.item.ignore`**. **Tests** permissions. **Docs** `SPRINT_52_MANUAL_ITEM_IGNORE.md`, audit/MENU/ledger/backlog, **`projectVersion` 2.3.79 → 2.3.80**. **Not in scope:** `requirement` / `multiplier` / `register` / `give`. **Build:** `.\gradlew -PfabricOnly=true :fabric:test`.
+
 ## 2.3.79
 
 ### Changes
