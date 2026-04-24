@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.72
+
+### Changes
+
+- **Fabric: command/menu access (Sprint 44):** **`/sk`**, **`/skill`** (default **Skills**; `auraskills.command.skills`); **`FabricOpenMenuCommands`** — **`/openmenu`**, **`/auraskills openmenu`**, **`/sk|skill openmenu`** for built-in **skills** / **stats** + optional online target; **`FabricCommandBuiltInMenuId`**, **`FabricCommandSuggestionProviders.builtInOpenMenuIds`**, **`auraskills.command.openmenu`**. **Lang** openmenu + usage/help. **Tests** `FabricCommandBuiltInMenuIdTest`, permissions. **Docs** `SPRINT_44_MANUAL_ALIASES_OPENMENU.md`, `COMMAND_PARITY_AUDIT`, `MENU_AND_COMMANDS_PORT`, CMD-001/013/019 ledger, **`projectVersion` 2.3.71 → 2.3.72**. **Not in scope:** arbitrary Slate menu names, JSON properties/page, context menus without **Skill**/**Stat** context.
+
 ## 2.3.71
 
 ### Changes

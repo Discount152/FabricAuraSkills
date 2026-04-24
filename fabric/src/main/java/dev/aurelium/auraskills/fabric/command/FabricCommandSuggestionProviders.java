@@ -5,9 +5,11 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import dev.aurelium.auraskills.api.skill.Skill;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
+import dev.aurelium.auraskills.fabric.menu.FabricMenuKeys;
 import net.minecraft.server.command.ServerCommandSource;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -17,6 +19,21 @@ import java.util.concurrent.CompletableFuture;
 public final class FabricCommandSuggestionProviders {
 
     private FabricCommandSuggestionProviders() {}
+
+    /** Sprints 44+ — built-in **skills** / **stats** for bounded {@code openmenu}. */
+    public static SuggestionProvider<ServerCommandSource> builtInOpenMenuIds() {
+        return (context, builder) -> {
+            String remaining = builder.getRemaining();
+            for (String id :
+                    new String[] {FabricMenuKeys.SKILLS, FabricMenuKeys.STATS}) {
+                String r = remaining.toLowerCase(Locale.ROOT);
+                if (remaining.isEmpty() || id.startsWith(r)) {
+                    builder.suggest(id);
+                }
+            }
+            return builder.buildFuture();
+        };
+    }
 
     public static SuggestionProvider<ServerCommandSource> onlinePlayers() {
         return (CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) -> {

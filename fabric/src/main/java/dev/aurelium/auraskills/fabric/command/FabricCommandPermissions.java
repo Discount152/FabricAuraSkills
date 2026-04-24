@@ -64,5 +64,12 @@ public final class FabricCommandPermissions {
     /** Bukkit: {@code skill reset} (single skill or all). **Sprint 43** */
     public static final String SKILL_RESET = "auraskills.command.skill.reset";
 
+    /**
+     * Bukkit: {@code openmenu} under {@code skills|sk|skill} (see
+     * {@link dev.aurelium.auraskills.bukkit.commands.OpenMenuCommand}). **Sprint 44:** bounded
+     * to built-in **skills** / **stats** on Fabric.
+     */
+    public static final String OPEN_MENU = "auraskills.command.openmenu";
+
     private FabricCommandPermissions() {}
 }

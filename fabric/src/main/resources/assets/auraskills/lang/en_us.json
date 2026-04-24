@@ -1,6 +1,9 @@
 {
-  "auraskills.granite.command.auraskills_usage": "Use: /auraskills <version|help|skills|stats|mana|skilllevel|xp|reload|save>  —  /skills / /stats = menus  —  /mana  —  /skilllevel (view, add, set, remove, setall, reset)  —  /xp  (see fabric/COMMAND_PARITY_AUDIT.md)",
-  "auraskills.granite.command.help": "Fabric AuraSkills: /auraskills version | /skills | /stats | /mana | /skilllevel | /xp | reload | save (staff)",
+  "auraskills.granite.command.auraskills_usage": "Use: /auraskills <…> — also /openmenu, /sk, /skill (Sprint 44)  —  see fabric/COMMAND_PARITY_AUDIT.md",
+  "auraskills.granite.command.help": "Fabric AuraSkills: /auraskills … | /skills / /sk / /skill | /stats | /openmenu (skills, stats) | /mana | /skilllevel | /xp | staff: reload, save",
+  "auraskills.granite.command.openmenu.console_specify": "Console: /openmenu <skills|stats> <onlinePlayer>",
+  "auraskills.granite.command.openmenu.unknown_built_in": "openmenu (Fabric) only supports built-in menus: skills, stats.",
+  "auraskills.granite.command.openmenu.opened_for": "Opened the %s menu for %s.",
   "auraskills.granite.command.level.count_positive": "The level count must be greater than 0 (for add and remove).",
   "auraskills.granite.command.skilllevel.view_line": "%s — %s: level %s, XP in level %s",
   "auraskills.granite.command.permission_denied": "You don't have permission for that.",

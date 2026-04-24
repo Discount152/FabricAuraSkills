@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import dev.aurelium.auraskills.fabric.FabricAuraSkillsMod;
 import dev.aurelium.auraskills.fabric.menu.FabricAuraSkillsMenus;
+import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -21,12 +22,36 @@ public final class FabricBrigadierCommands {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         FabricAuraSkillsMod.LOGGER.info(
-                "Registering Brigadier: /auraskills (…), /skills, /stats, /mana, /skilllevel, /xp — see fabric/COMMAND_PARITY_AUDIT.md");
+                "Registering Brigadier: /auraskills (…), /skills, /sk, /skill, /stats, /openmenu, /mana, /skilllevel, /xp — see fabric/COMMAND_PARITY_AUDIT.md");
 
         registerAuraskillsAndAliases(dispatcher);
+        dispatcher.register(FabricOpenMenuCommands.openMenuRoot());
+        dispatcher.register(aliasSkillsRoot("sk"));
+        dispatcher.register(aliasSkillsRoot("skill"));
         dispatcher.register(FabricManaCommands.manaCommandRoot());
         dispatcher.register(FabricSkillLevelCommands.skillLevelRoot());
         dispatcher.register(FabricXpCommands.xpRoot());
+    }
+
+    /**
+     * Bukkit {@code skills|sk|skill} alias: default opens **Skills** (permission like {@code
+     * /skills}); subcommand {@code openmenu} uses {@link FabricCommandPermissions#OPEN_MENU}
+     * (**Sprint 44**).
+     */
+    private static com.mojang.brigadier.builder.LiteralArgumentBuilder<ServerCommandSource> aliasSkillsRoot(
+            String alias) {
+        return literal(alias)
+                .executes(FabricBrigadierCommands::skillsAliasDefault)
+                .then(FabricOpenMenuCommands.openMenuSubcommand());
+    }
+
+    private static int skillsAliasDefault(CommandContext<ServerCommandSource> ctx) {
+        ServerCommandSource source = ctx.getSource();
+        if (!Permissions.check(source, FabricCommandPermissions.SKILLS, true)) {
+            source.sendError(Text.translatable("auraskills.granite.command.permission_denied"));
+            return 0;
+        }
+        return skills(ctx);
     }
 
     private static void registerAuraskillsAndAliases(CommandDispatcher<ServerCommandSource> dispatcher) {
@@ -52,7 +77,8 @@ public final class FabricBrigadierCommands {
                         .executes(FabricBrigadierCommands::save))
                 .then(FabricManaCommands.manaCommandRoot())
                 .then(FabricSkillLevelCommands.skillLevelRoot())
-                .then(FabricXpCommands.xpRoot()));
+                .then(FabricXpCommands.xpRoot())
+                .then(FabricOpenMenuCommands.openMenuSubcommand()));
         dispatcher.register(literal("skills")
                 .requires(FabricCommandRequirements.permission(FabricCommandPermissions.SKILLS, true))
                 .executes(FabricBrigadierCommands::skills));

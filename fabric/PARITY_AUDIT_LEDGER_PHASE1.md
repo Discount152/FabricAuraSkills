@@ -86,7 +86,7 @@
 
 | ID | Bukkit (registered command class) | Fabric | Status | Blocker |
 |----|-----------------------------------|--------|--------|---------|
-| CMD-001 | `SkillsRootCommand` | `FabricBrigadierCommands` + `FabricAuraSkillsCommands` (`/auraskills*`, `/skills` → **Skills** GUI); **`fabric/COMMAND_PARITY_AUDIT.md`** | Partial | ACF/Brigadier + Slate-Fabric (full tree) | **Sprint 39** — shared scaffold; not `sk`/`skill` / most subcommands |
+| CMD-001 | `SkillsRootCommand` | `FabricBrigadierCommands` (`/auraskills*`, `/skills`, **`/sk`**, **`/skill`** → default **Skills** + `openmenu`); **`fabric/COMMAND_PARITY_AUDIT.md`** | Partial | ACF/Brigadier + Slate-Fabric (full tree) | **Sprint 44** — alias default + `openmenu` only; most `SkillsRootCommand` subcommands still **Missing** |
 | CMD-002 | `StatsCommand` | `FabricBrigadierCommands` (`/stats` → **Stats** GUI) | Partial | ACF/Brigadier | **Sprint 39** — same scaffold |
 | CMD-003 | `SkillCommand` | `FabricSkillLevelCommands` + `FabricCommandSkillLevelApply` — **`/skilllevel`**, **`/auraskills skilllevel`** (view, add, set, remove, setall, reset; + Fabric remove) | Partial | ACF/Brigadier | **Sprint 42–43** — ACF `skills\|sk\|skill`+`skill` path not the Fabric root |
 | CMD-004 | `ManaCommand` (common) | `FabricManaCommands` + `FabricBrigadierCommands`: **`/mana`**, **`/auraskills mana`** — self, `view`, `add` / `set` / `remove` (online; shared amount rules + mutation feedback) | Partial | ACF/Brigadier + ACF `silent` / `allowOverMax` | **Sprint 41** — bounded family; ACF extra flags not ported |
@@ -98,13 +98,13 @@
 | CMD-010 | `XpCommand` | `FabricXpCommands` + `FabricCommandSkillParser` / `FabricCommandPlayerTarget` (`/xp`, `/auraskills xp`) | Partial | ACF/Brigadier | **Sprint 40** — add/set/remove + view; no `silent`; not under `skills\|sk\|skill` alias |
 | CMD-011 | `PresetCommand` | — | Missing | ACF/Brigadier |
 | CMD-012 | `StorageCommand` | — | Missing | ACF/Brigadier |
-| CMD-013 | `OpenMenuCommand` | — | Missing | Slate-Fabric + ACF/Brigadier |
+| CMD-013 | `OpenMenuCommand` | **`FabricOpenMenuCommands`** + **`FabricCommandBuiltInMenuId`** — `/openmenu`, `/auraskills openmenu`, `/sk|skill openmenu` (**skills**, **stats** only) | Partial | Slate arbitrary menus + JSON props | **Sprint 44** — bounded built-in ids; no page/JSON |
 | CMD-014 | `ManaAbilityCommand` | — | Missing | ACF/Brigadier |
 | CMD-015 | `TraitCommand` | — | Missing | ACF/Brigadier |
 | CMD-016 | `JobsCommand` | — | Missing | Out of scope + ACF/Brigadier | Reference jobs feature; not default Granite scope. |
 | CMD-017 | `AntiAfkCommand` | — | Missing | ACF/Brigadier |
 | CMD-018 | `registerSkillCommands` (per-skill `SkillCommands.*`) | — | Missing | ACF/Brigadier + config `ENABLE_SKILL_COMMANDS` |
-| CMD-019 | ACF: replacements (`skills_alias`, desc keys) | — | Missing | ACF/Brigadier | |
+| CMD-019 | ACF: replacements (`skills_alias`, desc keys) | Brigadier **`/sk`**, **`/skill`** (Sprint 44); `desc_*` | Partial | ACF/Brigadier | **Sprint 44** — alias roots; not full replacement system |
 | CMD-020 | ACF: contexts (User, Skill, ManaAbility, Stat, Trait, UUID, JsonArg, Duration) | — | Missing | ACF/Brigadier | |
 | CMD-021 | ACF: async completions (skills, stats, menu_names, …) | `FabricCommandSuggestionProviders` (sync) | Partial | ACF/Brigadier | **Sprint 40** — **xp** suggestions for online players + skill keys only |
 

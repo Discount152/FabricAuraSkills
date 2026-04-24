@@ -306,3 +306,14 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Perms** | Adds **`auraskills.command.skill.reset`** |
 
 **Not in Sprint 43:** ACF `skills\|sk\|skill` + `skill` path; max-level capping; offline targets; changing the **`/skilllevel`** root/alias design.
+
+## Sprint 44 — alias roots + bounded **openmenu** (shipped, partial)
+
+| Piece | Where |
+|-------|--------|
+| **Aliases** | **`/sk`** and **`/skill`**: default → same as **`/skills`** (opens **Skills**); requires `auraskills.command.skills` in the default executor (like **mana** self). Child **`openmenu`** uses `auraskills.command.openmenu`. |
+| **openmenu** | **`FabricOpenMenuCommands`**, **`FabricCommandBuiltInMenuId`**: **`/openmenu`**, **`/auraskills openmenu`**, **`/sk openmenu`**, **`/skill openmenu`** — `openmenu <skills\|stats> [onlineTarget]`. Routes to **`FabricAuraSkillsMenus.open`**. |
+| **Shared** | **`FabricCommandSuggestionProviders.builtInOpenMenuIds`** |
+| **Manual** | **`SPRINT_44_MANUAL_ALIASES_OPENMENU.md`** |
+
+**Not in Sprint 44:** arbitrary Slate menu names; JSON **properties** / **page** args; **level_progression** / **stat_info** without context; full `SkillsRootCommand` subtree under aliases.
