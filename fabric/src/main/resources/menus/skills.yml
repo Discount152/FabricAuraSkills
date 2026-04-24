@@ -1,0 +1,15 @@
+# Built-in Skills menu (Granite / Fabric) — first YAML slice (Sprint 32+).
+# Full Slate / Bukkit `skills.yml` is not here yet; the `granite` block is the supported surface.
+# Copy is written to the server config folder on first start (see generateConfigs).
+
+granite:
+  enabled: true
+  # Window title: Minecraft translation key (or change to your own in assets).
+  title_key: "auraskills.granite.menu.skills_title"
+  size:
+    # Must match the current 6x9 (54-slot) top inventory implementation; other sizes are ignored with a warn.
+    rows: 6
+    columns: 9
+  format:
+    # Translation key for the “open detail” lore line on each skill row.
+    list_open_detail: "auraskills.granite.menu.skills_lore_open_detail"

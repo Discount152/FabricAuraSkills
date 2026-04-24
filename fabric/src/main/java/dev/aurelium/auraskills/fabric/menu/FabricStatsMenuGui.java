@@ -107,7 +107,13 @@ final class FabricStatsMenuGui {
                 addTraitLoreIfPresent(stat, user, trait, msg, plugin, locale, menus, util, lore);
             }
             if (addOpenDetailLore) {
-                lore.add(Text.translatable("auraskills.granite.menu.stats_lore_open_detail"));
+                String openDetail = plugin
+                        .getBuiltInMenuConfig()
+                        .resolveListOpenDetailKey(
+                                FabricMenuKeys.STATS,
+                                FabricMenuYamlSlice.defaultStats(),
+                                "auraskills.granite.menu.stats_lore_open_detail");
+                lore.add(Text.translatable(openDetail));
             }
             stack.set(DataComponentTypes.LORE, new LoreComponent(lore));
             inv.setStack(i, stack);

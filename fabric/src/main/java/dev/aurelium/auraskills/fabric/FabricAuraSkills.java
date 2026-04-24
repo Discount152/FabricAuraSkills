@@ -54,6 +54,7 @@ import dev.aurelium.auraskills.fabric.item.FabricItemRegistry;
 import dev.aurelium.auraskills.fabric.region.FabricRegionManager;
 import dev.aurelium.auraskills.fabric.loot.FabricApiLootBridge;
 import dev.aurelium.auraskills.fabric.loot.FabricLootManager;
+import dev.aurelium.auraskills.fabric.menu.FabricBuiltInMenuConfig;
 import dev.aurelium.auraskills.fabric.menu.FabricMenuLoaders;
 import dev.aurelium.auraskills.fabric.menu.FabricMenuRegistry;
 import dev.aurelium.auraskills.fabric.requirement.FabricRequirementManager;
@@ -113,6 +114,7 @@ public final class FabricAuraSkills implements AuraSkillsPlugin {
     private FabricModifierManager modifierManager;
     private FabricMenuHelper menuHelper;
     private FabricMenuRegistry menuRegistry;
+    private final FabricBuiltInMenuConfig builtInMenuConfig = new FabricBuiltInMenuConfig();
     private FabricPlatformUtil platformUtil;
     private FabricLootManager lootManager;
     private FabricRequirementManager requirementManager;
@@ -194,6 +196,7 @@ public final class FabricAuraSkills implements AuraSkillsPlugin {
         menuHelper = new FabricMenuHelper();
         menuRegistry = new FabricMenuRegistry();
         FabricMenuLoaders.registerBuiltInMenus(menuRegistry, this);
+        builtInMenuConfig.load(this);
         rewardManager = new RewardManager(this);
         levelManager = new FabricLevelManager(this);
         antiAfkManager = new FabricAntiAfkManager(this);
@@ -244,6 +247,8 @@ public final class FabricAuraSkills implements AuraSkillsPlugin {
             String sources = "sources/" + skill.name().toLowerCase(Locale.ROOT) + ".yml";
             loader.generateUserFile(sources);
         }
+        loader.generateUserFile("menus/skills.yml");
+        loader.generateUserFile("menus/stats.yml");
     }
 
     private void initStorageProvider() {
@@ -446,6 +451,14 @@ public final class FabricAuraSkills implements AuraSkillsPlugin {
         return menuRegistry;
     }
 
+    /**
+     * Granite slice of {@code menus/skills.yml} and {@code menus/stats.yml} (reloads with
+     * {@link #reloadFromDisk()}).
+     */
+    public FabricBuiltInMenuConfig getBuiltInMenuConfig() {
+        return builtInMenuConfig;
+    }
+
     @Override
     public EventHandler getEventHandler() {
         return eventHandler;
@@ -573,6 +586,7 @@ public final class FabricAuraSkills implements AuraSkillsPlugin {
         runReloadStep("XP requirements", () -> levelManager.loadXpRequirements());
         runReloadStep("rewards", () -> rewardManager.loadRewards());
         runReloadStep("boss bar options", () -> uiProvider.getBossBarManager().loadOptions());
+        runReloadStep("built-in menu YAML (menus/*.yml granite)", () -> builtInMenuConfig.load(this));
         for (User u : userManager.getUserMap().values()) {
             statManager.reloadAllTraits(u);
         }

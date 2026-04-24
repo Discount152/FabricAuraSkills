@@ -164,3 +164,15 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Manual** | **`SPRINT_31_MANUAL_STAT_INFO.md`** |
 
 **Not in Sprint 31:** full **`stat_info.yml`**, modifier instance grid (`ModifierInstances`), trait paging — same scope discipline as Sprints 30–31.
+
+## Sprint 32 — Built-in `menus/*.yml` granite slice (shipped, partial)
+
+| Piece | Where |
+|-------|--------|
+| **On-disk + embedded** | **`menus/skills.yml`**, **`menus/stats.yml`** in JAR; **`ConfigurateLoader#generateUserFile`** writes server copy under config folder on first start (same pattern as `config.yml`) |
+| **Loader** | **`FabricBuiltInMenuConfig#load`**: `granite.enabled`, `title_key` / `title`, `size.rows`/`columns` (6×9 validated; non-6×9 logged, GUI unchanged), `format.list_open_detail` (translation key for list-row hint) |
+| **Wiring** | **`FabricMenuRegistry#open`**: title + `enabled` from YAML; **`FabricSkillsMenuGui` / `FabricStatsMenuGui`**: `list_open_detail` from YAML. **`/auraskills reload`**: re-reads `menus/*.yml` (step **built-in menu YAML**) |
+| **Fallback** | Malformed or missing `granite` / file → in-code **defaults** (`FabricMenuYamlSlice#default*`), warn in log; never leaves menus unrunnable without YAML |
+| **Manual** | **`SPRINT_32_MANUAL_BUILT_IN_MENU_YAML.md`** |
+
+**Not in Sprint 32:** full Slate `loadMenus` / `MenuFileManager` **merge** dirs, `skills.yml` template/items parity, re-registering **all** menu IDs from file.

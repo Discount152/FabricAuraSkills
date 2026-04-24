@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.60
+
+### Changes
+
+- **Fabric: first YAML slice for built-in Skills + Stats menus (Sprint 32):** **`menus/skills.yml`** and **`menus/stats.yml`** (JAR + generated server copy) with a **`granite:`** block: **`enabled`**, **`title_key`**, **`size`** (6×9 validated, warn on mismatch), **`format.list_open_detail`**. **`FabricBuiltInMenuConfig`** loads disk-or-embedded YAML with safe fallback; **`FabricMenuRegistry`** + list GUIs use it; **`/auraskills reload`** re-reads menu YAML. **Common:** **`FileUtil#loadEmbeddedYamlFileOrNull`**. **Tests:** `FabricBuiltInMenuConfigTest`. **Docs** `SPRINT_32_MANUAL_BUILT_IN_MENU_YAML.md`, `MENU_AND_COMMANDS_PORT`, parity, handoff. **`projectVersion` 2.3.59 → 2.3.60**. Not in scope: full Slate **`loadMenus`**, merge dirs, or full `skills.yml`/`stats.yml` template parity.
+
 ## 2.3.59
 
 ### Changes

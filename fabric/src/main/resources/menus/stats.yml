@@ -1,0 +1,11 @@
+# Built-in Stats menu (Granite / Fabric) — first YAML slice (Sprint 32+).
+# The `granite` block is the supported surface until full Slate file parity.
+
+granite:
+  enabled: true
+  title_key: "auraskills.granite.menu.stats_title"
+  size:
+    rows: 6
+    columns: 9
+  format:
+    list_open_detail: "auraskills.granite.menu.stats_lore_open_detail"

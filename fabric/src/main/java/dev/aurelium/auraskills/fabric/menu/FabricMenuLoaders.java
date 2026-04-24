@@ -3,9 +3,9 @@ package dev.aurelium.auraskills.fabric.menu;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 
 /**
- * Binds default menu {@link FabricMenuDefinition definitions} to the {@link FabricMenuRegistry}. This
- * is the single "load" path for in-repo built-in menus (Sprint 29+); it does <strong>not</strong> read
- * YAML yet (see {@code fabric/MENU_AND_COMMANDS_PORT.md}).
+ * Binds default menu {@link FabricMenuDefinition definitions} to the {@link FabricMenuRegistry}. **Sprint
+ * 32+:** per-menu granite slices load from {@code menus/skills.yml} and {@code menus/stats.yml} via
+ * {@link FabricBuiltInMenuConfig} (reload with {@link dev.aurelium.auraskills.fabric.FabricAuraSkills#reloadFromDisk()}).
  */
 public final class FabricMenuLoaders {
 

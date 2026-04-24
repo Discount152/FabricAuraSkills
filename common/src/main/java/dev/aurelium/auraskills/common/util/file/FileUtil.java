@@ -98,6 +98,25 @@ public class FileUtil {
     }
 
     /**
+     * Like {@link #loadEmbeddedYamlFile(String, ClassLoader, boolean)} but returns {@code null} when the
+     * resource is missing (e.g. optional built-in files on a subset of runtimes).
+     */
+    @Nullable
+    public static ConfigurationNode loadEmbeddedYamlFileOrNull(String fileName, ClassLoader classLoader) throws IOException {
+        try (InputStream in = classLoader.getResourceAsStream(fileName)) {
+            if (in == null) {
+                return null;
+            }
+            YamlConfigurationLoader loader = YamlConfigurationLoader.builder()
+                    .defaultOptions(opts -> opts.shouldCopyDefaults(false))
+                    .nodeStyle(NodeStyle.BLOCK)
+                    .source(() -> new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8)))
+                    .build();
+            return loader.load();
+        }
+    }
+
+    /**
      * @param createFileSystem ignored; embedded YAML is always read via {@link ClassLoader#getResourceAsStream}
      *        so we never open a second {@link java.nio.file.FileSystem} for the same JAR (avoids
      *        {@link java.nio.file.FileSystemAlreadyExistsException} on Fabric production servers).

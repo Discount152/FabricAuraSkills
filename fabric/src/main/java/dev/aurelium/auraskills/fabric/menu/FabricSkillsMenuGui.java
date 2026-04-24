@@ -47,7 +47,13 @@ final class FabricSkillsMenuGui {
                         List<Text> lore = new ArrayList<>();
                         lore.add(Text.translatable("auraskills.granite.menu.skills_lore_level", level));
                         lore.add(Text.translatable("auraskills.granite.menu.skills_lore_xp", NumberUtil.format2(xp)));
-                        lore.add(Text.translatable("auraskills.granite.menu.skills_lore_open_detail"));
+                        String openDetail = plugin
+                                .getBuiltInMenuConfig()
+                                .resolveListOpenDetailKey(
+                                        FabricMenuKeys.SKILLS,
+                                        FabricMenuYamlSlice.defaultSkills(),
+                                        "auraskills.granite.menu.skills_lore_open_detail");
+                        lore.add(Text.translatable(openDetail));
                         if (!user.hasSkillPermission(skill)) {
                             lore.add(Text.translatable("auraskills.granite.menu.skills_lore_no_permission"));
                         }

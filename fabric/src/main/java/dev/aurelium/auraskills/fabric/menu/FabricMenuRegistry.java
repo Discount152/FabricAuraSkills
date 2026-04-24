@@ -12,7 +12,8 @@ import java.util.Set;
 
 /**
  * Central registry for Granite slice menus. Lookup by ID and dispatch to the registered
- * {@link FabricMenuOpener}. Future: merge YAML-backed definitions; reload hook.
+ * {@link FabricMenuOpener}. **Sprint 32:** Skills/Stats titles and enablement read from
+ * {@link FabricBuiltInMenuConfig} when present.
  */
 public final class FabricMenuRegistry {
 
@@ -36,7 +37,32 @@ public final class FabricMenuRegistry {
             plugin.logger().warn("Unknown menu id '" + id + "'; registered: " + byId.keySet());
             return;
         }
-        Text title = Text.translatable(def.titleTranslationKey());
+        Text title;
+        if (plugin != null && FabricMenuKeys.SKILLS.equals(id)) {
+            FabricMenuYamlSlice slice =
+                    plugin.getBuiltInMenuConfig().getSlice(id, FabricMenuYamlSlice.defaultSkills());
+            if (!slice.enabled()) {
+                if (player != null) {
+                    player.sendMessage(
+                            Text.translatable("auraskills.granite.menu.built_in_disabled", id), false);
+                }
+                return;
+            }
+            title = Text.translatable(slice.titleTranslationKey());
+        } else if (plugin != null && FabricMenuKeys.STATS.equals(id)) {
+            FabricMenuYamlSlice slice =
+                    plugin.getBuiltInMenuConfig().getSlice(id, FabricMenuYamlSlice.defaultStats());
+            if (!slice.enabled()) {
+                if (player != null) {
+                    player.sendMessage(
+                            Text.translatable("auraskills.granite.menu.built_in_disabled", id), false);
+                }
+                return;
+            }
+            title = Text.translatable(slice.titleTranslationKey());
+        } else {
+            title = Text.translatable(def.titleTranslationKey());
+        }
         def.opener().open(player, plugin, title);
     }
 }
