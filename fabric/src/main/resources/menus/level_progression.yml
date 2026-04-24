@@ -1,0 +1,18 @@
+# Level Progression detail menu (Granite / Fabric) — bounded `granite` slice (Sprint 33+).
+# Not the full Bukkit/Slate level_progression reward template set.
+
+granite:
+  enabled: true
+  title_key: "auraskills.granite.menu.level_progression_title"
+  size:
+    rows: 6
+    columns: 9
+  format:
+    main_title: "auraskills.granite.menu.level_progression_main_title"
+    lore_level: "auraskills.granite.menu.level_progression_lore_level"
+    lore_xp: "auraskills.granite.menu.level_progression_lore_xp"
+    lore_to_next: "auraskills.granite.menu.level_progression_lore_to_next"
+    lore_maxed: "auraskills.granite.menu.level_progression_lore_maxed"
+    back: "auraskills.granite.menu.level_progression_back"
+    back_lore: "auraskills.granite.menu.level_progression_back_lore"
+    no_permission: "auraskills.granite.menu.skills_lore_no_permission"

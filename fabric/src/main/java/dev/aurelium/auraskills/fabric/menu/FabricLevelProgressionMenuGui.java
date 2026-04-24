@@ -18,24 +18,35 @@ import java.util.Locale;
 
 /**
  * One-skill “level progression” view: live level + XP from {@link User}, not full Bukkit
- * {@code level_progression.yml} / reward tables.
+ * {@code level_progression.yml} / reward tables. **Sprint 33:** titles/format keys from
+ * {@link FabricBuiltInMenuConfig} / {@code menus/level_progression.yml} {@code granite:}.
  */
 final class FabricLevelProgressionMenuGui {
 
-    /** Main info stack (row 0, center). */
     private static final int INFO_SLOT = 4;
-    /** “Back” — matches common large-chest bottom-row center patterns. */
     private static final int BACK_SLOT = 49;
 
     private FabricLevelProgressionMenuGui() {
     }
 
     static void open(ServerPlayerEntity player, FabricAuraSkills plugin, Skill skill) {
+        FabricMenuYamlSlice def = FabricMenuYamlSlice.defaultLevelProgression();
+        FabricMenuYamlSlice cfg = plugin
+                .getBuiltInMenuConfig()
+                .getSlice(FabricMenuKeys.LEVEL_PROGRESSION, def);
+        if (!cfg.enabled()) {
+            player.sendMessage(
+                    Text.translatable("auraskills.granite.menu.built_in_disabled", FabricMenuKeys.LEVEL_PROGRESSION),
+                    false);
+            plugin.getScheduler()
+                    .executeSync(() -> FabricAuraSkillsMenus.open(FabricAuraSkillsMenus.Id.SKILLS, player, plugin));
+            return;
+        }
         User user = plugin.getUserManager().getUser(player.getUuid());
         Locale locale = user.getLocale();
         var msg = plugin.getMessageProvider();
         String skillName = msg.getSkillDisplayName(skill, locale, true);
-        Text title = Text.translatable("auraskills.granite.menu.level_progression_title", skillName);
+        Text title = Text.translatable(cfg.titleTranslationKey(), skillName);
         int level = user.getSkillLevel(skill);
         double currentXp = user.getSkillXp(skill);
         var xpReqs = plugin.getXpRequirements();
@@ -50,20 +61,44 @@ final class FabricLevelProgressionMenuGui {
                     ItemStack main = new ItemStack(Items.BOOK);
                     main.set(
                             DataComponentTypes.ITEM_NAME,
-                            Text.translatable("auraskills.granite.menu.level_progression_main_title", skillName));
+                            Text.translatable(
+                                    cfg.resolveFormatKey(
+                                            "main_title",
+                                            def,
+                                            "auraskills.granite.menu.level_progression_main_title"),
+                                    skillName));
                     List<Text> lore = new ArrayList<>();
-                    lore.add(Text.translatable("auraskills.granite.menu.level_progression_lore_level", level));
-                    lore.add(Text.translatable("auraskills.granite.menu.level_progression_lore_xp", NumberUtil.format2(currentXp)));
+                    lore.add(Text.translatable(
+                            cfg.resolveFormatKey(
+                                    "lore_level",
+                                    def,
+                                    "auraskills.granite.menu.level_progression_lore_level"),
+                            level));
+                    lore.add(Text.translatable(
+                            cfg.resolveFormatKey(
+                                    "lore_xp", def, "auraskills.granite.menu.level_progression_lore_xp"),
+                            NumberUtil.format2(currentXp)));
                     if (maxed) {
-                        lore.add(Text.translatable("auraskills.granite.menu.level_progression_lore_maxed"));
+                        lore.add(Text.translatable(
+                                cfg.resolveFormatKey(
+                                        "lore_maxed",
+                                        def,
+                                        "auraskills.granite.menu.level_progression_lore_maxed")));
                     } else {
                         lore.add(Text.translatable(
-                                "auraskills.granite.menu.level_progression_lore_to_next",
+                                cfg.resolveFormatKey(
+                                        "lore_to_next",
+                                        def,
+                                        "auraskills.granite.menu.level_progression_lore_to_next"),
                                 NumberUtil.format2(currentXp),
                                 NumberUtil.format2(xpToNext)));
                     }
                     if (!user.hasSkillPermission(skill)) {
-                        lore.add(Text.translatable("auraskills.granite.menu.skills_lore_no_permission"));
+                        lore.add(Text.translatable(
+                                cfg.resolveFormatKey(
+                                        "no_permission",
+                                        def,
+                                        "auraskills.granite.menu.skills_lore_no_permission")));
                     }
                     main.set(DataComponentTypes.LORE, new LoreComponent(lore));
                     inv.setStack(INFO_SLOT, main);
@@ -71,18 +106,24 @@ final class FabricLevelProgressionMenuGui {
                     ItemStack back = new ItemStack(Items.ARROW);
                     back.set(
                             DataComponentTypes.ITEM_NAME,
-                            Text.translatable("auraskills.granite.menu.level_progression_back"));
+                            Text.translatable(
+                                    cfg.resolveFormatKey(
+                                            "back", def, "auraskills.granite.menu.level_progression_back")));
                     back.set(
                             DataComponentTypes.LORE,
-                            new LoreComponent(List.of(
-                                    Text.translatable("auraskills.granite.menu.level_progression_back_lore"))));
+                            new LoreComponent(List.of(Text.translatable(
+                                    cfg.resolveFormatKey(
+                                            "back_lore",
+                                            def,
+                                            "auraskills.granite.menu.level_progression_back_lore")))));
                     inv.setStack(BACK_SLOT, back);
                 },
                 (topSlot, p, button, actionType) -> {
                     if (topSlot != BACK_SLOT) {
                         return;
                     }
-                    plugin.getScheduler().executeSync(() -> FabricAuraSkillsMenus.open(FabricAuraSkillsMenus.Id.SKILLS, p, plugin));
+                    plugin.getScheduler()
+                            .executeSync(() -> FabricAuraSkillsMenus.open(FabricAuraSkillsMenus.Id.SKILLS, p, plugin));
                 });
     }
 }

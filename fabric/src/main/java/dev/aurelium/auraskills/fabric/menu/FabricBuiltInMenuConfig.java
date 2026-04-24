@@ -8,12 +8,11 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
- * Loads the {@code granite} section of {@code menus/skills.yml} and {@code menus/stats.yml} (or embedded
- * defaults). **Sprint 32:** first YAML-backed path for built-in list menus; safe fallback on errors.
+ * Loads the {@code granite} section of built-in {@code menus/*.yml} files (or embedded defaults). List
+ * menus (Sprint 32) and detail menus (Sprint 33) share the same parser; safe fallback on errors.
  */
 public final class FabricBuiltInMenuConfig {
 
@@ -28,6 +27,20 @@ public final class FabricBuiltInMenuConfig {
         byId.put(
                 FabricMenuKeys.STATS,
                 loadOne(plugin, FabricMenuKeys.STATS, "menus/stats.yml", FabricMenuYamlSlice::defaultStats));
+        byId.put(
+                FabricMenuKeys.LEVEL_PROGRESSION,
+                loadOne(
+                        plugin,
+                        FabricMenuKeys.LEVEL_PROGRESSION,
+                        "menus/level_progression.yml",
+                        FabricMenuYamlSlice::defaultLevelProgression));
+        byId.put(
+                FabricMenuKeys.STAT_INFO,
+                loadOne(
+                        plugin,
+                        FabricMenuKeys.STAT_INFO,
+                        "menus/stat_info.yml",
+                        FabricMenuYamlSlice::defaultStatInfo));
         plugin.logger().info("Built-in menu YAML: granite slices for " + String.join(", ", byId.keySet())
                 + " (config: " + plugin.getPluginFolder() + "/menus/)");
     }
@@ -94,9 +107,10 @@ public final class FabricBuiltInMenuConfig {
         }
         Map<String, String> format = new HashMap<>(def.formatKeys());
         ConfigurationNode fnode = g.node("format");
-        for (String key : List.of("list_open_detail")) {
-            if (!fnode.node(key).virtual()) {
-                String s = fnode.node(key).getString();
+        if (!fnode.virtual()) {
+            for (var e : fnode.childrenMap().entrySet()) {
+                String key = String.valueOf(e.getKey());
+                String s = e.getValue().getString();
                 if (s != null && !s.isEmpty()) {
                     format.put(key, s);
                 }

@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.61
+
+### Changes
+
+- **Fabric: YAML `granite` for Level Progression + Stat Info (Sprint 33):** **`menus/level_progression.yml`**, **`menus/stat_info.yml`** (embedded + **`generateUserFile`**). **`FabricMenuYamlSlice`**: `defaultLevelProgression` / `defaultStatInfo`, **`resolveFormatKey`**. **`FabricBuiltInMenuConfig`**: loads both ids; **`parse`** merges **all** `granite.format.*` keys. Detail GUIs use YAML for title, lore, back; when **`granite.enabled: false`**, message + return to **Skills**/**Stats**. **`FabricStatInfoMenuGui`**: YAML checked after **`MENUS_STAT_INFO_ENABLED`**. **Tests:** `FabricBuiltInMenuConfigTest#parse_mergesAllFormatKeys`. **Docs** `SPRINT_33_MANUAL_DETAIL_MENU_YAML.md`. **`projectVersion` 2.3.60 → 2.3.61**. Not in scope: full reward/modifier **Slate** templates.
+
 ## 2.3.60
 
 ### Changes

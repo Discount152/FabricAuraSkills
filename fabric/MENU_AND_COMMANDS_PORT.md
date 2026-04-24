@@ -176,3 +176,14 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Manual** | **`SPRINT_32_MANUAL_BUILT_IN_MENU_YAML.md`** |
 
 **Not in Sprint 32:** full Slate `loadMenus` / `MenuFileManager` **merge** dirs, `skills.yml` template/items parity, re-registering **all** menu IDs from file.
+
+## Sprint 33 — Detail menus: `level_progression` + `stat_info` YAML (shipped, partial)
+
+| Piece | Where |
+|-------|--------|
+| **Files** | **`menus/level_progression.yml`**, **`menus/stat_info.yml`** (embedded + **`generateUserFile`**) with **`granite:`** (same shape as Sprint 32) |
+| **Defaults** | **`FabricMenuYamlSlice#defaultLevelProgression`**, **`defaultStatInfo`** — format keys for main title, lore lines, back/back_lore, no_permission (level progress only) |
+| **Wiring** | **`FabricLevelProgressionMenuGui` / `FabricStatInfoMenuGui`**: `enabled` (redirect to **Skills** / **Stats** + message if off), `title_key`, all **`format.*`** via **`resolveFormatKey`**; **Stat Info** still requires **`Option.MENUS_STAT_INFO_ENABLED`** first |
+| **Manual** | **`SPRINT_33_MANUAL_DETAIL_MENU_YAML.md`** |
+
+**Not in Sprint 33:** Bukkit `StatInfoMenu` **modifier** grid, `level_progression` **reward** templates, Slate **context** plumbing.

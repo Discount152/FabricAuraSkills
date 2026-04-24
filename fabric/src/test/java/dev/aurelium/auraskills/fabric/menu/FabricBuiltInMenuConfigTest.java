@@ -42,6 +42,17 @@ class FabricBuiltInMenuConfigTest {
         assertEquals(d.titleTranslationKey(), s.titleTranslationKey());
     }
 
+    @Test
+    void parse_mergesAllFormatKeys() throws IOException {
+        String yaml = "granite:\n  format:\n    list_open_detail: a.b.c\n    back: x.y.z\n";
+        ConfigurationNode root = load(yaml);
+        FabricMenuYamlSlice d = FabricMenuYamlSlice.defaultLevelProgression();
+        FabricMenuYamlSlice s = FabricBuiltInMenuConfig.parse(root, d, null, "t.yml");
+        assertEquals("a.b.c", s.getFormatKey("list_open_detail", null));
+        assertEquals("x.y.z", s.getFormatKey("back", null));
+        assertEquals("auraskills.granite.menu.level_progression_lore_level", s.getFormatKey("lore_level", null));
+    }
+
     private static ConfigurationNode load(String yaml) throws IOException {
         YamlConfigurationLoader loader = YamlConfigurationLoader.builder()
                 .source(() -> new BufferedReader(new StringReader(yaml)))

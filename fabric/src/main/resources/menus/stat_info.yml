@@ -1,0 +1,14 @@
+# Stat Info detail menu (Granite / Fabric) — bounded `granite` slice (Sprint 33+).
+# Not the full Bukkit/Slate stat_info modifier grid.
+
+granite:
+  enabled: true
+  title_key: "auraskills.granite.menu.stat_info_title"
+  size:
+    rows: 6
+    columns: 9
+  format:
+    main_title: "auraskills.granite.menu.stat_info_main_title"
+    lore_value: "auraskills.granite.menu.stat_info_lore_value"
+    back: "auraskills.granite.menu.stat_info_back"
+    back_lore: "auraskills.granite.menu.stat_info_back_lore"

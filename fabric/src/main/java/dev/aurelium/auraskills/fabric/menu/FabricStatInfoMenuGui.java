@@ -22,7 +22,8 @@ import java.util.Locale;
 
 /**
  * One-stat “stat_info” view: live name, value/level, description, and trait lines — not Bukkit
- * {@code stat_info.yml} + modifier grids.
+ * {@code stat_info.yml} + modifier grids. **Sprint 33:** titles/format keys from
+ * {@link FabricBuiltInMenuConfig} / {@code menus/stat_info.yml} {@code granite:}.
  */
 final class FabricStatInfoMenuGui {
 
@@ -37,13 +38,22 @@ final class FabricStatInfoMenuGui {
             FabricAuraSkillsMenus.open(FabricAuraSkillsMenus.Id.STATS, player, plugin);
             return;
         }
+        FabricMenuYamlSlice def = FabricMenuYamlSlice.defaultStatInfo();
+        FabricMenuYamlSlice cfg = plugin.getBuiltInMenuConfig().getSlice(FabricMenuKeys.STAT_INFO, def);
+        if (!cfg.enabled()) {
+            player.sendMessage(
+                    Text.translatable("auraskills.granite.menu.built_in_disabled", FabricMenuKeys.STAT_INFO), false);
+            plugin.getScheduler()
+                    .executeSync(() -> FabricAuraSkillsMenus.open(FabricAuraSkillsMenus.Id.STATS, player, plugin));
+            return;
+        }
         User user = plugin.getUserManager().getUser(player.getUuid());
         Locale locale = user.getLocale();
         MessageProvider msg = plugin.getMessageProvider();
         MenuHelper menus = plugin.getMenuHelper();
         var util = plugin.getPlatformUtil();
         String displayName = msg.getStatDisplayName(stat, locale, true);
-        Text title = Text.translatable("auraskills.granite.menu.stat_info_title", displayName);
+        Text title = Text.translatable(cfg.titleTranslationKey(), displayName);
 
         GraniteContainerMenus.openClickable9x6(
                 player,
@@ -52,10 +62,18 @@ final class FabricStatInfoMenuGui {
                     ItemStack main = new ItemStack(Items.BOOK);
                     main.set(
                             DataComponentTypes.ITEM_NAME,
-                            Text.translatable("auraskills.granite.menu.stat_info_main_title", displayName));
+                            Text.translatable(
+                                    cfg.resolveFormatKey(
+                                            "main_title",
+                                            def,
+                                            "auraskills.granite.menu.stat_info_main_title"),
+                                    displayName));
                     List<Text> lore = new ArrayList<>();
                     String levelText = FabricStatsMenuGui.formatStatLevel(stat, user, plugin, locale);
-                    lore.add(Text.translatable("auraskills.granite.menu.stat_info_lore_value", levelText));
+                    lore.add(Text.translatable(
+                            cfg.resolveFormatKey(
+                                    "lore_value", def, "auraskills.granite.menu.stat_info_lore_value"),
+                            levelText));
                     addDescriptionLore(msg, util, stat, locale, lore);
                     for (Trait trait : stat.getTraits()) {
                         if (lore.size() >= 16) {
@@ -69,11 +87,15 @@ final class FabricStatInfoMenuGui {
                     ItemStack back = new ItemStack(Items.ARROW);
                     back.set(
                             DataComponentTypes.ITEM_NAME,
-                            Text.translatable("auraskills.granite.menu.stat_info_back"));
+                            Text.translatable(
+                                    cfg.resolveFormatKey("back", def, "auraskills.granite.menu.stat_info_back")));
                     back.set(
                             DataComponentTypes.LORE,
-                            new LoreComponent(List.of(
-                                    Text.translatable("auraskills.granite.menu.stat_info_back_lore"))));
+                            new LoreComponent(List.of(Text.translatable(
+                                    cfg.resolveFormatKey(
+                                            "back_lore",
+                                            def,
+                                            "auraskills.granite.menu.stat_info_back_lore")))));
                     inv.setStack(BACK_SLOT, back);
                 },
                 (topSlot, p, b, t) -> {

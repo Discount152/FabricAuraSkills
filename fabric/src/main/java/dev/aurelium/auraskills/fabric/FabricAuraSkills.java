@@ -249,6 +249,8 @@ public final class FabricAuraSkills implements AuraSkillsPlugin {
         }
         loader.generateUserFile("menus/skills.yml");
         loader.generateUserFile("menus/stats.yml");
+        loader.generateUserFile("menus/level_progression.yml");
+        loader.generateUserFile("menus/stat_info.yml");
     }
 
     private void initStorageProvider() {
