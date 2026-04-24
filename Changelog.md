@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.69
+
+### Changes
+
+- **Fabric: bounded **mana** command family + shared numeric helpers (Sprint 41):** **`FabricManaCommands`** — **`/mana`** and **`/auraskills mana`**: self display; **`view <player>`**; **`add` / `set` / `remove` `<player> <amount>`** (online targets, `Traits.MAX_MANA` overflow like reference). **Shared:** **`FabricCommandAmountRules`**, **`FabricCommandMutationFeedback`** (used by **xp** success lines too). **Perms** `auraskills.command.mana` / **`.other`** / **`.add`** / **`.set`** / **`.remove`**. **Lang** `…permission_denied`, **`…mana.console_specify`**, usage string. **Docs** `SPRINT_41_MANUAL_MANA_COMMANDS.md`, `COMMAND_PARITY_AUDIT`, `MENU_AND_COMMANDS_PORT`, parity ledger, backlog. **Tests** `FabricCommandPermissionsTest` (new nodes). **`projectVersion` 2.3.68 → 2.3.69**. **Not in scope:** ACF `silent` / `allowOverMax` on **mana**; offline targets.
+
 ## 2.3.68
 
 ### Changes

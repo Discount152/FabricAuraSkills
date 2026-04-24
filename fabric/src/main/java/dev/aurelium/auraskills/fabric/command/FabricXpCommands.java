@@ -9,7 +9,6 @@ import dev.aurelium.auraskills.api.skill.Skill;
 import dev.aurelium.auraskills.api.util.NumberUtil;
 import dev.aurelium.auraskills.common.message.type.CommandMessage;
 import dev.aurelium.auraskills.common.user.User;
-import dev.aurelium.auraskills.common.util.text.TextUtil;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -130,9 +129,7 @@ public final class FabricXpCommands {
         return FabricCommandPluginState.runtimeReadyOrEmpty()
                 .map(p -> {
                     double amount = DoubleArgumentType.getDouble(ctx, ARG_AMOUNT);
-                    if (amount <= 0.0) {
-                        ctx.getSource()
-                                .sendError(Text.translatable("auraskills.granite.command.xp.amount_positive"));
+                    if (!FabricCommandAmountRules.requirePositiveForAdd(amount, ctx.getSource())) {
                         return 0;
                     }
                     return mutate(
@@ -140,14 +137,15 @@ public final class FabricXpCommands {
                             p,
                             (user, skill, targetPlayer) -> {
                                 p.getLevelManager().addXp(user, skill, null, amount);
-                                return feedback(
+                                FabricCommandMutationFeedback.sendXpStyleTriple(
                                         p,
                                         ctx.getSource(),
-                                        user,
+                                        user.getLocale(),
                                         CommandMessage.XP_ADD_ADDED,
-                                        amount,
-                                        skill,
-                                        targetPlayer);
+                                        String.valueOf(amount),
+                                        skill.getDisplayName(user.getLocale()),
+                                        targetPlayer.getName().getString());
+                                return 1;
                             });
                 })
                 .orElseGet(() -> {
@@ -164,14 +162,15 @@ public final class FabricXpCommands {
                         (user, skill, targetPlayer) -> {
                             double amount = DoubleArgumentType.getDouble(ctx, ARG_AMOUNT);
                             p.getLevelManager().setXp(user, skill, amount);
-                            return feedback(
+                            FabricCommandMutationFeedback.sendXpStyleTriple(
                                     p,
                                     ctx.getSource(),
-                                    user,
+                                    user.getLocale(),
                                     CommandMessage.XP_SET_SET,
-                                    amount,
-                                    skill,
-                                    targetPlayer);
+                                    String.valueOf(amount),
+                                    skill.getDisplayName(user.getLocale()),
+                                    targetPlayer.getName().getString());
+                            return 1;
                         }))
                 .orElseGet(() -> {
                     ctx.getSource().sendError(Text.literal("AuraSkills is still starting."));
@@ -183,9 +182,7 @@ public final class FabricXpCommands {
         return FabricCommandPluginState.runtimeReadyOrEmpty()
                 .map(p -> {
                     double amount = DoubleArgumentType.getDouble(ctx, ARG_AMOUNT);
-                    if (amount < 0.0) {
-                        ctx.getSource()
-                                .sendError(Text.translatable("auraskills.granite.command.xp.amount_non_negative"));
+                    if (!FabricCommandAmountRules.requireNonNegative(amount, ctx.getSource())) {
                         return 0;
                     }
                     return mutate(
@@ -195,18 +192,14 @@ public final class FabricXpCommands {
                                 double cur = user.getSkillXp(skill);
                                 double remove = Math.min(amount, cur);
                                 p.getLevelManager().setXp(user, skill, cur - remove);
-                                ServerCommandSource source = ctx.getSource();
-                                Locale loc = user.getLocale();
-                                String msg = p.getPrefix(loc)
-                                        + TextUtil.replace(
-                                                p.getMsg(CommandMessage.XP_REMOVE_REMOVED, loc),
-                                                "{amount}",
-                                                String.valueOf(remove),
-                                                "{skill}",
-                                                skill.getDisplayName(loc),
-                                                "{player}",
-                                                targetPlayer.getName().getString());
-                                source.sendFeedback(() -> Text.literal(msg), true);
+                                FabricCommandMutationFeedback.sendXpStyleTriple(
+                                        p,
+                                        ctx.getSource(),
+                                        user.getLocale(),
+                                        CommandMessage.XP_REMOVE_REMOVED,
+                                        String.valueOf(remove),
+                                        skill.getDisplayName(user.getLocale()),
+                                        targetPlayer.getName().getString());
                                 return 1;
                             });
                 })
@@ -245,28 +238,6 @@ public final class FabricXpCommands {
             return 0;
         }
         return mutator.apply(user, skill, target);
-    }
-
-    private static int feedback(
-            FabricAuraSkills plugin,
-            ServerCommandSource source,
-            User user,
-            CommandMessage message,
-            double amount,
-            Skill skill,
-            ServerPlayerEntity targetPlayer) {
-        Locale locale = user.getLocale();
-        String msg = plugin.getPrefix(locale)
-                + TextUtil.replace(
-                        plugin.getMsg(message, locale),
-                        "{amount}",
-                        String.valueOf(amount),
-                        "{skill}",
-                        skill.getDisplayName(locale),
-                        "{player}",
-                        targetPlayer.getName().getString());
-        source.sendFeedback(() -> Text.literal(msg), true);
-        return 1;
     }
 
     private static void unknownSkill(ServerCommandSource source, FabricAuraSkills p, User localeUser) {

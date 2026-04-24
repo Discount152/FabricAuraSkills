@@ -22,10 +22,22 @@ public final class FabricCommandPermissions {
     public static final String HELP = "auraskills.command.help";
 
     /**
-     * Self mana display and (future) admin mana subcommands — see Bukkit
-     * {@code ManaCommand} / {@code common.commands.ManaCommand}.
+     * Self {@code /mana} (default). Subcommands on the same root use their own nodes (Sprint
+     * 41).
      */
     public static final String MANA = "auraskills.command.mana";
+
+    /**
+     * View another's mana, console / player — Bukkit default **op**; see reference
+     * {@code ManaCommand} and {@code mana.other} in {@code plugin.yml}.
+     */
+    public static final String MANA_OTHER = "auraskills.command.mana.other";
+
+    public static final String MANA_ADD = "auraskills.command.mana.add";
+
+    public static final String MANA_REMOVE = "auraskills.command.mana.remove";
+
+    public static final String MANA_SET = "auraskills.command.mana.set";
 
     /** Read-only: {@code /xp view <player> <skill>} (Sprint 40). Default true so players can inspect online targets (lock down via LP if needed). */
     public static final String XP_VIEW = "auraskills.command.xp.view";

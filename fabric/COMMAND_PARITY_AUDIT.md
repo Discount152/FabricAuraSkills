@@ -2,7 +2,7 @@
 
 **Runtime product:** **Fabric** + **Geyser/Floodgate**; **Bukkit** `CommandRegistrar` + ACF is the **in-repo reference only**, not a second shipped runtime.
 
-**Sprint 39** establishes this audit and a **shared Brigadier scaffold** (`fabric/.../command/FabricBrigadierCommands` and helpers). **Sprint 40** adds **shared online player + skill parsing** (`FabricCommandPlayerTarget`, `FabricCommandSkillParser`, `FabricCommandSuggestionProviders`) and the first **`xp`** batch. **Final** public **Granite** command names/aliases are **not frozen** in this document.
+**Sprint 39** establishes this audit and a **shared Brigadier scaffold** (`fabric/.../command/FabricBrigadierCommands` and helpers). **Sprint 40** adds **shared online player + skill parsing** (`FabricCommandPlayerTarget`, `FabricCommandSkillParser`, `FabricCommandSuggestionProviders`) and the first **`xp`** batch. **Sprint 41** adds the bounded **`/mana`** family (self + `view` + add/set/remove), shared **`FabricCommandAmountRules`** and **`FabricCommandMutationFeedback`**, and perms `auraskills.command.mana.*` (Sprint 41). **Final** public **Granite** command names/aliases are **not frozen** in this document.
 
 **Reference root:** ACF `skills_alias` = `skills|sk|skill` (`CommandRegistrar#registerReplacements`) → commands attach under **`/skills`**, `/sk`, `/skill` **plus** dedicated classes noted below.
 
@@ -30,7 +30,7 @@
 | `SkillsRootCommand` `save` | `/auraskills save` | Partial | `saveAllUserProfiles` |
 | `SkillsRootCommand` `version` | `/auraskills version` | Partial | Data dir path; not full Bukkit `version` text |
 | `SkillsRootCommand` `help` (ACF `CommandHelp`) | `/auraskills help` | Partial | Short line; Bukkit has full ACF help pages |
-| `ManaCommand` @Default | `/mana` | Partial | **Sprint 39:** self mana via `MessageBuilder` + `MANA_DISPLAY`; add/remove/set **Missing** |
+| `ManaCommand` (common) | `/mana` and `/auraskills mana` | Partial | **Sprint 41:** default self (`MANA_DISPLAY`); `view` / `add` / `set` / `remove` (online `player` + `amount`); no ACF `silent` / `allowOverMax` flags — reference overflow rules via `Traits.MAX_MANA` only |
 | `SkillsRootCommand` `top`, `skilltop` | — | Missing | Needs leaderboard UX + args |
 | `SkillsRootCommand` `rank`, `skillrank` | — | Missing | |
 | `SkillsRootCommand` `lang` | — | Missing | |
@@ -80,8 +80,8 @@
 
 1. Align **`help`** permission node with Bukkit and/or add structured multi-line help.
 2. **`/auraskills top`** (or `/skills top` alias) using existing `LeaderboardManager` (already on Fabric).
-3. **`/mana` subcommands** (add/set/remove) with same permission pattern as Bukkit.
-4. **`/xp`:** optional **`silent`**, Stat arguments elsewhere, and **`skills` / `sk` / `skill`** alias roots to mirror Bukkit.
-5. Revisit **`/xp view`** default (currently **true** for `auraskills.command.xp.view`) for PvP servers.
+3. **`/xp`:** optional **`silent`**, Stat arguments elsewhere, and **`skills` / `sk` / `skill`** alias roots to mirror Bukkit.
+4. Revisit **`/xp view`** default (currently **true** for `auraskills.command.xp.view`) for PvP servers.
+5. **Optional ACF flags** for **`/mana`:** `silent` / `allowOverMax` (Bukkit) — not in Sprint 41 scope.
 
 Document owner: keep this file in sync when adding Fabric commands; update `fabric/MENU_AND_COMMANDS_PORT.md` §Sprint for shipped batches.

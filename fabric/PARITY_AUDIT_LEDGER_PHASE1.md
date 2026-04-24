@@ -89,7 +89,7 @@
 | CMD-001 | `SkillsRootCommand` | `FabricBrigadierCommands` + `FabricAuraSkillsCommands` (`/auraskills*`, `/skills` → **Skills** GUI); **`fabric/COMMAND_PARITY_AUDIT.md`** | Partial | ACF/Brigadier + Slate-Fabric (full tree) | **Sprint 39** — shared scaffold; not `sk`/`skill` / most subcommands |
 | CMD-002 | `StatsCommand` | `FabricBrigadierCommands` (`/stats` → **Stats** GUI) | Partial | ACF/Brigadier | **Sprint 39** — same scaffold |
 | CMD-003 | `SkillCommand` | — | Missing | ACF/Brigadier | |
-| CMD-004 | `ManaCommand` (common) | `FabricBrigadierCommands` root **`/mana`** (self display via `MessageBuilder` / `MANA_DISPLAY`); add/remove/set subcommands | Partial | ACF/Brigadier | **Sprint 39** — default only; see audit |
+| CMD-004 | `ManaCommand` (common) | `FabricManaCommands` + `FabricBrigadierCommands`: **`/mana`**, **`/auraskills mana`** — self, `view`, `add` / `set` / `remove` (online; shared amount rules + mutation feedback) | Partial | ACF/Brigadier + ACF `silent` / `allowOverMax` | **Sprint 41** — bounded family; ACF extra flags not ported |
 | CMD-005 | `ModifierCommand` | — | Missing | ACF/Brigadier |
 | CMD-006 | `ItemCommand` | — | Missing | ACF/Brigadier + item pipeline |
 | CMD-007 | `ArmorCommand` | — | Missing | ACF/Brigadier |

@@ -271,3 +271,15 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Manual** | **`SPRINT_40_MANUAL_XP_COMMANDS.md`** |
 
 **Not in Sprint 40:** `silent` flag, `skills` root prefix for `xp`, or full ACF **Skill** context parity.
+
+## Sprint 41 — **mana** command family + shared numeric feedback (shipped, partial)
+
+| Piece | Where |
+|-------|--------|
+| **Mana** | **`FabricManaCommands#manaCommandRoot`**: **`/mana`** and **`/auraskills mana`** — default **self** (`auraskills.command.mana` + fabric-perms check in executor); **`view`**, **`add` / `set` / `remove` `<player> <amount>`** (online targets only) |
+| **Shared** | **`FabricCommandAmountRules`** (positive for **add**; non-negative for **set**/**remove**); **`FabricCommandMutationFeedback`** (prefixed `MessageBuilder` to source for **xp** + **mana** success lines) |
+| **Perms** | **`auraskills.command.mana`**, **`.other`**, **`.add`**, **`.set`**, **`.remove`** (names aligned with Bukkit; defaults like reference **op** for subcommands) |
+| **Lang** | **`…permission_denied`**, **`…mana.console_specify`**, **usage** string mentions **`mana`**, **`xp`** sprints |
+| **Manual** | **`SPRINT_41_MANUAL_MANA_COMMANDS.md`** |
+
+**Not in Sprint 41:** ACF `silent` / `allowOverMax` on **mana**; **offline** target UUIDs; non-Geyser-specific command UX beyond shared translatables and prefix formatting.

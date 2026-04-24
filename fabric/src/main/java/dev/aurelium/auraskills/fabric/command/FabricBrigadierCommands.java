@@ -2,11 +2,6 @@ package dev.aurelium.auraskills.fabric.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
-import dev.aurelium.auraskills.api.util.NumberUtil;
-import dev.aurelium.auraskills.common.message.MessageBuilder;
-import dev.aurelium.auraskills.common.message.type.CommandMessage;
-import dev.aurelium.auraskills.common.user.User;
-import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.FabricAuraSkillsMod;
 import dev.aurelium.auraskills.fabric.menu.FabricAuraSkillsMenus;
 import net.minecraft.server.command.ServerCommandSource;
@@ -29,7 +24,7 @@ public final class FabricBrigadierCommands {
                 "Registering Brigadier: /auraskills (…), /skills, /stats, /mana, /xp — see fabric/COMMAND_PARITY_AUDIT.md");
 
         registerAuraskillsAndAliases(dispatcher);
-        registerManaRoot(dispatcher);
+        dispatcher.register(FabricManaCommands.manaCommandRoot());
         dispatcher.register(FabricXpCommands.xpRoot());
     }
 
@@ -54,6 +49,7 @@ public final class FabricBrigadierCommands {
                 .then(literal("save")
                         .requires(FabricCommandRequirements.permission(FabricCommandPermissions.SAVE, false))
                         .executes(FabricBrigadierCommands::save))
+                .then(FabricManaCommands.manaCommandRoot())
                 .then(FabricXpCommands.xpRoot()));
         dispatcher.register(literal("skills")
                 .requires(FabricCommandRequirements.permission(FabricCommandPermissions.SKILLS, true))
@@ -61,12 +57,6 @@ public final class FabricBrigadierCommands {
         dispatcher.register(literal("stats")
                 .requires(FabricCommandRequirements.permission(FabricCommandPermissions.STATS, true))
                 .executes(FabricBrigadierCommands::stats));
-    }
-
-    private static void registerManaRoot(CommandDispatcher<ServerCommandSource> dispatcher) {
-        dispatcher.register(literal("mana")
-                .requires(FabricCommandRequirements.permission(FabricCommandPermissions.MANA, true))
-                .executes(FabricBrigadierCommands::manaSelf));
     }
 
     private static int auraskillsUsage(CommandContext<ServerCommandSource> ctx) {
@@ -174,39 +164,4 @@ public final class FabricBrigadierCommands {
                 });
     }
 
-    /**
-     * Bukkit {@code /mana} default: show own mana (common {@link dev.aurelium.auraskills.common.commands.ManaCommand}).
-     */
-    private static int manaSelf(CommandContext<ServerCommandSource> ctx) {
-        return FabricCommandPluginState.runtimeReadyOrEmpty()
-                .map(p -> {
-                    ServerCommandSource source = ctx.getSource();
-                    if (!(source.getEntity() instanceof ServerPlayerEntity player)) {
-                        source.sendError(
-                                Text.literal("Players only. (Console: future target selector / admin subcommands)"));
-                        return 0;
-                    }
-                    User user = p.getUserManager().getUser(player.getUuid());
-                    if (user == null) {
-                        source.sendError(Text.literal(
-                                p.getMsg(CommandMessage.NO_PROFILE, p.getDefaultLanguage())));
-                        return 0;
-                    }
-                    MessageBuilder.create(p)
-                            .locale(user.getLocale())
-                            .prefix()
-                            .message(
-                                    CommandMessage.MANA_DISPLAY,
-                                    "current",
-                                    NumberUtil.format1(user.getMana()),
-                                    "max",
-                                    NumberUtil.format1(user.getMaxMana()))
-                            .send(user);
-                    return 1;
-                })
-                .orElseGet(() -> {
-                    ctx.getSource().sendError(Text.literal("AuraSkills is still starting."));
-                    return 0;
-                });
-    }
 }
