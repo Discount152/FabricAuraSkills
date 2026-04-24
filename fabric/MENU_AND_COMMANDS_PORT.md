@@ -372,3 +372,14 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Shared** | **`FabricCommandLeaderboardText#resolvePlayerName`**: **online** → live name; else **`ApiServices#nameToIdCache#getByUuid`** → **`PlayerConfigEntry#name`**; else **`?`**. **Average** rows: **`TextUtil.replace`** + **`NumberUtil.format2(sv.xp())`**. |
 | **Manual** | **`SPRINT_49_MANUAL_LEADERBOARD_BATCH2.md`** |
 | **Not in Sprint 49** | Bukkit **unbounded** `samples` on **`updateleaderboards`** (Fabric caps **64**); **Mojang** name fetch for UUIDs not in **usercache**; **`UserState`** has no **username** field. |
+
+## Sprint 50 — **modifier** + **trait** admin (player-scoped) (shipped, partial)
+
+| Area | Shipped on Fabric (bounded) |
+|------|-----------------------------|
+| **Commands** | **`/modifier`**, **`/trait`** (standalone + **`/auraskills`**, + **`/sk`**, **`/skill`**) — **add** (optional **operation** + **stack**), **remove**, **list**, **removeall**; **online** targets via **`FabricCommandPlayerTarget`** |
+| **Shared helpers** | **`FabricCommandTraitParser`**, **`FabricCommandModifierStackName`**, **`FabricCommandModifierText`**, `FabricCommandSuggestionProviders#enabledTraitKeys` |
+| **State** | **`User#addStatModifier` / `addTraitModifier`**, **`setShouldSave(true)`**, **`FabricModifierManager#applyModifiers`** (same pattern as Bukkit user mutations) |
+| **Permission** | **`auraskills.command.modifier`** (see **`FabricCommandPermissions#MODIFIER`**) — default **deny** for unprivileged fabric-perms |
+
+| **Not in Sprint 50** | Bukkit **`addtemp`**, **item** / **armor** modifier subcommands, **offline** targets, ACF **silent** — see **`fabric/COMMAND_PARITY_AUDIT.md`**. **Manual:** **`SPRINT_50_MANUAL_MODIFIER_TRAIT.md`**. **Ledger** CMD-005 / CMD-015: **Partial**. |

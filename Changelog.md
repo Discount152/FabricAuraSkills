@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.78
+
+### Changes
+
+- **Fabric: player modifier commands (Sprint 50):** **`FabricPlayerModifierCommands`** — **`/modifier`** and **`/trait`** (standalone, **`/auraskills`**, **`/sk`**, **`/skill`**) with **add** (optional **operation** + **stack**), **remove**, **list**, **removeall**; **online** targets; **`User`** mutations + **`FabricModifierManager#applyModifiers`**. **`FabricCommandTraitParser`**, **`FabricCommandModifierStackName`**, **`FabricCommandModifierText`**, **`FabricCommandSuggestionProviders#enabledTraitKeys`**. Permission **`auraskills.command.modifier`**. **Tests:** `FabricCommandModifierStackNameTest`, permissions. **Lang** help/usage. **Docs** `SPRINT_50_MANUAL_MODIFIER_TRAIT.md`, `COMMAND_PARITY_AUDIT`, `MENU_AND_COMMANDS_PORT`, `PARITY_BACKLOG`, **ledger** CMD-001/005/015/021, **`projectVersion` 2.3.77 → 2.3.78**. **Not in scope:** Bukkit **addtemp**, item/armor modifier commands, **offline** targets, ACF **silent**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test`.
+
 ## 2.3.77
 
 ### Changes

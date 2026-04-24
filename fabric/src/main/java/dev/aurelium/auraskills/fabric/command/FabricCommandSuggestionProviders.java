@@ -5,6 +5,7 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import dev.aurelium.auraskills.api.skill.Skill;
 import dev.aurelium.auraskills.api.stat.Stat;
+import dev.aurelium.auraskills.api.trait.Trait;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.menu.FabricMenuKeys;
 import net.minecraft.server.command.ServerCommandSource;
@@ -97,6 +98,28 @@ public final class FabricCommandSuggestionProviders {
     }
 
     /** Bukkit {@code @lang} completion (**Sprint 48**). */
+    /** Enabled traits (registry key) for {@code trait} commands (**Sprint 50**). */
+    public static SuggestionProvider<ServerCommandSource> enabledTraitKeys() {
+        return (CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) -> {
+            FabricAuraSkills p = FabricAuraSkills.getInstance();
+            if (p == null) {
+                return CompletableFuture.completedFuture(builder.build());
+            }
+            String remaining = builder.getRemaining();
+            for (Trait t : p.getTraitRegistry().getValues()) {
+                if (!t.isEnabled()) {
+                    continue;
+                }
+                String k = t.getId().getKey();
+                if (remaining.isEmpty()
+                        || k.toLowerCase().startsWith(remaining.toLowerCase())) {
+                    builder.suggest(k);
+                }
+            }
+            return builder.buildFuture();
+        };
+    }
+
     public static SuggestionProvider<ServerCommandSource> languageCodes() {
         return (CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) -> {
             FabricAuraSkills p = FabricAuraSkills.getInstance();

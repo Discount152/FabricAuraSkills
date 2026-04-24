@@ -102,5 +102,12 @@ public final class FabricCommandPermissions {
      */
     public static final String UPDATE_LEADERBOARDS = "auraskills.command.updateleaderboards";
 
+    /**
+     * Bukkit **player** {@code modifier} and {@code trait} add/remove/list (see {@code ModifierCommand} /
+     * {@code TraitCommand}) — also {@code addtemp} in reference; not split on Fabric. **Sprint
+     * 50** — default <strong>op</strong> ({@code false} in {@link FabricCommandRequirements}).
+     */
+    public static final String MODIFIER = "auraskills.command.modifier";
+
     private FabricCommandPermissions() {}
 }
