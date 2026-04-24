@@ -40,6 +40,22 @@ class FabricMenuContextTest {
     }
 
     @Test
+    void ofSkill_withListPage_carriesReturnPageForDetailBack() {
+        Skill s = Skills.FARMING;
+        FabricMenuContext c = FabricMenuContext.ofSkill(s).withListPage(3);
+        assertSame(s, c.skill());
+        assertEquals(3, c.listPage());
+    }
+
+    @Test
+    void ofStat_withListPage_carriesReturnPageForDetailBack() {
+        Stat t = Stats.HEALTH;
+        FabricMenuContext c = FabricMenuContext.ofStat(t).withListPage(2);
+        assertSame(t, c.stat());
+        assertEquals(2, c.listPage());
+    }
+
+    @Test
     void ofStat_wraps() {
         Stat t = Stats.HEALTH;
         assertNull(FabricMenuContext.ofStat(t).skill());

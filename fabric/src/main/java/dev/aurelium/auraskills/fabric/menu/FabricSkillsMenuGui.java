@@ -172,7 +172,8 @@ final class FabricSkillsMenuGui {
                     }
                     final Skill s = skill;
                     plugin.getScheduler()
-                            .executeSync(() -> FabricAuraSkillsMenus.openLevelProgression(s, p, plugin));
+                            .executeSync(
+                                    () -> FabricAuraSkillsMenus.openLevelProgression(s, p, plugin, fPage));
                 });
     }
 

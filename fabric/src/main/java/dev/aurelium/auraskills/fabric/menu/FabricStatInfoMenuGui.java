@@ -27,7 +27,9 @@ import java.util.Locale;
  * {@link FabricBuiltInMenuConfig} / {@code menus/stat_info.yml} {@code granite:}. **Sprint 34:** main/back
  * slots from {@code granite.layout}. **Sprint 35:** opened via {@link FabricMenuRegistry} with
  * {@link FabricMenuContext#ofStat(Stat)}. **Sprint 36:** main/back items from {@code granite.items.main} /
- * {@code granite.items.back}.
+ * {@code granite.items.back}. **Sprint 38:** <strong>Back</strong> reopens <strong>Stats</strong> with the
+ * same {@link FabricMenuContext#listPage()} the player had when opening this menu (clamped in the list GUI);
+ * early exits when {@code stat_info} is disabled also preserve that page.
  */
 final class FabricStatInfoMenuGui {
 
@@ -44,7 +46,11 @@ final class FabricStatInfoMenuGui {
             return;
         }
         if (!plugin.configBoolean(Option.MENUS_STAT_INFO_ENABLED)) {
-            FabricAuraSkillsMenus.open(FabricAuraSkillsMenus.Id.STATS, player, plugin);
+            FabricAuraSkillsMenus.open(
+                    FabricAuraSkillsMenus.Id.STATS,
+                    player,
+                    plugin,
+                    FabricMenuContext.none().withListPage(context.listPage()));
             return;
         }
         FabricMenuYamlSlice def = FabricMenuYamlSlice.defaultStatInfo();
@@ -118,7 +124,11 @@ final class FabricStatInfoMenuGui {
                         return;
                     }
                     plugin.getScheduler()
-                            .executeSync(() -> FabricAuraSkillsMenus.open(FabricAuraSkillsMenus.Id.STATS, p, plugin));
+                            .executeSync(() -> FabricAuraSkillsMenus.open(
+                                    FabricAuraSkillsMenus.Id.STATS,
+                                    p,
+                                    plugin,
+                                    FabricMenuContext.none().withListPage(context.listPage())));
                 });
     }
 

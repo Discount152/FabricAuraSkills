@@ -49,11 +49,34 @@ public final class FabricAuraSkillsMenus {
     }
 
     /**
+     * Re-open a list menu ({@link Id#SKILLS} or {@link Id#STATS}) with an explicit
+     * {@link FabricMenuContext#listPage()} — used by detail **Back** (Sprint 38).
+     */
+    public static void open(
+            Id id, ServerPlayerEntity player, FabricAuraSkills plugin, FabricMenuContext context) {
+        open(id.menuId(), player, plugin, context);
+    }
+
+    /**
      * Bukkit id {@code level_progression} (see {@link FabricMenuKeys#LEVEL_PROGRESSION}): {@link Skill}
      * context is required; routes through {@link FabricMenuRegistry}.
      */
     public static void openLevelProgression(Skill skill, ServerPlayerEntity player, FabricAuraSkills plugin) {
-        open(FabricMenuKeys.LEVEL_PROGRESSION, player, plugin, FabricMenuContext.ofSkill(skill));
+        openLevelProgression(skill, player, plugin, 0);
+    }
+
+    /**
+     * Same as {@link #openLevelProgression(Skill, ServerPlayerEntity, FabricAuraSkills)} but records the
+     * paged <strong>Skills</strong> list page to return to on <strong>Back</strong> (0-based, clamped in
+     * the list GUI after open).
+     */
+    public static void openLevelProgression(
+            Skill skill, ServerPlayerEntity player, FabricAuraSkills plugin, int returnSkillsListPage) {
+        open(
+                FabricMenuKeys.LEVEL_PROGRESSION,
+                player,
+                plugin,
+                FabricMenuContext.ofSkill(skill).withListPage(returnSkillsListPage));
     }
 
     /**
@@ -62,6 +85,19 @@ public final class FabricAuraSkillsMenus {
      * {@link FabricMenuRegistry}.
      */
     public static void openStatInfo(Stat stat, ServerPlayerEntity player, FabricAuraSkills plugin) {
-        open(FabricMenuKeys.STAT_INFO, player, plugin, FabricMenuContext.ofStat(stat));
+        openStatInfo(stat, player, plugin, 0);
+    }
+
+    /**
+     * Same as {@link #openStatInfo(Stat, ServerPlayerEntity, FabricAuraSkills)} but records the paged
+     * <strong>Stats</strong> list page to return to on <strong>Back</strong> (0-based, clamped in the list
+     * GUI after open).
+     */
+    public static void openStatInfo(Stat stat, ServerPlayerEntity player, FabricAuraSkills plugin, int returnStatsListPage) {
+        open(
+                FabricMenuKeys.STAT_INFO,
+                player,
+                plugin,
+                FabricMenuContext.ofStat(stat).withListPage(returnStatsListPage));
     }
 }

@@ -182,7 +182,8 @@ final class FabricStatsMenuGui {
                     }
                     final Stat stat = st;
                     plugin.getScheduler()
-                            .executeSync(() -> FabricAuraSkillsMenus.openStatInfo(stat, p, plugin));
+                            .executeSync(
+                                    () -> FabricAuraSkillsMenus.openStatInfo(stat, p, plugin, fPage));
                 });
     }
 

@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.66
+
+### Changes
+
+- **Fabric: list page context through detail menus (Sprint 38):** Opening **Level Progression** or **Stat Info** from a paged list stores the current `listPage` on **`FabricMenuContext`** (`ofSkill` / `ofStat` + `withListPage`). **Back** and YAML-disabled early exits reopen **Skills** / **Stats** with `none().withListPage(savedPage)`; the list GUI **clamps** the page if totals shrink. **`FabricAuraSkillsMenus`:** `openLevelProgression` / `openStatInfo` with `return*ListPage`, `open(Id, player, plugin, context)`. **Tests** `FabricMenuContextTest` (skill/stat + list page). **Docs** `SPRINT_38_MANUAL_DETAIL_LIST_PAGE_CONTEXT.md`, `MENU_AND_COMMANDS_PORT`, Sprint 37 manual note, parity, backlog, handoff. **`projectVersion` 2.3.65 → 2.3.66**. Not in scope: new menus or other paging features.
+
 ## 2.3.65
 
 ### Changes

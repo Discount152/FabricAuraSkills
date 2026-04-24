@@ -23,7 +23,9 @@ import java.util.Locale;
  * {@link FabricBuiltInMenuConfig} / {@code menus/level_progression.yml} {@code granite:}. **Sprint 34:**
  * main/back slots from {@code granite.layout}. **Sprint 35:** opened only via
  * {@link FabricMenuRegistry} with {@link FabricMenuContext#ofSkill(Skill)}. **Sprint 36:** main/back items
- * from {@code granite.items.main} / {@code granite.items.back}.
+ * from {@code granite.items.main} / {@code granite.items.back}. **Sprint 38:** <strong>Back</strong> reopens
+ * <strong>Skills</strong> with the same {@link FabricMenuContext#listPage()} the player had when opening
+ * this menu (clamped in the list GUI).
  */
 final class FabricLevelProgressionMenuGui {
 
@@ -48,7 +50,11 @@ final class FabricLevelProgressionMenuGui {
                     Text.translatable("auraskills.granite.menu.built_in_disabled", FabricMenuKeys.LEVEL_PROGRESSION),
                     false);
             plugin.getScheduler()
-                    .executeSync(() -> FabricAuraSkillsMenus.open(FabricAuraSkillsMenus.Id.SKILLS, player, plugin));
+                    .executeSync(() -> FabricAuraSkillsMenus.open(
+                            FabricAuraSkillsMenus.Id.SKILLS,
+                            player,
+                            plugin,
+                            FabricMenuContext.none().withListPage(context.listPage())));
             return;
         }
         User user = plugin.getUserManager().getUser(player.getUuid());
@@ -138,7 +144,11 @@ final class FabricLevelProgressionMenuGui {
                         return;
                     }
                     plugin.getScheduler()
-                            .executeSync(() -> FabricAuraSkillsMenus.open(FabricAuraSkillsMenus.Id.SKILLS, p, plugin));
+                            .executeSync(() -> FabricAuraSkillsMenus.open(
+                                    FabricAuraSkillsMenus.Id.SKILLS,
+                                    p,
+                                    plugin,
+                                    FabricMenuContext.none().withListPage(context.listPage())));
                 });
     }
 }

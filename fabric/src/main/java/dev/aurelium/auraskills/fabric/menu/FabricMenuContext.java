@@ -11,6 +11,9 @@ import java.util.Objects;
  * {@link Stat} (Bukkit “menu context” / Slate placeholder — bounded subset, Sprint 35+). Static menus
  * use {@link #none()}; callers must not set both a skill and a stat on one value (factory methods
  * enforce this). **Sprint 37:** {@code listPage} is for paged list menus (Skills, Stats) — 0-based index.
+ * **Sprint 38:** {@link #ofSkill(Skill)}/{@link #ofStat(Stat)} with {@link #withListPage(int)} carries the
+ * list page to restore when a detail menu (<strong>Level Progression</strong> / <strong>Stat Info</strong>)
+ * uses <strong>Back</strong> to the parent list.
  */
 public record FabricMenuContext(@Nullable Skill skill, @Nullable Stat stat, int listPage) {
 

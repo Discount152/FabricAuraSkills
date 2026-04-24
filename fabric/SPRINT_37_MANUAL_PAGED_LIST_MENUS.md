@@ -16,9 +16,9 @@
 
 - Repeat **4** and **3**; confirm bottom-row arrows are visible and tappable, and that wrong-index opens do not appear.
 
-## Back navigation
+## Back navigation (see Sprint 38)
 
-- Open **Level Progression** from a **paged** skill; **Back** to **Skills** should show **page 1** (default context), not a random page. If you need the same page preserved, that is **not** in Sprint 37.
+- **Sprint 37** shipped paging only: detail **Back** always reopened **page 1**. **Sprint 38** preserves the list page — validate with **`SPRINT_38_MANUAL_DETAIL_LIST_PAGE_CONTEXT.md`**.
 
 ## Invalid / edge
 

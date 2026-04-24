@@ -235,3 +235,14 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Manual** | **`SPRINT_37_MANUAL_PAGED_LIST_MENUS.md`** |
 
 **Not in Sprint 37:** per-page size above 45, middle-number jump, or **Level Progression / Stat Info** pagination.
+
+## Sprint 38 — list page through detail **Back** (shipped, partial)
+
+| Piece | Where |
+|-------|--------|
+| **Carry** | Opening **Level Progression** from **Skills** (or **Stat Info** from **Stats**) uses **`FabricMenuContext.ofSkill(skill).withListPage(currentPage)`** / **`ofStat(stat).withListPage(currentPage)`** — same `listPage` field as registry paging (Sprint 37) |
+| **API** | **`FabricAuraSkillsMenus#openLevelProgression(…, int returnSkillsListPage)`**, **`openStatInfo(…, int returnStatsListPage)`**; 3-arg overloads default to page **0**; **`open(Id, player, plugin, context)`** for list reopen |
+| **Back** | **`FabricLevelProgressionMenuGui`** / **`FabricStatInfoMenuGui`**: **`open(SKILLS/STATS, …, none().withListPage(context.listPage()))`**; disabled-YAML / config paths match |
+| **Clamp** | Unchanged: **Skills** / **Stats** GUIs already **`FabricListMenuPaging.clampPage(…)`** on open |
+
+**Not in Sprint 38:** new menus, middle-number jump, or detail-menu-internal paging.
