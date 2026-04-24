@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.56
+
+### Changes
+
+- **Granite + Fabric: Stats menu + shared routing (Sprint 28):** **`FabricStatsMenuGui`** (enabled stats from `User` + `formatStatLevel` / trait lore vs Bukkit `StatsMenu` / `stats.yml` keys). **`FabricAuraSkillsMenus` + `Id` enum** as single open path; **`FabricSkillsMenuGui`/`FabricStatsMenuGui`** package-private. **Temporary:** `/stats`, `/auraskills stats` (`auraskills.command.stats`). **`FabricMenuHelper`:** `stats.player_stat_entry`, `stats.trait_entry`. **Lang:** `stats_title` / `stats_opened`. **Docs/manual:** `SPRINT_28_MANUAL_GRANITE_MENUS.md`, ledger MENU-004, **`projectVersion` 2.3.55 → 2.3.56**.
+
 ## 2.3.55
 
 ### Changes

@@ -118,3 +118,14 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Manual** | **`SPRINT_27_MANUAL_SKILLS_MENU.md`** |
 
 **Not in Sprint 27:** YAML `menus/skills.yml` load, Slate `MenuBuilder`, contexts, `OpenMenuCommand`, other menus. Next slices stack on `GraniteContainerMenus` and shared menu registry when introduced.
+
+## Sprint 28 — Stats menu + `FabricAuraSkillsMenus` (shipped, partial)
+
+| Piece | Where |
+|-------|--------|
+| **Shared routing** | **`FabricAuraSkillsMenus`** + **`FabricAuraSkillsMenus.Id` (`SKILLS`, `STATS`)** — all menu opens go through one entry point |
+| **Stats GUI** | **`FabricStatsMenuGui`** — books per **enabled** stat; name from `stats.player_stat_entry`; trait sub-lines from `stats.trait_entry` + `TraitManager#getMenuDisplay` (same spirit as Bukkit `StatsMenu`) |
+| **Temporary open** | `/stats`, `/auraskills stats` — permission **`auraskills.command.stats`**. **Skills** unchanged: `/skills`, `/auraskills skills` via same router |
+| **Manual** | **`SPRINT_28_MANUAL_GRANITE_MENUS.md`** (Skills + Stats, Java + Bedrock) |
+
+**Not in Sprint 28:** `stat_info` click, full Slate, YAML load from `menus/`.

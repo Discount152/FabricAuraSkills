@@ -18,6 +18,11 @@ public final class FabricMenuHelper implements MenuHelper {
         // Bukkit: menus/level_progression.yml
         level.put("stat_reward_entry", "\n  {color}+{num} {symbol} {stat}");
         formats.put("level_progression", level);
+        var stats = new HashMap<String, String>();
+        // Bukkit: menus/stats.yml
+        stats.put("player_stat_entry", "{color}{symbol} {stat} <white>{level}");
+        stats.put("trait_entry", "<#d0d0d0>{trait}: {color}{level}");
+        formats.put("stats", stats);
     }
 
     @Override

@@ -20,4 +20,11 @@ class FabricMenuHelperTest {
         FabricMenuHelper h = new FabricMenuHelper();
         assertEquals("k", h.getFormat("nope", "k"));
     }
+
+    @Test
+    void getFormat_statsPlayerStatAndTrait() {
+        FabricMenuHelper h = new FabricMenuHelper();
+        assertTrue(h.getFormat("stats", "player_stat_entry").contains("{level}"), h.getFormat("stats", "player_stat_entry"));
+        assertTrue(h.getFormat("stats", "trait_entry").contains("{trait}"), h.getFormat("stats", "trait_entry"));
+    }
 }

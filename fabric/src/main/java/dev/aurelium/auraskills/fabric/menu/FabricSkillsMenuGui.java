@@ -19,12 +19,12 @@ import java.util.List;
  * First Vertical slice: read-only 6×9 chest showing enabled skills, level, and XP (server state)
  * for the opening player. Future: Slate templates, click → level_progression, placeholder pipeline.
  */
-public final class FabricSkillsMenuGui {
+final class FabricSkillsMenuGui {
 
     private FabricSkillsMenuGui() {
     }
 
-    public static void open(ServerPlayerEntity player, FabricAuraSkills plugin) {
+    static void open(ServerPlayerEntity player, FabricAuraSkills plugin) {
         User user = plugin.getUserManager().getUser(player.getUuid());
         var locale = user.getLocale();
         var msg = plugin.getMessageProvider();

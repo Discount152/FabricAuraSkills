@@ -55,7 +55,7 @@
 | AS-003 | `BukkitLogger` | `FabricLogger` | Equivalent | None | |
 | AS-004 | `BukkitMessageProvider` | `FabricMessageProvider` | Partial | None | MiniMessage path in place; keep regression tests vs Paper. |
 | AS-005 | Managers/registries (skills, abilities, stats, traits, …) | Same pattern in `FabricAuraSkills` | Partial | None | Shared `common` brain; edge cases may differ. |
-| AS-006 | `Slate` + `MenuOptions` + `InventoryManager` + `MenuFileManager` | `GraniteContainerMenus` + `FabricMenuHelper` | Partial | Slate-Fabric + Needs Regression Proof | **Sprint 27** — `granitelib` **read-only 9×6** + **`FabricMenuHelper`** in-memory `level_progression` key; no YAML `MenuFileManager`, no full Slate. |
+| AS-006 | `Slate` + `MenuOptions` + `InventoryManager` + `MenuFileManager` | `GraniteContainerMenus` + `FabricMenuHelper` + `FabricAuraSkillsMenus` | Partial | Slate-Fabric + NRP | **Sprint 27–28** — `granitelib` **9×6**, **Skills+Stats** slices, `FabricMenuHelper` **level_progression** + **stats** keys; no YAML `MenuFileManager`, no full Slate. |
 | AS-007 | `ConfirmManager` | — | Missing | Slate-Fabric + ACF/Brigadier | Confirm flows tied to commands/menus. |
 | AS-008 | `CommandRegistrar.registerCommands` → `PaperCommandManager` | `FabricAuraSkillsCommands` | Partial | ACF/Brigadier | Small Brigadier subset vs full ACF tree (see §3). |
 | AS-009 | `messageProvider.setACFMessages` | — | Missing | ACF/Brigadier | No ACF message integration. |
@@ -71,7 +71,7 @@
 | AS-019 | `abilityManager.registerAbilityImplementations` | `FabricAbilityManager.registerAbilityImplementations` | Partial | Needs Regression Proof | **Sprint 23–26** — **14/14** registration **Equivalent**; per-family table **`SPRINT_26_ABILITY_PROOF_MATRIX.md`**, manual **`SPRINT_26_MANUAL_ABILITY_REGRESSION.md`**. **Farming** still **Partial** for documented tail (chorus, structure trees, some bamboo) — see **`SPRINT_25_FARMING_GROWTH_AURA.md`**. **Sprint 26** = proof/closure **documentation**; no new ability code. Remaining: **regression proof** (incl. damage pipeline vs Bukkit), Bukkit **DamageEvent** / plugin cancels = **N/A** on default Fabric. |
 | AS-020 | `manaAbilityManager.registerProviders` | `FabricManaAbilityManager.registerProviders` | Partial | None | All major abilities + XP hook (see `FabricManaAbilityUseXpHandler` javadoc, Sprint 12). **Gaps:** Bukkit `ManaAbilityActivateEvent` for plugins — **N/A** on Fabric. |
 | AS-021 | `registerEvents()` (see §4) | Scattered Fabric API + mixins | Partial | None | Not 1:1 class mapping; see listener table. |
-| AS-022 | `registerAndLoadMenus` | `FabricSkillsMenuGui` (Skills only) + GraniteLib | Partial | Slate-Fabric | **Sprint 27** — no `menus/*.yml` load; first **Skills** GUI path. **Needs regression proof** (Java + Geyser). |
+| AS-022 | `registerAndLoadMenus` | `FabricAuraSkillsMenus` + Skills/Stats GUIs + GraniteLib | Partial | Slate-Fabric + NRP | **Sprint 28** — no `menus/*.yml` load; **Skills+Stats** GUI paths. **Needs regression proof** (Java + Geyser). |
 | AS-023 | `registerPriorityEvents` → `PlayerJoinQuit` | `FabricPlayerLifecycle` | Partial | None | Join/disconnect; compare full Bukkit behavior. |
 | AS-024 | `leaderboardManager` tasks | Same in `finishEnable` | Partial | None | |
 | AS-025 | `statManager.scheduleTemporaryModifierTask` | same | Partial | None | |
@@ -86,7 +86,7 @@
 
 | ID | Bukkit (registered command class) | Fabric | Status | Blocker |
 |----|-----------------------------------|--------|--------|---------|
-| CMD-001 | `SkillsRootCommand` | `FabricAuraSkillsCommands` (`/auraskills*`, top-level `/skills` → **Skills GUI** S27) | Partial | ACF/Brigadier + Slate-Fabric (full tree) |
+| CMD-001 | `SkillsRootCommand` | `FabricAuraSkillsCommands` (`/auraskills*`, `/skills` + `/stats` → GUIs) | Partial | ACF/Brigadier + Slate-Fabric (full tree) |
 | CMD-002 | `StatsCommand` | — | Missing | ACF/Brigadier |
 | CMD-003 | `SkillCommand` | — | Missing | ACF/Brigadier |
 | CMD-004 | `ManaCommand` (common) | — | Missing | ACF/Brigadier |
@@ -119,7 +119,7 @@
 | MENU-001 | Slate `ContextManager`: Skill, Stat, Source, SortType, Ability, ManaAbility, Trait | — | Missing | Slate-Fabric |
 | MENU-002 | `PlaceholderHelper` global replacer + locale | — | Missing | Slate-Fabric |
 | MENU-003 | Menu `skills` | `FabricSkillsMenuGui` + `GraniteReadOnly9x6Handler` | Partial | Slate-Fabric + NRP | **Sprint 27** vertical slice — not Slate YAML; **Needs Regression Proof** (Bedrock). |
-| MENU-004 | Menu `stats` | — | Missing | Slate-Fabric |
+| MENU-004 | Menu `stats` | `FabricStatsMenuGui` + `GraniteReadOnly9x6Handler` | Partial | Slate-Fabric + NRP | **Sprint 28** — not full Slate; **NRP** Bedrock. |
 | MENU-005 | Menu `level_progression` | — | Missing | Slate-Fabric |
 | MENU-006 | Menu `leaderboard` | — | Missing | Slate-Fabric |
 | MENU-007 | Menu `sources` | — | Missing | Slate-Fabric |
@@ -185,12 +185,12 @@
 ID,Category,Bukkit reference,Fabric reference,Status,Blocker,Notes
 AS-001,Bootstrap,ApiRegistration,FabricAuraSkills+ApiRegistrationUtil,Equivalent,None,Core API
 AS-002,Bootstrap,ApiBukkit+ApiItemManager,—,Missing,Common seam,api-bukkit
-AS-006,Bootstrap,Slate+MenuFileManager+InventoryManager,GraniteContainerMenus+FabricMenuHelper,Partial,Slate-Fabric+Sprint27,
+AS-006,Bootstrap,Slate+MenuFileManager+InventoryManager,GraniteContainerMenus+FabricMenuHelper+FabricAuraSkillsMenus,Partial,Slate-Fabric+Sprint27-28,
 AS-008,Bootstrap,CommandRegistrar→PaperCommandManager,FabricAuraSkillsCommands,Partial,ACF/Brigadier,Small command set
 AS-012,Bootstrap,Metrics+MetricsUtil,—,Missing,Out of scope,Optional reference metrics
 AS-014,Bootstrap,onLoad region flags hook ref,—,Missing,Out of scope,Stub FabricRegionNode
 AS-015,Bootstrap,SkillsLoadEvent,—,Missing,Common seam,API event
-AS-022,Bootstrap,registerAndLoadMenus,FabricSkillsMenuGui+GraniteLib,Partial,Slate-Fabric+Sprint27,
+AS-022,Bootstrap,registerAndLoadMenus,FabricAuraSkillsMenus+Stats+GraniteLib,Partial,Slate-Fabric+Sprint28,
 CMD-001,Commands,SkillsRootCommand,FabricAuraSkillsCommands,Partial,ACF/Brigadier+Slate-Fabric,Aliases differ
 CMD-013,Commands,OpenMenuCommand,—,Missing,Slate-Fabric+ACF/Brigadier,
 MENU-003,Menus,Menu skills,—,Missing,Slate-Fabric,
