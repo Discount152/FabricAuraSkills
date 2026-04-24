@@ -48,10 +48,12 @@ That is **the real port surface** — not just “open a chest and set items.”
 
 ## Commands (reference ACF → Fabric)
 
-- **Reference aliases (Bukkit `CommandRegistrar`):** `skills|sk|skill` (as `%skills_alias%`). **Final Granite** roots/aliases: **TBD**; use reference for **capability** coverage.
+- **Sprint 39+ — live status table:** [`COMMAND_PARITY_AUDIT.md`](COMMAND_PARITY_AUDIT.md) (Bukkit vs Fabric: present / **Partial** / **Missing** / N/A). Update when adding roots or subcommands.
+- **Sprint 39+ — shared Brigadier scaffold:** `dev.aurelium.auraskills.fabric.command` — `FabricBrigadierCommands#register` (entry), `FabricCommandPermissions` (string constants), `FabricCommandRequirements` (`requires` + player checks), `FabricCommandPluginState` (instance/runtime readiness). **`FabricAuraSkillsCommands`** only registers the callback and delegates to the entry class.
+- **Reference aliases (Bukkit `CommandRegistrar`):** `skills|sk|skill` (as `%skills_alias%`). **Final Granite** roots/aliases: **TBD**; use reference for **capability** coverage. Fabric does **not** yet register `sk` / `skill` (follow-up).
 - **Coverage target:** `bukkit/.../CommandRegistrar.java` + every registered class (`SkillsRootCommand`, `StatsCommand`, `SkillCommand`, `XpCommand`, …) — **Fabric-native** handlers.
-- **Permissions:** reference uses `plugin.yml` / `auraskills.command.*` — treat as the **compatibility** baseline until the **Granite** public permission / node naming pass.
-- **Implementation:** **`acf-brigadier`** + Fabric registration bridge; enable ACF unstable APIs as required (reference: `enableUnstableAPI("help")` on Bukkit).
+- **Permissions:** reference uses `plugin.yml` / `auraskills.command.*` — treat as the **compatibility** baseline until the **Granite** public permission / node naming pass. **Sprint 39** centralizes string constants in **`FabricCommandPermissions`**.
+- **Implementation:** long-term: **`acf-brigadier`** + Fabric registration bridge as in plan above; current code uses **vanilla Brigadier** with shared helpers (no ACF on Fabric in this path yet).
 
 ---
 
@@ -246,3 +248,15 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Clamp** | Unchanged: **Skills** / **Stats** GUIs already **`FabricListMenuPaging.clampPage(…)`** on open |
 
 **Not in Sprint 38:** new menus, middle-number jump, or detail-menu-internal paging.
+
+## Sprint 39 — command parity audit + shared Brigadier scaffold (shipped, partial)
+
+| Piece | Where |
+|-------|--------|
+| **Audit** | **`COMMAND_PARITY_AUDIT.md`** — Bukkit `CommandRegistrar` + registered classes vs Fabric |
+| **Scaffold** | **`command/FabricBrigadierCommands`**, **`FabricCommandPermissions`**, **`FabricCommandRequirements`**, **`FabricCommandPluginState`**; thin **`FabricAuraSkillsCommands`** |
+| **First batch** | Root **`/mana`** (self display only) — Bukkit `ManaCommand` @Default; subcommands still **Missing** in audit |
+| **Lang** | **`auraskills.granite.command.auraskills_usage`**, **`…help`** for root/help lines (no naming freeze) |
+| **Manual** | **`SPRINT_39_MANUAL_COMMANDS.md`** |
+
+**Not in Sprint 39:** `sk`/`skill` aliases, ACF context/completion parity, or large subcommand trees.

@@ -86,10 +86,10 @@
 
 | ID | Bukkit (registered command class) | Fabric | Status | Blocker |
 |----|-----------------------------------|--------|--------|---------|
-| CMD-001 | `SkillsRootCommand` | `FabricAuraSkillsCommands` (`/auraskills*`, `/skills` + `/stats` → GUIs) | Partial | ACF/Brigadier + Slate-Fabric (full tree) |
-| CMD-002 | `StatsCommand` | — | Missing | ACF/Brigadier |
-| CMD-003 | `SkillCommand` | — | Missing | ACF/Brigadier |
-| CMD-004 | `ManaCommand` (common) | — | Missing | ACF/Brigadier |
+| CMD-001 | `SkillsRootCommand` | `FabricBrigadierCommands` + `FabricAuraSkillsCommands` (`/auraskills*`, `/skills` → **Skills** GUI); **`fabric/COMMAND_PARITY_AUDIT.md`** | Partial | ACF/Brigadier + Slate-Fabric (full tree) | **Sprint 39** — shared scaffold; not `sk`/`skill` / most subcommands |
+| CMD-002 | `StatsCommand` | `FabricBrigadierCommands` (`/stats` → **Stats** GUI) | Partial | ACF/Brigadier | **Sprint 39** — same scaffold |
+| CMD-003 | `SkillCommand` | — | Missing | ACF/Brigadier | |
+| CMD-004 | `ManaCommand` (common) | `FabricBrigadierCommands` root **`/mana`** (self display via `MessageBuilder` / `MANA_DISPLAY`); add/remove/set subcommands | Partial | ACF/Brigadier | **Sprint 39** — default only; see audit |
 | CMD-005 | `ModifierCommand` | — | Missing | ACF/Brigadier |
 | CMD-006 | `ItemCommand` | — | Missing | ACF/Brigadier + item pipeline |
 | CMD-007 | `ArmorCommand` | — | Missing | ACF/Brigadier |

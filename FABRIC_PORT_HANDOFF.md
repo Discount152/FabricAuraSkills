@@ -28,7 +28,7 @@ This document is the **authoritative handoff** for the **Java Fabric** dedicated
 
 ### 0.3 Milestones (intermediate vs program complete)
 
-**Intermediate milestone — “serious public Fabric server” (partial parity):** Join/load/save validated; **fabric-permissions-api** + a **permission provider** in production if you need deny/allow; core XP sources that are already ported behave; fishing mixin re-verified after MC/Yarn bumps; minimal **Brigadier** admin/player commands (see `fabric/MOD_COMMANDS.txt` / `fabric/FABRIC_QUICKSTART.md`) until the full tree lands. **Where feasible, spot-check** Bedrock (Geyser/Floodgate) for progression and chat/title surfaces.
+**Intermediate milestone — “serious public Fabric server” (partial parity):** Join/load/save validated; **fabric-permissions-api** + a **permission provider** in production if you need deny/allow; core XP sources that are already ported behave; fishing mixin re-verified after MC/Yarn bumps; minimal **Brigadier** admin/player commands (see **`fabric/COMMAND_PARITY_AUDIT.md`**, **`fabric/SPRINT_39_MANUAL_COMMANDS.md`**, `fabric/FABRIC_QUICKSTART.md`) until the full tree lands. **Where feasible, spot-check** Bedrock (Geyser/Floodgate) for progression and chat/title surfaces.
 
 **Program complete** — see **`fabric/PAPER_PARITY_PROGRAM.md` §5** and **two-JAR completion**: **GraniteLib** + **Granite Skills** are each **shippable**; together they match the **in-repo Bukkit reference** in **`fabric/RELEASE_GATES.md` Gate C**. Substantively: Slate-style menus and **full command capability** vs the **reference** tree (per **`fabric/MENU_AND_COMMANDS_PORT.md`**); traits/abilities/mana and core loot/block/mob/region behavior on **Fabric-native** handlers; **third-party Bukkit plugin ecosystems** remain **out of default scope** (see **`fabric/PARITY_BACKLOG.md`**); **final Granite** public command UX may still be a follow-up rebrand pass. **Acceptance** includes **Java and Bedrock-via-Geyser** for user-visible flows, or **explicit** documented limitations for Bedrock.
 
@@ -169,7 +169,7 @@ Understanding this order matters when debugging “XP not firing” or “API nu
 ### 5.1 `FabricAuraSkillsMod` (`fabric/.../FabricAuraSkillsMod.java`)
 
 1. **`onInitializeServer()`** (early, before full server tick loop semantics):
-   - `FabricAuraSkillsCommands.registerEarly()` — registers Brigadier `/auraskills version|skills`.
+   - `FabricAuraSkillsCommands.registerEarly()` → **`FabricBrigadierCommands`** — Brigadier `/auraskills …`, `/skills`, `/stats`, `/mana` (see **`fabric/COMMAND_PARITY_AUDIT.md`**).
    - **`ServerLifecycleEvents.SERVER_STARTING`**: constructs **`FabricAuraSkills(server)`**, `FabricAuraSkills.setInstance(plugin)`, `plugin.enable()`.
    - **`ServerLifecycleEvents.SERVER_STOPPING`**: `disable()` on instance.
 
@@ -313,7 +313,7 @@ Mirrors Bukkit event order: **`FishingLootHandler` @HIGH**-equivalent ( **`tryRo
 
 ## 9. Commands
 
-**Fabric (current):** Brigadier in `fabric/.../FabricAuraSkillsCommands.java` — see **`fabric/MOD_COMMANDS.txt`** (e.g. root `/auraskills` usage, `/auraskills help`, `/auraskills version|skills|reload|save`, top-level `/skills` alias). This is a **partial** surface until the **reference command/menu capability** program in **`PAPER_PARITY_PROGRAM.md`** delivers the full tree (on **Fabric**; final **Granite** public names **TBD**).
+**Fabric (current):** Brigadier via `fabric/.../FabricAuraSkillsCommands.java` (callback) and **`dev.aurelium.auraskills.fabric.command.FabricBrigadierCommands`** — see **`fabric/COMMAND_PARITY_AUDIT.md`** (Bukkit `CommandRegistrar` vs Fabric), root `/auraskills`, `/skills`, `/stats`, `/mana`, and **`fabric/SPRINT_39_MANUAL_COMMANDS.md`**. This is a **partial** surface until the **reference command/menu capability** program in **`PAPER_PARITY_PROGRAM.md`** delivers the full tree (on **Fabric**; final **Granite** public names **TBD**).
 
 **Reference (Bukkit module):** Full ACF command tree in `bukkit/.../commands/CommandRegistrar.java` and related classes, plus menus via `MenuRegistrar` — the **capability inventory** to implement on Fabric. **Planned delivery:** **`fabric/MENU_AND_COMMANDS_PORT.md`** (Slate on Fabric + ACF Brigadier) as part of that program.
 

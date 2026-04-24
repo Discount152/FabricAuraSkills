@@ -1,0 +1,31 @@
+package dev.aurelium.auraskills.fabric.command;
+
+import org.junit.jupiter.api.Test;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class FabricCommandPermissionsTest {
+
+    @Test
+    void permissionConstants_areDocumentedUniques() {
+        String[] all = {
+            FabricCommandPermissions.VERSION,
+            FabricCommandPermissions.HELP,
+            FabricCommandPermissions.SKILLS,
+            FabricCommandPermissions.STATS,
+            FabricCommandPermissions.RELOAD,
+            FabricCommandPermissions.SAVE,
+            FabricCommandPermissions.MANA
+        };
+        Set<String> seen = new HashSet<>();
+        for (String s : all) {
+            assertTrue(s.startsWith("auraskills.command."), s);
+            assertTrue(seen.add(s), "duplicate node: " + s);
+        }
+        assertEquals(all.length, seen.size());
+    }
+}

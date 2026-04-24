@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.67
+
+### Changes
+
+- **Fabric: command parity audit + shared Brigadier scaffold (Sprint 39):** **`fabric/COMMAND_PARITY_AUDIT.md`** (Bukkit `CommandRegistrar` vs Fabric). **`dev.aurelium.auraskills.fabric.command`:** **`FabricBrigadierCommands#register`**, **`FabricCommandPermissions`**, **`FabricCommandRequirements`**, **`FabricCommandPluginState`**; **`FabricAuraSkillsCommands`** delegates. **First batch:** root **`/mana`** (self **MANA_DISPLAY**; admin subcommands not ported). **Lang** `auraskills.granite.command.auraskills_usage` + **`help`**. **Tests** `FabricCommandPermissionsTest`. **Docs** `SPRINT_39_MANUAL_COMMANDS.md`, `MENU_AND_COMMANDS_PORT`, parity, backlog, handoff. **`projectVersion` 2.3.66 → 2.3.67**. Not in scope: ACF, full tree, or **`sk`/`skill`** alias registration.
+
 ## 2.3.66
 
 ### Changes
