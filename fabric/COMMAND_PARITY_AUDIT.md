@@ -2,7 +2,7 @@
 
 **Runtime product:** **Fabric** + **Geyser/Floodgate**; **Bukkit** `CommandRegistrar` + ACF is the **in-repo reference only**, not a second shipped runtime.
 
-**Sprint 39** establishes this audit and a **shared Brigadier scaffold** (`fabric/.../command/FabricBrigadierCommands` and helpers). **Final** public **Granite** command names/aliases are **not frozen** in this document.
+**Sprint 39** establishes this audit and a **shared Brigadier scaffold** (`fabric/.../command/FabricBrigadierCommands` and helpers). **Sprint 40** adds **shared online player + skill parsing** (`FabricCommandPlayerTarget`, `FabricCommandSkillParser`, `FabricCommandSuggestionProviders`) and the first **`xp`** batch. **Final** public **Granite** command names/aliases are **not frozen** in this document.
 
 **Reference root:** ACF `skills_alias` = `skills|sk|skill` (`CommandRegistrar#registerReplacements`) → commands attach under **`/skills`**, `/sk`, `/skill` **plus** dedicated classes noted below.
 
@@ -42,7 +42,8 @@
 | `SkillsRootCommand` `transfer` | — | Missing | |
 | `SkillsRootCommand` `updateleaderboards` | — | Missing | |
 | `SkillCommand` `skill setlevel\|addlevel\|setall\|reset` | — | Missing | |
-| `XpCommand` `xp add\|set\|remove` | — | Missing | |
+| `XpCommand` `xp add\|set\|remove` | `/auraskills xp …`, `/xp …` — **add** / **set** / **remove** `<player> <skill> <amount>`; permissions `auraskills.command.xp.*` (defaults like Bukkit **op** for mutations) | Partial | **Sprint 40:** no `silent` flag; no `skills\|sk\|skill` prefix (use `/xp` or `/auraskills xp`) |
+| `XpCommand` (extra) | `/xp view <player> <skill>` | Partial | **Sprint 40:** read-only; not in reference Bukkit file; uses `auraskills.command.xp.view` (default **allow**) — lock down with LP if needed |
 | `ModifierCommand` | — | Missing | |
 | `TraitCommand` | — | Missing | |
 | `ItemCommand` (large tree) | — | Missing | |
@@ -69,8 +70,8 @@
 | Reference capability | Fabric |
 |---------------------|--------|
 | Replacements (`%skills_alias%`, `desc_*`) | **Missing** — hardcoded/translation keys for now |
-| Context resolvers (Skill, Stat, User, …) | **Missing** — future Brigadier argument types / suggests |
-| Async completions | **Missing** |
+| Context resolvers (Skill, Stat, User, …) | **Partial** — **Sprint 40:** `FabricCommandSkillParser` + `FabricCommandPlayerTarget` + `FabricCommandSuggestionProviders` (sync suggestions); not full ACF (no Stat/Trait/UUID/JsonArg) |
+| Async completions | **Missing** (Fabric uses server-thread sync suggestions) |
 | `CommandHelp` | **Missing** |
 
 ---
@@ -80,6 +81,7 @@
 1. Align **`help`** permission node with Bukkit and/or add structured multi-line help.
 2. **`/auraskills top`** (or `/skills top` alias) using existing `LeaderboardManager` (already on Fabric).
 3. **`/mana` subcommands** (add/set/remove) with same permission pattern as Bukkit.
-4. Shared **argument** helpers (`Skill` id, `Stat` id) reusing registries and **suggestion** providers.
+4. **`/xp`:** optional **`silent`**, Stat arguments elsewhere, and **`skills` / `sk` / `skill`** alias roots to mirror Bukkit.
+5. Revisit **`/xp view`** default (currently **true** for `auraskills.command.xp.view`) for PvP servers.
 
 Document owner: keep this file in sync when adding Fabric commands; update `fabric/MENU_AND_COMMANDS_PORT.md` §Sprint for shipped batches.

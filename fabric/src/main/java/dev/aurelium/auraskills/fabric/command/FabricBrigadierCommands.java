@@ -26,10 +26,11 @@ public final class FabricBrigadierCommands {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         FabricAuraSkillsMod.LOGGER.info(
-                "Registering Brigadier: /auraskills (…), /skills, /stats, /mana — see fabric/COMMAND_PARITY_AUDIT.md");
+                "Registering Brigadier: /auraskills (…), /skills, /stats, /mana, /xp — see fabric/COMMAND_PARITY_AUDIT.md");
 
         registerAuraskillsAndAliases(dispatcher);
         registerManaRoot(dispatcher);
+        dispatcher.register(FabricXpCommands.xpRoot());
     }
 
     private static void registerAuraskillsAndAliases(CommandDispatcher<ServerCommandSource> dispatcher) {
@@ -52,7 +53,8 @@ public final class FabricBrigadierCommands {
                         .executes(FabricBrigadierCommands::reload))
                 .then(literal("save")
                         .requires(FabricCommandRequirements.permission(FabricCommandPermissions.SAVE, false))
-                        .executes(FabricBrigadierCommands::save)));
+                        .executes(FabricBrigadierCommands::save))
+                .then(FabricXpCommands.xpRoot()));
         dispatcher.register(literal("skills")
                 .requires(FabricCommandRequirements.permission(FabricCommandPermissions.SKILLS, true))
                 .executes(FabricBrigadierCommands::skills));

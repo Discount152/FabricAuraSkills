@@ -27,5 +27,15 @@ public final class FabricCommandPermissions {
      */
     public static final String MANA = "auraskills.command.mana";
 
+    /** Read-only: {@code /xp view <player> <skill>} (Sprint 40). Default true so players can inspect online targets (lock down via LP if needed). */
+    public static final String XP_VIEW = "auraskills.command.xp.view";
+
+    /** Bukkit: {@code xp add} (see {@code XpCommand} in the reference module). */
+    public static final String XP_ADD = "auraskills.command.xp.add";
+
+    public static final String XP_SET = "auraskills.command.xp.set";
+
+    public static final String XP_REMOVE = "auraskills.command.xp.remove";
+
     private FabricCommandPermissions() {}
 }

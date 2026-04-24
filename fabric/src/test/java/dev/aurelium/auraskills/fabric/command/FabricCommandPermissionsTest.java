@@ -19,7 +19,11 @@ class FabricCommandPermissionsTest {
             FabricCommandPermissions.STATS,
             FabricCommandPermissions.RELOAD,
             FabricCommandPermissions.SAVE,
-            FabricCommandPermissions.MANA
+            FabricCommandPermissions.MANA,
+            FabricCommandPermissions.XP_VIEW,
+            FabricCommandPermissions.XP_ADD,
+            FabricCommandPermissions.XP_SET,
+            FabricCommandPermissions.XP_REMOVE
         };
         Set<String> seen = new HashSet<>();
         for (String s : all) {

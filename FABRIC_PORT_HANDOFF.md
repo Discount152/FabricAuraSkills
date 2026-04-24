@@ -313,7 +313,7 @@ Mirrors Bukkit event order: **`FishingLootHandler` @HIGH**-equivalent ( **`tryRo
 
 ## 9. Commands
 
-**Fabric (current):** Brigadier via `fabric/.../FabricAuraSkillsCommands.java` (callback) and **`dev.aurelium.auraskills.fabric.command.FabricBrigadierCommands`** — see **`fabric/COMMAND_PARITY_AUDIT.md`** (Bukkit `CommandRegistrar` vs Fabric), root `/auraskills`, `/skills`, `/stats`, `/mana`, and **`fabric/SPRINT_39_MANUAL_COMMANDS.md`**. This is a **partial** surface until the **reference command/menu capability** program in **`PAPER_PARITY_PROGRAM.md`** delivers the full tree (on **Fabric**; final **Granite** public names **TBD**).
+**Fabric (current):** Brigadier via `fabric/.../FabricAuraSkillsCommands.java` (callback) and **`dev.aurelium.auraskills.fabric.command.FabricBrigadierCommands`**, with **`FabricXpCommands`**, **player/skill** argument helpers, and manuals **`fabric/SPRINT_39_MANUAL_COMMANDS.md`**, **`fabric/SPRINT_40_MANUAL_XP_COMMANDS.md`** — see **`fabric/COMMAND_PARITY_AUDIT.md`**. Roots include `/auraskills`, `/skills`, `/stats`, `/mana`, `/xp`. This is a **partial** surface until the **reference command/menu capability** program in **`PAPER_PARITY_PROGRAM.md`** delivers the full tree (on **Fabric**; final **Granite** public names **TBD**).
 
 **Reference (Bukkit module):** Full ACF command tree in `bukkit/.../commands/CommandRegistrar.java` and related classes, plus menus via `MenuRegistrar` — the **capability inventory** to implement on Fabric. **Planned delivery:** **`fabric/MENU_AND_COMMANDS_PORT.md`** (Slate on Fabric + ACF Brigadier) as part of that program.
 

@@ -74,7 +74,7 @@ These are **product** requirements, not optional polish:
 
 ## Commands
 
-- **ACF / full reference `skills` root command tree** (aliases `sk` / `skill` per Bukkit) — **not** complete on Fabric. **Sprint 39** adds **`fabric/COMMAND_PARITY_AUDIT.md`**, a shared Brigadier **scaffold** (`FabricBrigadierCommands` + permission/requirement helpers), and root **`/mana`** (self display). **`sk` / `skill`** not registered on Fabric yet. **Planned:** **[MENU_AND_COMMANDS_PORT.md](MENU_AND_COMMANDS_PORT.md)** + **[PAPER_PARITY_PROGRAM.md](PAPER_PARITY_PROGRAM.md)**. Staff nodes **`auraskills.command.reload`** / **`auraskills.command.save`** (default **deny** with a **Fabric permission provider** in production, if you use one).
+- **ACF / full reference `skills` root command tree** (aliases `sk` / `skill` per Bukkit) — **not** complete on Fabric. **Sprint 39–40** add **`fabric/COMMAND_PARITY_AUDIT.md`**, a shared Brigadier **scaffold** (`FabricBrigadierCommands` + permission/requirement helpers), root **`/mana`** (self display), and **`/xp`** / **`/auraskills xp`** (view + add/set/remove) with **player + skill** helpers (`FabricCommandPlayerTarget`, `FabricCommandSkillParser`, `FabricCommandSuggestionProviders`). **`sk` / `skill`** Bukkit-style alias roots for **xp** are still **not** on Fabric. **Planned:** **[MENU_AND_COMMANDS_PORT.md](MENU_AND_COMMANDS_PORT.md)** + **[PAPER_PARITY_PROGRAM.md](PAPER_PARITY_PROGRAM.md)**. Staff nodes **`auraskills.command.reload`** / **`auraskills.command.save`** (default **deny** with a **Fabric permission provider** in production, if you use one).
 
 ## API surface
 

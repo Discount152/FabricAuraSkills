@@ -95,7 +95,7 @@
 | CMD-007 | `ArmorCommand` | — | Missing | ACF/Brigadier |
 | CMD-008 | `ProfileCommand` | — | Missing | ACF/Brigadier |
 | CMD-009 | `BackupCommand` | — | Missing | ACF/Brigadier |
-| CMD-010 | `XpCommand` | — | Missing | ACF/Brigadier |
+| CMD-010 | `XpCommand` | `FabricXpCommands` + `FabricCommandSkillParser` / `FabricCommandPlayerTarget` (`/xp`, `/auraskills xp`) | Partial | ACF/Brigadier | **Sprint 40** — add/set/remove + view; no `silent`; not under `skills\|sk\|skill` alias |
 | CMD-011 | `PresetCommand` | — | Missing | ACF/Brigadier |
 | CMD-012 | `StorageCommand` | — | Missing | ACF/Brigadier |
 | CMD-013 | `OpenMenuCommand` | — | Missing | Slate-Fabric + ACF/Brigadier |
@@ -106,7 +106,7 @@
 | CMD-018 | `registerSkillCommands` (per-skill `SkillCommands.*`) | — | Missing | ACF/Brigadier + config `ENABLE_SKILL_COMMANDS` |
 | CMD-019 | ACF: replacements (`skills_alias`, desc keys) | — | Missing | ACF/Brigadier | |
 | CMD-020 | ACF: contexts (User, Skill, ManaAbility, Stat, Trait, UUID, JsonArg, Duration) | — | Missing | ACF/Brigadier | |
-| CMD-021 | ACF: async completions (skills, stats, menu_names, …) | — | Missing | ACF/Brigadier | |
+| CMD-021 | ACF: async completions (skills, stats, menu_names, …) | `FabricCommandSuggestionProviders` (sync) | Partial | ACF/Brigadier | **Sprint 40** — **xp** suggestions for online players + skill keys only |
 
 **Fabric admin parity (not in Bukkit ACF list):** `reload`, `save` in `FabricAuraSkillsCommands` — **extra**; keep row if tracking “operator surface” separately.
 

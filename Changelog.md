@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.68
+
+### Changes
+
+- **Fabric: shared player/skill command args + `xp` batch 1 (Sprint 40):** **`FabricCommandPlayerTarget`**, **`FabricCommandSkillParser`**, **`FabricCommandSuggestionProviders`**; **`FabricXpCommands`** — **`/xp`** and **`/auraskills xp`** **view** / **add** / **set** / **remove** (`LevelManager`). **Perms** `auraskills.command.xp.view` / `.add` / `.set` / `.remove`. **Tests** `FabricCommandPlayerTargetTest`, permissions list. **Docs** `SPRINT_40_MANUAL_XP_COMMANDS.md`, `COMMAND_PARITY_AUDIT`, `MENU_AND_COMMANDS_PORT`, parity, backlog, handoff. **`projectVersion` 2.3.67 → 2.3.68**. Not in scope: `silent`, `skills\|sk\|skill` **xp** prefix like Bukkit.
+
 ## 2.3.67
 
 ### Changes

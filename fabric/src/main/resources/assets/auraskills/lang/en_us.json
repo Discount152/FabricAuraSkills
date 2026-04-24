@@ -1,6 +1,10 @@
 {
-  "auraskills.granite.command.auraskills_usage": "Use: /auraskills <version|help|skills|stats|reload|save>  —  /skills / /stats = menus  —  /mana = mana display",
-  "auraskills.granite.command.help": "Fabric AuraSkills: /auraskills version | /skills | /stats | /mana | reload | save (staff)",
+  "auraskills.granite.command.auraskills_usage": "Use: /auraskills <version|help|skills|stats|xp|reload|save>  —  /skills / /stats = menus  —  /mana = mana  —  /xp = XP (Sprint 40)",
+  "auraskills.granite.command.help": "Fabric AuraSkills: /auraskills version | /skills | /stats | /mana | /xp | reload | save (staff)",
+  "auraskills.granite.command.xp.view_line": "%s — %s: level %s, XP %s",
+  "auraskills.granite.command.xp.player_not_found": "No online player: %s",
+  "auraskills.granite.command.xp.amount_positive": "Amount must be greater than 0 for add.",
+  "auraskills.granite.command.xp.amount_non_negative": "Amount must be at least 0.",
   "auraskills.granite.menu.skills_title": "Skills",
   "auraskills.granite.menu.skills_lore_level": "Level: %s",
   "auraskills.granite.menu.skills_lore_xp": "XP: %s",

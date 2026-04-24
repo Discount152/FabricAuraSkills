@@ -260,3 +260,14 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Manual** | **`SPRINT_39_MANUAL_COMMANDS.md`** |
 
 **Not in Sprint 39:** `sk`/`skill` aliases, ACF context/completion parity, or large subcommand trees.
+
+## Sprint 40 — player/skill arguments + **xp** batch 1 (shipped, partial)
+
+| Piece | Where |
+|-------|--------|
+| **Args** | **`FabricCommandPlayerTarget`** (online name resolve + filter), **`FabricCommandSkillParser`** (registry key / `NamespacedId`), **`FabricCommandSuggestionProviders`** (players + enabled skill keys) |
+| **XP** | **`FabricXpCommands#xpRoot`**: **`/xp`** and **`/auraskills xp`** — **view** `<player> <skill>`; **add** / **set** / **remove** `<player> <skill> <amount>`; uses **`LevelManager#addXp` / `#setXp`** like Bukkit |
+| **Perms** | **`FabricCommandPermissions`:** `XP_VIEW` (default allow), `XP_ADD` / `XP_SET` / `XP_REMOVE` (default deny — staff / LP) |
+| **Manual** | **`SPRINT_40_MANUAL_XP_COMMANDS.md`** |
+
+**Not in Sprint 40:** `silent` flag, `skills` root prefix for `xp`, or full ACF **Skill** context parity.
