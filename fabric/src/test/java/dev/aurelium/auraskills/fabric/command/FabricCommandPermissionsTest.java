@@ -38,7 +38,9 @@ class FabricCommandPermissionsTest {
             FabricCommandPermissions.ABTOGGLE,
             FabricCommandPermissions.LANG,
             FabricCommandPermissions.UPDATE_LEADERBOARDS,
-            FabricCommandPermissions.MODIFIER
+            FabricCommandPermissions.MODIFIER,
+            FabricCommandPermissions.ITEM_MODIFIER,
+            FabricCommandPermissions.ARMOR_MODIFIER
         };
         Set<String> seen = new HashSet<>();
         for (String s : all) {

@@ -105,4 +105,34 @@ public final class FabricCommandModifierText {
             case MULTIPLY -> NumberUtil.format2(modifier.value()) + "x";
         };
     }
+
+    /** Held item stat/trait list lines (no {player} context). */
+    public static String applyStatModifierItem(
+            FabricAuraSkills p, String input, StatModifier mod, Locale lo) {
+        Stat stat = mod.stat();
+        return p.getMessageProvider()
+                .applyFormatting(
+                        input.replace("{color}", stat.getColor(lo))
+                                .replace("{symbol}", stat.getSymbol(lo))
+                                .replace("{stat}", stat.getDisplayName(lo, false))
+                                .replace("{value}", formatValue(mod))
+                                .replace("{name}", mod.name())
+                                .replace("{operation}", mod.operation().toString())
+                                .replace("{player}", ""));
+    }
+
+    public static String applyTraitModifierItem(
+            FabricAuraSkills p, String input, TraitModifier mod, Locale lo) {
+        Trait trait = mod.trait();
+        Stat st = firstLinkedStat(p.getTraitManager(), trait);
+        return p.getMessageProvider()
+                .applyFormatting(
+                        input.replace("{color}", st != null ? st.getColor(lo) : "")
+                                .replace("{symbol}", "")
+                                .replace("{stat}", trait.getDisplayName(lo, false))
+                                .replace("{trait}", trait.getDisplayName(lo, false))
+                                .replace("{value}", formatValue(mod))
+                                .replace("{name}", mod.name())
+                                .replace("{player}", ""));
+    }
 }

@@ -22,7 +22,7 @@ public final class FabricBrigadierCommands {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         FabricAuraSkillsMod.LOGGER.info(
-                "Registering Brigadier: /auraskills (…), /skills, /sk|skill, /stats, /openmenu, leaderboard, /multiplier|/toggle|/abtoggle|/lang, /modifier, /trait, /mana, /skilllevel, /xp — see fabric/COMMAND_PARITY_AUDIT.md");
+                "Registering Brigadier: /auraskills (…), /skills, /sk|skill, /stats, /openmenu, leaderboard, /multiplier|/toggle|/abtoggle|/lang, /modifier, /trait, /item, /armor, /mana, /skilllevel, /xp — see fabric/COMMAND_PARITY_AUDIT.md");
 
         registerAuraskillsAndAliases(dispatcher);
         dispatcher.register(FabricOpenMenuCommands.openMenuRoot());
@@ -37,6 +37,8 @@ public final class FabricBrigadierCommands {
         dispatcher.register(FabricPlayerUtilityCommands.langRoot());
         dispatcher.register(FabricPlayerModifierCommands.modifierCommandRoot());
         dispatcher.register(FabricPlayerModifierCommands.traitCommandRoot());
+        dispatcher.register(FabricItemArmorModifierCommands.itemCommandRoot());
+        dispatcher.register(FabricItemArmorModifierCommands.armorCommandRoot());
         dispatcher.register(aliasSkillsRoot("sk"));
         dispatcher.register(aliasSkillsRoot("skill"));
         dispatcher.register(FabricManaCommands.manaCommandRoot());
@@ -70,6 +72,8 @@ public final class FabricBrigadierCommands {
                 .then(FabricPlayerUtilityCommands.langRoot())
                 .then(FabricPlayerModifierCommands.modifierCommandRoot())
                 .then(FabricPlayerModifierCommands.traitCommandRoot())
+                .then(FabricItemArmorModifierCommands.itemCommandRoot())
+                .then(FabricItemArmorModifierCommands.armorCommandRoot())
                 .then(FabricXpCommands.xpRoot())
                 .then(FabricManaCommands.manaCommandRoot())
                 .then(FabricSkillLevelCommands.skillLevelRoot());
@@ -119,7 +123,9 @@ public final class FabricBrigadierCommands {
                 .then(FabricPlayerUtilityCommands.abToggleRoot())
                 .then(FabricPlayerUtilityCommands.langRoot())
                 .then(FabricPlayerModifierCommands.modifierCommandRoot())
-                .then(FabricPlayerModifierCommands.traitCommandRoot()));
+                .then(FabricPlayerModifierCommands.traitCommandRoot())
+                .then(FabricItemArmorModifierCommands.itemCommandRoot())
+                .then(FabricItemArmorModifierCommands.armorCommandRoot()));
         dispatcher.register(literal("skills")
                 .requires(FabricCommandRequirements.permission(FabricCommandPermissions.SKILLS, true))
                 .executes(FabricBrigadierCommands::skills));

@@ -109,5 +109,16 @@ public final class FabricCommandPermissions {
      */
     public static final String MODIFIER = "auraskills.command.modifier";
 
+    /**
+     * Bukkit {@code ItemCommand} {@code item modifier …} / {@code item trait …} (see reference
+     * {@code plugin.yml}). **Sprint 51** — held-item stat/trait modifier admin.
+     */
+    public static final String ITEM_MODIFIER = "auraskills.command.item.modifier";
+
+    /**
+     * Bukkit {@code ArmorCommand} {@code armor modifier …} / {@code armor trait …}. **Sprint 51**
+     */
+    public static final String ARMOR_MODIFIER = "auraskills.command.armor.modifier";
+
     private FabricCommandPermissions() {}
 }

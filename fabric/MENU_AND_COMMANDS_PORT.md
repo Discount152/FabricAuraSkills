@@ -383,3 +383,13 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Permission** | **`auraskills.command.modifier`** (see **`FabricCommandPermissions#MODIFIER`**) — default **deny** for unprivileged fabric-perms |
 
 | **Not in Sprint 50** | Bukkit **`addtemp`**, **item** / **armor** modifier subcommands, **offline** targets, ACF **silent** — see **`fabric/COMMAND_PARITY_AUDIT.md`**. **Manual:** **`SPRINT_50_MANUAL_MODIFIER_TRAIT.md`**. **Ledger** CMD-005 / CMD-015: **Partial**. |
+
+## Sprint 51 — **item** + **armor** held stat/trait modifier commands (shipped, partial)
+
+| Area | Shipped on Fabric (bounded) |
+|------|-----------------------------|
+| **Commands** | **`/item`**, **`/armor`** (standalone + **`/auraskills`**, + **`/sk`**, **`/skill`**) — **`item modifier\|trait`** and **`armor modifier\|trait`**: **add** ([op] + **lore**), **remove** (stat + optional lore; trait remove w/out lore), **list**, **removeall**; **player**-only, **main-hand** item |
+| **State** | **`FabricSkillsItemWriter`** (PDC list; strips legacy `AuraSkills/Modifiers/…` for the same `ModifierType` on write) + **`FabricItemModifierLore`** (prepend lore / stat-based strip on remove) + **`User`** refresh via **`FabricModifierManager#applyModifiers`** |
+| **Perms** | `auraskills.command.item.modifier`, `auraskills.command.armor.modifier` (Bukkit `plugin.yml` names) |
+
+| **Not in Sprint 51** | Reference **ItemCommand** / **ArmorCommand** **requirement**, **multiplier**, **ignore**, item **register**/**give**. **Manual:** `SPRINT_51_MANUAL_ITEM_ARMOR_MODIFIERS.md`. |

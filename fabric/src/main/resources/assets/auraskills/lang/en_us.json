@@ -1,6 +1,8 @@
 {
-  "auraskills.granite.command.auraskills_usage": "Use: /auraskills <…> — also /openmenu, /sk, /skill (Sprint 46: /sk|skill can mirror xp, mana, skilllevel, modifier, trait)  —  see fabric/COMMAND_PARITY_AUDIT.md",
-  "auraskills.granite.command.help": "Fabric AuraSkills: /auraskills … | /skills, /sk, /skill (subcommands) | /stats | /openmenu | leaderboard (top, top average, skilltop, rank, updateleaderboards) / utility (multiplier, toggle, abtoggle, lang) | /mana | /skilllevel | /xp | /modifier, /trait (player modifiers) | staff: reload, save",
+  "auraskills.granite.command.auraskills_usage": "Use: /auraskills <…> — also /openmenu, /sk, /skill (Sprint 46: /sk|skill can mirror xp, mana, skilllevel, modifier, trait, item, armor)  —  see fabric/COMMAND_PARITY_AUDIT.md",
+  "auraskills.granite.command.help": "Fabric AuraSkills: /auraskills … | /skills, /sk, /skill (subcommands) | /stats | /openmenu | leaderboard (top, top average, skilltop, rank, updateleaderboards) / utility (multiplier, toggle, abtoggle, lang) | /mana | /skilllevel | /xp | /modifier, /trait (player modifiers) | /item, /armor (held-item modifiers) | staff: reload, save",
+  "auraskills.granite.command.item_armor_mod.players_only": "This command is for players only (hold an item in the main hand).",
+  "auraskills.granite.command.item_armor_mod.empty_hand": "Hold a non-empty item in your main hand.",
   "auraskills.granite.command.leaderboard.players_only": "This command is for players only.",
   "auraskills.granite.command.utility.players_only": "This command is for players only.",
   "auraskills.granite.command.openmenu.console_specify": "Console: /openmenu <skills|stats> <player>  —  for level_progression/stat_info: /openmenu <menu> <player> <skill|stat>",

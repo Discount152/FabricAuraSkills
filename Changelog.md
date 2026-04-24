@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.79
+
+### Changes
+
+- **Fabric: item/armor held modifier commands (Sprint 51):** **`FabricItemArmorModifierCommands`** — **`/item`**, **`/armor`** (standalone, **`/auraskills`**, **`/sk`**, **`/skill`**) with **`item|armor` → `modifier|trait` →** **add** / **remove** / **list** / **removeall** (main hand). **`FabricSkillsItemWriter`** (PDC list, legacy strip), **`FabricItemModifierLore`**, **`FabricCommandModifierText`** (item list lines). Perms **`auraskills.command.item.modifier`**, **`auraskills.command.armor.modifier`**. **Lang** `item_armor_mod.*`, help. **Tests** permissions. **Docs** `SPRINT_51_MANUAL_ITEM_ARMOR_MODIFIERS.md`, `COMMAND_PARITY_AUDIT`, `MENU_AND_COMMANDS_PORT`, `PARITY_BACKLOG`, **ledger** CMD-001/006/007, **`projectVersion` 2.3.78 → 2.3.79**. **Not in scope:** `requirement` / `multiplier` / `ignore` / `register` / `give` (reference has more for **Item** / **Armor**). **Build:** `.\gradlew -PfabricOnly=true :fabric:test`.
+
 ## 2.3.78
 
 ### Changes
