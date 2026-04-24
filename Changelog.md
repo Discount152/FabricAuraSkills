@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.74
+
+### Changes
+
+- **Fabric: `/sk` and `/skill` compatibility subtree (Sprint 46):** **`FabricBrigadierCommands#aliasSkillsRoot`** chains existing **`FabricXpCommands.xpRoot()`**, **`FabricManaCommands.manaCommandRoot()`**, and **`FabricSkillLevelCommands.skillLevelRoot()`** (each call = new node tree) alongside **`openmenu`**. **Lang** help/usage. **Docs** `SPRINT_46_MANUAL_SK_SKILL_COMPAT_SUBTREE.md`, `COMMAND_PARITY_AUDIT`, `MENU_AND_COMMANDS_PORT`, `PARITY_BACKLOG`, ledger **CMD-001/003/004/010/019**. **`projectVersion` 2.3.73 → 2.3.74**. **Not in scope:** ACF literal **`/sk skill`**; new gameplay; freezing final public Granite names. **Tests:** no new automated test (Brigadier trees require full registries in this module’s unit test JVM); use manual doc.
+
 ## 2.3.73
 
 ### Changes

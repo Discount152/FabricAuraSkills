@@ -22,7 +22,7 @@ public final class FabricBrigadierCommands {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         FabricAuraSkillsMod.LOGGER.info(
-                "Registering Brigadier: /auraskills (…), /skills, /sk, /skill, /stats, /openmenu, /mana, /skilllevel, /xp — see fabric/COMMAND_PARITY_AUDIT.md");
+                "Registering Brigadier: /auraskills (…), /skills, /sk|skill (compat: openmenu, xp, mana, skilllevel), /stats, /openmenu, /mana, /skilllevel, /xp — see fabric/COMMAND_PARITY_AUDIT.md");
 
         registerAuraskillsAndAliases(dispatcher);
         dispatcher.register(FabricOpenMenuCommands.openMenuRoot());
@@ -34,15 +34,23 @@ public final class FabricBrigadierCommands {
     }
 
     /**
-     * Bukkit {@code skills|sk|skill} alias: default opens **Skills** (permission like {@code
-     * /skills}); subcommand {@code openmenu} uses {@link FabricCommandPermissions#OPEN_MENU}
-     * (**Sprint 44**).
+     * Bukkit {@code skills|sk|skill} shape: default opens **Skills** (permission like {@code
+     * /skills}). **Sprint 44–45:** {@code openmenu}. **Sprint 46:** reuses the same
+     * {@link FabricXpCommands#xpRoot()}, {@link FabricManaCommands#manaCommandRoot()}, and
+     * {@link FabricSkillLevelCommands#skillLevelRoot()} <strong>builders</strong> (each
+     * registration call produces a <strong>new</strong> node tree) so
+     * {@code /sk|skill xp …}, {@code … mana …}, and {@code … skilllevel …} match the
+     * standalone roots without duplicating executors. Permissions are unchanged on the shared
+     * nodes.
      */
     private static com.mojang.brigadier.builder.LiteralArgumentBuilder<ServerCommandSource> aliasSkillsRoot(
             String alias) {
         return literal(alias)
                 .executes(FabricBrigadierCommands::skillsAliasDefault)
-                .then(FabricOpenMenuCommands.openMenuSubcommand());
+                .then(FabricOpenMenuCommands.openMenuSubcommand())
+                .then(FabricXpCommands.xpRoot())
+                .then(FabricManaCommands.manaCommandRoot())
+                .then(FabricSkillLevelCommands.skillLevelRoot());
     }
 
     private static int skillsAliasDefault(CommandContext<ServerCommandSource> ctx) {

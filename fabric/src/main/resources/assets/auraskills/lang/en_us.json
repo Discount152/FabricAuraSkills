@@ -1,6 +1,6 @@
 {
-  "auraskills.granite.command.auraskills_usage": "Use: /auraskills <…> — also /openmenu, /sk, /skill (Sprint 44)  —  see fabric/COMMAND_PARITY_AUDIT.md",
-  "auraskills.granite.command.help": "Fabric AuraSkills: /auraskills … | /skills / /sk / /skill | /stats | /openmenu (skills, stats, level_progression, stat_info) | /mana | /skilllevel | /xp | staff: reload, save",
+  "auraskills.granite.command.auraskills_usage": "Use: /auraskills <…> — also /openmenu, /sk, /skill (Sprint 46: /sk|skill can mirror xp, mana, skilllevel)  —  see fabric/COMMAND_PARITY_AUDIT.md",
+  "auraskills.granite.command.help": "Fabric AuraSkills: /auraskills … | /skills / /sk / /skill (also: /sk|skill <xp|mana|skilllevel|openmenu> …) | /stats | /openmenu … | /mana | /skilllevel | /xp | staff: reload, save",
   "auraskills.granite.command.openmenu.console_specify": "Console: /openmenu <skills|stats> <player>  —  for level_progression/stat_info: /openmenu <menu> <player> <skill|stat>",
   "auraskills.granite.command.openmenu.context.console_specify": "Console: /openmenu level_progression <player> <skill>  or  /openmenu stat_info <player> <stat>",
   "auraskills.granite.command.openmenu.unknown_built_in": "openmenu (Fabric) only supports built-in menus: skills, stats, level_progression, stat_info (see fabric/COMMAND_PARITY_AUDIT.md).",

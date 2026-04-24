@@ -330,3 +330,15 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Manual** | **`SPRINT_45_MANUAL_OPENMENU_CONTEXT_MENUS.md`** |
 
 **Not in Sprint 45:** Bukkit **JSON** `properties` and **`page`** on `openmenu`; custom Slate `menuName`; optional **list page** as a command argument.
+
+## Sprint 46 — `/sk` and `/skill` **compatibility** subtree (shipped, partial)
+
+| Piece | Where |
+|-------|--------|
+| **Routing** | **`FabricBrigadierCommands#aliasSkillsRoot`**: under **`/sk`** and **`/skill`**, after `openmenu`, chains **`.then(`**`FabricXpCommands.xpRoot())`**, **`.then(`**`FabricManaCommands.manaCommandRoot())`**, **`.then(`**`FabricSkillLevelCommands.skillLevelRoot())`**. Each `*Root()` call builds a **new** `LiteralArgumentBuilder` tree (same `Command<>` executors; no second implementation). |
+| **Standalone roots** | **`/xp`**, **`/mana`**, **`/skilllevel`**, **`/openmenu`**, **`/auraskills …`** **unchanged**. |
+| **Caveat** | Reference **`/sk skill <sub>`** (ACF) is **not** mirrored: Fabric’s **`/skill`/`/sk`** are **literal** roots, so the compatibility word for **SkillCommand**-family work is **`/sk skilllevel …`**, not **`/sk skill`**. |
+| **Manual** | **`SPRINT_46_MANUAL_SK_SKILL_COMPAT_SUBTREE.md`** |
+| **Lang** | **usage** / **help** strings (surface `/sk\|skill <xp\|mana\|skilllevel\|openmenu>`) |
+
+**Not in Sprint 46:** ACF **SkillCommand** at **`/sk skill`**, `SkillsRootCommand` **top**/**rank**/**lang**, or any new **gameplay** systems.
