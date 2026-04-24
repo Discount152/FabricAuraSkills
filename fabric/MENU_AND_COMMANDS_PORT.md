@@ -414,4 +414,15 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Perms** | **`auraskills.command.item.requirement`**, **`auraskills.command.item.multiplier`** (separate from **modifier** / **ignore**) |
 | **Suggestions** | **`FabricCommandSuggestionProviders#enabledSkillKeysOrGlobal`** (multiplier **add** / **remove** first arg) |
 
-| **Not in Sprint 53** | **Armor** `requirement` / `multiplier` (Bukkit has **`ArmorCommand`**); **item** **register** / **give**. **Manual:** `SPRINT_53_MANUAL_ITEM_REQ_MULT.md`. |
+| **Not in Sprint 53** | **Armor** `requirement` / `multiplier` — **Sprint 54**; **item** **register** / **give**. **Manual:** `SPRINT_53_MANUAL_ITEM_REQ_MULT.md`. |
+
+## Sprint 54 — **`/armor requirement`** + **`/armor multiplier`** (shipped, partial)
+
+| Area | Shipped on Fabric (bounded) |
+|------|-----------------------------|
+| **Commands** | Same subcommand shapes as **`/item requirement`** / **`/item multiplier`**, on **`/armor`** (standalone + **`/auraskills`**, **`/sk`**, **`/skill`**); **main hand** (Bukkit **`@Flags("itemheld")`**) |
+| **State** | **`FabricSkillsItemWriter`** with **`ModifierType.ARMOR`** → PDC `auraskills:armor_requirements` / `auraskills:armor_multipliers`; shared **`RequirementMsg` / `MultiplierMsg`** + **`requirementAdd`**, **`multiplierAdd`**, … |
+| **Perms** | **`auraskills.command.armor.requirement`**, **`auraskills.command.armor.multiplier`**; **`modifier`/`trait`** subtrees still **`auraskills.command.armor.modifier`** — **`/armor` root** has **no** single permission (**Sprint 54**, mirrors **`/item`**) |
+| **Manual** | `SPRINT_54_MANUAL_ARMOR_REQ_MULT.md` |
+
+| **Not in Sprint 54** | **Item** **register** / **give**; out-of-lane work (storage, profiles, …). |

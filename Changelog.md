@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.82
+
+### Changes
+
+- **Fabric: `armor requirement` + `armor multiplier` (Sprint 54):** Bukkit-shaped **main-hand** **`/armor requirement`** / **`/armor multiplier`** (same subcommands as **`/item`**: **add** / **remove** / **list** / **removeall**; optional **lore** on add/remove for requirement & multiplier add). **Refactor:** **`RequirementMsg`**, **`MultiplierMsg`**, and shared **`requirement*`** / **`multiplier*`** methods with **`ModifierType`** — item paths delegate to same logic. **Perms** **`auraskills.command.armor.requirement`**, **`auraskills.command.armor.multiplier`**. **`armor` root** no longer has a single permission: **`modifier`** & **`trait`** use **`armor.modifier`**; new subtrees use their own nodes (mirrors item split). **Docs** `SPRINT_54_MANUAL_ARMOR_REQ_MULT.md`, audit/MENU/ledger/backlog, **`projectVersion` 2.3.81 → 2.3.82**. **Not in scope:** item **register** / **give**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test`.
+
 ## 2.3.81
 
 ### Changes

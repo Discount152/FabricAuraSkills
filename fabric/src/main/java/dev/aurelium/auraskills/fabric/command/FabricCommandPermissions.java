@@ -138,5 +138,17 @@ public final class FabricCommandPermissions {
      */
     public static final String ARMOR_MODIFIER = "auraskills.command.armor.modifier";
 
+    /**
+     * Bukkit {@code ArmorCommand} {@code armor requirement …}. **Sprint 54** — see {@code
+     * plugin.yml} {@code auraskills.command.armor.requirement}.
+     */
+    public static final String ARMOR_REQUIREMENT = "auraskills.command.armor.requirement";
+
+    /**
+     * Bukkit {@code ArmorCommand} {@code armor multiplier …}. **Sprint 54** — see {@code
+     * plugin.yml} {@code auraskills.command.armor.multiplier}.
+     */
+    public static final String ARMOR_MULTIPLIER = "auraskills.command.armor.multiplier";
+
     private FabricCommandPermissions() {}
 }
