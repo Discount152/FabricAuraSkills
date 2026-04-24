@@ -22,7 +22,7 @@ Repeat **`/skill openmenu stats`** (and **`/auraskills openmenu stats`**).
 1. **`/openmenu skills`** (as a player) — opens **Skills**, feedback like **`/skills`**.
 2. **`/openmenu stats`** — opens **Stats**.
 3. **Console:** **`/openmenu skills someOnlinePlayer`** — opens for target; executor gets **`opened_for`**.
-4. Invalid id (e.g. **`level_progression`**) — **`openmenu.unknown_built_in`**.
+4. **Sprint 45:** **`/openmenu level_progression`** and **`stat_info`** are valid with **skill** / **stat** args — see **`SPRINT_45_MANUAL_OPENMENU_CONTEXT_MENUS.md`**. A **typo** top-level literal after **`openmenu`** yields a normal Brigadier parse error (no such subcommand).
 
 ## Regression
 

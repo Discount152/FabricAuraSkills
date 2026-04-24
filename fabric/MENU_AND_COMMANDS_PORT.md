@@ -317,3 +317,16 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Manual** | **`SPRINT_44_MANUAL_ALIASES_OPENMENU.md`** |
 
 **Not in Sprint 44:** arbitrary Slate menu names; JSON **properties** / **page** args; **level_progression** / **stat_info** without context; full `SkillsRootCommand` subtree under aliases.
+
+## Sprint 45 — **openmenu** + **level_progression** / **stat_info** (shipped, partial)
+
+| Piece | Where |
+|-------|--------|
+| **openmenu** | **`FabricOpenMenuCommands`**: Brigadier **literals** for **`skills`**, **`stats`**, **`level_progression`**, **`stat_info`**. **Detail:** `openmenu level_progression [<onlinePlayer>] <skillkey>`; `openmenu stat_info [<onlinePlayer>] <statkey>`. Same permission **`auraskills.command.openmenu`**. |
+| **Routing** | **`FabricAuraSkillsMenus.openLevelProgression`** / **`openStatInfo`** (registry + **`FabricMenuContext`**); not a second code path. |
+| **Parsers** | **`FabricCommandSkillParser`**; **`FabricCommandStatParser`**. |
+| **Suggestions** | **`FabricCommandSuggestionProviders`**: `builtInOpenMenuIds` (string contexts); **`enabledStatKeys`**; existing **`enabledSkillKeys`**, **`onlinePlayers`**. |
+| **Lang** | Console lines for list vs context menus; **`unknown_skill`**, **`unknown_stat`**, **`opened_for_context`**, self-opened lines for detail menus. |
+| **Manual** | **`SPRINT_45_MANUAL_OPENMENU_CONTEXT_MENUS.md`** |
+
+**Not in Sprint 45:** Bukkit **JSON** `properties` and **`page`** on `openmenu`; custom Slate `menuName`; optional **list page** as a command argument.

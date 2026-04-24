@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.73
+
+### Changes
+
+- **Fabric: `openmenu` + context built-ins (Sprint 45):** **`FabricOpenMenuCommands`** — Brigadier **literals** for **`skills`**, **`stats`**, **`level_progression`**, **`stat_info`**; **`openmenu level_progression [<player>] <skill>`** and **`openmenu stat_info [<player>] <stat>`** (optional target = online player; one-arg forms are self-only). Uses **`FabricAuraSkillsMenus.openLevelProgression`** / **`openStatInfo`** and **`FabricCommandSkillParser`**, new **`FabricCommandStatParser`**, **`FabricCommandSuggestionProviders.enabledStatKeys`**. **`FabricCommandBuiltInMenuId`**, **`openmenu` lang** (console, unknown skill/stat, `opened_for_context`, detail self-opened lines). **Tests** `FabricCommandBuiltInMenuIdTest`. **Docs** `SPRINT_45_MANUAL_OPENMENU_CONTEXT_MENUS.md`, `COMMAND_PARITY_AUDIT`, `MENU_AND_COMMANDS_PORT`, `PARITY_BACKLOG`, CMD-013/021 ledger, **`projectVersion` 2.3.72 → 2.3.73**. **Not in scope:** arbitrary custom Slate menu names, JSON **properties** / **page** args (Bukkit), non-builtin menu ids on `openmenu`.
+
 ## 2.3.72
 
 ### Changes

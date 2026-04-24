@@ -8,13 +8,21 @@ import java.util.Set;
 
 /**
  * Whitelist + normalization for **bounded** built-in {@code /openmenu}-style access (**Sprint
- * 44**). Only menu ids the Fabric registry can open without extra {@link
- * dev.aurelium.auraskills.fabric.menu.FabricMenuContext} (see {@link FabricMenuKeys}).
+ * 44+**). Ids match {@link FabricMenuKeys}; list/detail menus without required context use
+ * {@link dev.aurelium.auraskills.fabric.menu.FabricMenuContext#none()}; {@code level_progression} /
+ * {@code stat_info} require {@link dev.aurelium.auraskills.fabric.menu.FabricMenuContext#ofSkill}
+ * / {@link dev.aurelium.auraskills.fabric.menu.FabricMenuContext#ofStat} (see
+ * {@link FabricCommandBuiltInMenuId#requiresContext(String)}).
  */
 public final class FabricCommandBuiltInMenuId {
 
-    /** Menu ids currently allowed for {@code /openmenu} / {@code <alias> openmenu} (Sprint 44). */
-    public static final Set<String> OPENVIA_COMMAND = Set.of(FabricMenuKeys.SKILLS, FabricMenuKeys.STATS);
+    /** Menu ids allowed on the bounded {@code openmenu} command (Sprint 45). */
+    public static final Set<String> OPENVIA_COMMAND =
+            Set.of(
+                    FabricMenuKeys.SKILLS,
+                    FabricMenuKeys.STATS,
+                    FabricMenuKeys.LEVEL_PROGRESSION,
+                    FabricMenuKeys.STAT_INFO);
 
     private FabricCommandBuiltInMenuId() {}
 
@@ -27,5 +35,11 @@ public final class FabricCommandBuiltInMenuId {
             return Optional.of(t);
         }
         return Optional.empty();
+    }
+
+    /** True when opening by id requires skill/stat args (typed Brigadier nodes; see Sprint 45). */
+    public static boolean requiresContext(String normalizedMenuId) {
+        return FabricMenuKeys.LEVEL_PROGRESSION.equals(normalizedMenuId)
+                || FabricMenuKeys.STAT_INFO.equals(normalizedMenuId);
     }
 }

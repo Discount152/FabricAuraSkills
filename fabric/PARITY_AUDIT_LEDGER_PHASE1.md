@@ -98,7 +98,7 @@
 | CMD-010 | `XpCommand` | `FabricXpCommands` + `FabricCommandSkillParser` / `FabricCommandPlayerTarget` (`/xp`, `/auraskills xp`) | Partial | ACF/Brigadier | **Sprint 40** — add/set/remove + view; no `silent`; not under `skills\|sk\|skill` alias |
 | CMD-011 | `PresetCommand` | — | Missing | ACF/Brigadier |
 | CMD-012 | `StorageCommand` | — | Missing | ACF/Brigadier |
-| CMD-013 | `OpenMenuCommand` | **`FabricOpenMenuCommands`** + **`FabricCommandBuiltInMenuId`** — `/openmenu`, `/auraskills openmenu`, `/sk|skill openmenu` (**skills**, **stats** only) | Partial | Slate arbitrary menus + JSON props | **Sprint 44** — bounded built-in ids; no page/JSON |
+| CMD-013 | `OpenMenuCommand` | **`FabricOpenMenuCommands`** + **`FabricCommandBuiltInMenuId`** — `/openmenu`, `/auraskills openmenu`, `/sk|skill openmenu` (literals: **skills**, **stats**, **level_progression**, **stat_info** + typed context) | Partial | Slate arbitrary menus + JSON props + page | **Sprint 45** — **level_progression** / **stat_info** via **skill** / **stat** args; no JSON/page |
 | CMD-014 | `ManaAbilityCommand` | — | Missing | ACF/Brigadier |
 | CMD-015 | `TraitCommand` | — | Missing | ACF/Brigadier |
 | CMD-016 | `JobsCommand` | — | Missing | Out of scope + ACF/Brigadier | Reference jobs feature; not default Granite scope. |
@@ -106,7 +106,7 @@
 | CMD-018 | `registerSkillCommands` (per-skill `SkillCommands.*`) | — | Missing | ACF/Brigadier + config `ENABLE_SKILL_COMMANDS` |
 | CMD-019 | ACF: replacements (`skills_alias`, desc keys) | Brigadier **`/sk`**, **`/skill`** (Sprint 44); `desc_*` | Partial | ACF/Brigadier | **Sprint 44** — alias roots; not full replacement system |
 | CMD-020 | ACF: contexts (User, Skill, ManaAbility, Stat, Trait, UUID, JsonArg, Duration) | — | Missing | ACF/Brigadier | |
-| CMD-021 | ACF: async completions (skills, stats, menu_names, …) | `FabricCommandSuggestionProviders` (sync) | Partial | ACF/Brigadier | **Sprint 40** — **xp** suggestions for online players + skill keys only |
+| CMD-021 | ACF: async completions (skills, stats, menu_names, …) | `FabricCommandSuggestionProviders` (sync) | Partial | ACF/Brigadier | **Sprint 40** — **xp** suggestions; **Sprint 45** — `enabledStatKeys` + `builtInOpenMenuIds` (four ids) |
 
 **Fabric admin parity (not in Bukkit ACF list):** `reload`, `save` in `FabricAuraSkillsCommands` — **extra**; keep row if tracking “operator surface” separately.
 

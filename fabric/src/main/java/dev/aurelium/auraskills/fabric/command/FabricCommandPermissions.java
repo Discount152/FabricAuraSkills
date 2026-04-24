@@ -66,8 +66,9 @@ public final class FabricCommandPermissions {
 
     /**
      * Bukkit: {@code openmenu} under {@code skills|sk|skill} (see
-     * {@link dev.aurelium.auraskills.bukkit.commands.OpenMenuCommand}). **Sprint 44:** bounded
-     * to built-in **skills** / **stats** on Fabric.
+     * {@link dev.aurelium.auraskills.bukkit.commands.OpenMenuCommand}). **Sprint 44+:** bounded
+     * built-ins on Fabric — **skills**, **stats**, **level_progression**, **stat_info** (see
+     * {@link dev.aurelium.auraskills.fabric.command.FabricOpenMenuCommands}).
      */
     public static final String OPEN_MENU = "auraskills.command.openmenu";
 

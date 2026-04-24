@@ -2,7 +2,7 @@
 
 **Runtime product:** **Fabric** + **Geyser/Floodgate**; **Bukkit** `CommandRegistrar` + ACF is the **in-repo reference only**, not a second shipped runtime.
 
-**Sprint 39** establishes this audit and a **shared Brigadier scaffold** (`fabric/.../command/FabricBrigadierCommands` and helpers). **Sprint 40** adds **shared online player + skill parsing** (`FabricCommandPlayerTarget`, `FabricCommandSkillParser`, `FabricCommandSuggestionProviders`) and the first **`xp`** batch. **Sprint 41** adds the bounded **`/mana`** family (self + `view` + add/set/remove), shared **`FabricCommandAmountRules`** and **`FabricCommandMutationFeedback`**, and perms `auraskills.command.mana.*` (Sprint 41). **Sprints 42–43** add the bounded **`/skilllevel`** line (view, add, set, remove, **setall**, **reset**) + **`FabricCommandSkillLevelApply`**, and perms `auraskills.command.skilllevel.view`, `auraskills.command.skill.setlevel`, `auraskills.command.skill.reset`. **Sprint 44** adds **`/sk`**, **`/skill`** (alias default → **Skills** + **`openmenu`**) and **bounded** **`openmenu`** for built-in **skills** / **stats** (top-level **`/openmenu`**, **`/auraskills openmenu`**, JSON/properties **not** ported). **Final** public **Granite** command names/aliases are **not frozen** in this document.
+**Sprint 39** establishes this audit and a **shared Brigadier scaffold** (`fabric/.../command/FabricBrigadierCommands` and helpers). **Sprint 40** adds **shared online player + skill parsing** (`FabricCommandPlayerTarget`, `FabricCommandSkillParser`, `FabricCommandSuggestionProviders`) and the first **`xp`** batch. **Sprint 41** adds the bounded **`/mana`** family (self + `view` + add/set/remove), shared **`FabricCommandAmountRules`** and **`FabricCommandMutationFeedback`**, and perms `auraskills.command.mana.*` (Sprint 41). **Sprints 42–43** add the bounded **`/skilllevel`** line (view, add, set, remove, **setall**, **reset**) + **`FabricCommandSkillLevelApply`**, and perms `auraskills.command.skilllevel.view`, `auraskills.command.skill.setlevel`, `auraskills.command.skill.reset`. **Sprint 44** adds **`/sk`**, **`/skill`** (alias default → **Skills** + **`openmenu`**) and **bounded** **`openmenu`** for built-in **skills** / **stats** (top-level **`/openmenu`**, **`/auraskills openmenu`**, JSON/properties **not** ported). **Sprint 45** extends **`openmenu`** with **typed** **skill** / **stat** args for **level_progression** and **stat_info** (same `auraskills.command.openmenu`), reusing **Fabric** menu **registry** + **`FabricMenuContext`** (no Bukkit `JsonArg` / `page` parity). **Final** public **Granite** command names/aliases are **not frozen** in this document.
 
 **Reference root:** ACF `skills_alias` = `skills|sk|skill` (`CommandRegistrar#registerReplacements`) → commands attach under **`/skills`**, `/sk`, `/skill` **plus** dedicated classes noted below.
 
@@ -52,7 +52,7 @@
 | `BackupCommand` | — | Missing | |
 | `PresetCommand` | — | Missing | |
 | `StorageCommand` | — | Missing | |
-| `OpenMenuCommand` (Slate) | **Bounded:** `/openmenu`, `/auraskills openmenu`, `/sk|skill openmenu` — **`skills`**, **`stats`** only (online name optional); `auraskills.command.openmenu` | Partial | **Sprint 44** — no arbitrary Slate `menuName`, no JSON `properties` / `page` args; not every reference menu name |
+| `OpenMenuCommand` (Slate) | **Bounded:** `/openmenu`, `/auraskills openmenu`, `/sk|skill openmenu` — **literals** **`skills`**, **`stats`**, **`level_progression`**, **`stat_info`**; list menus + optional **online** target; detail menus: **`openmenu level_progression [<player>] <skill>`**, **`openmenu stat_info [<player>] <stat>`**; `auraskills.command.openmenu` | Partial | **Sprint 45** — no arbitrary custom `menuName`, no JSON `properties` / `page` (Bukkit); no other Slate file names on `openmenu` |
 | `ManaAbilityCommand` | — | Missing | |
 | `JobsCommand` | — | N/A (ref) | Out of default Granite product scope (see `PARITY_BACKLOG`) |
 | `AntiAfkCommand` | — | Missing | |
@@ -70,7 +70,7 @@
 | Reference capability | Fabric |
 |---------------------|--------|
 | Replacements (`%skills_alias%`, `desc_*`) | **Partial** — **Sprint 44:** Brigadier roots **`/sk`**, **`/skill`** (default **Skills** + `openmenu` only); not full ACF `skills\|sk\|skill` tree; `desc_*` still **Missing** |
-| Context resolvers (Skill, Stat, User, …) | **Partial** — **Sprint 40:** `FabricCommandSkillParser` + `FabricCommandPlayerTarget` + `FabricCommandSuggestionProviders` (sync suggestions); not full ACF (no Stat/Trait/UUID/JsonArg) |
+| Context resolvers (Skill, Stat, User, …) | **Partial** — **Sprint 40:** `FabricCommandSkillParser` + `FabricCommandPlayerTarget` + `FabricCommandSuggestionProviders` (sync suggestions); **Sprint 45:** `FabricCommandStatParser` + `enabledStatKeys` for **`openmenu stat_info`**, not full ACF (no Trait/UUID/JsonArg) |
 | Async completions | **Missing** (Fabric uses server-thread sync suggestions) |
 | `CommandHelp` | **Missing** |
 
@@ -80,7 +80,7 @@
 
 1. Align **`help`** permission node with Bukkit and/or add structured multi-line help.
 2. **`/auraskills top`** (or `/skills top` alias) using existing `LeaderboardManager` (already on Fabric).
-3. **`/xp`:** optional **`silent`**, Stat arguments elsewhere; **`/sk` / `skill` / `openmenu`**: extend beyond Sprint 44 bounded surface if needed.
+3. **`/xp`:** optional **`silent`**, Stat arguments elsewhere; further **`/sk` / `skill` / `openmenu`** (beyond Sprint 45 **level_progression** / **stat_info**) if needed.
 4. Revisit **`/xp view`** default (currently **true** for `auraskills.command.xp.view`) for PvP servers.
 5. **Optional ACF flags** for **`/mana`:** `silent` / `allowOverMax` (Bukkit) — not in Sprint 41 scope.
 
