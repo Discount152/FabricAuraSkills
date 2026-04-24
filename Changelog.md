@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.54
+
+### Changes
+
+- **Fabric: ability lane proof (Sprint 26 / `BukkitAbilityManager` vs `FabricAbilityManager`):** Re-audited the **14** registered per-skill `*Abilities` groups against the Bukkit reference; added **`SPRINT_26_ABILITY_PROOF_MATRIX.md`** (Bukkit vs Fabric **per-family** classification: **Equivalent** / **Partial** / **Needs Regression Proof** / **Missing**) and **`SPRINT_26_MANUAL_ABILITY_REGRESSION.md`** (farming GROWTH_AURA tail, fighting/bleed, damage-pipeline skills, archery, defense, mana abilities). **No new ability implementation** this sprint: highest-confidence remaining work is **documented** farming tail (chorus / trees / edge bamboo) and **regression proof**; updated **`SPRINT_23_ABILITY_PARITY.md`** §4, ledger **`AS-019`**, **`PARITY_BACKLOG.md`**, **`FABRIC_PORT_HANDOFF.md`**. Test: extra case in **`FabricFarmingAbilitiesTest`**. **`projectVersion` 2.3.53 → 2.3.54**.
+
 ## 2.3.53
 
 ### Changes

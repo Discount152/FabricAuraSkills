@@ -46,3 +46,9 @@
 | **14 registration entries** | **Equivalent** to Bukkit’s list. |
 | **Farming in-scope batch 1** | **Partial → stronger**; growth aura for **Crop + NetherWart** only. |
 | **Row AS-019 overall** | **Partial** (full per-skill proof still **Needs Regression Proof**). |
+
+## 4. Sprints 24–25 (farming) + Sprint 26 (closure matrix)
+
+- **Sprint 24** — `GROWTH_AURA` extended to ageable blocks: cactus, sugar cane, cocoa, stems, sweet berry, kelp, cave vines — see **`SPRINT_24_FARMING_GROWTH_AURA.md`**, manual **`SPRINT_24_MANUAL_VALIDATION.md`**.
+- **Sprint 25** — bonemeal hook, **bamboo**, weeping/twisting vines, shared `onGrowthAuraAfterAgeAtPos` — see **`SPRINT_25_FARMING_GROWTH_AURA.md`**, manual **`SPRINT_25_MANUAL_VALIDATION.md`**. **Still documented out of scope** on Fabric: chorus fruit, full structure-tree grow, some niche bamboo, etc.
+- **Sprint 26** — Re-audit + **Bukkit vs Fabric per-family table** (registration vs runtime behavior) + manual regression matrix. **No new farming implementation** in Sprint 26: remaining gaps are **proof-bound and documented**, not a missing single high-confidence code fix. See **`SPRINT_26_ABILITY_PROOF_MATRIX.md`** and **`SPRINT_26_MANUAL_ABILITY_REGRESSION.md`**.

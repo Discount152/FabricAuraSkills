@@ -16,4 +16,9 @@ class FabricFarmingAbilitiesTest {
         assertEquals(0, FabricFarmingAbilities.rollExtraStagesFromAbilityValue(0.0, new Random(0L)));
         assertEquals(1, FabricFarmingAbilities.rollExtraStagesFromAbilityValue(100.0, new Random(0L)));
     }
+
+    @Test
+    void rollExtraStagesFromAbilityValue_guaranteedTwoHundred() {
+        assertEquals(2, FabricFarmingAbilities.rollExtraStagesFromAbilityValue(200.0, new Random(42L)));
+    }
 }
