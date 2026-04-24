@@ -116,7 +116,17 @@ public final class FabricBuiltInMenuConfig {
                 }
             }
         }
-        return new FabricMenuYamlSlice(enabled, titleKey, def.rows(), def.columns(), format);
+        FabricMenuSlotLayout.Resolved lay = FabricMenuSlotLayout.parseGranite(g, def, plugin, path);
+        return new FabricMenuYamlSlice(
+                enabled,
+                titleKey,
+                def.rows(),
+                def.columns(),
+                format,
+                lay.listStartSlot(),
+                lay.listEndSlotExclusive(),
+                lay.mainSlot(),
+                lay.backSlot());
     }
 
     @Nullable

@@ -44,22 +44,35 @@ final class FabricStatsMenuGui {
         for (Stat s : plugin.getStatManager().getEnabledStats()) {
             order.add(s);
         }
+        FabricMenuYamlSlice cfg = plugin
+                .getBuiltInMenuConfig()
+                .getSlice(FabricMenuKeys.STATS, FabricMenuYamlSlice.defaultStats());
+        int listStart = cfg.listStartSlot();
+        int listEnd = cfg.listEndSlotExclusive();
         boolean statInfoClicks = plugin.configBoolean(Option.MENUS_STAT_INFO_ENABLED);
         if (!statInfoClicks) {
             GraniteContainerMenus.openReadOnly9x6(
-                    player, title, inv -> fillStatSlots(order, user, msg, plugin, locale, menus, util, inv, false));
+                    player,
+                    title,
+                    inv -> fillStatSlots(
+                            order, user, msg, plugin, locale, menus, util, listStart, listEnd, inv, false));
             return;
         }
         GraniteContainerMenus.openClickable9x6(
                 player,
                 title,
                 inv -> fillStatSlots(
-                        order, user, msg, plugin, locale, menus, util, inv, true),
+                        order, user, msg, plugin, locale, menus, util, listStart, listEnd, inv, true),
                 (topSlot, p, b, t) -> {
-                    if (topSlot < 0 || topSlot >= order.size()) {
+                    if (topSlot < listStart || topSlot >= listEnd) {
                         return;
                     }
-                    Stat stat = order.get(topSlot);
+                    int idx = topSlot - listStart;
+                    int cap = Math.min(order.size(), listEnd - listStart);
+                    if (idx < 0 || idx >= cap) {
+                        return;
+                    }
+                    Stat stat = order.get(idx);
                     if (!stat.isEnabled()) {
                         return;
                     }
@@ -76,9 +89,13 @@ final class FabricStatsMenuGui {
             Locale locale,
             MenuHelper menus,
             PlatformUtil util,
+            int listStart,
+            int listEndEx,
             Inventory inv,
             boolean addOpenDetailLore) {
-        for (int i = 0; i < order.size() && i < inv.size(); i++) {
+        int slot = listStart;
+        for (int i = 0; i < order.size() && slot < listEndEx && slot < inv.size() && slot < FabricMenuSlotLayout.TOP_SLOTS;
+                i++) {
             Stat stat = order.get(i);
             ItemStack stack = new ItemStack(Items.BOOK);
             String levelText = formatStatLevel(stat, user, plugin, locale);
@@ -116,7 +133,8 @@ final class FabricStatsMenuGui {
                 lore.add(Text.translatable(openDetail));
             }
             stack.set(DataComponentTypes.LORE, new LoreComponent(lore));
-            inv.setStack(i, stack);
+            inv.setStack(slot, stack);
+            slot++;
         }
     }
 

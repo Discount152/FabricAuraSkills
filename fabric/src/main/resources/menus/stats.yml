@@ -7,5 +7,10 @@ granite:
   size:
     rows: 6
     columns: 9
+  layout:
+    list_start_slot: 0
+    list_end_slot_exclusive: 54
+    main_slot: 4
+    back_slot: 49
   format:
     list_open_detail: "auraskills.granite.menu.stats_lore_open_detail"

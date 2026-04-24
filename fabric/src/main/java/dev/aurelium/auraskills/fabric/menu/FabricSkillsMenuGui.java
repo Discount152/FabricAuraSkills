@@ -17,7 +17,7 @@ import java.util.List;
 
 /**
  * 6×9 chest: enabled skills with level/XP; top-slot click opens
- * {@link FabricLevelProgressionMenuGui} for the skill in that cell (Sprint 30).
+ * {@link FabricLevelProgressionMenuGui}. **Sprint 34:** list slot range from {@code granite.layout}.
  */
 final class FabricSkillsMenuGui {
 
@@ -28,14 +28,19 @@ final class FabricSkillsMenuGui {
         User user = plugin.getUserManager().getUser(player.getUuid());
         var locale = user.getLocale();
         var msg = plugin.getMessageProvider();
+        FabricMenuYamlSlice cfg = plugin
+                .getBuiltInMenuConfig()
+                .getSlice(FabricMenuKeys.SKILLS, FabricMenuYamlSlice.defaultSkills());
+        int listStart = cfg.listStartSlot();
+        int listEnd = cfg.listEndSlotExclusive();
         List<Skill> skillsInOrder = new ArrayList<>();
         GraniteContainerMenus.openClickable9x6(
                 player,
                 title,
                 inv -> {
-                    int i = 0;
+                    int slot = listStart;
                     for (Skill skill : plugin.getSkillManager().getEnabledSkills()) {
-                        if (i >= inv.size()) {
+                        if (slot >= listEnd || slot >= FabricMenuSlotLayout.TOP_SLOTS) {
                             break;
                         }
                         skillsInOrder.add(skill);
@@ -58,14 +63,19 @@ final class FabricSkillsMenuGui {
                             lore.add(Text.translatable("auraskills.granite.menu.skills_lore_no_permission"));
                         }
                         stack.set(DataComponentTypes.LORE, new LoreComponent(lore));
-                        inv.setStack(i++, stack);
+                        inv.setStack(slot, stack);
+                        slot++;
                     }
                 },
                 (topSlot, p, b, t) -> {
-                    if (topSlot < 0 || topSlot >= skillsInOrder.size()) {
+                    if (topSlot < listStart || topSlot >= listEnd) {
                         return;
                     }
-                    Skill skill = skillsInOrder.get(topSlot);
+                    int idx = topSlot - listStart;
+                    if (idx < 0 || idx >= skillsInOrder.size()) {
+                        return;
+                    }
+                    Skill skill = skillsInOrder.get(idx);
                     if (!user.hasSkillPermission(skill)) {
                         return;
                     }

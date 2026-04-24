@@ -10,6 +10,12 @@ granite:
     # Must match the current 6x9 (54-slot) top inventory implementation; other sizes are ignored with a warn.
     rows: 6
     columns: 9
+  # List rows occupy half-open [list_start_slot, list_end_slot_exclusive). Invalid ranges log a warn and fall back to these defaults.
+  layout:
+    list_start_slot: 0
+    list_end_slot_exclusive: 54
+    main_slot: 4
+    back_slot: 49
   format:
     # Translation key for the “open detail” lore line on each skill row.
     list_open_detail: "auraskills.granite.menu.skills_lore_open_detail"

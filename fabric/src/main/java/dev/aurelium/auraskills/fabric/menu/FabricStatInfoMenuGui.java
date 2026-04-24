@@ -23,12 +23,10 @@ import java.util.Locale;
 /**
  * One-stat “stat_info” view: live name, value/level, description, and trait lines — not Bukkit
  * {@code stat_info.yml} + modifier grids. **Sprint 33:** titles/format keys from
- * {@link FabricBuiltInMenuConfig} / {@code menus/stat_info.yml} {@code granite:}.
+ * {@link FabricBuiltInMenuConfig} / {@code menus/stat_info.yml} {@code granite:}. **Sprint 34:** main/back
+ * slots from {@code granite.layout}.
  */
 final class FabricStatInfoMenuGui {
-
-    private static final int INFO_SLOT = 4;
-    private static final int BACK_SLOT = 49;
 
     private FabricStatInfoMenuGui() {
     }
@@ -54,6 +52,8 @@ final class FabricStatInfoMenuGui {
         var util = plugin.getPlatformUtil();
         String displayName = msg.getStatDisplayName(stat, locale, true);
         Text title = Text.translatable(cfg.titleTranslationKey(), displayName);
+        int mainSlot = cfg.mainSlot();
+        int backSlot = cfg.backSlot();
 
         GraniteContainerMenus.openClickable9x6(
                 player,
@@ -83,7 +83,7 @@ final class FabricStatInfoMenuGui {
                                 stat, user, trait, msg, plugin, locale, menus, util, lore);
                     }
                     main.set(DataComponentTypes.LORE, new LoreComponent(lore));
-                    inv.setStack(INFO_SLOT, main);
+                    inv.setStack(mainSlot, main);
                     ItemStack back = new ItemStack(Items.ARROW);
                     back.set(
                             DataComponentTypes.ITEM_NAME,
@@ -96,10 +96,10 @@ final class FabricStatInfoMenuGui {
                                             "back_lore",
                                             def,
                                             "auraskills.granite.menu.stat_info_back_lore")))));
-                    inv.setStack(BACK_SLOT, back);
+                    inv.setStack(backSlot, back);
                 },
                 (topSlot, p, b, t) -> {
-                    if (topSlot != BACK_SLOT) {
+                    if (topSlot != backSlot) {
                         return;
                     }
                     plugin.getScheduler()

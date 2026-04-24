@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.62
+
+### Changes
+
+- **Fabric: bounded `granite.layout` for built-in menus (Sprint 34):** **`FabricMenuSlotLayout`** — `list_start_slot`, `list_end_slot_exclusive`, `main_slot`, `back_slot` (0–53 top grid) with **clamp** + **list range** + **main==back** fallbacks and log **warns**. **`FabricMenuYamlSlice`** + **`FabricBuiltInMenuConfig#parse`**. **GUIs:** **`FabricSkillsMenuGui`** / **`FabricStatsMenuGui`** (list range); **`FabricLevelProgressionMenuGui`** / **`FabricStatInfoMenuGui`** (main/back). **Resources:** all four **`menus/*.yml`** include documented **`layout`**. **Tests:** `FabricBuiltInMenuConfigTest` (layout, bad list range, main==back). **Docs** `SPRINT_34_MANUAL_BUILT_IN_MENU_LAYOUT.md`, `MENU_AND_COMMANDS_PORT`, parity ledger, backlog, handoff. **`projectVersion` 2.3.61 → 2.3.62**. Not in scope: full Slate **template** / **SlotPos** engine.
+
 ## 2.3.61
 
 ### Changes

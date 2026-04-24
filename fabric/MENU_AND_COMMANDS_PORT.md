@@ -187,3 +187,14 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Manual** | **`SPRINT_33_MANUAL_DETAIL_MENU_YAML.md`** |
 
 **Not in Sprint 33:** Bukkit `StatInfoMenu` **modifier** grid, `level_progression` **reward** templates, Slate **context** plumbing.
+
+## Sprint 34 — `granite.layout` slot positions (shipped, partial)
+
+| Piece | Where |
+|-------|--------|
+| **Keys** | Under **`granite.layout`:** **`list_start_slot`**, **`list_end_slot_exclusive`** (list menus, half-open range), **`main_slot`**, **`back_slot`** (detail menus; list keys stored but ignored for layout placement) |
+| **Validation** | **`FabricMenuSlotLayout#validate`**: out-of-range integers → per-field **fallback** to the menu’s code default; **`list_end` ≤ `list_start`** → default **list** range; **`main_slot` == `back_slot`** → default **main** + **back**; warnings when **`FabricAuraSkills`** is non-null in **`parseGranite`** |
+| **Wiring** | **`FabricSkillsMenuGui` / `FabricStatsMenuGui`**: list fill + clicks use **`[list_start, list_end)`**; **`FabricLevelProgressionMenuGui` / `FabricStatInfoMenuGui`**: book + arrow slots |
+| **Manual** | **`SPRINT_34_MANUAL_BUILT_IN_MENU_LAYOUT.md`** |
+
+**Not in Sprint 34:** full Slate **position** / **paging** / **template** resolution; custom **item** types per row from YAML.

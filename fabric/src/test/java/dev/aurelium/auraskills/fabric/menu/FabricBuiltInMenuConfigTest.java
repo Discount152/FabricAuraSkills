@@ -53,6 +53,38 @@ class FabricBuiltInMenuConfigTest {
         assertEquals("auraskills.granite.menu.level_progression_lore_level", s.getFormatKey("lore_level", null));
     }
 
+    @Test
+    void parse_layoutListRange() throws IOException {
+        String yaml = "granite:\n  layout:\n    list_start_slot: 9\n    list_end_slot_exclusive: 18\n";
+        ConfigurationNode root = load(yaml);
+        FabricMenuYamlSlice s =
+                FabricBuiltInMenuConfig.parse(root, FabricMenuYamlSlice.defaultSkills(), null, "t.yml");
+        assertEquals(9, s.listStartSlot());
+        assertEquals(18, s.listEndSlotExclusive());
+        assertEquals(4, s.mainSlot());
+        assertEquals(49, s.backSlot());
+    }
+
+    @Test
+    void parse_layoutInvalidListRange_usesDefaultListRange() throws IOException {
+        String yaml = "granite:\n  layout:\n    list_start_slot: 20\n    list_end_slot_exclusive: 10\n";
+        ConfigurationNode root = load(yaml);
+        FabricMenuYamlSlice d = FabricMenuYamlSlice.defaultSkills();
+        FabricMenuYamlSlice s = FabricBuiltInMenuConfig.parse(root, d, null, "t.yml");
+        assertEquals(d.listStartSlot(), s.listStartSlot());
+        assertEquals(d.listEndSlotExclusive(), s.listEndSlotExclusive());
+    }
+
+    @Test
+    void parse_layoutMainEqualsBack_usesDefaultMainAndBack() throws IOException {
+        String yaml = "granite:\n  layout:\n    main_slot: 4\n    back_slot: 4\n";
+        ConfigurationNode root = load(yaml);
+        FabricMenuYamlSlice d = FabricMenuYamlSlice.defaultLevelProgression();
+        FabricMenuYamlSlice s = FabricBuiltInMenuConfig.parse(root, d, null, "t.yml");
+        assertEquals(d.mainSlot(), s.mainSlot());
+        assertEquals(d.backSlot(), s.backSlot());
+    }
+
     private static ConfigurationNode load(String yaml) throws IOException {
         YamlConfigurationLoader loader = YamlConfigurationLoader.builder()
                 .source(() -> new BufferedReader(new StringReader(yaml)))

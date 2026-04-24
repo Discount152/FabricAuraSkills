@@ -19,12 +19,10 @@ import java.util.Locale;
 /**
  * One-skill “level progression” view: live level + XP from {@link User}, not full Bukkit
  * {@code level_progression.yml} / reward tables. **Sprint 33:** titles/format keys from
- * {@link FabricBuiltInMenuConfig} / {@code menus/level_progression.yml} {@code granite:}.
+ * {@link FabricBuiltInMenuConfig} / {@code menus/level_progression.yml} {@code granite:}. **Sprint 34:**
+ * main/back slots from {@code granite.layout}.
  */
 final class FabricLevelProgressionMenuGui {
-
-    private static final int INFO_SLOT = 4;
-    private static final int BACK_SLOT = 49;
 
     private FabricLevelProgressionMenuGui() {
     }
@@ -53,6 +51,8 @@ final class FabricLevelProgressionMenuGui {
         boolean maxed = user.getSkillLevel(skill) >= skill.getMaxLevel()
                 || xpReqs.getListSize(skill) <= level - 1;
         double xpToNext = !maxed ? xpReqs.getXpRequired(skill, level + 1) : 0.0;
+        int mainSlot = cfg.mainSlot();
+        int backSlot = cfg.backSlot();
 
         GraniteContainerMenus.openClickable9x6(
                 player,
@@ -101,7 +101,7 @@ final class FabricLevelProgressionMenuGui {
                                         "auraskills.granite.menu.skills_lore_no_permission")));
                     }
                     main.set(DataComponentTypes.LORE, new LoreComponent(lore));
-                    inv.setStack(INFO_SLOT, main);
+                    inv.setStack(mainSlot, main);
 
                     ItemStack back = new ItemStack(Items.ARROW);
                     back.set(
@@ -116,10 +116,10 @@ final class FabricLevelProgressionMenuGui {
                                             "back_lore",
                                             def,
                                             "auraskills.granite.menu.level_progression_back_lore")))));
-                    inv.setStack(BACK_SLOT, back);
+                    inv.setStack(backSlot, back);
                 },
                 (topSlot, p, button, actionType) -> {
-                    if (topSlot != BACK_SLOT) {
+                    if (topSlot != backSlot) {
                         return;
                     }
                     plugin.getScheduler()
