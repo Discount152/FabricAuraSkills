@@ -222,3 +222,16 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Manual** | **`SPRINT_36_MANUAL_BUILT_IN_MENU_ITEMS.md`** |
 
 **Not in Sprint 36:** NBT, count, `ItemBuilder` / template items, or different item **per** list row.
+
+## Sprint 37 — Paged Skills + Stats (shipped, partial)
+
+| Piece | Where |
+|-------|--------|
+| **Model** | List **content** is `list_start`..`min(list_end, 45)` (slots 0–44 max); the **last row** (45–53) holds **optional** **Previous** / **Next** when `total` does not fit in one page |
+| **Context** | **`FabricMenuContext#listPage`** (0-based); use **`#withListPage(n)`** or **`#none().withListPage(n)`** for registry reopen |
+| **YAML** | **`granite.paging`:** `prev_slot`, `next_slot` (defaults **45** / **53**); validated to avoid **overlap** with the list **content** region; prev ≠ next or defaults apply |
+| **UI** | **Arrow** items + translated name/lore; **disabled** direction leaves an **empty** slot. Window title appends a **(Page x of y)** suffix when more than one page |
+| **Shared** | **`FabricListMenuPaging`**, **`FabricMenuPagingConfig`**; suitable for more list menus later — **Sprint 37** wires **Skills** and **Stats** only |
+| **Manual** | **`SPRINT_37_MANUAL_PAGED_LIST_MENUS.md`** |
+
+**Not in Sprint 37:** per-page size above 45, middle-number jump, or **Level Progression / Stat Info** pagination.

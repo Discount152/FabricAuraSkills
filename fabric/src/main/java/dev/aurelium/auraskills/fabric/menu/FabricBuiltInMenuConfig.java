@@ -119,6 +119,9 @@ public final class FabricBuiltInMenuConfig {
         }
         FabricMenuSlotLayout.Resolved lay = FabricMenuSlotLayout.parseGranite(g, def, plugin, path);
         FabricMenuItemDefinitions.Resolved items = FabricMenuItemDefinitions.parseGranite(g, def, plugin, path);
+        FabricMenuPagingConfig.Resolved pag =
+                FabricMenuPagingConfig.parse(
+                        g, def, lay.listStartSlot(), lay.listEndSlotExclusive(), plugin, path);
         return new FabricMenuYamlSlice(
                 enabled,
                 titleKey,
@@ -131,7 +134,9 @@ public final class FabricBuiltInMenuConfig {
                 lay.backSlot(),
                 items.listItemId(),
                 items.mainItemId(),
-                items.backItemId());
+                items.backItemId(),
+                pag.prevSlot(),
+                pag.nextSlot());
     }
 
     @Nullable

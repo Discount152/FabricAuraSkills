@@ -16,5 +16,8 @@ granite:
     list: "minecraft:book"
     main: "minecraft:book"
     back: "minecraft:arrow"
+  paging:
+    prev_slot: 45
+    next_slot: 53
   format:
     list_open_detail: "auraskills.granite.menu.stats_lore_open_detail"

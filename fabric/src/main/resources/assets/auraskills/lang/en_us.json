@@ -21,5 +21,10 @@
   "auraskills.granite.menu.level_progression_lore_to_next": "Progress: %1$s / %2$s to next level",
   "auraskills.granite.menu.level_progression_lore_maxed": "Max level reached",
   "auraskills.granite.menu.level_progression_back": "Back",
-  "auraskills.granite.menu.level_progression_back_lore": "Return to Skills"
+  "auraskills.granite.menu.level_progression_back_lore": "Return to Skills",
+  "auraskills.granite.menu.list_paging_subtitle": " (Page %1$s of %2$s)",
+  "auraskills.granite.menu.paging_prev": "Previous page",
+  "auraskills.granite.menu.paging_prev_lore": "Go to the previous page of entries",
+  "auraskills.granite.menu.paging_next": "Next page",
+  "auraskills.granite.menu.paging_next_lore": "Go to the next page of entries"
 }

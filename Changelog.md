@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.65
+
+### Changes
+
+- **Fabric: paged **Skills** + **Stats** list menus (Sprint 37):** **`FabricListMenuPaging`** (list content capped below slot 45, prev/next, title suffix); **`FabricMenuPagingConfig`** + **`granite.paging`**. **`FabricMenuContext#listPage`** + **`#withListPage`**. Registry reopens the same id with a new page; list clicks resolve **global** index. **Lang** + **`menus/skills.yml` / `stats.yml`**. **Tests** `FabricListMenuPagingTest`, `FabricMenuContextTest`, `FabricBuiltInMenuConfigTest#parse_pagingPrevNext`. **Docs** `SPRINT_37_MANUAL_PAGED_LIST_MENUS.md`, `MENU_AND_COMMANDS_PORT`, parity, backlog, handoff. **`projectVersion` 2.3.64 → 2.3.65**. Not in scope: full Slate list templates or non-top paging.
+
 ## 2.3.64
 
 ### Changes

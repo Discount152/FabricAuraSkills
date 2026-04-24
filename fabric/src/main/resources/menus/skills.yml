@@ -21,6 +21,10 @@ granite:
     list: "minecraft:book"
     main: "minecraft:book"
     back: "minecraft:arrow"
+  # When entries do not fit in [list_start, min(list_end, 45)), prev/next use these top slots; must not overlap the list.
+  paging:
+    prev_slot: 45
+    next_slot: 53
   format:
     # Translation key for the “open detail” lore line on each skill row.
     list_open_detail: "auraskills.granite.menu.skills_lore_open_detail"

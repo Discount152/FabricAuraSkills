@@ -106,6 +106,16 @@ class FabricBuiltInMenuConfigTest {
         assertEquals(d.listItemId(), s.listItemId());
     }
 
+    @Test
+    void parse_pagingPrevNext() throws IOException {
+        String yaml = "granite:\n  layout:\n    list_start_slot: 0\n    list_end_slot_exclusive: 9\n  paging:\n    prev_slot: 45\n    next_slot: 53\n";
+        ConfigurationNode root = load(yaml);
+        FabricMenuYamlSlice s =
+                FabricBuiltInMenuConfig.parse(root, FabricMenuYamlSlice.defaultSkills(), null, "t.yml");
+        assertEquals(45, s.pagingPrevSlot());
+        assertEquals(53, s.pagingNextSlot());
+    }
+
     private static ConfigurationNode load(String yaml) throws IOException {
         YamlConfigurationLoader loader = YamlConfigurationLoader.builder()
                 .source(() -> new BufferedReader(new StringReader(yaml)))
