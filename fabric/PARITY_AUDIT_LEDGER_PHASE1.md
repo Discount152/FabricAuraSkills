@@ -55,7 +55,7 @@
 | AS-003 | `BukkitLogger` | `FabricLogger` | Equivalent | None | |
 | AS-004 | `BukkitMessageProvider` | `FabricMessageProvider` | Partial | None | MiniMessage path in place; keep regression tests vs Paper. |
 | AS-005 | Managers/registries (skills, abilities, stats, traits, …) | Same pattern in `FabricAuraSkills` | Partial | None | Shared `common` brain; edge cases may differ. |
-| AS-006 | `Slate` + `MenuOptions` + `InventoryManager` + `MenuFileManager` | `GraniteContainerMenus` + `FabricMenuHelper` + `FabricAuraSkillsMenus` | Partial | Slate-Fabric + NRP | **Sprint 27–28** — `granitelib` **9×6**, **Skills+Stats** slices, `FabricMenuHelper` **level_progression** + **stats** keys; no YAML `MenuFileManager`, no full Slate. |
+| AS-006 | `Slate` + `MenuOptions` + `InventoryManager` + `MenuFileManager` | `GraniteContainerMenus` + `FabricMenuHelper` + `FabricMenuRegistry` + `FabricMenuLoaders` | Partial | Slate-Fabric + NRP | **Sprint 29** — code registry + `skills`/`stats` **FabricMenuDefinition**; no file **`MenuFileManager`**, no full Slate. |
 | AS-007 | `ConfirmManager` | — | Missing | Slate-Fabric + ACF/Brigadier | Confirm flows tied to commands/menus. |
 | AS-008 | `CommandRegistrar.registerCommands` → `PaperCommandManager` | `FabricAuraSkillsCommands` | Partial | ACF/Brigadier | Small Brigadier subset vs full ACF tree (see §3). |
 | AS-009 | `messageProvider.setACFMessages` | — | Missing | ACF/Brigadier | No ACF message integration. |
@@ -71,7 +71,7 @@
 | AS-019 | `abilityManager.registerAbilityImplementations` | `FabricAbilityManager.registerAbilityImplementations` | Partial | Needs Regression Proof | **Sprint 23–26** — **14/14** registration **Equivalent**; per-family table **`SPRINT_26_ABILITY_PROOF_MATRIX.md`**, manual **`SPRINT_26_MANUAL_ABILITY_REGRESSION.md`**. **Farming** still **Partial** for documented tail (chorus, structure trees, some bamboo) — see **`SPRINT_25_FARMING_GROWTH_AURA.md`**. **Sprint 26** = proof/closure **documentation**; no new ability code. Remaining: **regression proof** (incl. damage pipeline vs Bukkit), Bukkit **DamageEvent** / plugin cancels = **N/A** on default Fabric. |
 | AS-020 | `manaAbilityManager.registerProviders` | `FabricManaAbilityManager.registerProviders` | Partial | None | All major abilities + XP hook (see `FabricManaAbilityUseXpHandler` javadoc, Sprint 12). **Gaps:** Bukkit `ManaAbilityActivateEvent` for plugins — **N/A** on Fabric. |
 | AS-021 | `registerEvents()` (see §4) | Scattered Fabric API + mixins | Partial | None | Not 1:1 class mapping; see listener table. |
-| AS-022 | `registerAndLoadMenus` | `FabricAuraSkillsMenus` + Skills/Stats GUIs + GraniteLib | Partial | Slate-Fabric + NRP | **Sprint 28** — no `menus/*.yml` load; **Skills+Stats** GUI paths. **Needs regression proof** (Java + Geyser). |
+| AS-022 | `registerAndLoadMenus` | `FabricMenuLoaders#registerBuiltInMenus` + `FabricMenuRegistry` + GUI slices + GraniteLib | Partial | Slate-Fabric + NRP | **Sprint 29** — `register` path + menu IDs; no `loadMenus` from disk. **NRP** (Java + Geyser). |
 | AS-023 | `registerPriorityEvents` → `PlayerJoinQuit` | `FabricPlayerLifecycle` | Partial | None | Join/disconnect; compare full Bukkit behavior. |
 | AS-024 | `leaderboardManager` tasks | Same in `finishEnable` | Partial | None | |
 | AS-025 | `statManager.scheduleTemporaryModifierTask` | same | Partial | None | |
@@ -185,12 +185,12 @@
 ID,Category,Bukkit reference,Fabric reference,Status,Blocker,Notes
 AS-001,Bootstrap,ApiRegistration,FabricAuraSkills+ApiRegistrationUtil,Equivalent,None,Core API
 AS-002,Bootstrap,ApiBukkit+ApiItemManager,—,Missing,Common seam,api-bukkit
-AS-006,Bootstrap,Slate+MenuFileManager+InventoryManager,GraniteContainerMenus+FabricMenuHelper+FabricAuraSkillsMenus,Partial,Slate-Fabric+Sprint27-28,
+AS-006,Bootstrap,Slate+MenuFileManager+InventoryManager,GraniteContainerMenus+FabricMenuRegistry+FabricMenuLoaders,Partial,Slate-Fabric+Sprint29,
 AS-008,Bootstrap,CommandRegistrar→PaperCommandManager,FabricAuraSkillsCommands,Partial,ACF/Brigadier,Small command set
 AS-012,Bootstrap,Metrics+MetricsUtil,—,Missing,Out of scope,Optional reference metrics
 AS-014,Bootstrap,onLoad region flags hook ref,—,Missing,Out of scope,Stub FabricRegionNode
 AS-015,Bootstrap,SkillsLoadEvent,—,Missing,Common seam,API event
-AS-022,Bootstrap,registerAndLoadMenus,FabricAuraSkillsMenus+Stats+GraniteLib,Partial,Slate-Fabric+Sprint28,
+AS-022,Bootstrap,registerAndLoadMenus,FabricMenuLoaders+Registry+GraniteLib,Partial,Slate-Fabric+Sprint29,
 CMD-001,Commands,SkillsRootCommand,FabricAuraSkillsCommands,Partial,ACF/Brigadier+Slate-Fabric,Aliases differ
 CMD-013,Commands,OpenMenuCommand,—,Missing,Slate-Fabric+ACF/Brigadier,
 MENU-003,Menus,Menu skills,—,Missing,Slate-Fabric,

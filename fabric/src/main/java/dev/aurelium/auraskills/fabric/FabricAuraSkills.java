@@ -54,6 +54,8 @@ import dev.aurelium.auraskills.fabric.item.FabricItemRegistry;
 import dev.aurelium.auraskills.fabric.region.FabricRegionManager;
 import dev.aurelium.auraskills.fabric.loot.FabricApiLootBridge;
 import dev.aurelium.auraskills.fabric.loot.FabricLootManager;
+import dev.aurelium.auraskills.fabric.menu.FabricMenuLoaders;
+import dev.aurelium.auraskills.fabric.menu.FabricMenuRegistry;
 import dev.aurelium.auraskills.fabric.requirement.FabricRequirementManager;
 import com.mojang.brigadier.StringReader;
 import net.fabricmc.loader.api.FabricLoader;
@@ -110,6 +112,7 @@ public final class FabricAuraSkills implements AuraSkillsPlugin {
     private PresetManager presetManager;
     private FabricModifierManager modifierManager;
     private FabricMenuHelper menuHelper;
+    private FabricMenuRegistry menuRegistry;
     private FabricPlatformUtil platformUtil;
     private FabricLootManager lootManager;
     private FabricRequirementManager requirementManager;
@@ -189,6 +192,8 @@ public final class FabricAuraSkills implements AuraSkillsPlugin {
         uiProvider = new FabricUiProvider(this);
         modifierManager = new FabricModifierManager(this);
         menuHelper = new FabricMenuHelper();
+        menuRegistry = new FabricMenuRegistry();
+        FabricMenuLoaders.registerBuiltInMenus(menuRegistry, this);
         rewardManager = new RewardManager(this);
         levelManager = new FabricLevelManager(this);
         antiAfkManager = new FabricAntiAfkManager(this);
@@ -435,6 +440,10 @@ public final class FabricAuraSkills implements AuraSkillsPlugin {
     @Override
     public MenuHelper getMenuHelper() {
         return menuHelper;
+    }
+
+    public FabricMenuRegistry getMenuRegistry() {
+        return menuRegistry;
     }
 
     @Override

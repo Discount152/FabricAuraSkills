@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.57
+
+### Changes
+
+- **Fabric: menu registry + loader scaffold (Sprint 29):** **`FabricMenuRegistry`**, **`FabricMenuDefinition`**, **`FabricMenuOpener`**, stable **`FabricMenuKeys`** (`skills` / `stats` vs Bukkit `MenuFileManager` names), **`FabricMenuLoaders#registerBuiltInMenus`**. Titles pass through registry → **`Text.translatable`**. **`FabricAuraSkills`**: `getMenuRegistry()`; menus registered in **`enable()`**. **`FabricAuraSkillsMenus`**: `open(String)` + enum dispatch to registry. **Tests:** `FabricMenuRegistryTest`. **Docs/manual** Sprint 29. **`projectVersion` 2.3.56 → 2.3.57**. Full YAML/Slate not in scope.
+
 ## 2.3.56
 
 ### Changes

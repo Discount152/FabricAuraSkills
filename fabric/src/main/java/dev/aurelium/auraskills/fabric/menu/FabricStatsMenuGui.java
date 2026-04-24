@@ -33,7 +33,7 @@ final class FabricStatsMenuGui {
     private FabricStatsMenuGui() {
     }
 
-    static void open(ServerPlayerEntity player, FabricAuraSkills plugin) {
+    static void open(ServerPlayerEntity player, FabricAuraSkills plugin, Text title) {
         User user = plugin.getUserManager().getUser(player.getUuid());
         Locale locale = user.getLocale();
         MessageProvider msg = plugin.getMessageProvider();
@@ -42,7 +42,7 @@ final class FabricStatsMenuGui {
 
         GraniteContainerMenus.openReadOnly9x6(
                 player,
-                Text.translatable("auraskills.granite.menu.stats_title"),
+                title,
                 inv -> {
                     int i = 0;
                     for (Stat stat : plugin.getStatManager().getEnabledStats()) {

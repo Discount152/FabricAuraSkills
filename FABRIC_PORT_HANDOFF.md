@@ -300,7 +300,7 @@ Mirrors Bukkit event order: **`FishingLootHandler` @HIGH**-equivalent ( **`tryRo
 | `FabricLootManager` | Skill loot tables / loaders | **Reference:** `BukkitLootManager` — still compare block/mob **handler** coverage. |
 | `FabricItemRegistry` | Custom items (registry path) | **Reference:** Bukkit NBT stack differs; edge cases: **`fabric/PARITY_BACKLOG.md`**. |
 | `FabricModifierManager` | Item/armor modifiers (schedules) | **Reference:** Bukkit `ItemListener` / armor — may still differ. |
-| `FabricMenuHelper` | Menus | **Sprint 27–28** — partial: format map + **Skills/Stats** GUIs via **`FabricAuraSkillsMenus`**; full **Slate** + YAML still **`MENU_AND_COMMANDS_PORT.md`**. **Bedrock:** validate chest GUIs via Geyser. |
+| `FabricMenuHelper` | Menus | **Sprint 27–29** — partial: format map + **`FabricMenuRegistry`/`FabricMenuLoaders`** + **Skills/Stats**; full **Slate** + file-backed YAML still **`MENU_AND_COMMANDS_PORT.md`**. **Bedrock:** validate chest GUIs via Geyser. |
 | `FabricUiProvider` / `FabricBossBarManager` | UI: titles, action bar, boss bar | **Reference:** Bukkit `BukkitUiProvider` options — **validate both client paths** for formatted text. |
 | `FabricUser` (permissions) | `fabric-permissions-api`; Floodgate + LP | **Bedrock:** confirm permission nodes for linked accounts. See **`fabric/PARITY_BACKLOG.md`**. |
 | `FabricTraitManager` / `FabricAbilityManager` / `FabricManaAbilityManager` | Register implementations | Many handlers exist — diff vs Bukkit; **not** “empty” in the sense of a blank class (verify `FabricAuraSkills#finishEnable`). |

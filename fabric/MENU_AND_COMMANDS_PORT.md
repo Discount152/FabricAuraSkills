@@ -129,3 +129,17 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Manual** | **`SPRINT_28_MANUAL_GRANITE_MENUS.md`** (Skills + Stats, Java + Bedrock) |
 
 **Not in Sprint 28:** `stat_info` click, full Slate, YAML load from `menus/`.
+
+## Sprint 29 — Menu registry + loading scaffold (shipped, partial)
+
+| Piece | Where |
+|-------|--------|
+| **Registry** | **`FabricMenuRegistry`** — `register` / `get` / `open(id,…)` / `menuIds()` |
+| **Definitions** | **`FabricMenuDefinition`** (`id`, `titleTranslationKey`, `FabricMenuOpener`) — code-built, not YAML |
+| **Loader** | **`FabricMenuLoaders#registerBuiltInMenus`** — single path that registers `skills` + `stats`; logs at **enable** (reference: `MenuRegistrar` + `MenuFileManager` order of operations, without Slate merge dirs) |
+| **Stable IDs** | **`FabricMenuKeys`** — `skills`, `stats` (subset of Bukkit `MenuFileManager.MENU_NAMES`) |
+| **Dispatch** | **`FabricAuraSkillsMenus.open(String)`** and **`open(Id)`** → **`FabricAuraSkills#getMenuRegistry()`** |
+| **GUI slices** | **`FabricSkillsMenuGui` / `FabricStatsMenuGui`** take **`Text title`** from registry (no hardcoded `Text.translatable` in GUI for window title) |
+| **Manual** | **`SPRINT_29_MANUAL_MENU_REGISTRY.md`** |
+
+**Not in Sprint 29:** file-backed YAML menu load, Slate `MenuLoader`, `menuFileManager.loadMenus`, merge directories, reload-time re-registration (future: call loader after reload).

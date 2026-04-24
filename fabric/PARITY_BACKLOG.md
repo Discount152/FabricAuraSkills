@@ -45,7 +45,7 @@ These are **product** requirements, not optional polish:
 
 ## Menus and UI
 
-- **Slate / inventory menus** — **In progress (Path A):** full **Slate** port to Fabric + Paper-parity **command tree**; see **`fabric/MENU_AND_COMMANDS_PORT.md`**. **Sprint 27–28** — **Skills** + **Stats** GUIs via **`GraniteContainerMenus`**, **`FabricAuraSkillsMenus`** router, `/skills` and `/stats` (temporary); `FabricMenuHelper` has `level_progression` + `stats` format keys — not full YAML/Slate.
+- **Slate / inventory menus** — **In progress (Path A):** full **Slate** port to Fabric + Paper-parity **command tree**; see **`fabric/MENU_AND_COMMANDS_PORT.md`**. **Sprint 27–29** — **Skills** + **Stats** via **`FabricMenuRegistry`**, **`FabricMenuLoaders`**, **`GraniteContainerMenus`**, `/skills` + `/stats` (temporary); `FabricMenuHelper` has `level_progression` + `stats` format keys; **Sprint 29** registry scaffold — not YAML `MenuFileManager` / Slate load.
 - **Boss bar XP** — stubbed; action bar / title behavior is minimal compared to Paper.
 
 ## Gameplay / sources

@@ -24,13 +24,13 @@ final class FabricSkillsMenuGui {
     private FabricSkillsMenuGui() {
     }
 
-    static void open(ServerPlayerEntity player, FabricAuraSkills plugin) {
+    static void open(ServerPlayerEntity player, FabricAuraSkills plugin, Text title) {
         User user = plugin.getUserManager().getUser(player.getUuid());
         var locale = user.getLocale();
         var msg = plugin.getMessageProvider();
         GraniteContainerMenus.openReadOnly9x6(
                 player,
-                Text.translatable("auraskills.granite.menu.skills_title"),
+                title,
                 inv -> {
                     int i = 0;
                     for (Skill skill : plugin.getSkillManager().getEnabledSkills()) {
