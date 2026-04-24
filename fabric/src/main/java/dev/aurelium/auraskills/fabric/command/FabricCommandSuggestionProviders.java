@@ -95,4 +95,22 @@ public final class FabricCommandSuggestionProviders {
             return builder.buildFuture();
         };
     }
+
+    /** Bukkit {@code @lang} completion (**Sprint 48**). */
+    public static SuggestionProvider<ServerCommandSource> languageCodes() {
+        return (CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) -> {
+            FabricAuraSkills p = FabricAuraSkills.getInstance();
+            if (p == null) {
+                return CompletableFuture.completedFuture(builder.build());
+            }
+            String remaining = builder.getRemaining();
+            for (String code : p.getMessageProvider().getLanguageCodes()) {
+                if (remaining.isEmpty()
+                        || code.toLowerCase(Locale.ROOT).startsWith(remaining.toLowerCase(Locale.ROOT))) {
+                    builder.suggest(code);
+                }
+            }
+            return builder.buildFuture();
+        };
+    }
 }

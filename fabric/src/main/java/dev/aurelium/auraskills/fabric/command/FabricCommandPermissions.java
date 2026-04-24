@@ -84,5 +84,17 @@ public final class FabricCommandPermissions {
      */
     public static final String RANK = "auraskills.command.rank";
 
+    /** Bukkit {@code /sk multiplier} — view XP multipliers (self or optional online target). **Sprint 48** */
+    public static final String MULTIPLIER = "auraskills.command.multiplier";
+
+    /**
+     * Bukkit: {@code /sk toggle} and {@code abtoggle} share this node. **Sprint 48** — action bar
+     * idle line toggle.
+     */
+    public static final String ABTOGGLE = "auraskills.command.abtoggle";
+
+    /** Bukkit {@code /sk lang <code>}. **Sprint 48** */
+    public static final String LANG = "auraskills.command.lang";
+
     private FabricCommandPermissions() {}
 }

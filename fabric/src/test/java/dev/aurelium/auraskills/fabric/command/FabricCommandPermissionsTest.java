@@ -33,7 +33,10 @@ class FabricCommandPermissionsTest {
             FabricCommandPermissions.SKILL_RESET,
             FabricCommandPermissions.OPEN_MENU,
             FabricCommandPermissions.TOP,
-            FabricCommandPermissions.RANK
+            FabricCommandPermissions.RANK,
+            FabricCommandPermissions.MULTIPLIER,
+            FabricCommandPermissions.ABTOGGLE,
+            FabricCommandPermissions.LANG
         };
         Set<String> seen = new HashSet<>();
         for (String s : all) {

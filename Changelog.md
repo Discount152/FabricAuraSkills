@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.76
+
+### Changes
+
+- **Fabric: player utility commands (Sprint 48):** **`FabricPlayerUtilityCommands`** — **`/multiplier`**, **`/multiplier <onlinePlayer>`**, **`/toggle`**, **`/abtoggle`**, **`/lang <language>`**; **`FabricCommandLocaleArgs`**; **`FabricCommandSuggestionProviders.languageCodes`**. Perms **`auraskills.command.multiplier`**, **`abtoggle`**, **`lang`**. Mirrors on **`/auraskills`**, **`/sk`**, **`/skill`**. **Lang** `utility.players_only`, help. **Tests** `FabricCommandLocaleArgsTest`, permissions. **Docs** `SPRINT_48_MANUAL_PLAYER_UTILITY.md`, `COMMAND_PARITY_AUDIT`, `MENU_AND_COMMANDS_PORT`, ledger/backlog, **`projectVersion` 2.3.75 → 2.3.76**. **Caveat:** **`FabricUser#getPermissionMultiplier`** is still **stub** (often **0**); **item** multipliers are real. **Not in scope:** full **LuckPerms**-style permission **multiplier** aggregation on Fabric; ACF **`@Flags("other")`** beyond **online** target for **multiplier**.
+
 ## 2.3.75
 
 ### Changes

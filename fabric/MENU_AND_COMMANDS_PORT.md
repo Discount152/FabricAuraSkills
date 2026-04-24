@@ -352,3 +352,13 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Shared** | **`FabricCommandLeaderboardText`**: 1-based global index for paged sublists, **`?`** for **non-online** display names in this sprint. **`LeaderboardManager`**, **`CommandMessage`**, **`FabricCommandSkillParser`**. |
 | **Manual** | **`SPRINT_47_MANUAL_LEADERBOARD_RANK.md`** |
 | **Not in Sprint 47** | **`top average`**, Bukkit’s full `String[]` overload for **`top`**, **`/skilltop` as alias of** **`/top`**, **offline name** lookup, **`updateleaderboards`**. |
+
+## Sprint 48 — **multiplier**, **toggle**, **lang** (shipped, partial)
+
+| Piece | Where |
+|-------|--------|
+| **Commands** | **`FabricPlayerUtilityCommands`**: **`/multiplier`** (self) and **`/multiplier <player>`**; **`/toggle`** and **`/abtoggle`** (same **action bar IDLE** logic, **Bukkit** shared perm **`abtoggle`**); **`/lang <code>`** with suggestions from **`MessageProvider#getLanguageCodes`**. |
+| **Mirrors** | **`/auraskills`**, **`/sk`**, **`/skill`**, plus top-level. |
+| **Shared** | **`FabricCommandLocaleArgs`**; **`setShouldSave(true)`** on **lang** + **toggle** after mutation. |
+| **Manual** | **`SPRINT_48_MANUAL_PLAYER_UTILITY.md`** |
+| **Not in Sprint 48** | Rich **Bukkit** **`CommandManager#setPlayerLocale`** client sync; full **LP** **multiplier** perm walk on **Fabric** (see **`FabricUser`**). |
