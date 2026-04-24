@@ -341,4 +341,14 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Manual** | **`SPRINT_46_MANUAL_SK_SKILL_COMPAT_SUBTREE.md`** |
 | **Lang** | **usage** / **help** strings (surface `/sk\|skill <xp\|mana\|skilllevel\|openmenu>`) |
 
-**Not in Sprint 46:** ACF **SkillCommand** at **`/sk skill`**, `SkillsRootCommand` **top**/**rank**/**lang**, or any new **gameplay** systems.
+**Not in Sprint 46:** ACF **SkillCommand** at **`/sk skill`**, or any new **gameplay** systems. (**Top/rank** — **Sprint 47**, see below.)
+
+## Sprint 47 — **leaderboard** and **rank** (shipped, partial)
+
+| Piece | Where |
+|-------|--------|
+| **Commands** | **`FabricLeaderboardCommands`**: **`/top`**, **`/top <page>`** — power; **`/skilltop <skill>`**, **`/skilltop <skill> <page>`** — per-skill; **`/rank`** — self power + all enabled skills; **`/skillrank <skill>`** — one line. **`auraskills.command.top`**, **`auraskills.command.rank`**. |
+| **Mirrors** | Same `*Root()` builders under **`/auraskills`**, **`/sk`**, **`/skill`**. |
+| **Shared** | **`FabricCommandLeaderboardText`**: 1-based global index for paged sublists, **`?`** for **non-online** display names in this sprint. **`LeaderboardManager`**, **`CommandMessage`**, **`FabricCommandSkillParser`**. |
+| **Manual** | **`SPRINT_47_MANUAL_LEADERBOARD_RANK.md`** |
+| **Not in Sprint 47** | **`top average`**, Bukkit’s full `String[]` overload for **`top`**, **`/skilltop` as alias of** **`/top`**, **offline name** lookup, **`updateleaderboards`**. |

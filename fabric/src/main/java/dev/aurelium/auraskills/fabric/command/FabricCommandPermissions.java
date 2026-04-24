@@ -72,5 +72,17 @@ public final class FabricCommandPermissions {
      */
     public static final String OPEN_MENU = "auraskills.command.openmenu";
 
+    /**
+     * Bukkit {@code /sk top} / {@code skilltop} (see {@code plugin.yml}). **Sprint 47:** also
+     * {@code /top}, {@code /skilltop}, and under {@code /auraskills} / {@code /sk|skill}.
+     */
+    public static final String TOP = "auraskills.command.top";
+
+    /**
+     * Bukkit {@code /sk rank} / {@code skillrank} (see {@code plugin.yml}). **Sprint 47:** also
+     * {@code /rank}, {@code /skillrank}, and alias mirrors.
+     */
+    public static final String RANK = "auraskills.command.rank";
+
     private FabricCommandPermissions() {}
 }

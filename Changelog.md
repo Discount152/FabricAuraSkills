@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.75
+
+### Changes
+
+- **Fabric: leaderboard / rank commands (Sprint 47):** **`FabricLeaderboardCommands`** — **`/top`**, **`/skilltop <skill> [page]`**, **`/rank`**, **`/skillrank <skill>`**; **`FabricCommandLeaderboardText`** (paging rank index, online-only name resolution → **`?`** offline in this sprint); perms **`auraskills.command.top`**, **`auraskills.command.rank`** (Bukkit names). Registered on **`/auraskills`**, **`/sk`**, **`/skill`**, and top-level. **Lang** `leaderboard.players_only`, help. **Tests** `FabricCommandLeaderboardTextTest`, permissions. **Docs** `SPRINT_47_MANUAL_LEADERBOARD_RANK.md`, `COMMAND_PARITY_AUDIT`, `MENU_AND_COMMANDS_PORT`, ledger/backlog, **`projectVersion` 2.3.74 → 2.3.75**. **Not in scope:** **`top average`** / full Bukkit **`onTop`** arg matrix; offline name resolution via profile cache; **`updateleaderboards`** command.
+
 ## 2.3.74
 
 ### Changes

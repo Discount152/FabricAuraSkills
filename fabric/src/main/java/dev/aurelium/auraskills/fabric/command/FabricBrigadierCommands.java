@@ -22,10 +22,14 @@ public final class FabricBrigadierCommands {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         FabricAuraSkillsMod.LOGGER.info(
-                "Registering Brigadier: /auraskills (…), /skills, /sk|skill (compat: openmenu, xp, mana, skilllevel), /stats, /openmenu, /mana, /skilllevel, /xp — see fabric/COMMAND_PARITY_AUDIT.md");
+                "Registering Brigadier: /auraskills (…), /skills, /sk|skill (compat+leaderboard), /stats, /openmenu, /top, /skilltop, /rank, /skillrank, /mana, /skilllevel, /xp — see fabric/COMMAND_PARITY_AUDIT.md");
 
         registerAuraskillsAndAliases(dispatcher);
         dispatcher.register(FabricOpenMenuCommands.openMenuRoot());
+        dispatcher.register(FabricLeaderboardCommands.topRoot());
+        dispatcher.register(FabricLeaderboardCommands.skillTopRoot());
+        dispatcher.register(FabricLeaderboardCommands.rankRoot());
+        dispatcher.register(FabricLeaderboardCommands.skillRankRoot());
         dispatcher.register(aliasSkillsRoot("sk"));
         dispatcher.register(aliasSkillsRoot("skill"));
         dispatcher.register(FabricManaCommands.manaCommandRoot());
@@ -48,6 +52,10 @@ public final class FabricBrigadierCommands {
         return literal(alias)
                 .executes(FabricBrigadierCommands::skillsAliasDefault)
                 .then(FabricOpenMenuCommands.openMenuSubcommand())
+                .then(FabricLeaderboardCommands.topRoot())
+                .then(FabricLeaderboardCommands.skillTopRoot())
+                .then(FabricLeaderboardCommands.rankRoot())
+                .then(FabricLeaderboardCommands.skillRankRoot())
                 .then(FabricXpCommands.xpRoot())
                 .then(FabricManaCommands.manaCommandRoot())
                 .then(FabricSkillLevelCommands.skillLevelRoot());
@@ -86,7 +94,11 @@ public final class FabricBrigadierCommands {
                 .then(FabricManaCommands.manaCommandRoot())
                 .then(FabricSkillLevelCommands.skillLevelRoot())
                 .then(FabricXpCommands.xpRoot())
-                .then(FabricOpenMenuCommands.openMenuSubcommand()));
+                .then(FabricOpenMenuCommands.openMenuSubcommand())
+                .then(FabricLeaderboardCommands.topRoot())
+                .then(FabricLeaderboardCommands.skillTopRoot())
+                .then(FabricLeaderboardCommands.rankRoot())
+                .then(FabricLeaderboardCommands.skillRankRoot()));
         dispatcher.register(literal("skills")
                 .requires(FabricCommandRequirements.permission(FabricCommandPermissions.SKILLS, true))
                 .executes(FabricBrigadierCommands::skills));
