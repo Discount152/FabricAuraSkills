@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.64
+
+### Changes
+
+- **Fabric: bounded `granite.items` for built-in menus (Sprint 36):** **`FabricMenuItemDefinitions`** — `list`, `main`, `back` as **Minecraft item registry ids** (namespace:path or vanilla path); **YAML parse** normalizes invalid **format** to code defaults; **runtime** uses `Registries.ITEM` with fallback to **book** / **arrow** and **warn** on unknown id. **`FabricMenuYamlSlice`** + **`FabricBuiltInMenuConfig#parse`**. **GUIs:** Skills/Stats row item; Level Progression / Stat Info main + back. **Resources / tests** for `menus/*.yml` and **`FabricBuiltInMenuConfigTest`**. **Docs** `SPRINT_36_MANUAL_BUILT_IN_MENU_ITEMS.md`, `MENU_AND_COMMANDS_PORT`, parity, backlog, handoff. **`projectVersion` 2.3.63 → 2.3.64**. Not in scope: Slate **ItemBuilder**, NBT, per-row templates.
+
 ## 2.3.63
 
 ### Changes

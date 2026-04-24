@@ -12,5 +12,9 @@ granite:
     list_end_slot_exclusive: 54
     main_slot: 4
     back_slot: 49
+  items:
+    list: "minecraft:book"
+    main: "minecraft:book"
+    back: "minecraft:arrow"
   format:
     list_open_detail: "auraskills.granite.menu.stats_lore_open_detail"

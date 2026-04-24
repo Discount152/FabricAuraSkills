@@ -16,6 +16,11 @@ granite:
     list_end_slot_exclusive: 54
     main_slot: 4
     back_slot: 49
+  # Row item: vanilla registry id (or path only, e.g. book → minecraft:book). Invalid ids fall back to defaults; unknown ids at runtime still fall back.
+  items:
+    list: "minecraft:book"
+    main: "minecraft:book"
+    back: "minecraft:arrow"
   format:
     # Translation key for the “open detail” lore line on each skill row.
     list_open_detail: "auraskills.granite.menu.skills_lore_open_detail"

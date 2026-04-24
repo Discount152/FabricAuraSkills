@@ -45,7 +45,7 @@ These are **product** requirements, not optional polish:
 
 ## Menus and UI
 
-- **Slate / inventory menus** — **In progress (Path A):** full **Slate** port to Fabric + Paper-parity **command tree**; see **`fabric/MENU_AND_COMMANDS_PORT.md`**. **Sprint 27–35** — **`FabricMenuRegistry`** holds **static** and **contextual** built-ins (`level_progression` + `stat_info` use **`FabricMenuContext`**) with **`granite:`** + **`granite.layout`**; not full `MenuFileManager`+Slate **merge** or template engine.
+- **Slate / inventory menus** — **In progress (Path A):** full **Slate** port to Fabric + Paper-parity **command tree**; see **`fabric/MENU_AND_COMMANDS_PORT.md`**. **Sprint 27–36** — built-ins: **`granite:`** + **`granite.layout`** + bounded **`granite.items`** (vanilla id strings + safe fallbacks); **`FabricMenuContext`** for detail ids; not full `MenuFileManager`+Slate **merge** or per-row **ItemBuilder** templates.
 - **Boss bar XP** — stubbed; action bar / title behavior is minimal compared to Paper.
 
 ## Gameplay / sources

@@ -13,6 +13,7 @@ import java.util.Map;
 /**
  * Loads the {@code granite} section of built-in {@code menus/*.yml} files (or embedded defaults). List
  * menus (Sprint 32) and detail menus (Sprint 33) share the same parser; safe fallback on errors.
+ * **Sprint 36:** {@code granite.items} (list/main/back item ids).
  */
 public final class FabricBuiltInMenuConfig {
 
@@ -117,6 +118,7 @@ public final class FabricBuiltInMenuConfig {
             }
         }
         FabricMenuSlotLayout.Resolved lay = FabricMenuSlotLayout.parseGranite(g, def, plugin, path);
+        FabricMenuItemDefinitions.Resolved items = FabricMenuItemDefinitions.parseGranite(g, def, plugin, path);
         return new FabricMenuYamlSlice(
                 enabled,
                 titleKey,
@@ -126,7 +128,10 @@ public final class FabricBuiltInMenuConfig {
                 lay.listStartSlot(),
                 lay.listEndSlotExclusive(),
                 lay.mainSlot(),
-                lay.backSlot());
+                lay.backSlot(),
+                items.listItemId(),
+                items.mainItemId(),
+                items.backItemId());
     }
 
     @Nullable

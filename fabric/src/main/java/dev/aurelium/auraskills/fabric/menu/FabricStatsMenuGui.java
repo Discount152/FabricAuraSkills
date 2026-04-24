@@ -15,6 +15,7 @@ import dev.granitelib.fabric.menu.GraniteContainerMenus;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LoreComponent;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -28,6 +29,7 @@ import java.util.Locale;
 /**
  * Stats: one book per enabled {@link Stat} (Bukkit {@code stats.yml} spirit). **Sprint 31:** when
  * {@link Option#MENUS_STAT_INFO_ENABLED} is on, top-slot click opens {@link FabricStatInfoMenuGui}.
+ * **Sprint 36:** list row item from {@code granite.items.list}.
  */
 final class FabricStatsMenuGui {
 
@@ -50,20 +52,44 @@ final class FabricStatsMenuGui {
                 .getSlice(FabricMenuKeys.STATS, FabricMenuYamlSlice.defaultStats());
         int listStart = cfg.listStartSlot();
         int listEnd = cfg.listEndSlotExclusive();
+        Item listItem = FabricMenuItemDefinitions.resolveItem(
+                cfg.listItemId(), Items.BOOK, plugin, "menus/stats.yml", "list");
         boolean statInfoClicks = plugin.configBoolean(Option.MENUS_STAT_INFO_ENABLED);
         if (!statInfoClicks) {
             GraniteContainerMenus.openReadOnly9x6(
                     player,
                     title,
                     inv -> fillStatSlots(
-                            order, user, msg, plugin, locale, menus, util, listStart, listEnd, inv, false));
+                            order,
+                            user,
+                            msg,
+                            plugin,
+                            locale,
+                            menus,
+                            util,
+                            listItem,
+                            listStart,
+                            listEnd,
+                            inv,
+                            false));
             return;
         }
         GraniteContainerMenus.openClickable9x6(
                 player,
                 title,
                 inv -> fillStatSlots(
-                        order, user, msg, plugin, locale, menus, util, listStart, listEnd, inv, true),
+                        order,
+                        user,
+                        msg,
+                        plugin,
+                        locale,
+                        menus,
+                        util,
+                        listItem,
+                        listStart,
+                        listEnd,
+                        inv,
+                        true),
                 (topSlot, p, b, t) -> {
                     if (topSlot < listStart || topSlot >= listEnd) {
                         return;
@@ -90,6 +116,7 @@ final class FabricStatsMenuGui {
             Locale locale,
             MenuHelper menus,
             PlatformUtil util,
+            Item listItem,
             int listStart,
             int listEndEx,
             Inventory inv,
@@ -98,7 +125,7 @@ final class FabricStatsMenuGui {
         for (int i = 0; i < order.size() && slot < listEndEx && slot < inv.size() && slot < FabricMenuSlotLayout.TOP_SLOTS;
                 i++) {
             Stat stat = order.get(i);
-            ItemStack stack = new ItemStack(Items.BOOK);
+            ItemStack stack = new ItemStack(listItem);
             String levelText = formatStatLevel(stat, user, plugin, locale);
             String nameTemplate = menus.getFormat("stats", "player_stat_entry");
             String rawName = TextUtil.replace(

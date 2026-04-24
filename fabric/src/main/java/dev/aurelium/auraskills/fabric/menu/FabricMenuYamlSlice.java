@@ -8,6 +8,7 @@ import java.util.Map;
 /**
  * Granite slice of a built-in menu loaded from {@code menus/<id>.yml} under the {@code granite:} key.
  * Not a full Slate {@code skills.yml} / {@code stats.yml} document. **Sprint 34:** layout slot numbers.
+ * **Sprint 36:** item registry ids under {@code granite.items} (list / main / back).
  */
 public record FabricMenuYamlSlice(
         boolean enabled,
@@ -18,7 +19,10 @@ public record FabricMenuYamlSlice(
         int listStartSlot,
         int listEndSlotExclusive,
         int mainSlot,
-        int backSlot) {
+        int backSlot,
+        String listItemId,
+        String mainItemId,
+        String backItemId) {
 
     public static final int EXPECTED_ROWS = 6;
     public static final int EXPECTED_COLS = 9;
@@ -39,7 +43,10 @@ public record FabricMenuYamlSlice(
                 FabricMenuSlotLayout.DEFAULT_LIST_START,
                 FabricMenuSlotLayout.DEFAULT_LIST_END_EX,
                 FabricMenuSlotLayout.DEFAULT_MAIN_SLOT,
-                FabricMenuSlotLayout.DEFAULT_BACK_SLOT);
+                FabricMenuSlotLayout.DEFAULT_BACK_SLOT,
+                FabricMenuItemDefinitions.DEFAULT_LIST_ITEM_ID,
+                FabricMenuItemDefinitions.DEFAULT_MAIN_ITEM_ID,
+                FabricMenuItemDefinitions.DEFAULT_BACK_ITEM_ID);
     }
 
     static FabricMenuYamlSlice defaultStats() {
@@ -52,7 +59,10 @@ public record FabricMenuYamlSlice(
                 FabricMenuSlotLayout.DEFAULT_LIST_START,
                 FabricMenuSlotLayout.DEFAULT_LIST_END_EX,
                 FabricMenuSlotLayout.DEFAULT_MAIN_SLOT,
-                FabricMenuSlotLayout.DEFAULT_BACK_SLOT);
+                FabricMenuSlotLayout.DEFAULT_BACK_SLOT,
+                FabricMenuItemDefinitions.DEFAULT_LIST_ITEM_ID,
+                FabricMenuItemDefinitions.DEFAULT_MAIN_ITEM_ID,
+                FabricMenuItemDefinitions.DEFAULT_BACK_ITEM_ID);
     }
 
     static FabricMenuYamlSlice defaultLevelProgression() {
@@ -73,7 +83,10 @@ public record FabricMenuYamlSlice(
                 FabricMenuSlotLayout.DEFAULT_LIST_START,
                 FabricMenuSlotLayout.DEFAULT_LIST_END_EX,
                 FabricMenuSlotLayout.DEFAULT_MAIN_SLOT,
-                FabricMenuSlotLayout.DEFAULT_BACK_SLOT);
+                FabricMenuSlotLayout.DEFAULT_BACK_SLOT,
+                FabricMenuItemDefinitions.DEFAULT_LIST_ITEM_ID,
+                FabricMenuItemDefinitions.DEFAULT_MAIN_ITEM_ID,
+                FabricMenuItemDefinitions.DEFAULT_BACK_ITEM_ID);
     }
 
     static FabricMenuYamlSlice defaultStatInfo() {
@@ -90,7 +103,10 @@ public record FabricMenuYamlSlice(
                 FabricMenuSlotLayout.DEFAULT_LIST_START,
                 FabricMenuSlotLayout.DEFAULT_LIST_END_EX,
                 FabricMenuSlotLayout.DEFAULT_MAIN_SLOT,
-                FabricMenuSlotLayout.DEFAULT_BACK_SLOT);
+                FabricMenuSlotLayout.DEFAULT_BACK_SLOT,
+                FabricMenuItemDefinitions.DEFAULT_LIST_ITEM_ID,
+                FabricMenuItemDefinitions.DEFAULT_MAIN_ITEM_ID,
+                FabricMenuItemDefinitions.DEFAULT_BACK_ITEM_ID);
     }
 
     @Nullable

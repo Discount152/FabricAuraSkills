@@ -85,6 +85,27 @@ class FabricBuiltInMenuConfigTest {
         assertEquals(d.backSlot(), s.backSlot());
     }
 
+    @Test
+    void parse_itemsListMainBack() throws IOException {
+        String yaml =
+                "granite:\n  items:\n    list: minecraft:writable_book\n    main: minecraft:emerald\n    back: minecraft:stick\n";
+        ConfigurationNode root = load(yaml);
+        FabricMenuYamlSlice s =
+                FabricBuiltInMenuConfig.parse(root, FabricMenuYamlSlice.defaultSkills(), null, "t.yml");
+        assertEquals("minecraft:writable_book", s.listItemId());
+        assertEquals("minecraft:emerald", s.mainItemId());
+        assertEquals("minecraft:stick", s.backItemId());
+    }
+
+    @Test
+    void parse_itemsInvalidIdFormat_usesDefaultList() throws IOException {
+        String yaml = "granite:\n  items:\n    list: '!!! not an id'\n";
+        ConfigurationNode root = load(yaml);
+        FabricMenuYamlSlice d = FabricMenuYamlSlice.defaultStats();
+        FabricMenuYamlSlice s = FabricBuiltInMenuConfig.parse(root, d, null, "t.yml");
+        assertEquals(d.listItemId(), s.listItemId());
+    }
+
     private static ConfigurationNode load(String yaml) throws IOException {
         YamlConfigurationLoader loader = YamlConfigurationLoader.builder()
                 .source(() -> new BufferedReader(new StringReader(yaml)))

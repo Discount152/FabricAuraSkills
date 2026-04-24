@@ -210,3 +210,15 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Manual** | **`SPRINT_35_MANUAL_CONTEXT_MENUS.md`** |
 
 **Not in Sprint 35:** arbitrary placeholder strings, Bukkit `ContextManager` / `SortType` coverage, or registering more contextual menus.
+
+## Sprint 36 — `granite.items` (built-in item ids) (shipped, partial)
+
+| Piece | Where |
+|-------|--------|
+| **Keys** | Under **`granite.items`:** **`list`**, **`main`**, **`back`** — vanilla **item** registry ids; unprefixed keys use **`minecraft:`** (e.g. `book` → `minecraft:book`) at parse time where valid |
+| **Parse** | Invalid **identifier format** in YAML → log **warn** (if server **plugin** present) and keep **code default** id string; does not require the item to exist at **reload** time (mods can register later) |
+| **Runtime** | **`FabricMenuItemDefinitions#resolveItem`**: if id missing from **`Registries.ITEM`**, or **`air`**, fall back to **book** (list + main) or **arrow** (back) and **warn** |
+| **Wiring** | **Skills/Stats** — row stacks use **`list`**; **Level Progression / Stat Info** — **`main`** and **`back`**; unused keys on a menu (e.g. `main` on Skills) are still stored on the **slice** for a consistent YAML shape |
+| **Manual** | **`SPRINT_36_MANUAL_BUILT_IN_MENU_ITEMS.md`** |
+
+**Not in Sprint 36:** NBT, count, `ItemBuilder` / template items, or different item **per** list row.

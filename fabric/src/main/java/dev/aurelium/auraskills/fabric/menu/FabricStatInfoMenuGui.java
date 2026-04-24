@@ -11,6 +11,7 @@ import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.granitelib.fabric.menu.GraniteContainerMenus;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LoreComponent;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -25,7 +26,8 @@ import java.util.Locale;
  * {@code stat_info.yml} + modifier grids. **Sprint 33:** titles/format keys from
  * {@link FabricBuiltInMenuConfig} / {@code menus/stat_info.yml} {@code granite:}. **Sprint 34:** main/back
  * slots from {@code granite.layout}. **Sprint 35:** opened via {@link FabricMenuRegistry} with
- * {@link FabricMenuContext#ofStat(Stat)}.
+ * {@link FabricMenuContext#ofStat(Stat)}. **Sprint 36:** main/back items from {@code granite.items.main} /
+ * {@code granite.items.back}.
  */
 final class FabricStatInfoMenuGui {
 
@@ -63,12 +65,16 @@ final class FabricStatInfoMenuGui {
         Text title = Text.translatable(cfg.titleTranslationKey(), displayName);
         int mainSlot = cfg.mainSlot();
         int backSlot = cfg.backSlot();
+        Item mainItem = FabricMenuItemDefinitions.resolveItem(
+                cfg.mainItemId(), Items.BOOK, plugin, "menus/stat_info.yml", "main");
+        Item backItem = FabricMenuItemDefinitions.resolveItem(
+                cfg.backItemId(), Items.ARROW, plugin, "menus/stat_info.yml", "back");
 
         GraniteContainerMenus.openClickable9x6(
                 player,
                 title,
                 inv -> {
-                    ItemStack main = new ItemStack(Items.BOOK);
+                    ItemStack main = new ItemStack(mainItem);
                     main.set(
                             DataComponentTypes.ITEM_NAME,
                             Text.translatable(
@@ -93,7 +99,7 @@ final class FabricStatInfoMenuGui {
                     }
                     main.set(DataComponentTypes.LORE, new LoreComponent(lore));
                     inv.setStack(mainSlot, main);
-                    ItemStack back = new ItemStack(Items.ARROW);
+                    ItemStack back = new ItemStack(backItem);
                     back.set(
                             DataComponentTypes.ITEM_NAME,
                             Text.translatable(

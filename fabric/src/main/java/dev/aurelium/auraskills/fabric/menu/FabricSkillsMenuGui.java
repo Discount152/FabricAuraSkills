@@ -7,6 +7,7 @@ import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.granitelib.fabric.menu.GraniteContainerMenus;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LoreComponent;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -18,6 +19,7 @@ import java.util.List;
 /**
  * 6×9 chest: enabled skills with level/XP; top-slot click opens
  * {@link FabricLevelProgressionMenuGui}. **Sprint 34:** list slot range from {@code granite.layout}.
+ * **Sprint 36:** list row item from {@code granite.items.list}.
  */
 final class FabricSkillsMenuGui {
 
@@ -34,6 +36,8 @@ final class FabricSkillsMenuGui {
                 .getSlice(FabricMenuKeys.SKILLS, FabricMenuYamlSlice.defaultSkills());
         int listStart = cfg.listStartSlot();
         int listEnd = cfg.listEndSlotExclusive();
+        Item listItem = FabricMenuItemDefinitions.resolveItem(
+                cfg.listItemId(), Items.BOOK, plugin, "menus/skills.yml", "list");
         List<Skill> skillsInOrder = new ArrayList<>();
         GraniteContainerMenus.openClickable9x6(
                 player,
@@ -45,7 +49,7 @@ final class FabricSkillsMenuGui {
                             break;
                         }
                         skillsInOrder.add(skill);
-                        ItemStack stack = new ItemStack(Items.BOOK);
+                        ItemStack stack = new ItemStack(listItem);
                         String name = msg.getSkillDisplayName(skill, locale, true);
                         stack.set(DataComponentTypes.ITEM_NAME, Text.literal(name));
                         int level = user.getSkillLevel(skill);
