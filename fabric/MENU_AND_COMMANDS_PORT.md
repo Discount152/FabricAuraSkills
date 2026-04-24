@@ -426,3 +426,14 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Manual** | `SPRINT_54_MANUAL_ARMOR_REQ_MULT.md` |
 
 | **Not in Sprint 54** | **Item** **register** / **give**; out-of-lane work (storage, profiles, …). |
+
+## Sprint 55 — **`/item register`**, **`/item unregister`**, **`/item give`** (shipped, partial)
+
+| Area | Shipped on Fabric (bounded) |
+|------|-----------------------------|
+| **Commands** | **`/item register <key>`** / **`/item unregister <key>`** (main hand for **register**; both **player**-only) — same mirrors as other **`/item`** roots; **`/item give <player> <key> [amount]`** (console allowed when target is online) |
+| **State** | **`FabricItemRegistry`** + **`items.yml`** (`saveToDisk` / `loadFromDisk` on register/unregister; **reload** reloads from disk). **`addRegisteredItemToInventory`** (sync) shared with **`ItemRegistry#giveItem`**; unclaimed + **`setShouldSave`** on overflow |
+| **Perms** | **`auraskills.command.item.register`** (register+unregister, Bukkit), **`auraskills.command.item.give`** |
+| **Suggestions** | **`FabricCommandSuggestionProviders#registeredItemKeys`** — **`/item unregister`**, second arg of **`/item give`** |
+
+| **Not in Sprint 55** | Bukkit **ExternalItemProvider** / dynamic namespaces; full **`/claimitems`**; **N/A** for armor. **Manual:** `SPRINT_55_MANUAL_ITEM_REGISTER_GIVE.md`. |

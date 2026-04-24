@@ -134,6 +134,17 @@ public final class FabricCommandPermissions {
     public static final String ITEM_MULTIPLIER = "auraskills.command.item.multiplier";
 
     /**
+     * Bukkit {@code ItemCommand} {@code item register|unregister …} (see {@code
+     * plugin.yml}). **Sprint 55.**
+     */
+    public static final String ITEM_REGISTER = "auraskills.command.item.register";
+
+    /**
+     * Bukkit {@code ItemCommand} {@code item give …} (see {@code plugin.yml}). **Sprint 55.**
+     */
+    public static final String ITEM_GIVE = "auraskills.command.item.give";
+
+    /**
      * Bukkit {@code ArmorCommand} {@code armor modifier …} / {@code armor trait …}. **Sprint 51**
      */
     public static final String ARMOR_MODIFIER = "auraskills.command.armor.modifier";

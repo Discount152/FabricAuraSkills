@@ -43,6 +43,8 @@ class FabricCommandPermissionsTest {
             FabricCommandPermissions.ITEM_IGNORE,
             FabricCommandPermissions.ITEM_REQUIREMENT,
             FabricCommandPermissions.ITEM_MULTIPLIER,
+            FabricCommandPermissions.ITEM_REGISTER,
+            FabricCommandPermissions.ITEM_GIVE,
             FabricCommandPermissions.ARMOR_MODIFIER,
             FabricCommandPermissions.ARMOR_REQUIREMENT,
             FabricCommandPermissions.ARMOR_MULTIPLIER

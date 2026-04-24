@@ -3,6 +3,7 @@ package dev.aurelium.auraskills.fabric.command;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import dev.aurelium.auraskills.api.registry.NamespacedId;
 import dev.aurelium.auraskills.api.skill.Skill;
 import dev.aurelium.auraskills.api.stat.Stat;
 import dev.aurelium.auraskills.api.trait.Trait;
@@ -142,6 +143,37 @@ public final class FabricCommandSuggestionProviders {
                 if (remaining.isEmpty()
                         || k.toLowerCase().startsWith(remaining.toLowerCase())) {
                     builder.suggest(k);
+                }
+            }
+            return builder.buildFuture();
+        };
+    }
+
+    /**
+     * Bukkit {@code @item_keys} — ids currently registered in {@link
+     * dev.aurelium.auraskills.fabric.item.FabricItemRegistry} (Sprint 55).
+     */
+    public static SuggestionProvider<ServerCommandSource> registeredItemKeys() {
+        return (CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) -> {
+            FabricAuraSkills p = FabricAuraSkills.getInstance();
+            if (p == null) {
+                return CompletableFuture.completedFuture(builder.build());
+            }
+            String remaining = builder.getRemaining();
+            for (NamespacedId id : p.getFabricItemRegistry().getIds()) {
+                String simple = id.getSimpleName();
+                if (remaining.isEmpty()
+                        || simple.toLowerCase(Locale.ROOT)
+                                .startsWith(remaining.toLowerCase(Locale.ROOT))) {
+                    builder.suggest(simple);
+                }
+                if (!id.getNamespace().equals(NamespacedId.AURASKILLS)) {
+                    String full = id.toString();
+                    if (remaining.isEmpty()
+                            || full.toLowerCase(Locale.ROOT)
+                                    .startsWith(remaining.toLowerCase(Locale.ROOT))) {
+                        builder.suggest(full);
+                    }
                 }
             }
             return builder.buildFuture();

@@ -15,6 +15,7 @@ import dev.aurelium.auraskills.api.stat.Stat;
 import dev.aurelium.auraskills.api.stat.StatModifier;
 import dev.aurelium.auraskills.api.trait.Trait;
 import dev.aurelium.auraskills.api.trait.TraitModifier;
+import dev.aurelium.auraskills.api.registry.NamespacedId;
 import dev.aurelium.auraskills.api.util.AuraSkillsModifier;
 import dev.aurelium.auraskills.common.message.type.CommandMessage;
 import dev.aurelium.auraskills.common.util.text.TextUtil;
@@ -45,6 +46,7 @@ import static net.minecraft.server.command.CommandManager.literal;
  * (Sprint 52, {@code item.ignore}); {@code /item requirement|multiplier …} (Sprint 53, {@code
  * item.requirement} / {@code item.multiplier}); {@code /armor requirement|multiplier …} (Sprint 54,
  * {@code armor.requirement} / {@code armor.multiplier} — shared executors with {@link ModifierType}).
+ * {@code /item register|unregister|give …} (Sprint 55, {@code item.register} / {@code item.give}).
  */
 public final class FabricItemArmorModifierCommands {
 
@@ -65,6 +67,12 @@ public final class FabricItemArmorModifierCommands {
     private static final String LIT_IGNORE = "ignore";
     private static final String LIT_REQUIREMENT = "requirement";
     private static final String LIT_MULTIPLIER = "multiplier";
+    private static final String LIT_REGISTER = "register";
+    private static final String LIT_UNREGISTER = "unregister";
+    private static final String LIT_GIVE = "give";
+    private static final String ARG_KEY = "key";
+    private static final String ARG_GIVE_COUNT = "amount";
+    private static final String ARG_GIVE_TARGET = "player";
 
     private static final SuggestionProvider<ServerCommandSource> OPERATIONS =
             (c, b) -> {
@@ -332,7 +340,63 @@ public final class FabricItemArmorModifierCommands {
                                         literal(LIT_REMOVEALL)
                                                 .executes(
                                                         FabricItemArmorModifierCommands
-                                                                ::removeAllItemMultiplier)));
+                                                                ::removeAllItemMultiplier)))
+                .then(
+                        literal(LIT_REGISTER)
+                                .requires(
+                                        FabricCommandRequirements.permission(
+                                                FabricCommandPermissions.ITEM_REGISTER, false))
+                                .then(
+                                        CommandManager.argument(ARG_KEY, StringArgumentType.word())
+                                                .executes(FabricItemArmorModifierCommands::runItemRegister)))
+                .then(
+                        literal(LIT_UNREGISTER)
+                                .requires(
+                                        FabricCommandRequirements.permission(
+                                                FabricCommandPermissions.ITEM_REGISTER, false))
+                                .then(
+                                        CommandManager.argument(ARG_KEY, StringArgumentType.word())
+                                                .suggests(
+                                                        FabricCommandSuggestionProviders
+                                                                .registeredItemKeys())
+                                                .executes(
+                                                        FabricItemArmorModifierCommands
+                                                                ::runItemUnregister)))
+                .then(
+                        literal(LIT_GIVE)
+                                .requires(
+                                        FabricCommandRequirements.permission(
+                                                FabricCommandPermissions.ITEM_GIVE, false))
+                                .then(
+                                        CommandManager.argument(
+                                                        ARG_GIVE_TARGET, StringArgumentType.word())
+                                                .suggests(FabricCommandSuggestionProviders.onlinePlayers())
+                                                .then(
+                                                        CommandManager.argument(
+                                                                        ARG_KEY, StringArgumentType
+                                                                                .word())
+                                                                .suggests(
+                                                                        FabricCommandSuggestionProviders
+                                                                                .registeredItemKeys())
+                                                                .executes(
+                                                                        ctx ->
+                                                                                runItemGive(
+                                                                                        ctx, -1))
+                                                                .then(
+                                                                        CommandManager
+                                                                                .argument(
+                                                                                        ARG_GIVE_COUNT,
+                                                                                        IntegerArgumentType
+                                                                                                .integer(
+                                                                                                        1))
+                                                                                .executes(
+                                                                                        ctx ->
+                                                                                                runItemGive(
+                                                                                                        ctx,
+                                                                                                        IntegerArgumentType
+                                                                                                                .getInteger(
+                                                                                                                        ctx,
+                                                                                                                        ARG_GIVE_COUNT)))))));
     }
 
     public static LiteralArgumentBuilder<ServerCommandSource> armorCommandRoot() {
@@ -1670,5 +1734,287 @@ public final class FabricItemArmorModifierCommands {
         if (u != null) {
             p.getModifierManager().applyModifiers(u, true);
         }
+    }
+
+    private static Locale localeForSource(FabricAuraSkills p, ServerCommandSource source) {
+        if (source.getEntity() instanceof ServerPlayerEntity sp) {
+            User u = p.getUserManager().getUser(sp.getUuid());
+            if (u != null) {
+                return u.getLocale();
+            }
+        }
+        return p.getDefaultLanguage();
+    }
+
+    private static int runItemRegister(CommandContext<ServerCommandSource> ctx) {
+        if (!(ctx.getSource().getEntity() instanceof ServerPlayerEntity player)) {
+            return notPlayer(ctx.getSource());
+        }
+        return FabricCommandPluginState.runtimeReadyOrEmpty()
+                .map(
+                        p -> {
+                            String key = StringArgumentType.getString(ctx, ARG_KEY);
+                            if (key.contains(" ")) {
+                                User u = p.getUserManager().getUser(player.getUuid());
+                                Locale lo =
+                                        u != null ? u.getLocale() : p.getDefaultLanguage();
+                                String out =
+                                        p.getPrefix(lo)
+                                                + p.getMessageProvider()
+                                                        .applyFormatting(
+                                                                p.getMsg(
+                                                                        CommandMessage
+                                                                                .ITEM_REGISTER_NO_SPACES,
+                                                                        lo));
+                                ctx.getSource().sendError(Text.literal(out));
+                                return 0;
+                            }
+                            if (player.getMainHandStack().isEmpty()) {
+                                return emptyHand(ctx.getSource());
+                            }
+                            final NamespacedId id;
+                            try {
+                                id = NamespacedId.fromDefault(key);
+                            } catch (IllegalArgumentException ex) {
+                                ctx.getSource()
+                                        .sendError(
+                                                Text.translatable(
+                                                        "auraskills.granite.command.item"
+                                                                + ".bad_key",
+                                                        key));
+                                return 0;
+                            }
+                            if (p.getFabricItemRegistry().getItem(id) != null) {
+                                User u = p.getUserManager().getUser(player.getUuid());
+                                Locale lo = u != null ? u.getLocale() : p.getDefaultLanguage();
+                                String msg =
+                                        TextUtil.replace(
+                                                p.getMsg(
+                                                        CommandMessage
+                                                                .ITEM_REGISTER_ALREADY_REGISTERED,
+                                                        lo),
+                                                "{key}",
+                                                key);
+                                String full =
+                                        p.getPrefix(lo)
+                                                + p.getMessageProvider()
+                                                        .applyFormatting(msg);
+                                ctx.getSource()
+                                        .sendFeedback(() -> Text.literal(full), true);
+                                return 0;
+                            }
+                            p.getFabricItemRegistry()
+                                    .register(id, player.getMainHandStack().copy());
+                            p.getFabricItemRegistry().saveToDisk();
+                            User u = p.getUserManager().getUser(player.getUuid());
+                            Locale lo = u != null ? u.getLocale() : p.getDefaultLanguage();
+                            String msg =
+                                    TextUtil.replace(
+                                            p.getMsg(CommandMessage.ITEM_REGISTER_REGISTERED, lo),
+                                            "{key}",
+                                            key);
+                            String full =
+                                    p.getPrefix(lo)
+                                            + p.getMessageProvider()
+                                                    .applyFormatting(msg);
+                            ctx.getSource()
+                                    .sendFeedback(() -> Text.literal(full), true);
+                            return 1;
+                        })
+                .orElseGet(() -> notReady(ctx));
+    }
+
+    private static int runItemUnregister(CommandContext<ServerCommandSource> ctx) {
+        if (!(ctx.getSource().getEntity() instanceof ServerPlayerEntity player)) {
+            return notPlayer(ctx.getSource());
+        }
+        return FabricCommandPluginState.runtimeReadyOrEmpty()
+                .map(
+                        p -> {
+                            String key = StringArgumentType.getString(ctx, ARG_KEY);
+                            final NamespacedId id;
+                            try {
+                                id = NamespacedId.fromDefault(key);
+                            } catch (IllegalArgumentException ex) {
+                                ctx.getSource()
+                                        .sendError(
+                                                Text.translatable(
+                                                        "auraskills.granite.command.item"
+                                                                + ".bad_key",
+                                                        key));
+                                return 0;
+                            }
+                            if (!p.getFabricItemRegistry().containsItem(id)) {
+                                User u = p.getUserManager().getUser(player.getUuid());
+                                Locale lo = u != null ? u.getLocale() : p.getDefaultLanguage();
+                                String msg =
+                                        TextUtil.replace(
+                                                p.getMsg(
+                                                        CommandMessage
+                                                                .ITEM_UNREGISTER_NOT_REGISTERED,
+                                                        lo),
+                                                "{key}",
+                                                key);
+                                String full =
+                                        p.getPrefix(lo)
+                                                + p.getMessageProvider()
+                                                        .applyFormatting(msg);
+                                ctx.getSource()
+                                        .sendFeedback(() -> Text.literal(full), true);
+                                return 0;
+                            }
+                            p.getFabricItemRegistry().unregister(id);
+                            p.getFabricItemRegistry().saveToDisk();
+                            User u = p.getUserManager().getUser(player.getUuid());
+                            Locale lo = u != null ? u.getLocale() : p.getDefaultLanguage();
+                            String msg =
+                                    TextUtil.replace(
+                                            p.getMsg(
+                                                    CommandMessage.ITEM_UNREGISTER_UNREGISTERED, lo),
+                                            "{key}",
+                                            key);
+                            String full =
+                                    p.getPrefix(lo)
+                                            + p.getMessageProvider()
+                                                    .applyFormatting(msg);
+                            ctx.getSource()
+                                    .sendFeedback(() -> Text.literal(full), true);
+                            return 1;
+                        })
+                .orElseGet(() -> notReady(ctx));
+    }
+
+    private static int runItemGive(CommandContext<ServerCommandSource> ctx, int amount) {
+        return FabricCommandPluginState.runtimeReadyOrEmpty()
+                .map(
+                        p -> {
+                            String targetName = StringArgumentType.getString(ctx, ARG_GIVE_TARGET);
+                            String key = StringArgumentType.getString(ctx, ARG_KEY);
+                            ServerPlayerEntity target =
+                                    FabricCommandPlayerTarget.findOnline(
+                                                    ctx.getSource().getServer(), targetName)
+                                            .orElse(null);
+                            if (target == null) {
+                                ctx.getSource()
+                                        .sendError(
+                                                Text.translatable(
+                                                        "auraskills.granite.command.xp"
+                                                                + ".player_not_found",
+                                                        targetName));
+                                return 0;
+                            }
+                            User targetUser = p.getUserManager().getUser(target.getUuid());
+                            if (targetUser == null) {
+                                ctx.getSource()
+                                        .sendError(
+                                                Text.literal(
+                                                        p.getMessageProvider()
+                                                                .applyFormatting(
+                                                                        p.getMsg(
+                                                                                CommandMessage
+                                                                                        .NO_PROFILE,
+                                                                                p.getDefaultLanguage()))));
+                                return 0;
+                            }
+                            final NamespacedId id;
+                            try {
+                                id = NamespacedId.fromDefault(key);
+                            } catch (IllegalArgumentException ex) {
+                                ctx.getSource()
+                                        .sendError(
+                                                Text.translatable(
+                                                        "auraskills.granite.command.item"
+                                                                + ".bad_key",
+                                                        key));
+                                return 0;
+                            }
+                            if (!p.getFabricItemRegistry().containsItem(id)) {
+                                Locale lo = localeForSource(p, ctx.getSource());
+                                String msg =
+                                        TextUtil.replace(
+                                                p.getMsg(
+                                                        CommandMessage
+                                                                .ITEM_UNREGISTER_NOT_REGISTERED,
+                                                        lo),
+                                                "{key}",
+                                                key);
+                                String full =
+                                        p.getPrefix(lo)
+                                                + p.getMessageProvider()
+                                                        .applyFormatting(msg);
+                                ctx.getSource().sendError(Text.literal(full));
+                                return 0;
+                            }
+                            p.getScheduler()
+                                    .executeSync(
+                                            () -> {
+                                                if (!p.getFabricItemRegistry()
+                                                        .containsItem(id)) {
+                                                    return;
+                                                }
+                                                int given =
+                                                        p.getFabricItemRegistry()
+                                                                .addRegisteredItemToInventory(
+                                                                        targetUser,
+                                                                        target,
+                                                                        id,
+                                                                        amount);
+                                                if (given < 0) {
+                                                    return;
+                                                }
+                                                Locale senderLo =
+                                                        localeForSource(p, ctx.getSource());
+                                                String senderMsg =
+                                                        TextUtil.replace(
+                                                                p.getMsg(
+                                                                        CommandMessage
+                                                                                .ITEM_GIVE_SENDER,
+                                                                        senderLo),
+                                                                "{amount}",
+                                                                String.valueOf(given),
+                                                                "{key}",
+                                                                key,
+                                                                "{player}",
+                                                                target
+                                                                        .getName()
+                                                                        .getString());
+                                                if (!senderMsg.isEmpty()) {
+                                                    String out =
+                                                            p.getMessageProvider()
+                                                                    .applyFormatting(
+                                                                            p.getPrefix(senderLo)
+                                                                                    + senderMsg);
+                                                    ctx.getSource()
+                                                            .sendFeedback(
+                                                                    () -> Text.literal(out), true);
+                                                }
+                                                if (ctx.getSource().getEntity() == null
+                                                        || !ctx.getSource()
+                                                                .getEntity()
+                                                                .equals(target)) {
+                                                    String recv =
+                                                            TextUtil.replace(
+                                                                    p.getMsg(
+                                                                            CommandMessage
+                                                                                    .ITEM_GIVE_RECEIVER,
+                                                                            senderLo),
+                                                                    "{amount}",
+                                                                    String.valueOf(given),
+                                                                    "{key}",
+                                                                    key);
+                                                    if (!recv.isEmpty()) {
+                                                        String out =
+                                                                p.getMessageProvider()
+                                                                        .applyFormatting(
+                                                                                p.getPrefix(
+                                                                                                senderLo)
+                                                                                        + recv);
+                                                        targetUser.sendMessage(out);
+                                                    }
+                                                }
+                                            });
+                            return 1;
+                        })
+                .orElseGet(() -> notReady(ctx));
     }
 }

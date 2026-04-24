@@ -153,27 +153,50 @@ public final class FabricItemRegistry implements ItemRegistry {
         return items.containsKey(key);
     }
 
+    /**
+     * Synchronous, server thread: give a <strong>registered</strong> item stack. When {@code amount}
+     * is {@code -1}, uses the template stack size (Bukkit {@code /item give} default).
+     *
+     * @return the count placed on the stack (message line), or {@code -1} if the key is not
+     *     registered
+     */
+    public int addRegisteredItemToInventory(
+            User user, ServerPlayerEntity player, NamespacedId key, int amount) {
+        ItemStack template = getItem(key);
+        if (template == null || template.isEmpty()) {
+            return -1;
+        }
+        int count = amount == -1 ? template.getCount() : Math.max(1, amount);
+        ItemStack toGive = template.copy();
+        toGive.setCount(count);
+        ItemStack leftover = FabricItemInventoryUtil.addItemToInventory(player.getInventory(), toGive);
+        if (leftover != null && !leftover.isEmpty()) {
+            user.getUnclaimedItems().add(new KeyIntPair(key.toString(), leftover.getCount()));
+            user.setShouldSave(true);
+            String msg =
+                    plugin.getPrefix(user.getLocale())
+                            + plugin.getMsg(LevelerMessage.UNCLAIMED_ITEM, user.getLocale());
+            user.sendMessage(msg);
+        }
+        return count;
+    }
+
     @Override
     public void giveItem(User user, NamespacedId key, int amount) {
         ServerPlayerEntity player = FabricUser.getPlayer(user);
         if (player == null) {
             return;
         }
-        ItemStack template = getItem(key);
-        if (template == null || template.isEmpty()) {
+        if (getItem(key) == null) {
             return;
         }
-        plugin.getScheduler().executeSync(() -> {
-            ItemStack item = template.copy();
-            int count = amount == -1 ? template.getCount() : Math.max(1, amount);
-            item.setCount(count);
-            ItemStack leftover = FabricItemInventoryUtil.addItemToInventory(player.getInventory(), item);
-            if (leftover != null && !leftover.isEmpty()) {
-                user.getUnclaimedItems().add(new KeyIntPair(key.toString(), leftover.getCount()));
-                String msg = plugin.getPrefix(user.getLocale()) + plugin.getMsg(LevelerMessage.UNCLAIMED_ITEM, user.getLocale());
-                player.sendMessage(Text.literal(msg), false);
-            }
-        });
+        plugin.getScheduler().executeSync(
+                () -> {
+                    if (getItem(key) == null) {
+                        return;
+                    }
+                    addRegisteredItemToInventory(user, player, key, amount);
+                });
     }
 
     @Override

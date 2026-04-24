@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.83
+
+### Changes
+
+- **Fabric: `item register` + `item unregister` + `item give` (Sprint 55):** Bukkit-shaped **registry** commands on **`/item`**: **`register <key>`** (main hand → **`FabricItemRegistry`**, **`items.yml`**), **`unregister <key>`**, **`give <player> <key> [amount]`** (amount optional; **-1** = template size). **`addRegisteredItemToInventory`** (sync) refactors **`ItemRegistry#giveItem`**; unclaimed + **`setShouldSave`** on overflow. **Perms** **`auraskills.command.item.register`**, **`auraskills.command.item.give`**. **Suggestions:** **`registeredItemKeys`**. **Lang** `item.bad_key`. **Docs** `SPRINT_55_MANUAL_ITEM_REGISTER_GIVE.md`, `COMMAND_PARITY_AUDIT`, `MENU_AND_COMMANDS_PORT`, ledger CMD-001/006/007/021, `PARITY_BACKLOG`, **`projectVersion` 2.3.82 → 2.3.83**. **Not in scope:** Bukkit **ExternalItemProvider**; **`claimitems`**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test`.
+
 ## 2.3.82
 
 ### Changes
