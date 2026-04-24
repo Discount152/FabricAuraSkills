@@ -105,3 +105,16 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 ---
 
 *When the first `slate-fabric` artifact builds and opens `skills.yml` on a Fabric dev server, update this file with the exact coordinates and any API renames.*
+
+---
+
+## Sprint 27 — Skills menu vertical slice (shipped, partial)
+
+| Piece | Where |
+|-------|--------|
+| **Read-only 6×9** (vanilla `GENERIC_9X6` — Geyser-friendly large chest) | **`granitelib`**: `dev.granitelib.fabric.menu.GraniteReadOnly9x6Handler`, `GraniteContainerMenus#openReadOnly9x6` |
+| **Skills data + book rows** | **`FabricSkillsMenuGui`** — `/skills` and `/auraskills skills` (temporary; **not** final Granite public command design) |
+| **MenuHelper / StatReward** | **`FabricMenuHelper`** — at least `level_progression` / `stat_reward_entry` string |
+| **Manual** | **`SPRINT_27_MANUAL_SKILLS_MENU.md`** |
+
+**Not in Sprint 27:** YAML `menus/skills.yml` load, Slate `MenuBuilder`, contexts, `OpenMenuCommand`, other menus. Next slices stack on `GraniteContainerMenus` and shared menu registry when introduced.

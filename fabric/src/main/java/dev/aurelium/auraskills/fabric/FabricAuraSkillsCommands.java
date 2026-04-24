@@ -1,5 +1,6 @@
 package dev.aurelium.auraskills.fabric;
 
+import dev.aurelium.auraskills.fabric.menu.FabricSkillsMenuGui;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import me.lucko.fabric.api.permissions.v0.Permissions;
@@ -20,7 +21,12 @@ public final class FabricAuraSkillsCommands {
     }
 
     private static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+        FabricAuraSkillsMod.LOGGER.info("Registering /auraskills and /skills (version, help, skills GUI, reload, save)");
         dispatcher.register(literal("auraskills")
+                .executes(FabricAuraSkillsCommands::auraskillsUsage)
+                .then(literal("help")
+                        .requires(src -> Permissions.check(src, "auraskills.command.version", true))
+                        .executes(FabricAuraSkillsCommands::auraskillsHelp))
                 .then(literal("version")
                         .requires(src -> Permissions.check(src, "auraskills.command.version", true))
                         .executes(FabricAuraSkillsCommands::version))
@@ -33,6 +39,23 @@ public final class FabricAuraSkillsCommands {
                 .then(literal("save")
                         .requires(src -> Permissions.check(src, "auraskills.command.save", false))
                         .executes(FabricAuraSkillsCommands::save)));
+        dispatcher.register(literal("skills")
+                .requires(src -> Permissions.check(src, "auraskills.command.skills", true))
+                .executes(FabricAuraSkillsCommands::skills));
+    }
+
+    private static int auraskillsUsage(CommandContext<ServerCommandSource> ctx) {
+        ctx.getSource().sendFeedback(
+                () -> Text.literal("Use: /auraskills <version|help|skills|reload|save>  —  /skills = skills menu (Sprint 27 GUI)"),
+                false);
+        return 1;
+    }
+
+    private static int auraskillsHelp(CommandContext<ServerCommandSource> ctx) {
+        ctx.getSource().sendFeedback(
+                () -> Text.literal("Fabric AuraSkills: /auraskills version | /skills (Skills GUI) | /auraskills reload (staff) | /auraskills save (staff)"),
+                false);
+        return 1;
     }
 
     private static int version(CommandContext<ServerCommandSource> ctx) {
@@ -56,12 +79,9 @@ public final class FabricAuraSkillsCommands {
             source.sendError(Text.literal("Players only."));
             return 0;
         }
-        var user = plugin.getUserManager().getUser(player.getUuid());
-        StringBuilder sb = new StringBuilder("Skills: ");
-        for (var skill : plugin.getSkillManager().getSkillValues()) {
-            sb.append(skill.name().toLowerCase()).append(" L").append(user.getSkillLevel(skill)).append("  ");
-        }
-        source.sendFeedback(() -> Text.literal(sb.toString()), false);
+        // Sprint 27: Skills GUI (GraniteLib read-only 9×6). Temporary: same /skills and /auraskills skills as Bukkit reference intent.
+        FabricSkillsMenuGui.open(player, plugin);
+        source.sendFeedback(() -> Text.translatable("auraskills.granite.menu.skills_opened"), true);
         return 1;
     }
 

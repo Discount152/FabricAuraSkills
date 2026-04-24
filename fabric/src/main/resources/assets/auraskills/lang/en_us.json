@@ -1,0 +1,7 @@
+{
+  "auraskills.granite.menu.skills_title": "Skills",
+  "auraskills.granite.menu.skills_lore_level": "Level: %s",
+  "auraskills.granite.menu.skills_lore_xp": "XP: %s",
+  "auraskills.granite.menu.skills_lore_no_permission": "No permission for this skill",
+  "auraskills.granite.menu.skills_opened": "Opened skills menu (E to close)."
+}

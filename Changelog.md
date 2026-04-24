@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.55
+
+### Changes
+
+- **GraniteLib + Fabric: Skills menu GUI (Sprint 27 / first menu vertical slice):** **`granitelib`**: `GraniteReadOnly9x6Handler` (read-only large-chest `GENERIC_9X6` slots) + `GraniteContainerMenus#openReadOnly9x6`. **FabricAuraSkills**: `FabricSkillsMenuGui` — books per **enabled** skill with **level / XP** from `User` (permission line when blocked). **Temporary** open: `/skills` and `/auraskills skills` (same `auraskills.command.skills`). **`FabricMenuHelper`**: in-memory `level_progression.stat_reward_entry` for common `MenuHelper` callers. **Lang:** `assets/auraskills/lang/en_us.json`. **Docs/ledger:** `MENU_AND_COMMANDS_PORT.md`, `PARITY_*`, manual **`SPRINT_27_MANUAL_SKILLS_MENU.md`**. **Test:** `FabricMenuHelperTest`. **`projectVersion` 2.3.54 → 2.3.55**.
+
 ## 2.3.54
 
 ### Changes
