@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.95
+
+### Changes
+
+- **Fabric: `AntiAfkCommand` (Sprint 67):** **`/auraskills antiafk`**, **`/skills` / `/sk` / `/skill antiafk`** — **`logs <player> [page] [perPage]`** (defaults **1** / **10**; min **1**). Read-only: lists persisted + in-session **anti-AFK** log lines from **`StorageProvider#loadAntiAfkLogs`** and **`User#getSessionAntiAfkLogs`**; does **not** call **`AntiAfkManager`** (same as Bukkit). **`auraskills.command.antiafk.logs`** (default **deny**). In-game: **other** player only (matches ACF `@Flags("other")`); **console/RCON** may query any resolvable name. Name resolution: **online** + **NameToIdCache** (see **`/profile`**) — **not** Bukkit’s **`hasPlayedBefore`**; document as **Partial** for offline name matching. **No** top-level **`/antiafk`**. **Docs** `SPRINT_67_MANUAL_ANTIAFK_COMMAND.md`, `COMMAND_PARITY_AUDIT`, `MENU_AND_COMMANDS_PORT`, `PARITY_AUDIT_LEDGER` CMD-017, `PARITY_BACKLOG`, `SPRINT_65_COMMAND_RECONCILIATION`, **`projectVersion` 2.3.94 → 2.3.95**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test`. **Parity:** **Partial** — one reference subcommand (**logs**); Bukkit is **one** subcommand; resolution differs for never-seen names.
+
 ## 2.3.94
 
 ### Changes

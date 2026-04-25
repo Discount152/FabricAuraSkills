@@ -26,7 +26,7 @@ public final class FabricBrigadierCommands {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         FabricAuraSkillsMod.LOGGER.info(
-                "Registering Brigadier (Sprint 65–66): /auraskills (…), /skills|/sk|/skill share mirror subtrees, /stats, /openmenu, /claimitems, /sources, /resethealth, /transfer, /profile, /backup, /preset, /storage, leaderboard, /multiplier|/toggle|/abtoggle|/lang, /modifier, /trait, /item (…), /armor (…), /mana, /skilllevel, /manaability, /xp — see fabric/COMMAND_PARITY_AUDIT.md");
+                "Registering Brigadier (Sprint 65–67): /auraskills (…), /skills|/sk|/skill share mirror subtrees, /stats, /openmenu, /claimitems, /sources, /resethealth, /transfer, /profile, /backup, /preset, /storage, leaderboard, /multiplier|/toggle|/abtoggle|/lang, /modifier, /trait, /item (…), /armor (…), /mana, /skilllevel, /manaability, /antiafk, /xp — see fabric/COMMAND_PARITY_AUDIT.md");
 
         registerAuraskillsAndAliases(dispatcher);
         dispatcher.register(FabricOpenMenuCommands.openMenuRoot());
@@ -95,6 +95,7 @@ public final class FabricBrigadierCommands {
                 .then(FabricManaCommands.manaCommandRoot())
                 .then(FabricSkillLevelCommands.skillLevelRoot())
                 .then(FabricManaAbilityCommands.manaAbilityRoot())
+                .then(FabricAntiAfkCommands.antiafkRoot())
                 .then(FabricClaimItemsCommands.claimItemsLiteral())
                 .then(FabricSourcesCommands.sourcesLiteral())
                 .then(FabricResetHealthCommands.resetHealthLiteral())
@@ -144,6 +145,7 @@ public final class FabricBrigadierCommands {
                 .then(FabricManaCommands.manaCommandRoot())
                 .then(FabricSkillLevelCommands.skillLevelRoot())
                 .then(FabricManaAbilityCommands.manaAbilityRoot())
+                .then(FabricAntiAfkCommands.antiafkRoot())
                 .then(FabricXpCommands.xpRoot())
                 .then(FabricOpenMenuCommands.openMenuSubcommand())
                 .then(FabricLeaderboardCommands.topRoot())

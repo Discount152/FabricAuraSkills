@@ -16,8 +16,8 @@
 
 | Question | Answer |
 |----------|--------|
-| **1. Which Bukkit base commands have Fabric equivalents?** | **Most** of `registerBaseCommands` except **`JobsCommand`**, **`AntiAfkCommand`**; **per-skill** `SkillCommands.*` gated by config — **Missing** on Fabric. **`ManaAbilityCommand`** — **Sprint 66** (bounded **resetcooldown**). |
-| **2. Still Missing?** | **Jobs**, **AntiAfk**, **per-skill skill commands** (see `COMMAND_PARITY_AUDIT` table). |
+| **1. Which Bukkit base commands have Fabric equivalents?** | **Most** of `registerBaseCommands` except **`JobsCommand`**; **per-skill** `SkillCommands.*` gated by config — **Missing** on Fabric. **`ManaAbilityCommand`** — **Sprint 66** (bounded **resetcooldown**). **`AntiAfkCommand`** — **Sprint 67** (bounded **`logs`** only; **Partial** vs reference name resolution). |
+| **2. Still Missing?** | **Jobs**, **per-skill skill commands** (see `COMMAND_PARITY_AUDIT` table). **Anti-AFK:** **`logs`** implemented (**Sprint 67**). |
 | **3. Partial?** | **Most** ported families — see audit **Status** column (Slate menus, ACF flags, async, etc.). |
 | **4. Equivalent?** | **Rare** — **Partial** is the normal label; differences are documented per row. |
 | **5. Extra Fabric convenience roots?** | **Top-level** **`/backup`**, **`/preset`**, **`/storage`**, **`/profile`**, **`/transfer`**, **`/claimitems`**, **`/openmenu`**, **`/mana`**, **`/skilllevel`**, **`/xp`**, **`/top`**, **`/skilltop`**, **`/rank`**, **`/skillrank`**, **`/updateleaderboards`**, **`/multiplier`**, **`/toggle`**, **`/abtoggle`**, **`/lang`**, **`/modifier`**, **`/trait`**, **`/item`**, **`/armor`**, **`/sources`**, **`/resethealth`** — not all exist as Bukkit **dedicated** top-levels; see matrix. |
@@ -42,6 +42,7 @@
 | **mana** | **/mana** | **yes** | **yes** | **yes** | **yes** | `auraskills.command.mana.*` | Partial |
 | **skilllevel** | **/skilllevel** | **yes** | **yes** | **yes** | **yes** | `skilllevel.view`, `skill.setlevel`, `skill.reset` | Partial |
 | **manaability** | — (no top-level) | **yes** | **yes** | **yes** | **yes** | `auraskills.command.manaability.resetcooldown` | Partial |
+| **antiafk** | — (no top-level) | **yes** | **yes** | **yes** | **yes** | `auraskills.command.antiafk.logs` | Partial |
 | **claimitems** | **/claimitems** | **yes** | **yes** | **yes** | **yes** | `auraskills.command.claimitems` | Partial |
 | **sources** | **/sources** | **yes** | **yes** | **yes** | **yes** | `auraskills.command.sources` | Partial |
 | **resethealth** | **/resethealth** | **yes** | **yes** | **yes** | **yes** | `auraskills.command.resethealth` | Partial |
@@ -70,9 +71,9 @@
 4. **`FabricCommandPermissions`:** **`STORAGE`** javadoc references **Sprint 64** mutations.
 5. **Parity docs** + **Changelog** + **version** bump.
 
-## Remaining **Missing** (command lane, post–Sprint 65; post–S66 for **ManaAbility**)
+## Remaining **Missing** (command lane, post–Sprint 67)
 
-- **`JobsCommand`**, **`AntiAfkCommand`**, **per-skill** **`SkillCommands.*`** — see **`COMMAND_PARITY_AUDIT`**. **`ManaAbilityCommand`** — **Sprint 66** covers **resetcooldown** only (see audit **Partial** row).
+- **`JobsCommand`**, **per-skill** **`SkillCommands.*`** — see **`COMMAND_PARITY_AUDIT`**. **`ManaAbilityCommand`** / **`AntiAfkCommand`**: see **Sprint 66** / **Sprint 67** rows (both **Partial**).
 
 ## Remaining **Partial** (representative)
 

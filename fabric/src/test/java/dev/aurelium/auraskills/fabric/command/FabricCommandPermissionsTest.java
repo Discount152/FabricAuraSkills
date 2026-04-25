@@ -25,6 +25,7 @@ class FabricCommandPermissionsTest {
             FabricCommandPermissions.MANA_SET,
             FabricCommandPermissions.MANA_REMOVE,
             FabricCommandPermissions.MANAABILITY_RESETCOOLDOWN,
+            FabricCommandPermissions.ANTIAFK_LOGS,
             FabricCommandPermissions.XP_VIEW,
             FabricCommandPermissions.XP_ADD,
             FabricCommandPermissions.XP_SET,

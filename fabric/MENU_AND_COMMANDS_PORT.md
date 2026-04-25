@@ -526,3 +526,12 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **vs `/abtoggle`** | **`/abtoggle`** / **`/toggle`** = **Sprint 48** **IDLE** **action bar** on/off; **independent** of this admin **cooldown** tool. |
 | **Not in Sprint 66** | **`ManaAbilityRefreshEvent`**; other **ManaAbility** subcommands (reference has **only** **resetcooldown**); **Jobs**; menus. Manual: **`SPRINT_66_MANUAL_MANA_ABILITY_COMMAND.md`**. |
 
+## Sprint 67 — **`/antiafk logs`** (Bukkit `AntiAfkCommand`) (shipped, partial)
+
+| Area | Shipped on Fabric (bounded) |
+|------|-----------------------------|
+| **Commands** | **`/auraskills antiafk`**, **`/skills\|/sk\|/skill antiafk`** **logs** `<player> [page] [perPage]` (defaults **1** / **10**). **No** top-level **`/antiafk`**. **`auraskills.command.antiafk.logs`** (default **deny**). **In-game:** **other** player name only (ACF `@Flags("other")`); **console/RCON** any resolvable name. |
+| **Data** | **Read-only** listing: **`StorageProvider#loadAntiAfkLogs(uuid)`** + in-session **`User#getSessionAntiAfkLogs`**. Does **not** invoke **`AntiAfkManager`** (Bukkit does not for **logs**). Async load + sync feedback like reference when cache empty / offline. |
+| **Gaps (Partial)** | Name → UUID: **online** + **`NameToIdCache`**, not Bukkit **`OfflinePlayer#hasPlayedBefore`**. **Bedrock** chat: multi-line string; not separately verified this sprint. |
+| **Not in Sprint 67** | **Jobs**; per-skill **SkillCommands**; anti-AFK **algorithm** or detection changes. Manual: **`SPRINT_67_MANUAL_ANTIAFK_COMMAND.md`**. |
+

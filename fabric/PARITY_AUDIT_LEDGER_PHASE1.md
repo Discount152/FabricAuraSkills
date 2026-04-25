@@ -102,7 +102,7 @@
 | CMD-014 | `ManaAbilityCommand` | **`FabricManaAbilityCommands`**, **`FabricCommandManaAbilityParser`**, `enabledManaAbilities`, **`fabric/COMMAND_PARITY_AUDIT.md`** | Partial | ACF/Brigadier + Bukkit **`ManaAbilityRefreshEvent`** (api-bukkit only) | **Sprint 66** — **resetcooldown** only ( **other** online **Player**); default **deny**; no top-level `/manaability` |
 | CMD-015 | `TraitCommand` | `FabricPlayerModifierCommands#traitCommandRoot` (same bounded surface as **CMD-005** for traits) | Partial | ACF/Brigadier + **addtemp** + item path | **Sprint 50** — player **trait** modifier path only |
 | CMD-016 | `JobsCommand` | — | Missing | Out of scope + ACF/Brigadier | Reference jobs feature; not default Granite scope. |
-| CMD-017 | `AntiAfkCommand` | — | Missing | ACF/Brigadier |
+| CMD-017 | `AntiAfkCommand` | **`FabricAntiAfkCommands`** — **`antiafk logs`** (`/auraskills`, `/skills|/sk|/skill`); **`auraskills.command.antiafk.logs`**; **`fabric/COMMAND_PARITY_AUDIT.md`** | Partial | ACF/Brigadier + Bukkit **OfflinePlayer#hasPlayedBefore** vs Fabric **online** + **NameToIdCache** | **Sprint 67** — read-only log listing; in-game **other** only; **no** top-level **`/antiafk`** |
 | CMD-018 | `registerSkillCommands` (per-skill `SkillCommands.*`) | — | Missing | ACF/Brigadier + config `ENABLE_SKILL_COMMANDS` |
 | CMD-019 | ACF: replacements (`skills_alias`, desc keys) | Brigadier **`/sk`**, **`/skill`** (Sprint 44–46: `openmenu` + `xp` + `mana` + `skilllevel`); `desc_*` | Partial | ACF/Brigadier | **Sprint 46** — reference-shaped subtree for implemented families; not full ACF |
 | CMD-020 | ACF: contexts (User, Skill, ManaAbility, Stat, Trait, UUID, JsonArg, Duration) | — | Missing | ACF/Brigadier | |

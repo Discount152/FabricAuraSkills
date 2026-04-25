@@ -46,6 +46,12 @@ public final class FabricCommandPermissions {
     public static final String MANAABILITY_RESETCOOLDOWN =
             "auraskills.command.manaability.resetcooldown";
 
+    /**
+     * Bukkit {@code AntiAfkCommand#onLogs} — {@code antiafk logs …} (**Sprint 67**). Default
+     * <strong>deny</strong> (reference {@code plugin.yml} default <strong>op</strong>).
+     */
+    public static final String ANTIAFK_LOGS = "auraskills.command.antiafk.logs";
+
     /** Read-only: {@code /xp view <player> <skill>} (Sprint 40). Default true so players can inspect online targets (lock down via LP if needed). */
     public static final String XP_VIEW = "auraskills.command.xp.view";
 
