@@ -142,4 +142,15 @@ public final class FabricAuraSkillsMenus {
             int page) {
         FabricLeaderboardMenuGui.open(player, plugin, mode, skill, page);
     }
+
+    /**
+     * Per-skill **abilities** + **mana ability** viewer (Bukkit {@code AbilitiesMenu}), **Sprint 73**. Not
+     * in {@link FabricMenuRegistry} / YAML loaders. {@code returnToSkillsListPage} is passed to
+     * {@link #openLevelProgression(Skill, ServerPlayerEntity, FabricAuraSkills, int)} on <strong>Back</strong>
+     * (Bukkit: back to <strong>level_progression</strong>).
+     */
+    public static void openAbilities(
+            Skill skill, ServerPlayerEntity menuPlayer, FabricAuraSkills plugin, int returnToSkillsListPage) {
+        FabricAbilitiesMenuGui.open(menuPlayer, plugin, skill, returnToSkillsListPage);
+    }
 }

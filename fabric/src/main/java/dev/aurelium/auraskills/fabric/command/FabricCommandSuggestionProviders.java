@@ -41,7 +41,8 @@ public final class FabricCommandSuggestionProviders {
                         FabricMenuKeys.STAT_INFO,
                         FabricMenuKeys.SOURCES,
                         FabricMenuKeys.UNCLAIMED_ITEMS,
-                        FabricMenuKeys.LEADERBOARD
+                        FabricMenuKeys.LEADERBOARD,
+                        FabricMenuKeys.ABILITIES
                     }) {
                 String r = remaining.toLowerCase(Locale.ROOT);
                 if (remaining.isEmpty() || id.startsWith(r)) {

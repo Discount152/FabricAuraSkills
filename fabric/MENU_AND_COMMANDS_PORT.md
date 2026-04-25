@@ -586,3 +586,13 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Gaps (Partial)** | Not Slate skull grid; no YAML **`leaderboard.yml`**; **Back** differs (Skills vs level_progression). **Bedrock** GUI clicks **NRP** — not run-time tested. |
 | **Manual** | **`SPRINT_72_MANUAL_LEADERBOARD_MENU.md`** |
 
+## Sprint 73 — **Abilities** menu + **`/openmenu abilities`** (shipped, partial)
+
+| Area | Shipped on Fabric (bounded) |
+|------|-----------------------------|
+| **Bukkit ref** | `bukkit/.../AbilitiesMenu.java` — Slate: **`skill`** property, **locked_** / **unlocked_** ability + mana templates, components for **your_level** / **desc**, **back** → **level_progression** via **`GlobalItems`**. **No** `menus/abilities.yml` in repo (generated at runtime like other user files). |
+| **Menu** | **`FabricAbilitiesMenuGui`** — 6×9 Granite, passive **Ability** rows + one **ManaAbility** slot when present, dye/star icon **read-only** rows, **Back** (45) → **`openLevelProgression`** (`returnToSkillsListPage` **0** from openmenu unless wired later). |
+| **openmenu** | **`openmenu abilities`** (in-game: no-arg = first enabled skill **alphabetically** by key; **`<skill>`**; **`<token>`** disambiguates **skill** vs **online player** + default skill), **`abilities <player> <skill>`**. **`auraskills.command.openmenu`**. Console cannot use no-arg self form. |
+| **Gaps (Partial)** | Not Slate/YAML slot maps; no per-template **ItemBuilder** skulls; **Bedrock** clicks **NRP**. |
+| **Manual** | **`SPRINT_73_MANUAL_ABILITIES_MENU.md`** |
+

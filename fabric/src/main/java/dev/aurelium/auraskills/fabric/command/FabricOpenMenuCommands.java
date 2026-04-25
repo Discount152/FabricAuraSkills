@@ -37,7 +37,8 @@ import static net.minecraft.server.command.CommandManager.literal;
  * **Sprint 71:** {@code unclaimed_items} (self or online target) → {@link
  * FabricAuraSkillsMenus#openUnclaimedItems}. **Sprint 72:** {@code leaderboard} →
  * {@link FabricOpenMenuLeaderboard} / {@link FabricAuraSkillsMenus#openLeaderboard} (not
- * registry-loaded).
+ * registry-loaded). **Sprint 73:** {@code abilities} → {@link FabricOpenMenuAbilities} /
+ * {@link FabricAuraSkillsMenus#openAbilities} (not registry-loaded).
  */
 public final class FabricOpenMenuCommands {
 
@@ -193,7 +194,8 @@ public final class FabricOpenMenuCommands {
                                                 .executes(
                                                         FabricOpenMenuCommands
                                                                 ::executeUnclaimedForTarget)))
-                .then(FabricOpenMenuLeaderboard.node());
+                .then(FabricOpenMenuLeaderboard.node())
+                .then(FabricOpenMenuAbilities.node());
     }
 
     /** Top-level {@code /openmenu …} (same tree; Fabric-only convenience). */

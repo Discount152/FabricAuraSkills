@@ -36,6 +36,11 @@ public final class FabricMenuKeys {
      * use {@link FabricAuraSkillsMenus#openLeaderboard} or {@code /openmenu leaderboard} (**Sprint 72**).
      */
     public static final String LEADERBOARD = "leaderboard";
+    /**
+     * Bukkit {@code AbilitiesMenu} (Slate) — **not** loaded from {@code menus/*.yml} on Fabric;
+     * use {@link FabricAuraSkillsMenus#openAbilities} or {@code /openmenu abilities} (**Sprint 73**).
+     */
+    public static final String ABILITIES = "abilities";
 
     private FabricMenuKeys() {
     }

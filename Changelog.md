@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.101
+
+### Changes
+
+- **Fabric: Abilities menu (Sprint 73):** Bounded **Granite** **`FabricAbilitiesMenuGui`** (6×9, per-**skill** passives + **mana ability** rows, **Back** → **level_progression**) using common **`AbilityManager`** / **`ManaAbilityManager`** descriptions and **`User`** levels — no gameplay changes. **`/openmenu abilities`** (in-game: default **first enabled** skill by id; **`<skill>`** self; **`<token>`** = skill **or** online **player** + default skill), **`/openmenu abilities <player> <skill>`** (console + in-game). **`FabricOpenMenuAbilities`**, **`FabricMenuKeys#ABILITIES`**, **`FabricCommandBuiltInMenuId`**, suggestions. **`en_us`**, **`SPRINT_73_MANUAL_ABILITIES_MENU.md`**, MENU port / **COMMAND_PARITY** / **ledger** `MENU-008` + `CMD-013` / **backlog**, **`projectVersion` 2.3.100 → 2.3.101**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test`. **Parity: Partial** (Bukkit Slate templates / `menus/abilities.yml` layout not loaded; item grid simplified). **Bedrock: NRP** (not run-time tested).
+
 ## 2.3.100
 
 ### Changes

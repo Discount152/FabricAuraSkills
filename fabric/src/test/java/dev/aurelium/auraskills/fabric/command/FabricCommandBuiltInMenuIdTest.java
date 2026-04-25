@@ -35,6 +35,9 @@ class FabricCommandBuiltInMenuIdTest {
         assertEquals(
                 FabricMenuKeys.LEADERBOARD,
                 FabricCommandBuiltInMenuId.resolveForOpenCommand("leaderboard").get());
+        assertEquals(
+                FabricMenuKeys.ABILITIES,
+                FabricCommandBuiltInMenuId.resolveForOpenCommand("abilities").get());
     }
 
     @Test
@@ -47,5 +50,6 @@ class FabricCommandBuiltInMenuIdTest {
         assertFalse(
                 FabricCommandBuiltInMenuId.requiresContext(FabricMenuKeys.UNCLAIMED_ITEMS));
         assertFalse(FabricCommandBuiltInMenuId.requiresContext(FabricMenuKeys.LEADERBOARD));
+        assertFalse(FabricCommandBuiltInMenuId.requiresContext(FabricMenuKeys.ABILITIES));
     }
 }
