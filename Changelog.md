@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.88
+
+### Changes
+
+- **Fabric: `/backup` (Sprint 60):** **`/backup create`**, **`/backup save`** (Bukkit **save** alias), **`/backup list`**, **`/backup info`**; mirrors on **`/auraskills`**, **`/skills`**, **`/sk`**, **`/skill`**, + top-level **`/backup`**; **`auraskills.command.backup`** (default **deny** with fabric-perms). Uses common **`BackupProvider`** (**`saveBackupAsync`**, **`saveBackupSync`**) — timestamped **`.yml`** under **`backups/`**, **UserState**-shaped data from **`StorageProvider#loadStates`**; **no** **load/restore**/**delete** this sprint. **Common:** `BackupProvider#saveBackupAsync` now **`completeExceptionally`** on failure. **docs** `SPRINT_60_MANUAL_BACKUP.md`, `COMMAND_PARITY_AUDIT`, `MENU_AND_COMMANDS_PORT`, `PARITY_AUDIT_LEDGER_PHASE1` (CMD-001, CMD-009), `PARITY_BACKLOG`, **`projectVersion` 2.3.87 → 2.3.88**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test`. **Bukkit:** `backup save\|load` with split perms; Fabric **list**+**info**; product **acceptance** still needs real **Java** + **Bedrock/Geyser** proof per project rules.
+
 ## 2.3.87
 
 ### Changes

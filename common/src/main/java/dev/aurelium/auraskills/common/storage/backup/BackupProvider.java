@@ -56,7 +56,7 @@ public class BackupProvider {
                 File file = saveBackupSync(savePlayerData);
                 future.complete(file);
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                future.completeExceptionally(e);
             }
         });
 

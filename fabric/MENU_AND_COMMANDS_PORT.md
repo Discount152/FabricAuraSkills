@@ -469,3 +469,11 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Commands** | **`/profile skills <player>`** / **`/profile stats <player>`** + mirrors on **`/auraskills`**, **`/skills`**, **`/sk`**, **`/skill`**, and top-level **`/profile`** — **`auraskills.command.profile`** (default **true**, like Bukkit `plugin.yml`) |
 | **Data** | **`UserState`** (same scope as **Sprint 58** **`/transfer`**): **skills** uses **`messages_*`** **`commands.profile.skills`**, **stats** uses **`commands.profile.stats`** + **Granite** footer: **mana**, **raw stat/trait** modifier lines + disclaimer. **Name → UUID:** online (case-insensitive) then **`NameToIdCache#findByName`**. **Offline (YAML):** no **`userdata/<uuid>.yml`** when **file** storage — error (aligned with **transfer** pre-check) |
 | **Not in Sprint 59** | Bukkit **async** `loadState` (Fabric **sync**); **Slate** / full “profile” product surface; **backup** / **preset** / **storage** mutation — see **`SPRINT_59_MANUAL_PROFILE.md`**. Bukkit **stats** view does not append mana + modifier dumps |
+
+## Sprint 60 — **`/backup`** (create / list / info) (shipped, partial)
+
+| Area | Shipped on Fabric (bounded) |
+|------|-----------------------------|
+| **Commands** | **`/backup create`**, **`/backup save`** (Bukkit **`save`** alias), **`/backup list`**, **`/backup info`** + mirrors on **`/auraskills`**, **`/skills`**, **`/sk`**, **`/skill`**, top-level **`/backup`** — **`auraskills.command.backup`** (default **deny** / op-style) |
+| **Data** | Common **`BackupProvider#saveBackupAsync` / `saveBackupSync`** — timestamped **`.yml`** in **`backups/`**, **UserState** export via **`StorageProvider#loadStates`**; online users **saveSafely** first. **`BackupProvider#saveBackupAsync`**: async failures now **complete** the future with **`completeExceptionally`** (common fix). **List:** newest-first **`.yml`** names, size, mtime; capped lines |
+| **Not in Sprint 60** | **`backup load` / restore**, delete, schedules, SQL dump, full datadir **config+messages+loot** copy — see **`SPRINT_60_MANUAL_BACKUP.md`**. Bukkit **`auraskills.command.backup.save` / `.load`** split; Fabric one node |

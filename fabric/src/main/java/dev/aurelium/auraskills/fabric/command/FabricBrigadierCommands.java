@@ -22,7 +22,7 @@ public final class FabricBrigadierCommands {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         FabricAuraSkillsMod.LOGGER.info(
-                "Registering Brigadier: /auraskills (…), /skills, /sk|skill, /stats, /openmenu, /claimitems, /sources, /resethealth, /transfer, /profile, /skills|/sk|/skill|/auraskills (…), leaderboard, /multiplier|/toggle|/abtoggle|/lang, /modifier, /trait, /item (…), /armor (…), /mana, /skilllevel, /xp — see fabric/COMMAND_PARITY_AUDIT.md");
+                "Registering Brigadier: /auraskills (…), /skills, /sk|skill, /stats, /openmenu, /claimitems, /sources, /resethealth, /transfer, /profile, /backup, /skills|/sk|/skill|/auraskills (…), leaderboard, /multiplier|/toggle|/abtoggle|/lang, /modifier, /trait, /item (…), /armor (…), /mana, /skilllevel, /xp — see fabric/COMMAND_PARITY_AUDIT.md");
 
         registerAuraskillsAndAliases(dispatcher);
         dispatcher.register(FabricOpenMenuCommands.openMenuRoot());
@@ -49,6 +49,7 @@ public final class FabricBrigadierCommands {
         dispatcher.register(FabricResetHealthCommands.resetHealthLiteral());
         dispatcher.register(FabricTransferCommands.transferLiteral());
         dispatcher.register(FabricProfileCommands.profileLiteral());
+        dispatcher.register(FabricBackupCommands.backupLiteral());
     }
 
     /**
@@ -86,7 +87,8 @@ public final class FabricBrigadierCommands {
                 .then(FabricSourcesCommands.sourcesLiteral())
                 .then(FabricResetHealthCommands.resetHealthLiteral())
                 .then(FabricTransferCommands.transferLiteral())
-                .then(FabricProfileCommands.profileLiteral());
+                .then(FabricProfileCommands.profileLiteral())
+                .then(FabricBackupCommands.backupLiteral());
     }
 
     private static int skillsAliasDefault(CommandContext<ServerCommandSource> ctx) {
@@ -140,7 +142,8 @@ public final class FabricBrigadierCommands {
                 .then(FabricSourcesCommands.sourcesLiteral())
                 .then(FabricResetHealthCommands.resetHealthLiteral())
                 .then(FabricTransferCommands.transferLiteral())
-                .then(FabricProfileCommands.profileLiteral()));
+                .then(FabricProfileCommands.profileLiteral())
+                .then(FabricBackupCommands.backupLiteral()));
         dispatcher.register(literal("skills")
                 .requires(FabricCommandRequirements.permission(FabricCommandPermissions.SKILLS, true))
                 .executes(FabricBrigadierCommands::skills)
@@ -148,7 +151,8 @@ public final class FabricBrigadierCommands {
                 .then(FabricSourcesCommands.sourcesLiteral())
                 .then(FabricResetHealthCommands.resetHealthLiteral())
                 .then(FabricTransferCommands.transferLiteral())
-                .then(FabricProfileCommands.profileLiteral()));
+                .then(FabricProfileCommands.profileLiteral())
+                .then(FabricBackupCommands.backupLiteral()));
         dispatcher.register(literal("stats")
                 .requires(FabricCommandRequirements.permission(FabricCommandPermissions.STATS, true))
                 .executes(FabricBrigadierCommands::stats));

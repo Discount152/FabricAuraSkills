@@ -37,6 +37,7 @@ class FabricCommandPermissionsTest {
             FabricCommandPermissions.RESETHEALTH,
             FabricCommandPermissions.TRANSFER,
             FabricCommandPermissions.PROFILE,
+            FabricCommandPermissions.BACKUP,
             FabricCommandPermissions.TOP,
             FabricCommandPermissions.RANK,
             FabricCommandPermissions.MULTIPLIER,
