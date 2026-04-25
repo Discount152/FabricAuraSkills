@@ -476,4 +476,12 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 |------|-----------------------------|
 | **Commands** | **`/backup create`**, **`/backup save`** (Bukkit **`save`** alias), **`/backup list`**, **`/backup info`** + mirrors on **`/auraskills`**, **`/skills`**, **`/sk`**, **`/skill`**, top-level **`/backup`** — **`auraskills.command.backup`** (default **deny** / op-style) |
 | **Data** | Common **`BackupProvider#saveBackupAsync` / `saveBackupSync`** — timestamped **`.yml`** in **`backups/`**, **UserState** export via **`StorageProvider#loadStates`**; online users **saveSafely** first. **`BackupProvider#saveBackupAsync`**: async failures now **complete** the future with **`completeExceptionally`** (common fix). **List:** newest-first **`.yml`** names, size, mtime; capped lines |
-| **Not in Sprint 60** | **`backup load` / restore**, delete, schedules, SQL dump, full datadir **config+messages+loot** copy — see **`SPRINT_60_MANUAL_BACKUP.md`**. Bukkit **`auraskills.command.backup.save` / `.load`** split; Fabric one node |
+| **Not in Sprint 60** | **`backup load` / restore** — shipped in **Sprint 61** (see below). Delete, schedules, SQL dump, full datadir **config+messages+loot** copy — see **`SPRINT_60_MANUAL_BACKUP.md`**. Bukkit ref uses **`auraskills.command.backup.save` / `.load`**; Fabric **Sprint 60** used one node for create/list/info; **Sprint 61** adds **`auraskills.command.backup.load`** |
+
+## Sprint 61 — **`/backup load|restore`** (guarded UserState restore) (shipped, partial)
+
+| Area | Shipped on Fabric (bounded) |
+|------|-----------------------------|
+| **Commands** | **`/backup load <basename.yml>`** (preview) → **`/backup load <basename.yml> confirm`** (mutate); **`restore`** is an alias of **`load`**. Same mirrors + top-level **`/backup`** as Sprint 60. Tab suggests **`backups/*.yml`** basenames. **`auraskills.command.backup.load`** (default **deny**). |
+| **Data** | **`FabricBackupPathValidator`**: single-segment **`.yml`** only; resolved path must stay under **`backups/`**. Pre-restore: **`saveBackupSync(true)`**; refuse if skipped (**max_users**) or fails. Then common **`loadBackupAsync`**; online **`User`**: reload from **storage** where possible + **`online_refreshed_note`**. **Not** a full **config/messages/loot/menus** datadir restore. |
+| **Not in Sprint 61** | **Delete/prune** backups, **scheduled** backups, **SQL** dump, **`--force`**, arbitrary host paths, full server/datadir restore — see **`SPRINT_61_MANUAL_BACKUP_LOAD.md`**. **Parity** remains **Partial** vs Bukkit (confirmation shape, permission defaults, no delete). |

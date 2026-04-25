@@ -11,6 +11,8 @@ import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.menu.FabricMenuKeys;
 import net.minecraft.server.command.ServerCommandSource;
 
+import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
@@ -211,6 +213,34 @@ public final class FabricCommandSuggestionProviders {
                     builder.suggest(name);
                 }
             }
+            return builder.buildFuture();
+        };
+    }
+
+    /** **Sprint 61** — basenames of {@code backups/*.yml} for guarded {@code /backup load}. */
+    public static SuggestionProvider<ServerCommandSource> backupYmlInBackupsFolder() {
+        return (context, builder) -> {
+            FabricCommandPluginState.runtimeReadyOrEmpty()
+                    .ifPresent(
+                            p -> {
+                                File dir = new File(p.getPluginFolder(), "backups");
+                                if (!dir.isDirectory()) {
+                                    return;
+                                }
+                                String remaining = builder.getRemaining().toLowerCase(Locale.ROOT);
+                                File[] list = dir.listFiles((d, n) -> n.endsWith(".yml"));
+                                if (list == null) {
+                                    return;
+                                }
+                                Arrays.sort(
+                                        list, (a, b) -> Long.compare(b.lastModified(), a.lastModified()));
+                                for (File f : list) {
+                                    String n = f.getName();
+                                    if (remaining.isEmpty() || n.toLowerCase(Locale.ROOT).startsWith(remaining)) {
+                                        builder.suggest(n);
+                                    }
+                                }
+                            });
             return builder.buildFuture();
         };
     }

@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.89
+
+### Changes
+
+- **Fabric: `/backup load|restore` (Sprint 61):** Two-step **`/backup load <basename.yml> confirm`** ( **`restore`** alias for **`load`**); same mirrors as Sprint 60 + top-level **`/backup`**. **`auraskills.command.backup.load`** (default **deny**) for load/restore; **`auraskills.command.backup`** unchanged for create|save|list|info. **`FabricBackupPathValidator`** — basename-only **`.yml`**, no traversal; resolve under **`backups/`** only. Preview then confirm; **pre-restore** via **`BackupProvider#saveBackupSync(true)`** — aborts on skip/failure. **`loadBackupAsync`** + online **`User`** refresh from storage where possible + caveat string. **Common:** **`BackupProvider`** v1 **`loadV1`** completion callback; progress log divisor guard. **Tests:** path validator, **`FabricCommandPermissionsTest`**. **Docs** `SPRINT_61_MANUAL_BACKUP_LOAD.md`, `COMMAND_PARITY_AUDIT`, `MENU_AND_COMMANDS_PORT`, `PARITY_AUDIT_LEDGER_PHASE1`, `PARITY_BACKLOG`, **`projectVersion` 2.3.88 → 2.3.89**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test`. **Not in scope:** delete/prune, **`--force`**, full datadir restore, SQL dump. **Parity:** **Partial** vs Bukkit (confirmation flow, split perms vs ref **plugin.yml** defaults).
+
 ## 2.3.88
 
 ### Changes

@@ -146,6 +146,7 @@ public class BackupProvider {
             loadV2(root, onComplete);
         } else if (version == 1) {
             loadV1(root);
+            onComplete.run();
         } else {
             throw new IllegalStateException("Invalid backup_version");
         }
@@ -170,7 +171,8 @@ public class BackupProvider {
 
                         int curr = applied.incrementAndGet();
 
-                        if (curr % (numUsers / 10) == 0) {
+                        int every = Math.max(1, numUsers / 10);
+                        if (curr % every == 0) {
                             int percent = (int) Math.round(curr / (double) numUsers * 100);
                             plugin.logger().info("Applying backup: " + percent + "%");
                         }

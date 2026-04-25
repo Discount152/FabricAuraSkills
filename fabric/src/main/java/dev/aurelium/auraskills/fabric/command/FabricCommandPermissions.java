@@ -104,11 +104,17 @@ public final class FabricCommandPermissions {
     public static final String PROFILE = "auraskills.command.profile";
 
     /**
-     * Granite **bounded** backup admin (**create** / **list** / **info**). Bukkit splits
-     * {@code auraskills.command.backup.save} and {@code .load}; Fabric uses one node for Sprint
-     * 60 **create|list|info** (default <strong>deny</strong> / op-style). **Sprint 60.**
+     * Granite **bounded** backup admin (**create** / **list** / **info**). Bukkit:
+     * {@code auraskills.command.backup.save}. **Sprint 60** (default <strong>deny</strong> /
+     * op-style).
      */
     public static final String BACKUP = "auraskills.command.backup";
+
+    /**
+     * Bukkit {@code auraskills.command.backup.load} — **restore** / **load** subcommands (**Sprint
+     * 61**). Default <strong>deny</strong>.
+     */
+    public static final String BACKUP_LOAD = "auraskills.command.backup.load";
 
     /**
      * Bukkit {@code /sk top} / {@code skilltop} (see {@code plugin.yml}). **Sprint 47:** also
