@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.97
+
+### Changes
+
+- **Fabric: sources menu baseline (Sprint 69):** In-game `/sources` (and skills/sk/skill/auraskills mirrors) opens a **6×9** `GENERIC_9X6` menu (`FabricSourcesMenuGui` + `GraniteContainerMenus#openClickable9x6`) listing **version-valid** `XpSource`s for the skill—**same sort** as chat (`FabricSourceSortType` + `FabricSourcesListSupport`), **paging** 28/ page, **Back** to **level progression**, **Sort** hopper cycles sorts. **Console/RCON** use the existing **paged chat** (no `players_only` gate). **On failure** opening the GUI: `sources.menu_fallback` + chat list. **Not** Bukkit `sources.yml` load / per-source custom items / multiplied-xp component—**Partial** vs Slate. **`FabricSourceSortType#nextCyclic`**, `FabricSourceSortTypeTest`, **`SPRINT_69_MANUAL_MENU_SOURCES.md`**, `COMMAND_PARITY_AUDIT`, `MENU_AND_COMMANDS_PORT`, `PARITY_AUDIT_LEDGER` MENU-007, `PARITY_BACKLOG`, `en_us` menu/sort keys, **`projectVersion` 2.3.96 → 2.3.97**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test`. **Bedrock:** not run-time tested this sprint; manual documents **NRP** + Geyser-friendly shape expectations.
+
 ## 2.3.96
 
 ### Changes

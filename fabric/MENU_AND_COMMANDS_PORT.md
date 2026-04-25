@@ -544,3 +544,14 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Gaps (Partial)** | Bukkit: **Slate**; Fabric: **Granite** YAML built-in. Bedrock: inventory **NRP** — not verified this sprint. |
 | **Not in Sprint 68** | **Jobs**; new menu engine; new mechanics. Manual: **`SPRINT_68_MANUAL_SKILL_COMMANDS.md`**. |
 
+## Sprint 69 — **menu** reconciliation inventory + **sources** GUI baseline (shipped, partial)
+
+| Area | Shipped on Fabric (bounded) |
+|------|-----------------------------|
+| **Command ↔ UI** | **`/sources <skill> [sort]`** (+ **`/auraskills`**, **`/skills`**, **`/sk`**, **`/skill` mirrors**): **in-game** opens **`FabricSourcesMenuGui`** (`GraniteContainerMenus#openClickable9x6`); **console/RCON** keep **paged chat** (28 lines/page). **`FabricSourcesListSupport`** shares **version-valid** filter + **sort** with both paths. **Fallback:** if opening the screen throws, **`command.sources.menu_fallback`** + **chat** list. |
+| **Not registered** | **`sources`** is **not** in **`FabricMenuLoaders` / `FabricMenuRegistry`** — only **`FabricAuraSkillsMenus#openSources`** from **`FabricSourcesCommands`**. |
+| **Parity (Partial)** | Bukkit: **`SourcesMenu`**, **`menus/sources.yml`**, per-source custom **`ItemRegistry` stacks`, **`multiplied_xp` component**, income. Fabric: **gray_dye** rows, fixed control row (**Back** slot 45 → `openLevelProgression` with list page **0**; **Prev/Next**; **Sort** hopper + **`FabricSourceSortType#nextCyclic()`**). |
+| **Manual** | **`SPRINT_69_MANUAL_MENU_SOURCES.md`** (menu inventory from **`MenuRegistrar`** + known gaps) |
+
+| **Not in Sprint 69** | Full **Slate**; **`openmenu` sources**; **leaderboard** / **abilities** / **unclaimed** menus; **MenuFileManager** merge; **new** XP or sort rules. |
+

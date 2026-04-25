@@ -9,13 +9,19 @@ import java.util.Optional;
 
 /**
  * Matches Bukkit {@code SourcesMenu.SortType} / {@code @sort_types} (lowercase names in the
- * reference ACF completer) for {@code /sources} text output (**Sprint 57**).
+ * reference ACF completer) for {@code /sources} text and the sources menu (**Sprint 57**, **Sprint
+ * 69**).
  */
 public enum FabricSourceSortType {
     ASCENDING,
     DESCENDING,
     ALPHABETICAL,
     REVERSE_ALPHABETICAL;
+
+    /** Cycles in the same order as Bukkit’s {@code SourcesMenu} sorter. */
+    public FabricSourceSortType nextCyclic() {
+        return values()[(ordinal() + 1) % values().length];
+    }
 
     public static Optional<FabricSourceSortType> fromTokenStrict(@Nullable String raw) {
         if (raw == null || raw.isEmpty()) {

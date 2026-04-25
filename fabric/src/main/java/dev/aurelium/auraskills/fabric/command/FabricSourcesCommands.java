@@ -7,32 +7,34 @@ import dev.aurelium.auraskills.api.skill.Skill;
 import dev.aurelium.auraskills.api.source.XpSource;
 import dev.aurelium.auraskills.api.util.NumberUtil;
 import dev.aurelium.auraskills.common.message.type.CommandMessage;
-import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.common.skill.LoadedSkill;
+import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
+import dev.aurelium.auraskills.fabric.menu.FabricAuraSkillsMenus;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import java.util.ArrayList;
-import java.util.Collections;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 import java.util.Locale;
 
 import static net.minecraft.server.command.CommandManager.literal;
 
 /**
- * Bukkit {@code SkillsRootCommand#onSources} opens the Slate **sources** menu; **Sprint 57** — a
- * bounded **chat** listing of configured {@link XpSource}s for a skill (same sort modes as the
- * reference menu), using the player’s {@link User#getLocale()} for display names.
+ * Bukkit {@code SkillsRootCommand#onSources} opens the Slate <strong>sources</strong> menu. **Sprint
+ * 57** added a paged <strong>chat</strong> listing. **Sprint 69** — in-game players open a Fabric
+ * 6×9 {@link dev.aurelium.auraskills.fabric.menu.FabricSourcesMenuGui}; console/RCON and fallback keep
+ * the same chat listing.
  */
 public final class FabricSourcesCommands {
 
     private static final String ARG_SKILL = "skill";
     private static final String ARG_SORT = "sort";
 
-    /** Same as {@code SourcesMenu.DEF_ITEMS_PER_PAGE} — chunk long chat output. */
+    /** Same as {@code SourcesMenu.DEF_ITEMS_PER_PAGE} / Bukkit {@code items_per_page: 28} — chat chunks. */
     private static final int LINES_PER_MESSAGE = 28;
 
     private FabricSourcesCommands() {}
@@ -74,33 +76,27 @@ public final class FabricSourcesCommands {
     private static int run(
             CommandContext<ServerCommandSource> ctx, FabricSourceSortType sort) {
         ServerCommandSource source = ctx.getSource();
-        if (!(source.getEntity() instanceof ServerPlayerEntity player)) {
-            source.sendError(Text.translatable("auraskills.granite.command.sources.players_only"));
-            return 0;
-        }
         String skillRaw = StringArgumentType.getString(ctx, ARG_SKILL);
         return FabricCommandPluginState.runtimeReadyOrEmpty()
                 .map(
                         p -> {
+                            ServerPlayerEntity player =
+                                    source.getEntity() instanceof ServerPlayerEntity sp
+                                            ? sp
+                                            : null;
+                            Locale lo = localeFor(p, player);
                             Skill skill = FabricCommandSkillParser.parse(p, skillRaw);
                             if (skill == null) {
-                                User u = p.getUserManager().getUser(player.getUuid());
-                                Locale loc =
-                                        u != null ? u.getLocale() : p.getDefaultLanguage();
                                 String body =
                                         p.getMessageProvider()
                                                 .applyFormatting(
-                                                        p.getMsg(CommandMessage.UNKNOWN_SKILL, loc));
+                                                        p.getMsg(CommandMessage.UNKNOWN_SKILL, lo));
                                 source.sendError(Text.literal(body));
                                 return 0;
                             }
-                            User user = p.getUserManager().getUser(player.getUuid());
-                            Locale lo =
-                                    user != null
-                                            ? user.getLocale()
-                                            : p.getDefaultLanguage();
                             LoadedSkill loaded = p.getSkillManager().getSkill(skill);
-                            List<XpSource> list = new ArrayList<>(loaded.sources());
+                            List<XpSource> list =
+                                    FabricSourcesListSupport.buildSorted(loaded, sort, lo);
                             if (list.isEmpty()) {
                                 source.sendFeedback(
                                         () -> Text.translatable(
@@ -109,9 +105,21 @@ public final class FabricSourcesCommands {
                                         false);
                                 return 1;
                             }
-                            list.removeIf(s -> !s.isVersionValid());
-                            Collections.sort(list, sort.comparator(lo));
-                            sendInChunks(source, lo, skill, list, sort);
+                            if (player == null) {
+                                sendInChunks(source, lo, skill, list, sort);
+                                return 1;
+                            }
+                            try {
+                                FabricAuraSkillsMenus.openSources(
+                                        skill, player, p, sort, 0, 0);
+                            } catch (Throwable t) {
+                                p.logger().warn("Failed to open sources menu", t);
+                                source.sendFeedback(
+                                        () -> Text.translatable(
+                                                "auraskills.granite.command.sources.menu_fallback"),
+                                        false);
+                                sendInChunks(source, lo, skill, list, sort);
+                            }
                             return 1;
                         })
                 .orElseGet(
@@ -119,6 +127,14 @@ public final class FabricSourcesCommands {
                             source.sendError(Text.literal("AuraSkills is still starting."));
                             return 0;
                         });
+    }
+
+    private static Locale localeFor(FabricAuraSkills p, @Nullable ServerPlayerEntity player) {
+        if (player == null) {
+            return p.getDefaultLanguage();
+        }
+        User user = p.getUserManager().getUser(player.getUuid());
+        return user != null ? user.getLocale() : p.getDefaultLanguage();
     }
 
     private static void sendInChunks(

@@ -3,6 +3,7 @@ package dev.aurelium.auraskills.fabric.menu;
 import dev.aurelium.auraskills.api.skill.Skill;
 import dev.aurelium.auraskills.api.stat.Stat;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
+import dev.aurelium.auraskills.fabric.command.FabricSourceSortType;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 /**
@@ -99,5 +100,22 @@ public final class FabricAuraSkillsMenus {
                 player,
                 plugin,
                 FabricMenuContext.ofStat(stat).withListPage(returnStatsListPage));
+    }
+
+    /**
+     * One-skill XP sources list (Bukkit id {@code sources}), opened from {@code /sources} — **Sprint
+     * 69**. Not in {@link FabricMenuRegistry} / {@link FabricMenuLoaders}; use for commands only.
+     * {@code returnToSkillsListPage} is the Skills list page passed to
+     * {@link #openLevelProgression(Skill, ServerPlayerEntity, FabricAuraSkills, int)} when the player
+     * uses <strong>Back</strong> (Bukkit: previous menu level_progression).
+     */
+    public static void openSources(
+            Skill skill,
+            ServerPlayerEntity player,
+            FabricAuraSkills plugin,
+            FabricSourceSortType sort,
+            int page,
+            int returnToSkillsListPage) {
+        FabricSourcesMenuGui.open(player, plugin, skill, sort, page, returnToSkillsListPage);
     }
 }
