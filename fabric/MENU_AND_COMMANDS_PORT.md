@@ -517,3 +517,12 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Change** | **Bugfix / hygiene:** **`/skills`** was missing the same Brigadier subtrees as **`/sk`** and **`/skill`** (everything before **claimitems** in the alias chain: **openmenu**, leaderboards, utility, **xp/mana/skilllevel**, **modifier/trait**, **item/armor**). **Sprint 65** introduces **`FabricBrigadierCommands#skillsAliasSharedTree`** and uses it for all three literals so **Bukkit** `CommandRegistrar` **`skills\|sk\|skill`** cannot drift. |
 | **Not in Sprint 65** | New command families, menus, **help** node alignment with Bukkit, **permission** default changes, gameplay. Manual: **`SPRINT_65_COMMAND_RECONCILIATION.md`**. |
 
+## Sprint 66 — **`/manaability resetcooldown`** (Bukkit `ManaAbilityCommand`) (shipped, partial)
+
+| Area | Shipped on Fabric (bounded) |
+|------|-----------------------------|
+| **Commands** | **`/auraskills manaability`**, **`/skills\|/sk\|/skill manaability`** **resetcooldown** `<player> <ability> [fill_mana]` — **no** dedicated top-level **`/manaability`** (matches reference: only under **skills** alias + **`/auraskills`** on Fabric). **`auraskills.command.manaability.resetcooldown`** (default **deny**). **In-game** sender: target must be **another** online player (ACF `@Flags("other")`); **console/RCON** may target any online player. |
+| **Data** | **Other**’s **`User`**: if cooldown **&gt; 0** and not **activated**, set **0**; optional **boolean** `fill_mana` → **max** mana. **`user.setShouldSave(true)`**. **No** **`ManaAbilityRefreshEvent`** (Bukkit / api-bukkit). |
+| **vs `/abtoggle`** | **`/abtoggle`** / **`/toggle`** = **Sprint 48** **IDLE** **action bar** on/off; **independent** of this admin **cooldown** tool. |
+| **Not in Sprint 66** | **`ManaAbilityRefreshEvent`**; other **ManaAbility** subcommands (reference has **only** **resetcooldown**); **Jobs**; menus. Manual: **`SPRINT_66_MANUAL_MANA_ABILITY_COMMAND.md`**. |
+

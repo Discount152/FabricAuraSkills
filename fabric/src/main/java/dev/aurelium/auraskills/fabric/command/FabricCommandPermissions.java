@@ -39,6 +39,13 @@ public final class FabricCommandPermissions {
 
     public static final String MANA_SET = "auraskills.command.mana.set";
 
+    /**
+     * Bukkit {@code ManaAbilityCommand#onResetCooldown} — {@code manaability resetcooldown …}
+     * (**Sprint 66**). Default <strong>deny</strong> (reference {@code plugin.yml} default **op**).
+     */
+    public static final String MANAABILITY_RESETCOOLDOWN =
+            "auraskills.command.manaability.resetcooldown";
+
     /** Read-only: {@code /xp view <player> <skill>} (Sprint 40). Default true so players can inspect online targets (lock down via LP if needed). */
     public static final String XP_VIEW = "auraskills.command.xp.view";
 

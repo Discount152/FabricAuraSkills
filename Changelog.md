@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.94
+
+### Changes
+
+- **Fabric: `ManaAbilityCommand` (Sprint 66):** **`/auraskills manaability`**, **`/skills` / `/sk` / `/skill manaability`** — **`resetcooldown <player> <ability> [fill_mana]`** (Brigadier **bool**). Matches Bukkit’s **only** subcommand: clear **cooldown** when **&gt; 0** and not **activated**, optional **max** **mana** fill; **`auraskills.command.manaability.resetcooldown`** (default **deny**). **In-game:** target must be **another** online player (**ACF** `@Flags("other")`); **console/RCON** may target any online player. **`FabricManaAbilityCommands`**, **`FabricCommandManaAbilityParser`**, **`enabledManaAbilities`** suggestions. **No** **`ManaAbilityRefreshEvent`** on Fabric (api-bukkit). **`/abtoggle`** unchanged (action bar **IDLE** only). **Docs** `SPRINT_66_MANUAL_MANA_ABILITY_COMMAND.md`, parity / MENU / ledger / backlog / **Sprint 65** reconciliation, **`projectVersion` 2.3.93 → 2.3.94**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test`. **Parity:** **Partial** — reference has **one** method; no top-level `/manaability`.
+
 ## 2.3.93
 
 ### Changes

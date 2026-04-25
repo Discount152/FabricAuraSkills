@@ -3,6 +3,7 @@ package dev.aurelium.auraskills.fabric.command;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import dev.aurelium.auraskills.api.mana.ManaAbility;
 import dev.aurelium.auraskills.api.registry.NamespacedId;
 import dev.aurelium.auraskills.api.skill.Skill;
 import dev.aurelium.auraskills.api.stat.Stat;
@@ -241,6 +242,32 @@ public final class FabricCommandSuggestionProviders {
                                     }
                                 }
                             });
+            return builder.buildFuture();
+        };
+    }
+
+    /**
+     * Bukkit {@code @mana_abilities} ({@code CommandRegistrar}) for {@code /… manaability
+     * resetcooldown} (**Sprint 66**).
+     */
+    public static SuggestionProvider<ServerCommandSource> enabledManaAbilities() {
+        return (CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) -> {
+            FabricAuraSkills p = FabricAuraSkills.getInstance();
+            if (p == null) {
+                return CompletableFuture.completedFuture(builder.build());
+            }
+            String remaining = builder.getRemaining();
+            for (ManaAbility a : p.getManaAbilityRegistry().getValues()) {
+                if (!a.isEnabled()) {
+                    continue;
+                }
+                String k = a.getId().getKey();
+                if (remaining.isEmpty()
+                        || k.toLowerCase(Locale.ROOT)
+                                .startsWith(remaining.toLowerCase(Locale.ROOT))) {
+                    builder.suggest(k);
+                }
+            }
             return builder.buildFuture();
         };
     }
