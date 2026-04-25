@@ -117,6 +117,12 @@ public final class FabricCommandPermissions {
     public static final String BACKUP_LOAD = "auraskills.command.backup.load";
 
     /**
+     * Bukkit {@code PresetCommand} — {@code preset load} from {@code presets/*.zip} (see {@code
+     * plugin.yml}). **Sprint 62** — list / info / guarded **load**; default <strong>deny</strong>.
+     */
+    public static final String PRESET = "auraskills.command.preset";
+
+    /**
      * Bukkit {@code /sk top} / {@code skilltop} (see {@code plugin.yml}). **Sprint 47:** also
      * {@code /top}, {@code /skilltop}, and under {@code /auraskills} / {@code /sk|skill}.
      */

@@ -244,4 +244,35 @@ public final class FabricCommandSuggestionProviders {
             return builder.buildFuture();
         };
     }
+
+    /** **Sprint 62** — basenames of {@code presets/*.zip} for {@code /preset load|info}. */
+    public static SuggestionProvider<ServerCommandSource> presetZipsInPresetsFolder() {
+        return (context, builder) -> {
+            FabricCommandPluginState.runtimeReadyOrEmpty()
+                    .ifPresent(
+                            p -> {
+                                File dir = new File(p.getPluginFolder(), "presets");
+                                if (!dir.isDirectory()) {
+                                    return;
+                                }
+                                String remaining = builder.getRemaining().toLowerCase(Locale.ROOT);
+                                File[] list = dir.listFiles((d, n) -> n.endsWith(".zip"));
+                                if (list == null) {
+                                    return;
+                                }
+                                Arrays.sort(list, (a, b) -> a.getName().compareToIgnoreCase(b.getName()));
+                                for (File f : list) {
+                                    String n = f.getName();
+                                    if (FabricPresetNameValidator.validateZipFileName(n).isPresent()) {
+                                        continue;
+                                    }
+                                    if (remaining.isEmpty()
+                                            || n.toLowerCase(Locale.ROOT).startsWith(remaining)) {
+                                        builder.suggest(n);
+                                    }
+                                }
+                            });
+            return builder.buildFuture();
+        };
+    }
 }

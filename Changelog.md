@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.90
+
+### Changes
+
+- **Fabric: `/preset` (Sprint 62):** **`/preset list`**, **`/preset info <name.zip>`** (read-only), **`/preset load <name.zip> confirm`** (preview: **`/preset load <name.zip>`**). Mirrors: **`/auraskills`**, **`/skills`**, **`/sk`**, **`/skill`**, top-level **`/preset`**. **`auraskills.command.preset`** (default **deny**). **`FabricPresetNameValidator`**, tab **`presets/*.zip`**, common **`PresetManager#preparePreset` / `loadPreset`**. **Pre-apply** **`BackupProvider#saveBackupSync(true)`** (refuse on skip/fail); then **`reloadFromDisk`**. **Tests:** **`FabricPresetNameValidatorTest`**, permissions. **Docs** `SPRINT_62_MANUAL_PRESET.md`, `COMMAND_PARITY_AUDIT`, `MENU_AND_COMMANDS_PORT`, `PARITY_AUDIT_LEDGER` CMD-001/011, `PARITY_BACKLOG`, **`projectVersion` 2.3.89 → 2.3.90**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test`. **Parity:** **Partial** (Bukkit: **`preset load` only** + ACF double-typed confirm; ref **`plugin.yml`** default **true**). **Not in scope:** **StorageCommand**, preset create/delete/remote, userdata mutation.
+
 ## 2.3.89
 
 ### Changes

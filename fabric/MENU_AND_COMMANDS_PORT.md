@@ -485,3 +485,11 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Commands** | **`/backup load <basename.yml>`** (preview) → **`/backup load <basename.yml> confirm`** (mutate); **`restore`** is an alias of **`load`**. Same mirrors + top-level **`/backup`** as Sprint 60. Tab suggests **`backups/*.yml`** basenames. **`auraskills.command.backup.load`** (default **deny**). |
 | **Data** | **`FabricBackupPathValidator`**: single-segment **`.yml`** only; resolved path must stay under **`backups/`**. Pre-restore: **`saveBackupSync(true)`**; refuse if skipped (**max_users**) or fails. Then common **`loadBackupAsync`**; online **`User`**: reload from **storage** where possible + **`online_refreshed_note`**. **Not** a full **config/messages/loot/menus** datadir restore. |
 | **Not in Sprint 61** | **Delete/prune** backups, **scheduled** backups, **SQL** dump, **`--force`**, arbitrary host paths, full server/datadir restore — see **`SPRINT_61_MANUAL_BACKUP_LOAD.md`**. **Parity** remains **Partial** vs Bukkit (confirmation shape, permission defaults, no delete). |
+
+## Sprint 62 — **`/preset`** (config zip presets) (shipped, partial)
+
+| Area | Shipped on Fabric (bounded) |
+|------|-----------------------------|
+| **Commands** | **`/preset list`**, **`/preset info <name.zip>`** (read-only), **`/preset load <name.zip>`** (preview) → **`/preset load <name.zip> confirm`**. Same mirrors on **`/auraskills`**, **`/skills`**, **`/sk`**, **`/skill`**, top-level **`/preset`**. **`auraskills.command.preset`** (default **deny**). Tab suggests **`presets/*.zip`**. |
+| **Data** | Common **`PresetManager#preparePreset` / `loadPreset`** (zip with root **`preset.yml`**, `files/`). Pre-apply: **`BackupProvider#saveBackupSync(true)`** (UserState safety snapshot); then extract/merge; then **`reloadFromDisk()`**. Does **not** delete userdata or run **Storage** migrations. |
+| **Not in Sprint 62** | **StorageCommand**; preset create/delete/download; **Bukkit**-style “type the same command twice” confirm (Fabric uses **literal `confirm`**); see **`SPRINT_62_MANUAL_PRESET.md`**. **Parity** **Partial** vs reference (**list**+**info** are Fabric-only extras). |

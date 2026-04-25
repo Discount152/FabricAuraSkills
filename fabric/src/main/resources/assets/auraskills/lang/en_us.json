@@ -1,6 +1,6 @@
 {
-  "auraskills.granite.command.auraskills_usage": "Use: /auraskills <…> — also /openmenu, /sk, /skill, claimitems, sources, resethealth, transfer, profile, backup (Sprint 46–61)  —  see fabric/COMMAND_PARITY_AUDIT.md",
-  "auraskills.granite.command.help": "Fabric AuraSkills: /auraskills … | /skills, /sk, /skill (claimitems, sources, transfer, profile, resethealth) | /claimitems | /profile … | /backup … (staff; load needs backup.load) | /sources <skill> [sort] | /transfer <from-uuid> <to-uuid> (staff) | /stats | /openmenu | leaderboard (…) / utility (…) | /mana | /skilllevel | /xp | /modifier, /trait | /item, /armor (…) | staff: reload, save, resethealth (console)",
+  "auraskills.granite.command.auraskills_usage": "Use: /auraskills <…> — also /openmenu, /sk, /skill, claimitems, sources, resethealth, transfer, profile, backup, preset (Sprint 46–62)  —  see fabric/COMMAND_PARITY_AUDIT.md",
+  "auraskills.granite.command.help": "Fabric AuraSkills: /auraskills … | /skills, /sk, /skill (claimitems, sources, transfer, profile, resethealth) | /claimitems | /profile … | /backup … (staff; load needs backup.load) | /preset … (staff) | /sources <skill> [sort] | /transfer <from-uuid> <to-uuid> (staff) | /stats | /openmenu | leaderboard (…) / utility (…) | /mana | /skilllevel | /xp | /modifier, /trait | /item, /armor (…) | staff: reload, save, resethealth (console)",
   "auraskills.granite.command.claimitems.players_only": "This command is for players only.",
   "auraskills.granite.command.claimitems.all_claimed": "All unclaimed items were merged into your inventory.",
   "auraskills.granite.command.claimitems.partial": "Some unclaimed items remain (%s stack(s); delivered or updated %s this pass).",
@@ -89,5 +89,20 @@
   "auraskills.granite.command.backup.prerestore_failed": "Pre-restore automatic backup failed (see server log). Restore was not run.",
   "auraskills.granite.command.backup.unsafe_filename": "Invalid backup file name. Use a single .yml basename only (e.g. backup-2026-04-24_12-0-0.yml) with no path separators or ..",
   "auraskills.granite.command.backup.path_not_in_backups_or_no_folder": "That path is not a valid file under the plugin backups/ folder, or the folder could not be resolved.",
-  "auraskills.granite.command.backup.online_refreshed_note": "Online players: in-memory state was reloaded from storage where possible; if anything looks off, rejoin the server."
+  "auraskills.granite.command.backup.online_refreshed_note": "Online players: in-memory state was reloaded from storage where possible; if anything looks off, rejoin the server.",
+  "auraskills.granite.command.preset.list_header": "AuraSkills config presets (presets/*.zip), A–Z — total: %s",
+  "auraskills.granite.command.preset.list_empty": "No .zip presets found in the presets folder yet.",
+  "auraskills.granite.command.preset.list_truncated": "… and %s more (max %s lines in chat; see full folder on disk).",
+  "auraskills.granite.command.preset.info_header": "Preset (read-only): %s",
+  "auraskills.granite.command.preset.info_footer": "This did not change any files. To apply, use /preset load <name> confirm (after the preview) — see SPRINT_62 manual.",
+  "auraskills.granite.command.preset.load_preview_run_confirm": "Granite: Re-run: /preset load %1$s confirm  —  applies the zip to plugin config files, then /auraskills reload. UserState pre-backup runs first; not a full server datadir snapshot.",
+  "auraskills.granite.command.preset.loading": "Applying preset (async) — do not stop the server…",
+  "auraskills.granite.command.preset.preapply_skipped": "Pre-apply UserState backup was skipped (too many users; see automatic_backups.max_users). Refusing preset. Raise the cap or use an external backup.",
+  "auraskills.granite.command.preset.preapply_failed": "Pre-apply UserState backup failed (see server log). Preset was not applied.",
+  "auraskills.granite.command.preset.reload_note": "Configs were reloaded from disk (reloadFromDisk). If the reference also asked for a full JVM restart, prefer restarting when safe.",
+  "auraskills.granite.command.preset.reload_failed": "Preset files were written but reload failed: %s (see log).",
+  "auraskills.granite.command.preset.unsafe_name": "Invalid preset name. Use a single .zip basename only (e.g. legacy.zip) with no path separators or ..",
+  "auraskills.granite.command.preset.path_not_in_presets": "That path is not under the plugin presets/ folder, or the folder could not be resolved.",
+  "auraskills.granite.command.preset.missing_zip": "That preset .zip was not found under presets/.",
+  "auraskills.granite.command.preset.error": "Preset: %s"
 }
