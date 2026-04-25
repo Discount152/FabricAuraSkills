@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.96
+
+### Changes
+
+- **Fabric: per-skill `SkillCommands.*` (Sprint 68):** Bukkit’s **one** public method per class: **open level progression** for that skill. **Top-level** roots (reference **`@CommandAlias`**, **not** under `/skills`): **`/farming`**, **`/foraging`**, **`/mining`**, **`/fishing`**, **`/excavation`**, **`/archery`**, **`/defense`**, **`/fighting`**, **`/endurance`**, **`/agility`**, **`/alchemy`**, **`/enchanting`**, **`/sorcery`**, **`/healing`**, **`/forging`**. **Config:** `enable_skill_commands` from **`config.yml`** (`Option.ENABLE_SKILL_COMMANDS`) and **`skills.<id>.options.enabled`** via **`SkillManager#loadConfigEnabledMap`**, matching **`CommandRegistrar#registerSkillCommand`**. **Permissions** `auraskills.skill.<skillname>` (default **true**; same string as **`FabricUser#hasSkillPermission`**), **no** separate command node. **Player-only;** **console/RCON** get **`utility.players_only`**. **Menu:** **`FabricAuraSkillsMenus#openLevelProgression`** (no success chat, like Bukkit **`LevelProgressionOpener`**) — not Slate, **Partial** for UI parity. **`FabricSkillShortcutCommands`**, `FabricSkillShortcutCommandsTest`, **`en_us`**, `SPRINT_68_MANUAL_SKILL_COMMANDS.md`, parity / MENU / ledger / backlog / Sprint 65, **`projectVersion` 2.3.95 → 2.3.96**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test`.
+
 ## 2.3.95
 
 ### Changes

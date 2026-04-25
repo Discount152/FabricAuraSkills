@@ -535,3 +535,12 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Gaps (Partial)** | Name → UUID: **online** + **`NameToIdCache`**, not Bukkit **`OfflinePlayer#hasPlayedBefore`**. **Bedrock** chat: multi-line string; not separately verified this sprint. |
 | **Not in Sprint 67** | **Jobs**; per-skill **SkillCommands**; anti-AFK **algorithm** or detection changes. Manual: **`SPRINT_67_MANUAL_ANTIAFK_COMMAND.md`**. |
 
+## Sprint 68 — per-skill **SkillCommands** (Bukkit `SkillCommands` top-level) (shipped, partial)
+
+| Area | Shipped on Fabric (bounded) |
+|------|-----------------------------|
+| **Bukkit reference** | `SkillCommands` inner classes **`FarmingCommand` … `ForgingCommand`**, each **`@CommandAlias` = skill id**; **one** `onCommand(Player)`: `LevelProgressionOpener#open` → Slate `level_progression` menu. **Register** when **`config.yml`** `enable_skill_commands` and **`CommandRegistrar#registerSkillCommand`** ( **`skills.<id>.options.enabled` in `skills.yml`**). **15** skills (all **`Skills` enum** values in reference). **No** `@CommandPermission` on the reference classes; **player-only**. |
+| **Fabric** | **`FabricSkillShortcutCommands`**: one Brigadier top-level per alias ( **`/farming` … `/forging`**) and **`#openLevelProgression`** to **built-in** `level_progression` (same as **`/openmenu level_progression <skill>`** for self, but **separate** command tree: **not** a child of `openmenu` / not **`auraskills.command.openmenu`**). **Gating:** `Option.ENABLE_SKILL_COMMANDS` + **`loadConfigEnabledMap`**; **`requires`** uses **`Permissions.check(…, "auraskills.skill.<name>", true)`**; **console/RCON** use **`auraskills.granite.command.utility.players_only`**. **No** post-open chat line (Bukkit: menu only). |
+| **Gaps (Partial)** | Bukkit: **Slate**; Fabric: **Granite** YAML built-in. Bedrock: inventory **NRP** — not verified this sprint. |
+| **Not in Sprint 68** | **Jobs**; new menu engine; new mechanics. Manual: **`SPRINT_68_MANUAL_SKILL_COMMANDS.md`**. |
+

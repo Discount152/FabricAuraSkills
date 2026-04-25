@@ -16,8 +16,8 @@
 
 | Question | Answer |
 |----------|--------|
-| **1. Which Bukkit base commands have Fabric equivalents?** | **Most** of `registerBaseCommands` except **`JobsCommand`**; **per-skill** `SkillCommands.*` gated by config — **Missing** on Fabric. **`ManaAbilityCommand`** — **Sprint 66** (bounded **resetcooldown**). **`AntiAfkCommand`** — **Sprint 67** (bounded **`logs`** only; **Partial** vs reference name resolution). |
-| **2. Still Missing?** | **Jobs**, **per-skill skill commands** (see `COMMAND_PARITY_AUDIT` table). **Anti-AFK:** **`logs`** implemented (**Sprint 67**). |
+| **1. Which Bukkit base commands have Fabric equivalents?** | **Most** of `registerBaseCommands` except **`JobsCommand`**. **Per-skill** `SkillCommands.*` — **Sprint 68** (top-level shortcuts; **Partial**). **`ManaAbilityCommand`** — **Sprint 66** (bounded **resetcooldown**). **`AntiAfkCommand`** — **Sprint 67** (bounded **`logs`** only; **Partial** vs reference name resolution). |
+| **2. Still Missing?** | **`JobsCommand`** (out of default scope) — see `COMMAND_PARITY_AUDIT` / `PARITY_BACKLOG`. **Per-skill** commands: **Sprint 68** baseline. |
 | **3. Partial?** | **Most** ported families — see audit **Status** column (Slate menus, ACF flags, async, etc.). |
 | **4. Equivalent?** | **Rare** — **Partial** is the normal label; differences are documented per row. |
 | **5. Extra Fabric convenience roots?** | **Top-level** **`/backup`**, **`/preset`**, **`/storage`**, **`/profile`**, **`/transfer`**, **`/claimitems`**, **`/openmenu`**, **`/mana`**, **`/skilllevel`**, **`/xp`**, **`/top`**, **`/skilltop`**, **`/rank`**, **`/skillrank`**, **`/updateleaderboards`**, **`/multiplier`**, **`/toggle`**, **`/abtoggle`**, **`/lang`**, **`/modifier`**, **`/trait`**, **`/item`**, **`/armor`**, **`/sources`**, **`/resethealth`** — not all exist as Bukkit **dedicated** top-levels; see matrix. |
@@ -71,9 +71,9 @@
 4. **`FabricCommandPermissions`:** **`STORAGE`** javadoc references **Sprint 64** mutations.
 5. **Parity docs** + **Changelog** + **version** bump.
 
-## Remaining **Missing** (command lane, post–Sprint 67)
+## Remaining **Missing** (command lane, post–Sprint 68)
 
-- **`JobsCommand`**, **per-skill** **`SkillCommands.*`** — see **`COMMAND_PARITY_AUDIT`**. **`ManaAbilityCommand`** / **`AntiAfkCommand`**: see **Sprint 66** / **Sprint 67** rows (both **Partial**).
+- **`JobsCommand`** (out of default scope unless reopened) — see **`COMMAND_PARITY_AUDIT`**. **Per-skill** **`SkillCommands.*`:** **Sprint 68** — see audit **Partial** row. **`ManaAbilityCommand`** / **`AntiAfkCommand`:** **Sprint 66** / **Sprint 67** (both **Partial**).
 
 ## Remaining **Partial** (representative)
 
