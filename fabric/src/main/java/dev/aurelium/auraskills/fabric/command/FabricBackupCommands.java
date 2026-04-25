@@ -5,8 +5,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import dev.aurelium.auraskills.common.message.type.CommandMessage;
-import dev.aurelium.auraskills.common.user.User;
-import dev.aurelium.auraskills.common.user.UserState;
 import dev.aurelium.auraskills.common.util.text.TextUtil;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import net.minecraft.server.command.CommandManager;
@@ -368,7 +366,8 @@ public final class FabricBackupCommands {
                                         .executeSync(
                                                 () -> {
                                                     long ms = System.currentTimeMillis() - start;
-                                                    refreshOnlineUsersFromStorage(p);
+                                                    FabricCommandStorageUtil.refreshOnlineUsersFromStorage(
+                                                            p);
                                                     String line =
                                                             p.getMessageProvider()
                                                                     .applyFormatting(
@@ -412,31 +411,6 @@ public final class FabricBackupCommands {
                                                         p.getPrefix(lo) + err));
                                             });
                         });
-    }
-
-    /**
-     * After {@code applyState} from storage, reload {@link UserState} into online {@link User}
-     * instances so in-memory data matches the restored files/DB.
-     */
-    private static void refreshOnlineUsersFromStorage(FabricAuraSkills p) {
-        for (ServerPlayerEntity pl : p.getServer().getPlayerManager().getPlayerList()) {
-            User u = p.getUserManager().getUser(pl.getUuid());
-            if (u == null) {
-                continue;
-            }
-            try {
-                UserState st = p.getStorageProvider().loadState(pl.getUuid());
-                u.applyState(st);
-                p.getRewardManager().updatePermissions(u);
-            } catch (Exception e) {
-                p.logger()
-                        .warn(
-                                "Post-restore refresh failed for online player "
-                                        + pl.getUuid()
-                                        + " — they may need to rejoin",
-                                e);
-            }
-        }
     }
 
     private static @Nullable File resolveForLoad(

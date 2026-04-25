@@ -1,6 +1,6 @@
 {
-  "auraskills.granite.command.auraskills_usage": "Use: /auraskills <…> — also /openmenu, /sk, /skill, claimitems, sources, resethealth, transfer, profile, backup, preset, storage (Sprint 46–63)  —  see fabric/COMMAND_PARITY_AUDIT.md",
-  "auraskills.granite.command.help": "Fabric AuraSkills: /auraskills … | /skills, /sk, /skill (claimitems, sources, transfer, profile, resethealth) | /claimitems | /profile … | /backup … (staff; load needs backup.load) | /preset … (staff) | /storage … (staff) | /sources <skill> [sort] | /transfer <from-uuid> <to-uuid> (staff) | /stats | /openmenu | leaderboard (…) / utility (…) | /mana | /skilllevel | /xp | /modifier, /trait | /item, /armor (…) | staff: reload, save, resethealth (console)",
+  "auraskills.granite.command.auraskills_usage": "Use: /auraskills <…> — also /openmenu, /sk, /skill, claimitems, sources, resethealth, transfer, profile, backup, preset, storage (Sprint 46–64)  —  see fabric/COMMAND_PARITY_AUDIT.md",
+  "auraskills.granite.command.help": "Fabric AuraSkills: /auraskills … | /skills, /sk, /skill (claimitems, sources, transfer, profile, resethealth) | /claimitems | /profile … | /backup … (staff; load needs backup.load) | /preset … (staff) | /storage … (preview staff; storage mutation confirm: console) | /sources <skill> [sort] | /transfer <from-uuid> <to-uuid> (staff) | /stats | /openmenu | leaderboard (…) / utility (…) | /mana | /skilllevel | /xp | /modifier, /trait | /item, /armor (…) | staff: reload, save, resethealth (console)",
   "auraskills.granite.command.claimitems.players_only": "This command is for players only.",
   "auraskills.granite.command.claimitems.all_claimed": "All unclaimed items were merged into your inventory.",
   "auraskills.granite.command.claimitems.partial": "Some unclaimed items remain (%s stack(s); delivered or updated %s this pass).",
@@ -111,8 +111,21 @@
   "auraskills.granite.command.storage.info_data_root": "Data directory name: %s (use /auraskills version or the server log for full path — not repeated here in chat).",
   "auraskills.granite.command.storage.info_loaded": "Loaded user profiles in memory: %s",
   "auraskills.granite.command.storage.info_secrets": "config sql.enabled = %s — JDBC URL, host, user, and password are never shown in chat.",
-  "auraskills.granite.command.storage.info_note": "Sprint 63: /storage save flushes memory → storage. /storage reload explains behavior; for YAML/config/menus/skill data reload use /auraskills reload. Live migration between YAML and SQL is not a command here — set config and restart. Bukkit ref has console-only mergeskills/removeallmodifiers — not ported in S63.",
+  "auraskills.granite.command.storage.info_note": "Sprint 63–64: /storage save flushes memory → storage. /storage reload explains behavior; for YAML/config/menus/skill data reload use /auraskills reload. Live migration between YAML and SQL is not a command here — set config and restart. Sprint 64: mergeskills / removeallmodifiers (preview in-game; confirm from dedicated console or RCON only; pre-backup required).",
   "auraskills.granite.command.storage.save_done": "Saved %s loaded user profile(s) to storage (same as /auraskills save for online users).",
   "auraskills.granite.command.storage.save_failed": "Storage save failed: %s (see server log).",
-  "auraskills.granite.command.storage.reload_info": "This command does not hot-swap the storage backend. For plugin config, messages, and skill data from disk, use /auraskills reload. To switch between YAML and SQL, edit config (sql.enabled), then restart the server. Live migration is not available from /storage in Sprint 63."
+  "auraskills.granite.command.storage.reload_info": "This command does not hot-swap the storage backend. For plugin config, messages, and skill data from disk, use /auraskills reload. To switch between YAML and SQL, edit config (sql.enabled), then restart the server. Live migration is not available from /storage in Sprint 63.",
+  "auraskills.granite.command.storage.merge_preview": "Storage mergeskills (preview): for each stored user with both %1$s (%3$s) and %2$s (%4$s), if the source level is greater than the target, copy that level to the target and set the target’s XP to the source’s XP (Bukkit reference). No changes yet. Re-run from the dedicated server console or RCON: /storage mergeskills %1$s %2$s confirm",
+  "auraskills.granite.command.storage.merge_unknown_from": "Unknown or disabled source skill: %s",
+  "auraskills.granite.command.storage.merge_unknown_to": "Unknown or disabled target skill: %s",
+  "auraskills.granite.command.storage.merge_same_skill": "Merging a skill into itself is not allowed.",
+  "auraskills.granite.command.storage.merge_done": "mergeskills: %1$s → %2$s — users merged: %3$s, applyState failed: %4$s, missing either skill: %5$s, skipped (source level ≤ target): %6$s. Pre-backup: %7$s",
+  "auraskills.granite.command.storage.merge_failed": "mergeskills failed: %s (see server log).",
+  "auraskills.granite.command.storage.remove_mod_preview": "Storage removeallmodifiers (preview): clears persistent UserState stat and trait modifier maps for every stored user; skills, XP, mana, and other fields are unchanged. No changes yet. Re-run from the dedicated server console or RCON: /storage removeallmodifiers confirm",
+  "auraskills.granite.command.storage.remove_mod_done": "removeallmodifiers: users updated: %1$s, applyState failed: %2$s, skipped (no modifiers): %3$s. Pre-backup: %4$s",
+  "auraskills.granite.command.storage.remove_mod_failed": "removeallmodifiers failed: %s (see server log).",
+  "auraskills.granite.command.storage.mutation_prereq_skipped": "Refusing: pre-action UserState backup was skipped (too many user profiles; see config automatic_backups.max_users). Raise the cap or use an external backup.",
+  "auraskills.granite.command.storage.mutation_prereq_failed": "Refusing: pre-action UserState backup failed (see server log).",
+  "auraskills.granite.command.storage.mutation_online_note": "Online players: state was reloaded from storage where possible; rejoin if anything looks inconsistent.",
+  "auraskills.granite.command.storage.confirm_console_only": "Only the dedicated server console or RCON may run the confirm step for this storage action."
 }

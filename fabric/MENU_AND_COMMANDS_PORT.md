@@ -500,4 +500,13 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 |------|-----------------------------|
 | **Commands** | **`/storage info`**, **`/storage save`**, **`/storage reload`** + mirrors on **`/auraskills`**, **`/skills`**, **`/sk`**, **`/skill`**, top-level **`/storage`**. **`auraskills.command.storage`** (default **deny**). |
 | **Data** | **info** — active **`StorageProvider`** (YAML **file** vs **SQL** pooled), FQMN, data directory **basename** only in chat, **`sql.enabled`** flag, loaded user count; **no** JDBC URL, host, user, password. **save** — **`saveAllUserProfiles()`** (same as **`/auraskills save`** for online users). **reload** — **not** a storage hot-swap; points to **`/auraskills reload`** for config/skill reload and **restart** to change backend. |
-| **Not in Sprint 63** | Live **migrate** YAML↔SQL; **Bukkit** **`mergeskills`** / **`removeallmodifiers`** (console); SQL **dump**/admin — see **`SPRINT_63_MANUAL_STORAGE.md`**. |
+| **Not in Sprint 63** | Live **migrate** YAML↔SQL; **Bukkit** ref **`mergeskills`** / **`removeallmodifiers`** — see **Sprint 64**; SQL **dump**/admin — see **`SPRINT_63_MANUAL_STORAGE.md`**. |
+
+## Sprint 64 — **`/storage mergeskills`**, **`/storage removeallmodifiers`** (shipped, partial)
+
+| Area | Shipped on Fabric (bounded) |
+|------|-----------------------------|
+| **Commands** | Same roots as S63. **`/storage mergeskills <from> <to>`** (preview) → **`/storage mergeskills <from> <to> confirm`**. **`/storage removeallmodifiers`** (preview) → **`/storage removeallmodifiers confirm`**. All under **`auraskills.command.storage`**. **Confirm** subcommands: **dedicated server console or RCON only** (in-game `confirm` is rejected with a message). |
+| **Data** | **mergeskills** — for each `UserState` from **`loadStates`**, if **both** skills exist and **source level &gt; target level**, set target level to source level, set target **XP** to source **XP** (Bukkit reference), then **`StorageProvider#applyState`**. Counters: merged / applyState failed / missing either skill / skipped (source ≤ target). **removeallmodifiers** — if both stat and trait maps empty, skip; else **`UserState`** copy with **empty** stat and trait maps, same skills/XP/mana, **`applyState`**. **Pre-mutation** **`BackupProvider#saveBackupSync(true)`** — if **null** (e.g. **max_users**) or **throws**, **abort** (no **force**). **Online:** **`FabricCommandStorageUtil#refreshOnlineUsersFromStorage`**. |
+| **Not in Sprint 64** | Live **migrate**; SQL dump/export; **force**; provider hot-swap; Bukkit’s **entire** subcommand = **console-only** (Fabric allows **in-game preview** with permission). Manual: **`SPRINT_64_MANUAL_STORAGE_ACTIONS.md`**. |
+

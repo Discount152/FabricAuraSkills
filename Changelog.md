@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.92
+
+### Changes
+
+- **Fabric: `/storage` mutations (Sprint 64):** **`/storage mergeskills <from> <to>`** (preview) + **`/storage mergeskills <from> <to> confirm`**; **`/storage removeallmodifiers`** (preview) + **`/storage removeallmodifiers confirm`**. Bukkit **reference** semantics for **mergeskills** (higher level → set target + copy XP) and **removeallmodifiers** (clear **UserState** **stat** + **trait** maps only) via **`StorageProvider#loadStates`** + **`applyState`**. **Guards** vs reference: two-step (no mutation without literal **`confirm`**); **pre-**`UserState` **backup** (`BackupProvider#saveBackupSync(true)`) **required** — aborts if skipped (**max_users**) or fails; **no** **force**; **confirm** from **dedicated console or RCON only** (in-game preview allowed with **`auraskills.command.storage`**). **`FabricCommandStorageUtil#refreshOnlineUsersFromStorage`** after mutations. **Lang** `storage.*` keys. **Docs** `SPRINT_64_MANUAL_STORAGE_ACTIONS.md`, parity docs, **`projectVersion` 2.3.91 → 2.3.92**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test`. **Parity:** **Partial** — Bukkit had **entire** merge/remove on **console** only (no preview/backup); Fabric adds **safer** operator flow; **no** `storage` **info|save|reload** on Bukkit.
+
 ## 2.3.91
 
 ### Changes
