@@ -16,13 +16,14 @@ import java.util.Set;
  */
 public final class FabricCommandBuiltInMenuId {
 
-    /** Menu ids allowed on the bounded {@code openmenu} command (Sprint 45). */
+    /** Menu ids allowed on the bounded {@code openmenu} command (Sprint 45+; {@code sources} in Sprint 70). */
     public static final Set<String> OPENVIA_COMMAND =
             Set.of(
                     FabricMenuKeys.SKILLS,
                     FabricMenuKeys.STATS,
                     FabricMenuKeys.LEVEL_PROGRESSION,
-                    FabricMenuKeys.STAT_INFO);
+                    FabricMenuKeys.STAT_INFO,
+                    FabricMenuKeys.SOURCES);
 
     private FabricCommandBuiltInMenuId() {}
 
@@ -40,6 +41,7 @@ public final class FabricCommandBuiltInMenuId {
     /** True when opening by id requires skill/stat args (typed Brigadier nodes; see Sprint 45). */
     public static boolean requiresContext(String normalizedMenuId) {
         return FabricMenuKeys.LEVEL_PROGRESSION.equals(normalizedMenuId)
-                || FabricMenuKeys.STAT_INFO.equals(normalizedMenuId);
+                || FabricMenuKeys.STAT_INFO.equals(normalizedMenuId)
+                || FabricMenuKeys.SOURCES.equals(normalizedMenuId);
     }
 }

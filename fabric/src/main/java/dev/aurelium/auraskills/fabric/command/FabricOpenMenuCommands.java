@@ -4,7 +4,10 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import dev.aurelium.auraskills.api.skill.Skill;
+import dev.aurelium.auraskills.api.source.XpSource;
 import dev.aurelium.auraskills.api.stat.Stat;
+import dev.aurelium.auraskills.common.skill.LoadedSkill;
+import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.menu.FabricAuraSkillsMenus;
 import dev.aurelium.auraskills.fabric.menu.FabricMenuKeys;
@@ -13,6 +16,8 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
+import java.util.List;
+import java.util.Locale;
 import java.util.function.Function;
 
 import static net.minecraft.server.command.CommandManager.literal;
@@ -24,13 +29,15 @@ import static net.minecraft.server.command.CommandManager.literal;
  * openmenu} / {@code /skill openmenu}. **Sprint 45:** {@code level_progression} and {@code
  * stat_info} with typed **skill** / **stat** args — routes through
  * {@link FabricAuraSkillsMenus#openLevelProgression} / {@link FabricAuraSkillsMenus#openStatInfo}
- * and {@link dev.aurelium.auraskills.fabric.menu.FabricMenuContext}.
+ * and {@link dev.aurelium.auraskills.fabric.menu.FabricMenuContext}. **Sprint 70:** {@code sources}
+ * with skill + optional sort → {@link FabricAuraSkillsMenus#openSources} (not registry-loaded).
  */
 public final class FabricOpenMenuCommands {
 
     private static final String ARG_TARGET = "target";
     private static final String ARG_SKILL = "skill";
     private static final String ARG_STAT = "stat";
+    private static final String ARG_SORT = "sort";
 
     private FabricOpenMenuCommands() {}
 
@@ -119,7 +126,54 @@ public final class FabricOpenMenuCommands {
                                                                                 .enabledStatKeys())
                                                                 .executes(
                                                                         FabricOpenMenuCommands
-                                                                                ::executeStatInfoForTarget))));
+                                                                                ::executeStatInfoForTarget))))
+                .then(
+                        literal(FabricMenuKeys.SOURCES)
+                                .then(
+                                        CommandManager.argument(
+                                                        ARG_SKILL, StringArgumentType.word())
+                                                .suggests(
+                                                        FabricCommandSuggestionProviders
+                                                                .enabledSkillKeys())
+                                                .executes(
+                                                        FabricOpenMenuCommands::executeSourcesSelf)
+                                                .then(
+                                                        CommandManager.argument(
+                                                                        ARG_SORT,
+                                                                        StringArgumentType.word())
+                                                                .suggests(
+                                                                        FabricCommandSuggestionProviders
+                                                                                .sourceSortTypes())
+                                                                .executes(
+                                                                        FabricOpenMenuCommands
+                                                                                ::executeSourcesSelfWithSortArg)))
+                                .then(
+                                        CommandManager.argument(
+                                                        ARG_TARGET, StringArgumentType.word())
+                                                .suggests(
+                                                        FabricCommandSuggestionProviders
+                                                                .onlinePlayers())
+                                                .then(
+                                                        CommandManager.argument(
+                                                                        ARG_SKILL,
+                                                                        StringArgumentType.word())
+                                                                .suggests(
+                                                                        FabricCommandSuggestionProviders
+                                                                                .enabledSkillKeys())
+                                                                .executes(
+                                                                        FabricOpenMenuCommands
+                                                                                ::executeSourcesForTarget)
+                                                                .then(
+                                                                        CommandManager.argument(
+                                                                                        ARG_SORT,
+                                                                                        StringArgumentType
+                                                                                                .word())
+                                                                                .suggests(
+                                                                                        FabricCommandSuggestionProviders
+                                                                                                .sourceSortTypes())
+                                                                                .executes(
+                                                                                        FabricOpenMenuCommands
+                                                                                                ::executeSourcesForTargetWithSortArg)))));
     }
 
     /** Top-level {@code /openmenu …} (same tree; Fabric-only convenience). */
@@ -318,6 +372,165 @@ public final class FabricOpenMenuCommands {
                 });
     }
 
+    private static int executeSourcesSelf(CommandContext<ServerCommandSource> ctx) {
+        return runWithPlugin(
+                ctx,
+                p -> {
+                    ServerCommandSource s = ctx.getSource();
+                    if (!(s.getEntity() instanceof ServerPlayerEntity self)) {
+                        s.sendError(
+                                Text.translatable(
+                                        "auraskills.granite.command.openmenu.context.console_specify"));
+                        return 0;
+                    }
+                    return runOpenmenuSourcesInGame(
+                            p,
+                            s,
+                            self,
+                            StringArgumentType.getString(ctx, ARG_SKILL),
+                            FabricSourceSortType.ASCENDING,
+                            0,
+                            true,
+                            true);
+                });
+    }
+
+    private static int executeSourcesSelfWithSortArg(CommandContext<ServerCommandSource> ctx) {
+        return FabricSourceSortType.fromTokenStrict(
+                        StringArgumentType.getString(ctx, ARG_SORT))
+                .map(
+                        srt -> runWithPlugin(
+                                ctx,
+                                p -> {
+                                    ServerCommandSource s = ctx.getSource();
+                                    if (!(s.getEntity() instanceof ServerPlayerEntity self)) {
+                                        s.sendError(
+                                                Text.translatable(
+                                                        "auraskills.granite.command.openmenu.context.console_specify"));
+                                        return 0;
+                                    }
+                                    return runOpenmenuSourcesInGame(
+                                            p,
+                                            s,
+                                            self,
+                                            StringArgumentType.getString(ctx, ARG_SKILL),
+                                            srt,
+                                            0,
+                                            true,
+                                            true);
+                                }))
+                .orElseGet(
+                        () -> {
+                            String bad = StringArgumentType.getString(ctx, ARG_SORT);
+                            ctx.getSource()
+                                    .sendError(
+                                            Text.translatable(
+                                                    "auraskills.granite.command.sources.bad_sort",
+                                                    bad));
+                            return 0;
+                        });
+    }
+
+    private static int executeSourcesForTarget(CommandContext<ServerCommandSource> ctx) {
+        return runWithPlugin(
+                ctx,
+                p -> {
+                    String name = StringArgumentType.getString(ctx, ARG_TARGET);
+                    String raw = StringArgumentType.getString(ctx, ARG_SKILL);
+                    ServerCommandSource s = ctx.getSource();
+                    ServerPlayerEntity target =
+                            FabricCommandPlayerTarget.findOnline(s.getServer(), name)
+                                    .orElse(null);
+                    if (target == null) {
+                        s.sendError(
+                                Text.translatable(
+                                        "auraskills.granite.command.xp.player_not_found", name));
+                        return 0;
+                    }
+                    return runOpenmenuSourcesInGame(
+                            p, s, target, raw, FabricSourceSortType.ASCENDING, 0, false, true);
+                });
+    }
+
+    private static int executeSourcesForTargetWithSortArg(CommandContext<ServerCommandSource> ctx) {
+        return FabricSourceSortType.fromTokenStrict(
+                        StringArgumentType.getString(ctx, ARG_SORT))
+                .map(
+                        srt -> runWithPlugin(
+                                ctx,
+                                p -> {
+                                    String name = StringArgumentType.getString(ctx, ARG_TARGET);
+                                    String raw = StringArgumentType.getString(ctx, ARG_SKILL);
+                                    ServerCommandSource s = ctx.getSource();
+                                    ServerPlayerEntity target =
+                                            FabricCommandPlayerTarget.findOnline(s.getServer(), name)
+                                                    .orElse(null);
+                                    if (target == null) {
+                                        s.sendError(
+                                                Text.translatable(
+                                                        "auraskills.granite.command.xp.player_not_found",
+                                                        name));
+                                        return 0;
+                                    }
+                                    return runOpenmenuSourcesInGame(
+                                            p, s, target, raw, srt, 0, false, true);
+                                }))
+                .orElseGet(
+                        () -> {
+                            String bad = StringArgumentType.getString(ctx, ARG_SORT);
+                            ctx.getSource()
+                                    .sendError(
+                                            Text.translatable(
+                                                    "auraskills.granite.command.sources.bad_sort",
+                                                    bad));
+                            return 0;
+                        });
+    }
+
+    /**
+     * @param sendSelfLineOnOpen when true (self path), send {@code menu.sources_opened} to the
+     *     executor after a successful open
+     */
+    private static int runOpenmenuSourcesInGame(
+            FabricAuraSkills p,
+            ServerCommandSource feedbackSource,
+            ServerPlayerEntity menuRecipient,
+            String skillRaw,
+            FabricSourceSortType sort,
+            int returnToSkillsListPage,
+            boolean isSelfPath,
+            boolean sendSelfLineOnOpen) {
+        Skill skill = FabricCommandSkillParser.parse(p, skillRaw);
+        if (skill == null) {
+            feedbackSource.sendError(
+                    Text.translatable(
+                            "auraskills.granite.command.openmenu.unknown_skill", skillRaw));
+            return 0;
+        }
+        User menuUser = p.getUserManager().getUser(menuRecipient.getUuid());
+        Locale lo = menuUser != null ? menuUser.getLocale() : p.getDefaultLanguage();
+        LoadedSkill loaded = p.getSkillManager().getSkill(skill);
+        List<XpSource> list = FabricSourcesListSupport.buildSorted(loaded, sort, lo);
+        if (list.isEmpty()) {
+            feedbackSource.sendFeedback(
+                    () -> Text.translatable(
+                            "auraskills.granite.command.sources.empty",
+                            skill.getDisplayName(lo, false)),
+                    false);
+            return 1;
+        }
+        boolean opened =
+                FabricSourcesOpenSupport.tryOpenPlayerGuiWithChatFallback(
+                        p, feedbackSource, menuRecipient, lo, skill, list, sort, returnToSkillsListPage);
+        if (isSelfPath && sendSelfLineOnOpen && opened) {
+            feedbackSource.sendFeedback(
+                    () -> Text.translatable("auraskills.granite.menu.sources_opened"), true);
+        } else if (!isSelfPath && opened) {
+            sendContextMenuForTarget(feedbackSource, menuRecipient, FabricMenuKeys.SOURCES, skillRaw);
+        }
+        return 1;
+    }
+
     private static int runWithPlugin(
             CommandContext<ServerCommandSource> ctx, Function<FabricAuraSkills, Integer> run) {
         return FabricCommandPluginState.pluginOrEmpty()
@@ -365,9 +578,12 @@ public final class FabricOpenMenuCommands {
                         () -> Text.translatable(
                                 "auraskills.granite.menu.level_progression_opened"),
                         true);
-            } else {
+            } else if (FabricMenuKeys.STAT_INFO.equals(menuId)) {
                 source.sendFeedback(
                         () -> Text.translatable("auraskills.granite.menu.stat_info_opened"), true);
+            } else if (FabricMenuKeys.SOURCES.equals(menuId)) {
+                source.sendFeedback(
+                        () -> Text.translatable("auraskills.granite.menu.sources_opened"), true);
             }
         } else {
             source.sendFeedback(

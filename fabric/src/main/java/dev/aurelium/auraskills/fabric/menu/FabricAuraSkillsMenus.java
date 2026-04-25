@@ -103,11 +103,12 @@ public final class FabricAuraSkillsMenus {
     }
 
     /**
-     * One-skill XP sources list (Bukkit id {@code sources}), opened from {@code /sources} — **Sprint
-     * 69**. Not in {@link FabricMenuRegistry} / {@link FabricMenuLoaders}; use for commands only.
-     * {@code returnToSkillsListPage} is the Skills list page passed to
-     * {@link #openLevelProgression(Skill, ServerPlayerEntity, FabricAuraSkills, int)} when the player
-     * uses <strong>Back</strong> (Bukkit: previous menu level_progression).
+     * One-skill XP sources list (Bukkit id {@code sources}), opened from {@code /sources} (**Sprint
+     * 69**), **{@code /openmenu sources …}** (**Sprint 70**), and the <strong>level progression</strong>
+     * screen hopper (**Sprint 70**). Not in {@link FabricMenuRegistry} / {@link FabricMenuLoaders}. {@code
+     * returnToSkillsListPage} is the Skills list page passed to
+     * {@link #openLevelProgression(Skill, ServerPlayerEntity, FabricAuraSkills, int)} on <strong>Back</strong>
+     * (Bukkit: previous menu <strong>level_progression</strong>).
      */
     public static void openSources(
             Skill skill,

@@ -549,9 +549,19 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | Area | Shipped on Fabric (bounded) |
 |------|-----------------------------|
 | **Command ↔ UI** | **`/sources <skill> [sort]`** (+ **`/auraskills`**, **`/skills`**, **`/sk`**, **`/skill` mirrors**): **in-game** opens **`FabricSourcesMenuGui`** (`GraniteContainerMenus#openClickable9x6`); **console/RCON** keep **paged chat** (28 lines/page). **`FabricSourcesListSupport`** shares **version-valid** filter + **sort** with both paths. **Fallback:** if opening the screen throws, **`command.sources.menu_fallback`** + **chat** list. |
-| **Not registered** | **`sources`** is **not** in **`FabricMenuLoaders` / `FabricMenuRegistry`** — only **`FabricAuraSkillsMenus#openSources`** from **`FabricSourcesCommands`**. |
+| **Not registered** | **`sources`** is **not** in **`FabricMenuLoaders` / `FabricMenuRegistry`** — **`FabricAuraSkillsMenus#openSources`** from **`/sources`** and **`/openmenu sources`** (**Sprint 70**). |
 | **Parity (Partial)** | Bukkit: **`SourcesMenu`**, **`menus/sources.yml`**, per-source custom **`ItemRegistry` stacks`, **`multiplied_xp` component**, income. Fabric: **gray_dye** rows, fixed control row (**Back** slot 45 → `openLevelProgression` with list page **0**; **Prev/Next**; **Sort** hopper + **`FabricSourceSortType#nextCyclic()`**). |
 | **Manual** | **`SPRINT_69_MANUAL_MENU_SOURCES.md`** (menu inventory from **`MenuRegistrar`** + known gaps) |
 
-| **Not in Sprint 69** | Full **Slate**; **`openmenu` sources**; **leaderboard** / **abilities** / **unclaimed** menus; **MenuFileManager** merge; **new** XP or sort rules. |
+| **Not in Sprint 69** | Full **Slate**; **leaderboard** / **abilities** / **unclaimed** menus; **MenuFileManager** merge; **new** XP or sort rules. |
+
+## Sprint 70 — **openmenu sources** + level progression → sources (**shipped**, partial)
+
+| Area | Shipped on Fabric (bounded) |
+|------|-----------------------------|
+| **openmenu** | Literal **`sources`**: **`openmenu sources <skill> [sort]`** (in-game self); **`openmenu sources <player> <skill> [sort]`** (console + in-game; **online** target). **`FabricCommandBuiltInMenuId`**, **`FabricCommandSuggestionProviders#builtInOpenMenuIds`**, **`FabricSourcesOpenSupport`** (shared with **`/sources`**). **`auraskills.command.openmenu`** only. |
+| **Back / list page** | **Level progression** hopper at **slot 50** opens **sources** with **`context.listPage()`** so **Back** on sources returns to **level progression** with the same **Skills** return page; **`/sources`** / plain **`openmenu`** still use return page **0**. |
+| **Manual** | **`SPRINT_70_MANUAL_SOURCES_OPENMENU.md`** |
+
+| **Not in Sprint 70** | Full **`sources.yml`** load; **Slate** `sources` template items; **leaderboard** / **abilities** / **unclaimed**; **MenuFileManager** merge. |
 

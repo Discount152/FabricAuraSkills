@@ -38,7 +38,8 @@ public final class FabricCommandSuggestionProviders {
                         FabricMenuKeys.SKILLS,
                         FabricMenuKeys.STATS,
                         FabricMenuKeys.LEVEL_PROGRESSION,
-                        FabricMenuKeys.STAT_INFO
+                        FabricMenuKeys.STAT_INFO,
+                        FabricMenuKeys.SOURCES
                     }) {
                 String r = remaining.toLowerCase(Locale.ROOT);
                 if (remaining.isEmpty() || id.startsWith(r)) {

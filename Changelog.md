@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.98
+
+### Changes
+
+- **Fabric: openmenu sources + sources wiring (Sprint 70):** Bounded **`/openmenu sources <skill> [sort]`** (in-game self) and **`/openmenu sources <player> <skill> [sort]`** (console + in-game; online target only), same roots as other **openmenu** (`auraskills.command.openmenu`). **`FabricSourcesOpenSupport`** shared with **`/sources`**. Success / empty / bad-sort behavior aligned; **no** “opened” chat line on empty or GUI failure. **`FabricCommandBuiltInMenuId`** + tab suggestions include **`sources`**. **Level progression** hopper (slot **50**) opens **sources** with the current **Skills** list page so **Back** returns to level progression on the **same** page (openmenu/Command still use page **0**). **`en_us`** openmenu help + **`menu.sources_opened`**, **`level_progression_open_sources`**. **`SPRINT_70_MANUAL_SOURCES_OPENMENU.md`**, parity / MENU / ledger / backlog, **`projectVersion` 2.3.97 → 2.3.98**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test`. **Sources** menu remains **Partial** vs full Slate/YAML.
+
 ## 2.3.97
 
 ### Changes

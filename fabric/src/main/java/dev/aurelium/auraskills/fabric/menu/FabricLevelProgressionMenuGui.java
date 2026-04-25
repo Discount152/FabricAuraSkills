@@ -4,6 +4,8 @@ import dev.aurelium.auraskills.api.skill.Skill;
 import dev.aurelium.auraskills.api.util.NumberUtil;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
+import dev.aurelium.auraskills.fabric.command.FabricSourceSortType;
+import dev.aurelium.auraskills.fabric.command.FabricSourcesListSupport;
 import dev.granitelib.fabric.menu.GraniteContainerMenus;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LoreComponent;
@@ -25,9 +27,15 @@ import java.util.Locale;
  * {@link FabricMenuRegistry} with {@link FabricMenuContext#ofSkill(Skill)}. **Sprint 36:** main/back items
  * from {@code granite.items.main} / {@code granite.items.back}. **Sprint 38:** <strong>Back</strong> reopens
  * <strong>Skills</strong> with the same {@link FabricMenuContext#listPage()} the player had when opening
- * this menu (clamped in the list GUI).
+ * this menu (clamped in the list GUI). **Sprint 70:** hopper at {@link #SLOT_OPEN_SOURCES} opens
+ * <strong>sources</strong> for the same skill, passing this context’s list page to {@link
+ * FabricAuraSkillsMenus#openSources} (Back from sources returns to this progression view with the
+ * same Skills return page).
  */
 final class FabricLevelProgressionMenuGui {
+
+    /** “View sources” (distinct from default main/back slots in typical YAML). */
+    private static final int SLOT_OPEN_SOURCES = 50;
 
     private FabricLevelProgressionMenuGui() {
     }
@@ -138,17 +146,66 @@ final class FabricLevelProgressionMenuGui {
                                             def,
                                             "auraskills.granite.menu.level_progression_back_lore")))));
                     inv.setStack(backSlot, back);
+
+                    ItemStack openSources = new ItemStack(Items.HOPPER);
+                    openSources.set(
+                            DataComponentTypes.ITEM_NAME,
+                            Text.translatable("auraskills.granite.menu.level_progression_open_sources"));
+                    openSources.set(
+                            DataComponentTypes.LORE,
+                            new LoreComponent(
+                                    List.of(
+                                            Text.translatable(
+                                                    "auraskills.granite.menu.level_progression_open_sources_lore"))));
+                    inv.setStack(SLOT_OPEN_SOURCES, openSources);
                 },
                 (topSlot, p, button, actionType) -> {
-                    if (topSlot != backSlot) {
-                        return;
+                    if (topSlot == backSlot) {
+                        plugin.getScheduler()
+                                .executeSync(
+                                        () -> FabricAuraSkillsMenus.open(
+                                                FabricAuraSkillsMenus.Id.SKILLS,
+                                                p,
+                                                plugin,
+                                                FabricMenuContext.none()
+                                                        .withListPage(context.listPage())));
+                    } else if (topSlot == SLOT_OPEN_SOURCES) {
+                        final Skill s = skill;
+                        final int returnSkillsPage = context.listPage();
+                        plugin.getScheduler()
+                                .executeSync(
+                                        () -> {
+                                            User u = plugin
+                                                    .getUserManager()
+                                                    .getUser(p.getUuid());
+                                            Locale lo =
+                                                    u != null
+                                                            ? u.getLocale()
+                                                            : plugin.getDefaultLanguage();
+                                            if (FabricSourcesListSupport.buildSorted(
+                                                            plugin
+                                                                    .getSkillManager()
+                                                                    .getSkill(s),
+                                                            FabricSourceSortType.ASCENDING,
+                                                            lo)
+                                                    .isEmpty()) {
+                                                p.sendMessage(
+                                                        Text.translatable(
+                                                                "auraskills.granite.command.sources.empty",
+                                                                s.getDisplayName(
+                                                                        lo, false)),
+                                                        false);
+                                                return;
+                                            }
+                                            FabricAuraSkillsMenus.openSources(
+                                                    s,
+                                                    p,
+                                                    plugin,
+                                                    FabricSourceSortType.ASCENDING,
+                                                    0,
+                                                    returnSkillsPage);
+                                        });
                     }
-                    plugin.getScheduler()
-                            .executeSync(() -> FabricAuraSkillsMenus.open(
-                                    FabricAuraSkillsMenus.Id.SKILLS,
-                                    p,
-                                    plugin,
-                                    FabricMenuContext.none().withListPage(context.listPage())));
                 });
     }
 }

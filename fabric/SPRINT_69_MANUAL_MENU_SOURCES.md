@@ -25,7 +25,9 @@ Reference registration: `bukkit/.../menus/MenuRegistrar.java` — `Slate#buildMe
 - **Confirm flows** — Bukkit `ConfirmManager`; Fabric: not ported as inventory. **Status: Missing.**
 - **Profile / account** — Bukkit has richer account UX; Fabric **`/profile`** is **read-only** chat (**Sprint 59**). **Status: Partial (non-menu).**
 
-## Part B — sources menu (this sprint)
+**Sprint 70** adds bounded **`/openmenu sources …`**, **`FabricSourcesOpenSupport`**, and a **level progression** hopper (slot 50) that passes **`listPage()`** to **`openSources`** so **Back** can restore the **Skills** list page. See **`SPRINT_70_MANUAL_SOURCES_OPENMENU.md`**.
+
+## Part B — sources menu (Sprint 69 baseline)
 
 ### Behavior
 

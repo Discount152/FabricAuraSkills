@@ -27,13 +27,16 @@ class FabricCommandBuiltInMenuIdTest {
                 FabricCommandBuiltInMenuId.resolveForOpenCommand("level_progression").get());
         assertEquals(
                 FabricMenuKeys.STAT_INFO, FabricCommandBuiltInMenuId.resolveForOpenCommand("stat_info").get());
+        assertEquals(
+                FabricMenuKeys.SOURCES, FabricCommandBuiltInMenuId.resolveForOpenCommand("sources").get());
     }
 
     @Test
-    void requiresContext_isTrueForLevelProgressionAndStatInfo() {
+    void requiresContext_isTrueForSkillAndStatContextMenus() {
         assertTrue(
                 FabricCommandBuiltInMenuId.requiresContext(FabricMenuKeys.LEVEL_PROGRESSION));
         assertTrue(FabricCommandBuiltInMenuId.requiresContext(FabricMenuKeys.STAT_INFO));
+        assertTrue(FabricCommandBuiltInMenuId.requiresContext(FabricMenuKeys.SOURCES));
         assertFalse(FabricCommandBuiltInMenuId.requiresContext(FabricMenuKeys.SKILLS));
     }
 }

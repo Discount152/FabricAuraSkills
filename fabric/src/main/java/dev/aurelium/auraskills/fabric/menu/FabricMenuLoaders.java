@@ -15,7 +15,8 @@ public final class FabricMenuLoaders {
 
     /**
      * Registers built-in slice menus: {@code skills}, {@code stats}, {@code level_progression},
-     * {@code stat_info}. The {@code sources} view is opened from {@code /sources} (**Sprint 69**) via
+     * {@code stat_info}. The {@code sources} view is opened from {@code /sources} and
+     * {@code /openmenu sources} (**Sprint 69–70**) via
      * {@link FabricAuraSkillsMenus#openSources} — not registered here. Call once during
      * {@link FabricAuraSkills#enable()}.
      */

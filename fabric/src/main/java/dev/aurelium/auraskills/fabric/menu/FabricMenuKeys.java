@@ -20,6 +20,12 @@ public final class FabricMenuKeys {
      * with {@link FabricMenuContext#ofStat} or {@link FabricAuraSkillsMenus#openStatInfo}.
      */
     public static final String STAT_INFO = "stat_info";
+    /**
+     * Bukkit default {@code menus/sources.yml} — **not** registered in {@link FabricMenuLoaders} (Sprint
+     * 69+); open via {@code /sources} or {@code /openmenu sources} and
+     * {@link dev.aurelium.auraskills.fabric.menu.FabricAuraSkillsMenus#openSources}.
+     */
+    public static final String SOURCES = "sources";
 
     private FabricMenuKeys() {
     }

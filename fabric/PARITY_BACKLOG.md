@@ -45,7 +45,7 @@ These are **product** requirements, not optional polish:
 
 ## Menus and UI
 
-- **Slate / inventory menus** — **In progress (Path A):** full **Slate** port to Fabric + Paper-parity **command tree**; see **`fabric/MENU_AND_COMMANDS_PORT.md`**. **Sprint 27–38** — built-ins: **`granite.paging`**, **`FabricMenuContext#listPage`** (Skills/Stats paged lists + **detail Back** to same page), + layout/items; not full `MenuFileManager`+Slate **merge** or per-row **ItemBuilder** templates. **Sprint 69** — **sources** has a **Granite** command-opened 6×9 baseline (**`FabricSourcesMenuGui`**); not Slate; **NRP** Bedrock — see **`SPRINT_69_MANUAL_MENU_SOURCES.md`**.
+- **Slate / inventory menus** — **In progress (Path A):** full **Slate** port to Fabric + Paper-parity **command tree**; see **`fabric/MENU_AND_COMMANDS_PORT.md`**. **Sprint 27–38** — built-ins: **`granite.paging`**, **`FabricMenuContext#listPage`** (Skills/Stats paged lists + **detail Back** to same page), + layout/items; not full `MenuFileManager`+Slate **merge** or per-row **ItemBuilder** templates. **Sprint 69–70** — **sources** Granite 6×9 + **`/openmenu sources`** + level progression hopper; not Slate; **NRP** Bedrock — **`SPRINT_69_MANUAL_MENU_SOURCES.md`**, **`SPRINT_70_MANUAL_SOURCES_OPENMENU.md`**.
 - **Boss bar XP** — stubbed; action bar / title behavior is minimal compared to Paper.
 
 ## Gameplay / sources
