@@ -452,4 +452,12 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 |------|-----------------------------|
 | **Commands** | **`/sources <skill> [sort]`** + mirrors on **`/skills`**, **`/sk`**, **`/skill`**, **`/auraskills`**, and top-level **`/sources`** — **`auraskills.command.sources`**; **`/resethealth`** + same mirrors, **`auraskills.command.resethealth`** (default **deny** in fabric-perms; **op**-style) — **dedicated server console or RCON only** |
 | **Data** | **`/sources`**: **`SkillManager#getSkill` → `LoadedSkill#sources`**, `FabricSourceSortType` + `FabricCommandSkillParser` + `User` locale. **`/resethealth`**: **`FabricServerPlayerDataPaths`** → **`MinecraftServer#getSavePath(WorldSavePath.PLAYERDATA)`**; gzip NBT read/write; **`FabricOfflinePlayerDataAuraStripping`** strips `attributes[].modifiers` with **`id` starting with `auraskills:`** (1.21+), skips **online** player UUIDs |
-| **Not in Sprint 57** | Bukkit **Slate** **`sources` menu** (tab UI); Bukkit pre-1.21 **`Attributes` / named modifier** NBT in **`Uninstaller`**, Paper 26+ `players/data` path — see **`SPRINT_57_MANUAL_SOURCES_RESETHEALTH.md`**. **Still missing** **`SkillsRootCommand` `transfer`**, **storage** / **profile** |
+| **Not in Sprint 57** | Bukkit **Slate** **`sources` menu** (tab UI); Bukkit pre-1.21 **`Attributes` / named modifier** NBT in **`Uninstaller`**, Paper 26+ `players/data` path — see **`SPRINT_57_MANUAL_SOURCES_RESETHEALTH.md`**. **Still missing** **storage** / **profile** command families (not this sprint) |
+
+## Sprint 58 — **`/transfer`** (`UserState` move) (shipped, partial)
+
+| Area | Shipped on Fabric (bounded) |
+|------|-----------------------------|
+| **Commands** | **`/transfer <from-uuid> <to-uuid>`** + mirrors on **`/skills`**, **`/sk`**, **`/skill`**, **`/auraskills`**, top-level **`/transfer`** — **`auraskills.command.transfer`** (default **deny** / op-style) |
+| **Data** | **`UserState`** only (skills, XP, persistent stat/trait modifiers, mana); **`User#applyState`** for **online** target + **`StorageProvider#applyState`** for **offline** target; **`FabricUserDataTransfer`** (online check, YAML file check, post-apply **save**); **`RewardManager#updatePermissions`** after online apply |
+| **Not in Sprint 58** | Full **profile** parity (jobs, unclaimed items, ability data, locale, action bar, … are **not** in `UserState`); **backup**/**profile**/**storage** admin commands — see **`SPRINT_58_MANUAL_TRANSFER.md`** |

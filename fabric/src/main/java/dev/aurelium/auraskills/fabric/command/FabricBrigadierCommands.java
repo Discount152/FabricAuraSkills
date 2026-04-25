@@ -22,7 +22,7 @@ public final class FabricBrigadierCommands {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         FabricAuraSkillsMod.LOGGER.info(
-                "Registering Brigadier: /auraskills (…), /skills, /sk|skill, /stats, /openmenu, /claimitems, /sources, /resethealth, /skills|/sk|/skill|/auraskills (claimitems|sources|…), leaderboard, /multiplier|/toggle|/abtoggle|/lang, /modifier, /trait, /item (…), /armor (…), /mana, /skilllevel, /xp — see fabric/COMMAND_PARITY_AUDIT.md");
+                "Registering Brigadier: /auraskills (…), /skills, /sk|skill, /stats, /openmenu, /claimitems, /sources, /resethealth, /transfer, /skills|/sk|/skill|/auraskills (…), leaderboard, /multiplier|/toggle|/abtoggle|/lang, /modifier, /trait, /item (…), /armor (…), /mana, /skilllevel, /xp — see fabric/COMMAND_PARITY_AUDIT.md");
 
         registerAuraskillsAndAliases(dispatcher);
         dispatcher.register(FabricOpenMenuCommands.openMenuRoot());
@@ -47,6 +47,7 @@ public final class FabricBrigadierCommands {
         dispatcher.register(FabricClaimItemsCommands.claimItemsLiteral());
         dispatcher.register(FabricSourcesCommands.sourcesLiteral());
         dispatcher.register(FabricResetHealthCommands.resetHealthLiteral());
+        dispatcher.register(FabricTransferCommands.transferLiteral());
     }
 
     /**
@@ -82,7 +83,8 @@ public final class FabricBrigadierCommands {
                 .then(FabricSkillLevelCommands.skillLevelRoot())
                 .then(FabricClaimItemsCommands.claimItemsLiteral())
                 .then(FabricSourcesCommands.sourcesLiteral())
-                .then(FabricResetHealthCommands.resetHealthLiteral());
+                .then(FabricResetHealthCommands.resetHealthLiteral())
+                .then(FabricTransferCommands.transferLiteral());
     }
 
     private static int skillsAliasDefault(CommandContext<ServerCommandSource> ctx) {
@@ -134,13 +136,15 @@ public final class FabricBrigadierCommands {
                 .then(FabricItemArmorModifierCommands.armorCommandRoot())
                 .then(FabricClaimItemsCommands.claimItemsLiteral())
                 .then(FabricSourcesCommands.sourcesLiteral())
-                .then(FabricResetHealthCommands.resetHealthLiteral()));
+                .then(FabricResetHealthCommands.resetHealthLiteral())
+                .then(FabricTransferCommands.transferLiteral()));
         dispatcher.register(literal("skills")
                 .requires(FabricCommandRequirements.permission(FabricCommandPermissions.SKILLS, true))
                 .executes(FabricBrigadierCommands::skills)
                 .then(FabricClaimItemsCommands.claimItemsLiteral())
                 .then(FabricSourcesCommands.sourcesLiteral())
-                .then(FabricResetHealthCommands.resetHealthLiteral()));
+                .then(FabricResetHealthCommands.resetHealthLiteral())
+                .then(FabricTransferCommands.transferLiteral()));
         dispatcher.register(literal("stats")
                 .requires(FabricCommandRequirements.permission(FabricCommandPermissions.STATS, true))
                 .executes(FabricBrigadierCommands::stats));

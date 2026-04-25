@@ -1,6 +1,6 @@
 {
-  "auraskills.granite.command.auraskills_usage": "Use: /auraskills <…> — also /openmenu, /sk, /skill, claimitems, sources, resethealth (Sprint 46–57)  —  see fabric/COMMAND_PARITY_AUDIT.md",
-  "auraskills.granite.command.help": "Fabric AuraSkills: /auraskills … | /skills, /sk, /skill (claimitems, sources, resethealth) | /claimitems | /sources <skill> [sort] | /stats | /openmenu | leaderboard (…) / utility (…) | /mana | /skilllevel | /xp | /modifier, /trait | /item, /armor (…) | staff: reload, save, resethealth (console)",
+  "auraskills.granite.command.auraskills_usage": "Use: /auraskills <…> — also /openmenu, /sk, /skill, claimitems, sources, resethealth, transfer (Sprint 46–58)  —  see fabric/COMMAND_PARITY_AUDIT.md",
+  "auraskills.granite.command.help": "Fabric AuraSkills: /auraskills … | /skills, /sk, /skill (claimitems, sources, transfer, resethealth) | /claimitems | /sources <skill> [sort] | /transfer <from-uuid> <to-uuid> (staff) | /stats | /openmenu | leaderboard (…) / utility (…) | /mana | /skilllevel | /xp | /modifier, /trait | /item, /armor (…) | staff: reload, save, resethealth (console)",
   "auraskills.granite.command.claimitems.players_only": "This command is for players only.",
   "auraskills.granite.command.claimitems.all_claimed": "All unclaimed items were merged into your inventory.",
   "auraskills.granite.command.claimitems.partial": "Some unclaimed items remain (%s stack(s); delivered or updated %s this pass).",
@@ -63,5 +63,11 @@
   "auraskills.granite.command.sources.bad_sort": "Unknown sort mode \"%s\". Use: ascending, descending, alphabetical, reverse_alphabetical.",
   "auraskills.granite.command.resethealth.console_only": "Only the dedicated server console (or RCON) may run this command.",
   "auraskills.granite.command.resethealth.summary": "Scanned %1$s offline player data file(s). Stripped AuraSkills attribute modifier entries in %2$s file(s). %3$s file(s) failed to read or write (see server log).",
-  "auraskills.granite.command.resethealth.io_error": "IO error: %s"
+  "auraskills.granite.command.resethealth.io_error": "IO error: %s",
+  "auraskills.granite.command.transfer.self": "Source and target UUIDs must be different.",
+  "auraskills.granite.command.transfer.bad_uuid": "Invalid UUID. Use two hyphenated UUIDs: /transfer <from> <to>.",
+  "auraskills.granite.command.transfer.no_source_data": "No YAML user profile file (expected userdata/%s.yml for that UUID).",
+  "auraskills.granite.command.transfer.source_not_loaded": "The source player is online but has no loaded AuraSkills profile (UUID %s).",
+  "auraskills.granite.command.transfer.target_not_loaded": "The target player is online but has no loaded AuraSkills profile yet (UUID %s).",
+  "auraskills.granite.command.transfer.source_unchanged": "Note: the old identity still has a separate profile on disk; back up or delete %s if you want a single file only."
 }

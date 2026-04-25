@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.86
+
+### Changes
+
+- **Fabric: `/transfer` (Sprint 58):** **`/transfer <from-uuid> <to-uuid>`** and mirrors on **`/skills`**, **`/sk`**, **`/skill`**, **`/auraskills`**, + top-level; **`auraskills.command.transfer`**. **Bounded** to **`UserState`** (skills, XP, persistent stat/trait modifiers, mana) using **`User#getState`**, **`StorageProvider#loadState` / `applyState`**, **`User#applyState`**; **`FabricUserDataTransfer`**, **`RewardManager#updatePermissions`** (online target). **YAML** offline: requires `userdata/<from>.yml` before load; **self-transfer** rejected; follow-up about **source** file unchanged. **Not** in `UserState`: jobs, unclaimed, ability data, etc. **Docs** `SPRINT_58_MANUAL_TRANSFER.md`, audit / MENU / ledger / backlog, **`projectVersion` 2.3.85 → 2.3.86**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test`.
+
 ## 2.3.85
 
 ### Changes

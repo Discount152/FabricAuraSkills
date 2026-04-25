@@ -92,6 +92,12 @@ public final class FabricCommandPermissions {
     public static final String RESETHEALTH = "auraskills.command.resethealth";
 
     /**
+     * Bukkit {@code SkillsRootCommand} {@code transfer} (see {@code plugin.yml} — default
+     * <strong>op</strong>). **Sprint 58.**
+     */
+    public static final String TRANSFER = "auraskills.command.transfer";
+
+    /**
      * Bukkit {@code /sk top} / {@code skilltop} (see {@code plugin.yml}). **Sprint 47:** also
      * {@code /top}, {@code /skilltop}, and under {@code /auraskills} / {@code /sk|skill}.
      */
