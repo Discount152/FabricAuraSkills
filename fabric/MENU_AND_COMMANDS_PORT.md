@@ -445,3 +445,11 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Commands** | **`/claimitems`**, **`/skills\|/sk\|/skill\|/auraskills claimitems`**, `auraskills.command.claimitems` (Bukkit: default **true** under `command.user`); **player**-only; empty list → **`CLAIMITEMS_NO_ITEMS`** |
 | **State** | **`User#getUnclaimedItems()`**; **`tryMergeRegisteredItemCount`** in **`FabricItemRegistry`** (shared with **`/item give`** / **`addRegisteredItemToInventory`**); **`setShouldSave`** on list change |
 | **Not in Sprint 56** | Bukkit **Slate** **UnclaimedItemsMenu** (per-slot **click** UI); see **`fabric/COMMAND_PARITY_AUDIT.md`**. **Manual:** `SPRINT_56_MANUAL_CLAIMITEMS.md`. |
+
+## Sprint 57 — **`/sources`**, **`/resethealth`** (shipped, partial)
+
+| Area | Shipped on Fabric (bounded) |
+|------|-----------------------------|
+| **Commands** | **`/sources <skill> [sort]`** + mirrors on **`/skills`**, **`/sk`**, **`/skill`**, **`/auraskills`**, and top-level **`/sources`** — **`auraskills.command.sources`**; **`/resethealth`** + same mirrors, **`auraskills.command.resethealth`** (default **deny** in fabric-perms; **op**-style) — **dedicated server console or RCON only** |
+| **Data** | **`/sources`**: **`SkillManager#getSkill` → `LoadedSkill#sources`**, `FabricSourceSortType` + `FabricCommandSkillParser` + `User` locale. **`/resethealth`**: **`FabricServerPlayerDataPaths`** → **`MinecraftServer#getSavePath(WorldSavePath.PLAYERDATA)`**; gzip NBT read/write; **`FabricOfflinePlayerDataAuraStripping`** strips `attributes[].modifiers` with **`id` starting with `auraskills:`** (1.21+), skips **online** player UUIDs |
+| **Not in Sprint 57** | Bukkit **Slate** **`sources` menu** (tab UI); Bukkit pre-1.21 **`Attributes` / named modifier** NBT in **`Uninstaller`**, Paper 26+ `players/data` path — see **`SPRINT_57_MANUAL_SOURCES_RESETHEALTH.md`**. **Still missing** **`SkillsRootCommand` `transfer`**, **storage** / **profile** |

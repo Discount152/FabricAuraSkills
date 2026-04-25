@@ -196,4 +196,22 @@ public final class FabricCommandSuggestionProviders {
             return builder.buildFuture();
         };
     }
+
+    /**
+     * Bukkit {@code @sort_types} (reference {@code CommandRegistrar}) for {@code /sources} (**Sprint
+     * 57**).
+     */
+    public static SuggestionProvider<ServerCommandSource> sourceSortTypes() {
+        return (context, builder) -> {
+            String remaining = builder.getRemaining();
+            for (FabricSourceSortType t : FabricSourceSortType.values()) {
+                String name = t.name().toLowerCase(Locale.ROOT);
+                if (remaining.isEmpty()
+                        || name.startsWith(remaining.toLowerCase(Locale.ROOT))) {
+                    builder.suggest(name);
+                }
+            }
+            return builder.buildFuture();
+        };
+    }
 }

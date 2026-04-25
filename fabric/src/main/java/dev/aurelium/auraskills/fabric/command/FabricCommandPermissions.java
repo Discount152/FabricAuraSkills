@@ -79,6 +79,19 @@ public final class FabricCommandPermissions {
     public static final String CLAIMITEMS = "auraskills.command.claimitems";
 
     /**
+     * Bukkit {@code SkillsRootCommand} {@code sources} (default <strong>true</strong> under
+     * {@code auraskills.command.user} in {@code plugin.yml}). **Sprint 57.**
+     */
+    public static final String SOURCES = "auraskills.command.sources";
+
+    /**
+     * Bukkit {@code SkillsRootCommand} {@code resethealth} (console uninstall helper; default
+     * <strong>op</strong> in typical setups — not under {@code command.user} in
+     * {@code plugin.yml}). **Sprint 57.**
+     */
+    public static final String RESETHEALTH = "auraskills.command.resethealth";
+
+    /**
      * Bukkit {@code /sk top} / {@code skilltop} (see {@code plugin.yml}). **Sprint 47:** also
      * {@code /top}, {@code /skilltop}, and under {@code /auraskills} / {@code /sk|skill}.
      */

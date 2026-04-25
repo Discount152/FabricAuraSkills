@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.85
+
+### Changes
+
+- **Fabric: `sources` + `resethealth` (Sprint 57):** **`/sources <skill> [sort]`** (and under **`/skills`**, **`/sk`**, **`/skill`**, **`/auraskills`**) — paged **chat** listing of configured **`XpSource`**s with **`User`** locale, sorting **`ascending|descending|alphabetical|reverse_alphabetical`**; **`auraskills.command.sources`**. Bukkit **opens the Slate `sources` menu**; Fabric does **not** (bounded text). **`/resethealth`** top-level (same mirrors) + **`auraskills.command.resethealth`**: **console/RCON only**; walks **`playerdata` *.dat`**, strips **`auraskills:`** NBT **attribute** modifiers (1.21+ path), same spirit as Bukkit **`Uninstaller`**. Helpers: **`FabricSourceSortType`**, **`FabricOfflinePlayerDataAuraStripping`**, **`FabricServerPlayerDataPaths`**. **Lang** `sources.*`, `resethealth.*`. **Perms** test. **Docs** `SPRINT_57_MANUAL_SOURCES_RESETHEALTH.md`, `COMMAND_PARITY_AUDIT`, `MENU_AND_COMMANDS_PORT`, `PARITY_AUDIT_LEDGER_PHASE1` (CMD-001, **MENU-007** note), `PARITY_BACKLOG`. **Build:** `.\gradlew -PfabricOnly=true :fabric:test`. **Not in this sprint:** Slate **`sources` menu**; Bukkit 1.20– **legacy** `Attributes` NBT in **`resethealth`**; **`transfer`**, storage, profile.
+
 ## 2.3.84
 
 ### Changes

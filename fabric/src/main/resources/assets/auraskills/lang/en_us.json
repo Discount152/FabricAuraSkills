@@ -1,6 +1,6 @@
 {
-  "auraskills.granite.command.auraskills_usage": "Use: /auraskills <…> — also /openmenu, /sk, /skill, claimitems (Sprint 46: /sk|skill can mirror xp, mana, skilllevel, …; Sprint 56: /claimitems, /skills claimitems)  —  see fabric/COMMAND_PARITY_AUDIT.md",
-  "auraskills.granite.command.help": "Fabric AuraSkills: /auraskills … | /skills, /sk, /skill (incl. claimitems) | /claimitems | /stats | /openmenu | leaderboard (…) / utility (…) | /mana | /skilllevel | /xp | /modifier, /trait | /item, /armor (…) | staff: reload, save",
+  "auraskills.granite.command.auraskills_usage": "Use: /auraskills <…> — also /openmenu, /sk, /skill, claimitems, sources, resethealth (Sprint 46–57)  —  see fabric/COMMAND_PARITY_AUDIT.md",
+  "auraskills.granite.command.help": "Fabric AuraSkills: /auraskills … | /skills, /sk, /skill (claimitems, sources, resethealth) | /claimitems | /sources <skill> [sort] | /stats | /openmenu | leaderboard (…) / utility (…) | /mana | /skilllevel | /xp | /modifier, /trait | /item, /armor (…) | staff: reload, save, resethealth (console)",
   "auraskills.granite.command.claimitems.players_only": "This command is for players only.",
   "auraskills.granite.command.claimitems.all_claimed": "All unclaimed items were merged into your inventory.",
   "auraskills.granite.command.claimitems.partial": "Some unclaimed items remain (%s stack(s); delivered or updated %s this pass).",
@@ -54,5 +54,14 @@
   "auraskills.granite.menu.paging_prev_lore": "Go to the previous page of entries",
   "auraskills.granite.menu.paging_next": "Next page",
   "auraskills.granite.menu.paging_next_lore": "Go to the next page of entries",
-  "auraskills.granite.command.updateleaderboards.samples": "Average update time over %s samples: %s ms"
+  "auraskills.granite.command.updateleaderboards.samples": "Average update time over %s samples: %s ms",
+  "auraskills.granite.command.sources.players_only": "This command is for players only.",
+  "auraskills.granite.command.sources.empty": "No version-valid XP sources are configured for %s (check skill YAML / data).",
+  "auraskills.granite.command.sources.header": "XP sources: %1$s  |  sort: %2$s  |  %3$s entries (page %4$s of %5$s)",
+  "auraskills.granite.command.sources.continuation": "… (page %1$s of %2$s)",
+  "auraskills.granite.command.sources.line": "%1$s) %2$s — %3$s base XP  |  %4$s  |  %5$s",
+  "auraskills.granite.command.sources.bad_sort": "Unknown sort mode \"%s\". Use: ascending, descending, alphabetical, reverse_alphabetical.",
+  "auraskills.granite.command.resethealth.console_only": "Only the dedicated server console (or RCON) may run this command.",
+  "auraskills.granite.command.resethealth.summary": "Scanned %1$s offline player data file(s). Stripped AuraSkills attribute modifier entries in %2$s file(s). %3$s file(s) failed to read or write (see server log).",
+  "auraskills.granite.command.resethealth.io_error": "IO error: %s"
 }

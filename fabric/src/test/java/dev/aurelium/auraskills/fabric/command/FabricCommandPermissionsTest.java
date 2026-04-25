@@ -33,6 +33,8 @@ class FabricCommandPermissionsTest {
             FabricCommandPermissions.SKILL_RESET,
             FabricCommandPermissions.OPEN_MENU,
             FabricCommandPermissions.CLAIMITEMS,
+            FabricCommandPermissions.SOURCES,
+            FabricCommandPermissions.RESETHEALTH,
             FabricCommandPermissions.TOP,
             FabricCommandPermissions.RANK,
             FabricCommandPermissions.MULTIPLIER,
