@@ -15,6 +15,10 @@ import static net.minecraft.server.command.CommandManager.literal;
  * Single registration entry for Granite Skills Brigadier commands (**Sprint 39**).
  * Add new roots or {@code /auraskills} subcommands as private {@code register*} methods
  * or separate package-local classes as the tree grows.
+ * <p>
+ * **Sprint 65:** {@code skills|sk|skill} (Bukkit {@code %skills_alias%}) share one subtree from
+ * {@link #skillsAliasSharedTree} so {@code /skills} cannot drift from {@code /sk} and {@code
+ * /skill}.
  */
 public final class FabricBrigadierCommands {
 
@@ -22,7 +26,7 @@ public final class FabricBrigadierCommands {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         FabricAuraSkillsMod.LOGGER.info(
-                "Registering Brigadier: /auraskills (…), /skills, /sk|skill, /stats, /openmenu, /claimitems, /sources, /resethealth, /transfer, /profile, /backup, /preset, /storage, /skills|/sk|/skill|/auraskills (…), leaderboard, /multiplier|/toggle|/abtoggle|/lang, /modifier, /trait, /item (…), /armor (…), /mana, /skilllevel, /xp — see fabric/COMMAND_PARITY_AUDIT.md");
+                "Registering Brigadier (Sprint 65): /auraskills (…), /skills|/sk|/skill share mirror subtrees, /stats, /openmenu, /claimitems, /sources, /resethealth, /transfer, /profile, /backup, /preset, /storage, leaderboard, /multiplier|/toggle|/abtoggle|/lang, /modifier, /trait, /item (…), /armor (…), /mana, /skilllevel, /xp — see fabric/COMMAND_PARITY_AUDIT.md");
 
         registerAuraskillsAndAliases(dispatcher);
         dispatcher.register(FabricOpenMenuCommands.openMenuRoot());
@@ -64,11 +68,16 @@ public final class FabricBrigadierCommands {
      * standalone roots without duplicating executors. Permissions are unchanged on the shared
      * nodes.
      */
-    private static com.mojang.brigadier.builder.LiteralArgumentBuilder<ServerCommandSource> aliasSkillsRoot(
-            String alias) {
-        return literal(alias)
-                .executes(FabricBrigadierCommands::skillsAliasDefault)
-                .then(FabricOpenMenuCommands.openMenuSubcommand())
+    /**
+     * Bukkit {@code skills|sk|skill} share the same ACF class; this tree must match for every
+     * literal. **Sprint 65** — was missing from {@code /skills} (only {@code /sk|skill} and
+     * {@code /auraskills} had the full set).
+     */
+    private static com.mojang.brigadier.builder.LiteralArgumentBuilder<ServerCommandSource>
+            skillsAliasSharedTree(
+                    com.mojang.brigadier.builder.LiteralArgumentBuilder<ServerCommandSource>
+                            root) {
+        return root.then(FabricOpenMenuCommands.openMenuSubcommand())
                 .then(FabricLeaderboardCommands.topRoot())
                 .then(FabricLeaderboardCommands.skillTopRoot())
                 .then(FabricLeaderboardCommands.rankRoot())
@@ -93,6 +102,12 @@ public final class FabricBrigadierCommands {
                 .then(FabricBackupCommands.backupLiteral())
                 .then(FabricPresetCommands.presetLiteral())
                 .then(FabricStorageCommands.storageLiteral());
+    }
+
+    private static com.mojang.brigadier.builder.LiteralArgumentBuilder<ServerCommandSource> aliasSkillsRoot(
+            String alias) {
+        return skillsAliasSharedTree(
+                literal(alias).executes(FabricBrigadierCommands::skillsAliasDefault));
     }
 
     private static int skillsAliasDefault(CommandContext<ServerCommandSource> ctx) {
@@ -150,17 +165,13 @@ public final class FabricBrigadierCommands {
                 .then(FabricBackupCommands.backupLiteral())
                 .then(FabricPresetCommands.presetLiteral())
                 .then(FabricStorageCommands.storageLiteral()));
-        dispatcher.register(literal("skills")
-                .requires(FabricCommandRequirements.permission(FabricCommandPermissions.SKILLS, true))
-                .executes(FabricBrigadierCommands::skills)
-                .then(FabricClaimItemsCommands.claimItemsLiteral())
-                .then(FabricSourcesCommands.sourcesLiteral())
-                .then(FabricResetHealthCommands.resetHealthLiteral())
-                .then(FabricTransferCommands.transferLiteral())
-                .then(FabricProfileCommands.profileLiteral())
-                .then(FabricBackupCommands.backupLiteral())
-                .then(FabricPresetCommands.presetLiteral())
-                .then(FabricStorageCommands.storageLiteral()));
+        dispatcher.register(
+                skillsAliasSharedTree(
+                        literal("skills")
+                                .requires(
+                                        FabricCommandRequirements.permission(
+                                                FabricCommandPermissions.SKILLS, true))
+                                .executes(FabricBrigadierCommands::skills)));
         dispatcher.register(literal("stats")
                 .requires(FabricCommandRequirements.permission(FabricCommandPermissions.STATS, true))
                 .executes(FabricBrigadierCommands::stats));

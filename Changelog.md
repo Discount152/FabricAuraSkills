@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.93
+
+### Changes
+
+- **Fabric: command reconciliation (Sprint 65):** **Fixed** Bukkit `skills|sk|skill` drift — **`/skills`** was missing the same subtrees as **`/sk`** and **`/skill`** ( **openmenu**, leaderboards, utility, **xp** / **mana** / **skilllevel**, **modifier** / **trait**, **item** / **armor**, then **claimitems** through **storage**). **`FabricBrigadierCommands#skillsAliasSharedTree`** now wires **one** shared chain for all three literals. **Logger** and **en_us** **help** / **usage** strings refreshed; **`FabricCommandPermissions#STORAGE`** javadoc (S64). **Docs** `SPRINT_65_COMMAND_RECONCILIATION.md`, `COMMAND_PARITY_AUDIT`, `MENU_AND_COMMANDS_PORT`, `PARITY_AUDIT_LEDGER` CMD-001, `PARITY_BACKLOG`, **`projectVersion` 2.3.92 → 2.3.93**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test`. **No** new command families, menu, or gameplay changes.
+
 ## 2.3.92
 
 ### Changes

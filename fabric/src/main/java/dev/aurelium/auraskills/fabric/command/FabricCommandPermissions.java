@@ -124,8 +124,8 @@ public final class FabricCommandPermissions {
 
     /**
      * Bukkit {@code StorageCommand} (see {@code plugin.yml}). **Sprint 63** — **info** / **save** /
-     * **reload** explainer; default <strong>deny</strong>. Reference also has **console-only**
-     * **mergeskills** / **removeallmodifiers** (not in this Fabric batch).
+     * **reload** explainer; **Sprint 64** — **mergeskills** / **removeallmodifiers** (guarded); default
+     * <strong>deny</strong>.
      */
     public static final String STORAGE = "auraskills.command.storage";
 

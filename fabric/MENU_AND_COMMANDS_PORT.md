@@ -510,3 +510,10 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Data** | **mergeskills** — for each `UserState` from **`loadStates`**, if **both** skills exist and **source level &gt; target level**, set target level to source level, set target **XP** to source **XP** (Bukkit reference), then **`StorageProvider#applyState`**. Counters: merged / applyState failed / missing either skill / skipped (source ≤ target). **removeallmodifiers** — if both stat and trait maps empty, skip; else **`UserState`** copy with **empty** stat and trait maps, same skills/XP/mana, **`applyState`**. **Pre-mutation** **`BackupProvider#saveBackupSync(true)`** — if **null** (e.g. **max_users**) or **throws**, **abort** (no **force**). **Online:** **`FabricCommandStorageUtil#refreshOnlineUsersFromStorage`**. |
 | **Not in Sprint 64** | Live **migrate**; SQL dump/export; **force**; provider hot-swap; Bukkit’s **entire** subcommand = **console-only** (Fabric allows **in-game preview** with permission). Manual: **`SPRINT_64_MANUAL_STORAGE_ACTIONS.md`**. |
 
+## Sprint 65 — command reconciliation (`/skills` = `/sk` = `/skill` subtree) (shipped)
+
+| Area | Shipped on Fabric (bounded) |
+|------|-----------------------------|
+| **Change** | **Bugfix / hygiene:** **`/skills`** was missing the same Brigadier subtrees as **`/sk`** and **`/skill`** (everything before **claimitems** in the alias chain: **openmenu**, leaderboards, utility, **xp/mana/skilllevel**, **modifier/trait**, **item/armor**). **Sprint 65** introduces **`FabricBrigadierCommands#skillsAliasSharedTree`** and uses it for all three literals so **Bukkit** `CommandRegistrar` **`skills\|sk\|skill`** cannot drift. |
+| **Not in Sprint 65** | New command families, menus, **help** node alignment with Bukkit, **permission** default changes, gameplay. Manual: **`SPRINT_65_COMMAND_RECONCILIATION.md`**. |
+
