@@ -29,6 +29,9 @@ class FabricCommandBuiltInMenuIdTest {
                 FabricMenuKeys.STAT_INFO, FabricCommandBuiltInMenuId.resolveForOpenCommand("stat_info").get());
         assertEquals(
                 FabricMenuKeys.SOURCES, FabricCommandBuiltInMenuId.resolveForOpenCommand("sources").get());
+        assertEquals(
+                FabricMenuKeys.UNCLAIMED_ITEMS,
+                FabricCommandBuiltInMenuId.resolveForOpenCommand("unclaimed_items").get());
     }
 
     @Test
@@ -38,5 +41,7 @@ class FabricCommandBuiltInMenuIdTest {
         assertTrue(FabricCommandBuiltInMenuId.requiresContext(FabricMenuKeys.STAT_INFO));
         assertTrue(FabricCommandBuiltInMenuId.requiresContext(FabricMenuKeys.SOURCES));
         assertFalse(FabricCommandBuiltInMenuId.requiresContext(FabricMenuKeys.SKILLS));
+        assertFalse(
+                FabricCommandBuiltInMenuId.requiresContext(FabricMenuKeys.UNCLAIMED_ITEMS));
     }
 }

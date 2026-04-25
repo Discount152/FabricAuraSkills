@@ -98,6 +98,8 @@ dependencies {
         "net.kyori:adventure-api:4.25.0",
         "co.aikar:acf-core:0.5.1-SNAPSHOT",
         "net.kyori:adventure-text-serializer-legacy:4.25.0",
+        "net.kyori:adventure-text-serializer-gson:4.25.0",
+        "net.kyori:adventure-text-minimessage:4.25.0",
         "com.ezylang:EvalEx:3.3.0",
         "org.spongepowered:configurate-core:4.1.2",
         "org.spongepowered:configurate-yaml:4.1.2",

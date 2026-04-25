@@ -16,14 +16,15 @@ import java.util.Set;
  */
 public final class FabricCommandBuiltInMenuId {
 
-    /** Menu ids allowed on the bounded {@code openmenu} command (Sprint 45+; {@code sources} in Sprint 70). */
+    /** Menu ids allowed on the bounded {@code openmenu} command (Sprint 45+; {@code sources} Sprint 70; {@code unclaimed_items} Sprint 71). */
     public static final Set<String> OPENVIA_COMMAND =
             Set.of(
                     FabricMenuKeys.SKILLS,
                     FabricMenuKeys.STATS,
                     FabricMenuKeys.LEVEL_PROGRESSION,
                     FabricMenuKeys.STAT_INFO,
-                    FabricMenuKeys.SOURCES);
+                    FabricMenuKeys.SOURCES,
+                    FabricMenuKeys.UNCLAIMED_ITEMS);
 
     private FabricCommandBuiltInMenuId() {}
 

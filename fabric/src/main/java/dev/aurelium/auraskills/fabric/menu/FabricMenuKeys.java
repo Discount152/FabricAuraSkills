@@ -26,6 +26,11 @@ public final class FabricMenuKeys {
      * {@link dev.aurelium.auraskills.fabric.menu.FabricAuraSkillsMenus#openSources}.
      */
     public static final String SOURCES = "sources";
+    /**
+     * Bukkit {@code UnclaimedItemsMenu} (Slate) — **not** loaded from {@code menus/*.yml} on Fabric;
+     * use {@link FabricAuraSkillsMenus#openUnclaimedItems} (**Sprint 71**).
+     */
+    public static final String UNCLAIMED_ITEMS = "unclaimed_items";
 
     private FabricMenuKeys() {
     }

@@ -119,4 +119,12 @@ public final class FabricAuraSkillsMenus {
             int returnToSkillsListPage) {
         FabricSourcesMenuGui.open(player, plugin, skill, sort, page, returnToSkillsListPage);
     }
+
+    /**
+     * Unclaimed registered item rewards (Bukkit {@code UnclaimedItemsMenu}), **Sprint 71**. Not in
+     * {@link FabricMenuRegistry} / YAML loaders.
+     */
+    public static void openUnclaimedItems(ServerPlayerEntity player, FabricAuraSkills plugin, int page) {
+        FabricUnclaimedItemsMenuGui.open(player, plugin, page);
+    }
 }

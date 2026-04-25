@@ -6,9 +6,12 @@ import com.mojang.brigadier.context.CommandContext;
 import dev.aurelium.auraskills.api.skill.Skill;
 import dev.aurelium.auraskills.api.source.XpSource;
 import dev.aurelium.auraskills.api.stat.Stat;
+import dev.aurelium.auraskills.common.message.type.CommandMessage;
+import dev.aurelium.auraskills.common.message.type.MenuMessage;
 import dev.aurelium.auraskills.common.skill.LoadedSkill;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
+import dev.aurelium.auraskills.fabric.item.FabricUnclaimedItemsMerge;
 import dev.aurelium.auraskills.fabric.menu.FabricAuraSkillsMenus;
 import dev.aurelium.auraskills.fabric.menu.FabricMenuKeys;
 import net.minecraft.server.command.CommandManager;
@@ -31,6 +34,8 @@ import static net.minecraft.server.command.CommandManager.literal;
  * {@link FabricAuraSkillsMenus#openLevelProgression} / {@link FabricAuraSkillsMenus#openStatInfo}
  * and {@link dev.aurelium.auraskills.fabric.menu.FabricMenuContext}. **Sprint 70:** {@code sources}
  * with skill + optional sort → {@link FabricAuraSkillsMenus#openSources} (not registry-loaded).
+ * **Sprint 71:** {@code unclaimed_items} (self or online target) → {@link
+ * FabricAuraSkillsMenus#openUnclaimedItems}.
  */
 public final class FabricOpenMenuCommands {
 
@@ -173,7 +178,19 @@ public final class FabricOpenMenuCommands {
                                                                                                 .sourceSortTypes())
                                                                                 .executes(
                                                                                         FabricOpenMenuCommands
-                                                                                                ::executeSourcesForTargetWithSortArg)))));
+                                                                                                ::executeSourcesForTargetWithSortArg)))))
+                .then(
+                        literal(FabricMenuKeys.UNCLAIMED_ITEMS)
+                                .executes(FabricOpenMenuCommands::executeUnclaimedSelf)
+                                .then(
+                                        CommandManager.argument(
+                                                        ARG_TARGET, StringArgumentType.word())
+                                                .suggests(
+                                                        FabricCommandSuggestionProviders
+                                                                .onlinePlayers())
+                                                .executes(
+                                                        FabricOpenMenuCommands
+                                                                ::executeUnclaimedForTarget)));
     }
 
     /** Top-level {@code /openmenu …} (same tree; Fabric-only convenience). */
@@ -491,6 +508,106 @@ public final class FabricOpenMenuCommands {
      * @param sendSelfLineOnOpen when true (self path), send {@code menu.sources_opened} to the
      *     executor after a successful open
      */
+    private static int executeUnclaimedSelf(CommandContext<ServerCommandSource> ctx) {
+        return runWithPlugin(
+                ctx,
+                p -> {
+                    ServerCommandSource s = ctx.getSource();
+                    if (!(s.getEntity() instanceof ServerPlayerEntity self)) {
+                        s.sendError(
+                                Text.translatable(
+                                        "auraskills.granite.command.openmenu.unclaimed_console"));
+                        return 0;
+                    }
+                    return runOpenmenuUnclaimed(p, s, self);
+                });
+    }
+
+    private static int executeUnclaimedForTarget(CommandContext<ServerCommandSource> ctx) {
+        return runWithPlugin(
+                ctx,
+                p -> {
+                    String name = StringArgumentType.getString(ctx, ARG_TARGET);
+                    ServerCommandSource s = ctx.getSource();
+                    ServerPlayerEntity target =
+                            FabricCommandPlayerTarget.findOnline(s.getServer(), name)
+                                    .orElse(null);
+                    if (target == null) {
+                        s.sendError(
+                                Text.translatable(
+                                        "auraskills.granite.command.xp.player_not_found", name));
+                        return 0;
+                    }
+                    return runOpenmenuUnclaimed(p, s, target);
+                });
+    }
+
+    /**
+     * Open the unclaimed menu for an online player; on GUI failure, run the same merge pass as
+     * {@code /claimitems} (**Sprint 71**).
+     */
+    private static int runOpenmenuUnclaimed(
+            FabricAuraSkills p, ServerCommandSource source, ServerPlayerEntity menuPlayer) {
+        User user = p.getUserManager().getUser(menuPlayer.getUuid());
+        if (user == null) {
+            source.sendError(
+                    Text.literal(
+                            p.getMsg(CommandMessage.NO_PROFILE, p.getDefaultLanguage())));
+            return 0;
+        }
+        user.clearInvalidItems();
+        if (user.getUnclaimedItems().isEmpty()) {
+            String line =
+                    p.getPrefix(user.getLocale())
+                            + p.getMessageProvider()
+                                    .applyFormatting(
+                                            p.getMsg(
+                                                    CommandMessage.CLAIMITEMS_NO_ITEMS,
+                                                    user.getLocale()));
+            source.sendFeedback(() -> Text.literal(line), false);
+            return 1;
+        }
+        try {
+            FabricAuraSkillsMenus.openUnclaimedItems(menuPlayer, p, 0);
+        } catch (Throwable t) {
+            p.logger().warn("Failed to open unclaimed items menu", t);
+            int touch = FabricUnclaimedItemsMerge.mergeAllInOrder(p, user, menuPlayer);
+            return sendUnclaimedMergeFallbackFeedback(p, user, source, touch);
+        }
+        sendListMenuFeedback(
+                source,
+                menuPlayer,
+                "auraskills.granite.menu.unclaimed_opened",
+                FabricMenuKeys.UNCLAIMED_ITEMS);
+        return 1;
+    }
+
+    private static int sendUnclaimedMergeFallbackFeedback(
+            FabricAuraSkills p, User user, ServerCommandSource source, int touch) {
+        int sizeAfter = user.getUnclaimedItems().size();
+        if (sizeAfter == 0) {
+            source.sendFeedback(
+                    () -> Text.translatable("auraskills.granite.command.claimitems.all_claimed"),
+                    false);
+            return 1;
+        }
+        if (touch > 0) {
+            source.sendFeedback(
+                    () -> Text.translatable(
+                            "auraskills.granite.command.claimitems.partial", sizeAfter, touch),
+                    false);
+            return 1;
+        }
+        source.sendFeedback(
+                () -> Text.literal(
+                        p.getMessageProvider()
+                                .applyFormatting(
+                                        p.getMsg(
+                                                MenuMessage.INVENTORY_FULL, user.getLocale()))),
+                false);
+        return 0;
+    }
+
     private static int runOpenmenuSourcesInGame(
             FabricAuraSkills p,
             ServerCommandSource feedbackSource,

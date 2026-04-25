@@ -438,13 +438,13 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 
 | **Not in Sprint 55** | Bukkit **ExternalItemProvider** / dynamic namespaces; **`/claimitems`** — **Sprint 56**; **N/A** for armor. **Manual:** `SPRINT_55_MANUAL_ITEM_REGISTER_GIVE.md`. |
 
-## Sprint 56 — **`/claimitems`** (unclaimed → inventory) (shipped, partial)
+## Sprint 56 — **`/claimitems`** (unclaimed → inventory) (shipped, partial; **Sprint 71** extends)
 
 | Area | Shipped on Fabric (bounded) |
 |------|-----------------------------|
-| **Commands** | **`/claimitems`**, **`/skills\|/sk\|/skill\|/auraskills claimitems`**, `auraskills.command.claimitems` (Bukkit: default **true** under `command.user`); **player**-only; empty list → **`CLAIMITEMS_NO_ITEMS`** |
-| **State** | **`User#getUnclaimedItems()`**; **`tryMergeRegisteredItemCount`** in **`FabricItemRegistry`** (shared with **`/item give`** / **`addRegisteredItemToInventory`**); **`setShouldSave`** on list change |
-| **Not in Sprint 56** | Bukkit **Slate** **UnclaimedItemsMenu** (per-slot **click** UI); see **`fabric/COMMAND_PARITY_AUDIT.md`**. **Manual:** `SPRINT_56_MANUAL_CLAIMITEMS.md`. |
+| **Commands** | **Orig. Sprint 56:** one-shot **merge** into inventory. **Sprint 71:** default `/claimitems` opens **`FabricUnclaimedItemsMenuGui`**; **`/claimitems all`** keeps merge-only. **`/skills\|/sk\|/skill\|/auraskills claimitems`**, `auraskills.command.claimitems` (Bukkit: default **true** under `command.user`); **player**-only; empty list → **`CLAIMITEMS_NO_ITEMS`** |
+| **State** | **`User#getUnclaimedItems()`**; **`tryMergeRegisteredItemCount`** in **`FabricItemRegistry`** (shared with **`/item give`** / **`addRegisteredItemToInventory`**); **`setShouldSave`** on list change; **`FabricUnclaimedItemsMerge`** (**Sprint 71**) |
+| **Not in Sprint 56 (historical)** | Bukkit **Slate** per-slot menu — see **Sprint 71** + **`fabric/COMMAND_PARITY_AUDIT.md`**. **Sprint 56 manual (merge):** `SPRINT_56_MANUAL_CLAIMITEMS.md`. |
 
 ## Sprint 57 — **`/sources`**, **`/resethealth`** (shipped, partial)
 
@@ -553,7 +553,7 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Parity (Partial)** | Bukkit: **`SourcesMenu`**, **`menus/sources.yml`**, per-source custom **`ItemRegistry` stacks`, **`multiplied_xp` component**, income. Fabric: **gray_dye** rows, fixed control row (**Back** slot 45 → `openLevelProgression` with list page **0**; **Prev/Next**; **Sort** hopper + **`FabricSourceSortType#nextCyclic()`**). |
 | **Manual** | **`SPRINT_69_MANUAL_MENU_SOURCES.md`** (menu inventory from **`MenuRegistrar`** + known gaps) |
 
-| **Not in Sprint 69** | Full **Slate**; **leaderboard** / **abilities** / **unclaimed** menus; **MenuFileManager** merge; **new** XP or sort rules. |
+| **Not in Sprint 69** | Full **Slate**; **leaderboard** / **abilities** menus; **unclaimed** — see **Sprint 71**; **MenuFileManager** merge; **new** XP or sort rules. |
 
 ## Sprint 70 — **openmenu sources** + level progression → sources (**shipped**, partial)
 
@@ -563,5 +563,15 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Back / list page** | **Level progression** hopper at **slot 50** opens **sources** with **`context.listPage()`** so **Back** on sources returns to **level progression** with the same **Skills** return page; **`/sources`** / plain **`openmenu`** still use return page **0**. |
 | **Manual** | **`SPRINT_70_MANUAL_SOURCES_OPENMENU.md`** |
 
-| **Not in Sprint 70** | Full **`sources.yml`** load; **Slate** `sources` template items; **leaderboard** / **abilities** / **unclaimed**; **MenuFileManager** merge. |
+| **Not in Sprint 70** | Full **`sources.yml`** load; **Slate** `sources` template items; **leaderboard** / **abilities**; **unclaimed** — see **Sprint 71**; **MenuFileManager** merge. |
+
+## Sprint 71 — **Unclaimed items** menu (`/claimitems`, `/openmenu unclaimed_items`) (shipped, partial)
+
+| Area | Shipped on Fabric (bounded) |
+|------|-----------------------------|
+| **Bukkit ref** | `bukkit/.../UnclaimedItemsMenu.java` — 6×9 Slate, one slot per `KeyIntPair`, click to merge one stack, close when empty; no paging (≤54 stacks visible). **No** separate `unclaimed_items.yml` in repo. |
+| **Commands** | **`/claimitems`** (in-game) opens **`FabricUnclaimedItemsMenuGui`** when the list is non-empty; **`/claimitems all`** = prior **Sprint 56** one-shot merge. **`/openmenu unclaimed_items`** (self) and **`/openmenu unclaimed_items <player>`** (opens **on the target**). **`auraskills.command.claimitems`** (default); **`openmenu`** still **`auraskills.command.openmenu`**. **Console/RCON** on `/claimitems`: still **player-only** (unchanged). |
+| **State** | **`FabricUnclaimedItemsMerge`** — **`mergeAllInOrder`** + **`mergeOneAtListIndex`**, same **`tryMergeRegisteredItemCount`** safety as before. Paging: **36** entries/page; **claim all** on slot 49. |
+| **Gaps (Partial)** | No Slate/YAML; simplified vs full **ItemBuilder** lores; Bukkit can show **>54** only by scrolling? (Bukkit: 54); Fabric pages at 36+controls. **Bedrock** inventory clicks **NRP** — not run-time tested. |
+| **Manual** | **`SPRINT_71_MANUAL_UNCLAIMED_ITEMS_MENU.md`** |
 

@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.99
+
+### Changes
+
+- **Fabric: Unclaimed Items menu (Sprint 71):** Bounded **Granite** **`FabricUnclaimedItemsMenuGui`** (6×9 `GENERIC_9X6`, **36** stacks/page, **claim all** on slot 49, prev/next) using **`FabricUnclaimedItemsMerge`** (same **`tryMergeRegisteredItemCount`** safety as Sprint 56). **In-game** **`/claimitems`** opens the menu when unclaimed is non-empty; **`/claimitems all`** = prior one-shot merge; menu open failure → merge + feedback. **Bounded** **`/openmenu unclaimed_items`** and **`<player>`** (target receives the screen). **`FabricMenuKeys#UNCLAIMED_ITEMS`**, **`FabricCommandBuiltInMenuId`**, suggestions. **`en_us`**, **`SPRINT_71_MANUAL_UNCLAIMED_ITEMS_MENU.md`**, MENU port / **COMMAND_PARITY** / **ledger** `MENU-011` / **backlog**, **`projectVersion` 2.3.98 → 2.3.99**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test`. **Parity: Partial** (not Slate; Fabric adds paging + claim-all); **Bedrock: NRP** (not run-time tested).
+
 ## 2.3.98
 
 ### Changes

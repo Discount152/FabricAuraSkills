@@ -26,7 +26,7 @@ public final class FabricBrigadierCommands {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         FabricAuraSkillsMod.LOGGER.info(
-                "Registering Brigadier (Sprint 65–70): /auraskills (…), /skills|/sk|/skill share mirror subtrees, /stats, /openmenu (Sprint 70: sources with skill+sort), /claimitems, /sources, /resethealth, /transfer, /profile, /backup, /preset, /storage, leaderboard, /multiplier|/toggle|/abtoggle|/lang, /modifier, /trait, /item (…), /armor (…), /mana, /skilllevel, /manaability, /antiafk, /xp, + per-skill shortcuts (Sprint 68) — see fabric/COMMAND_PARITY_AUDIT.md");
+                "Registering Brigadier (Sprint 65–71): /auraskills (…), /skills|/sk|/skill share mirror subtrees, /stats, /openmenu (Sprint 70: sources; Sprint 71: unclaimed_items), /claimitems (Sprint 71: menu + all), /sources, /resethealth, /transfer, /profile, /backup, /preset, /storage, leaderboard, /multiplier|/toggle|/abtoggle|/lang, /modifier, /trait, /item (…), /armor (…), /mana, /skilllevel, /manaability, /antiafk, /xp, + per-skill shortcuts (Sprint 68) — see fabric/COMMAND_PARITY_AUDIT.md");
 
         registerAuraskillsAndAliases(dispatcher);
         FabricSkillShortcutCommands.register(dispatcher);
