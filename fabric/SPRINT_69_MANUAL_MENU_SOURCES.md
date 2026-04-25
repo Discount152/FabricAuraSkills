@@ -15,7 +15,7 @@ Reference registration: `bukkit/.../menus/MenuRegistrar.java` — `Slate#buildMe
 | `level_progression` | `LevelProgressionMenu` | `menus/level_progression.yml` | Skill click in Skills, SkillCommands, etc. | `FabricLevelProgressionMenuGui` + registry + `FabricMenuContext#ofSkill` | **Partial** | **NRP** | Not full Bukkit reward tables / file templates |
 | `stat_info` | `StatInfoMenu` | `menus/stat_info.yml` | Stat click in Stats | `FabricStatInfoMenuGui` + registry + `FabricMenuContext#ofStat` | **Partial** | **NRP** | Gated by `stat_info` enabled in YAML |
 | `sources` | `SourcesMenu` | `menus/sources.yml` | Bukkit `onSources` → Slate; `/sources` with skill | **Sprint 69:** `FabricSourcesMenuGui` via **`FabricSourcesCommands` only** (not in `FabricMenuLoaders`) | **Partial** | **NRP** | No YAML load for this menu; gray_dye; no Bukkit per-source `ItemRegistry` / `multiplied_xp` income |
-| `leaderboard` | `LeaderboardMenu` | `menus/leaderboard.yml` (if present) | Bukkit menubar / flows | — | **Missing** | **NRP** | — |
+| `leaderboard` | `LeaderboardMenu` | `menus/leaderboard.yml` (if present) | Bukkit menubar / flows | **Sprint 72:** `FabricLeaderboardMenuGui` + `/openmenu leaderboard` (not YAML-loaded) | **Partial** | **NRP** | Bukkit ref **`/top`** is chat; Fabric GUI differs (paper rows, Skills back) — see **`SPRINT_72_MANUAL_LEADERBOARD_MENU.md`** |
 | `abilities` | `AbilitiesMenu` | `menus/abilities.yml` (if present) | Abilities entry | — | **Missing** | **NRP** | — |
 | *custom / API* | (external builders) | varies | `ApiMenuManager` | — | **Missing** | — | Not tracked in Fabric registry |
 

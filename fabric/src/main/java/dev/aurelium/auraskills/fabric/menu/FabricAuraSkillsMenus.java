@@ -5,6 +5,7 @@ import dev.aurelium.auraskills.api.stat.Stat;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.command.FabricSourceSortType;
 import net.minecraft.server.network.ServerPlayerEntity;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Dispatch helpers for built-in menus. **Sprint 29+:** resolution goes through
@@ -126,5 +127,19 @@ public final class FabricAuraSkillsMenus {
      */
     public static void openUnclaimedItems(ServerPlayerEntity player, FabricAuraSkills plugin, int page) {
         FabricUnclaimedItemsMenuGui.open(player, plugin, page);
+    }
+
+    /**
+     * Leaderboard browser (Bukkit id {@code leaderboard} / {@link FabricMenuKeys#LEADERBOARD}) — **Sprint
+     * 72**. Not in {@link FabricMenuRegistry} / YAML loaders. {@code page} is <strong>1-based</strong> (same
+     * as {@code /top} / {@code /skilltop}).
+     */
+    public static void openLeaderboard(
+            ServerPlayerEntity player,
+            FabricAuraSkills plugin,
+            FabricLeaderboardMenuGui.Mode mode,
+            @Nullable Skill skill,
+            int page) {
+        FabricLeaderboardMenuGui.open(player, plugin, mode, skill, page);
     }
 }

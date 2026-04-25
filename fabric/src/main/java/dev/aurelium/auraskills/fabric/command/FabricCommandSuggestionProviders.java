@@ -40,7 +40,8 @@ public final class FabricCommandSuggestionProviders {
                         FabricMenuKeys.LEVEL_PROGRESSION,
                         FabricMenuKeys.STAT_INFO,
                         FabricMenuKeys.SOURCES,
-                        FabricMenuKeys.UNCLAIMED_ITEMS
+                        FabricMenuKeys.UNCLAIMED_ITEMS,
+                        FabricMenuKeys.LEADERBOARD
                     }) {
                 String r = remaining.toLowerCase(Locale.ROOT);
                 if (remaining.isEmpty() || id.startsWith(r)) {
@@ -59,6 +60,18 @@ public final class FabricCommandSuggestionProviders {
             for (String n : FabricCommandPlayerTarget.filterPrefix(names, remaining)) {
                 builder.suggest(n);
             }
+            return builder.buildFuture();
+        };
+    }
+
+    /**
+     * {@code /openmenu leaderboard <token>}: online player names and enabled skill keys (**Sprint
+     * 72**).
+     */
+    public static SuggestionProvider<ServerCommandSource> onlinePlayersAndEnabledSkillKeys() {
+        return (CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) -> {
+            onlinePlayers().getSuggestions(context, builder);
+            enabledSkillKeys().getSuggestions(context, builder);
             return builder.buildFuture();
         };
     }

@@ -16,7 +16,7 @@ import java.util.Set;
  */
 public final class FabricCommandBuiltInMenuId {
 
-    /** Menu ids allowed on the bounded {@code openmenu} command (Sprint 45+; {@code sources} Sprint 70; {@code unclaimed_items} Sprint 71). */
+    /** Menu ids allowed on the bounded {@code openmenu} command (Sprint 45+; {@code sources} Sprint 70; {@code unclaimed_items} Sprint 71; {@code leaderboard} Sprint 72). */
     public static final Set<String> OPENVIA_COMMAND =
             Set.of(
                     FabricMenuKeys.SKILLS,
@@ -24,7 +24,8 @@ public final class FabricCommandBuiltInMenuId {
                     FabricMenuKeys.LEVEL_PROGRESSION,
                     FabricMenuKeys.STAT_INFO,
                     FabricMenuKeys.SOURCES,
-                    FabricMenuKeys.UNCLAIMED_ITEMS);
+                    FabricMenuKeys.UNCLAIMED_ITEMS,
+                    FabricMenuKeys.LEADERBOARD);
 
     private FabricCommandBuiltInMenuId() {}
 

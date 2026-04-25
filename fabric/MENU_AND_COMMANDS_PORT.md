@@ -575,3 +575,14 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Gaps (Partial)** | No Slate/YAML; simplified vs full **ItemBuilder** lores; Bukkit can show **>54** only by scrolling? (Bukkit: 54); Fabric pages at 36+controls. **Bedrock** inventory clicks **NRP** — not run-time tested. |
 | **Manual** | **`SPRINT_71_MANUAL_UNCLAIMED_ITEMS_MENU.md`** |
 
+## Sprint 72 — **Leaderboard** menu + **`/openmenu leaderboard`** (shipped, partial)
+
+| Area | Shipped on Fabric (bounded) |
+|------|-----------------------------|
+| **Bukkit ref** | `bukkit/.../LeaderboardMenu.java` — Slate 6×9, **skill** property, **leaderboard_player** template (10 rows, skulls), **back** → **level_progression**. Reference **`/top`** is **paged chat**, not this menu. **No** `leaderboard.yml` in repo. |
+| **Menu** | **`FabricLeaderboardMenuGui`** — 6×9 Granite, **10** entries/page (two rows), **power** / **average** / **skill** modes, prev/next (48/50), refresh (49, re-read slice), **Back** → **Skills** (45). Same name resolution / rank math as **`FabricCommandLeaderboardText`**. |
+| **openmenu** | **`openmenu leaderboard`** — self: default **power**; **`average`** + optional page; **`[page]`** for power; token = **online player** (opens **power** on **that** client) **or** **skill** (self **skill** board; in-game); **`token <skill> [page]`**, **`token average [page]`**, **`token <target_skill> [page]`** for target+skill. **`FabricCommandBuiltInMenuId`**, **`builtInOpenMenuIds`**. Console: **`leaderboard <player> average [page]`** or **`<player> <skill> [page]`** (no self skill-without-target from console). |
+| **Commands unchanged** | **`/top`**, **`/skilltop`**, **`/rank`**, **`/skillrank`**, **`/updateleaderboards`** — still **chat** for players and **console/RCON** (Sprints 47–49). |
+| **Gaps (Partial)** | Not Slate skull grid; no YAML **`leaderboard.yml`**; **Back** differs (Skills vs level_progression). **Bedrock** GUI clicks **NRP** — not run-time tested. |
+| **Manual** | **`SPRINT_72_MANUAL_LEADERBOARD_MENU.md`** |
+

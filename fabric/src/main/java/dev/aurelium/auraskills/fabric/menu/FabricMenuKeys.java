@@ -31,6 +31,11 @@ public final class FabricMenuKeys {
      * use {@link FabricAuraSkillsMenus#openUnclaimedItems} (**Sprint 71**).
      */
     public static final String UNCLAIMED_ITEMS = "unclaimed_items";
+    /**
+     * Bukkit {@code LeaderboardMenu} (Slate) — **not** loaded from {@code menus/*.yml} on Fabric;
+     * use {@link FabricAuraSkillsMenus#openLeaderboard} or {@code /openmenu leaderboard} (**Sprint 72**).
+     */
+    public static final String LEADERBOARD = "leaderboard";
 
     private FabricMenuKeys() {
     }

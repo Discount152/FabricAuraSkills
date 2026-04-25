@@ -35,7 +35,9 @@ import static net.minecraft.server.command.CommandManager.literal;
  * and {@link dev.aurelium.auraskills.fabric.menu.FabricMenuContext}. **Sprint 70:** {@code sources}
  * with skill + optional sort → {@link FabricAuraSkillsMenus#openSources} (not registry-loaded).
  * **Sprint 71:** {@code unclaimed_items} (self or online target) → {@link
- * FabricAuraSkillsMenus#openUnclaimedItems}.
+ * FabricAuraSkillsMenus#openUnclaimedItems}. **Sprint 72:** {@code leaderboard} →
+ * {@link FabricOpenMenuLeaderboard} / {@link FabricAuraSkillsMenus#openLeaderboard} (not
+ * registry-loaded).
  */
 public final class FabricOpenMenuCommands {
 
@@ -190,7 +192,8 @@ public final class FabricOpenMenuCommands {
                                                                 .onlinePlayers())
                                                 .executes(
                                                         FabricOpenMenuCommands
-                                                                ::executeUnclaimedForTarget)));
+                                                                ::executeUnclaimedForTarget)))
+                .then(FabricOpenMenuLeaderboard.node());
     }
 
     /** Top-level {@code /openmenu …} (same tree; Fabric-only convenience). */

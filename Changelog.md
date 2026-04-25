@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.100
+
+### Changes
+
+- **Fabric: Leaderboard menu (Sprint 72):** Bounded **Granite** **`FabricLeaderboardMenuGui`** (6×9, **10**/page, **power** / **average** / **skill** modes, prev/next/refresh, **Back** → **Skills**) using **`LeaderboardManager`** + **`FabricCommandLeaderboardText`** (ranks, **`?`** names). **`/top`**, **`/skilltop`**, **`/rank`**, **`/skillrank`** unchanged (**chat**). **`/openmenu leaderboard …`** (**`FabricOpenMenuLeaderboard`**) — self, **average**, paging, online-target **power** view, **skill** boards, console **`leaderboard <player> average [page]`** / **`<player> <skill> [page]`**. **`FabricMenuKeys#LEADERBOARD`**, **`FabricCommandBuiltInMenuId`**, suggestions. **`en_us`**, **`SPRINT_72_MANUAL_LEADERBOARD_MENU.md`**, MENU port / **COMMAND_PARITY** / **ledger** `MENU-006` + `CMD-013` / **backlog**, **`projectVersion` 2.3.99 → 2.3.100**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test`. **Parity: Partial** (Bukkit Slate skull menu + **level_progression** back; ref **`/top`** is chat); **Bedrock: NRP** (not run-time tested).
+
 ## 2.3.99
 
 ### Changes
