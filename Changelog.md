@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.91
+
+### Changes
+
+- **Fabric: `/storage` (Sprint 63):** **`/storage info`**, **`/storage save`**, **`/storage reload`** (explainer only — no storage hot-swap); mirrors + top-level **`/storage`**. **`auraskills.command.storage`** (default **deny**). **`FabricStorageCommands`**: **info** shows backend kind, provider FQMN, data dir **name**, **`sql.enabled`**, loaded user count — **no** JDBC secrets; **save** calls **`saveAllUserProfiles`**. **`/sk`/`/skill`** trees now also include **`preset`** subtree (fix). **Docs** `SPRINT_63_MANUAL_STORAGE.md`, `COMMAND_PARITY_AUDIT`, `MENU_AND_COMMANDS_PORT`, **CMD-001** / **CMD-012**, `PARITY_BACKLOG`, **`projectVersion` 2.3.90 → 2.3.91**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test`. **Parity:** **Partial** — Bukkit **`StorageCommand`** = **`mergeskills`** / **`removeallmodifiers`** (console only); Fabric has **info/save/reload** guidance instead; **no** migrate.
+
 ## 2.3.90
 
 ### Changes

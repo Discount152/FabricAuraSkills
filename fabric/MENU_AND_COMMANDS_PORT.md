@@ -492,4 +492,12 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 |------|-----------------------------|
 | **Commands** | **`/preset list`**, **`/preset info <name.zip>`** (read-only), **`/preset load <name.zip>`** (preview) → **`/preset load <name.zip> confirm`**. Same mirrors on **`/auraskills`**, **`/skills`**, **`/sk`**, **`/skill`**, top-level **`/preset`**. **`auraskills.command.preset`** (default **deny**). Tab suggests **`presets/*.zip`**. |
 | **Data** | Common **`PresetManager#preparePreset` / `loadPreset`** (zip with root **`preset.yml`**, `files/`). Pre-apply: **`BackupProvider#saveBackupSync(true)`** (UserState safety snapshot); then extract/merge; then **`reloadFromDisk()`**. Does **not** delete userdata or run **Storage** migrations. |
-| **Not in Sprint 62** | **StorageCommand**; preset create/delete/download; **Bukkit**-style “type the same command twice” confirm (Fabric uses **literal `confirm`**); see **`SPRINT_62_MANUAL_PRESET.md`**. **Parity** **Partial** vs reference (**list**+**info** are Fabric-only extras). |
+| **Not in Sprint 62** | **StorageCommand** — see **Sprint 63** below; preset create/delete/download; **Bukkit**-style “type the same command twice” confirm (Fabric uses **literal `confirm`**); see **`SPRINT_62_MANUAL_PRESET.md`**. **Parity** **Partial** vs reference (**list**+**info** are Fabric-only extras). |
+
+## Sprint 63 — **`/storage`** (info / save / reload explainer) (shipped, partial)
+
+| Area | Shipped on Fabric (bounded) |
+|------|-----------------------------|
+| **Commands** | **`/storage info`**, **`/storage save`**, **`/storage reload`** + mirrors on **`/auraskills`**, **`/skills`**, **`/sk`**, **`/skill`**, top-level **`/storage`**. **`auraskills.command.storage`** (default **deny**). |
+| **Data** | **info** — active **`StorageProvider`** (YAML **file** vs **SQL** pooled), FQMN, data directory **basename** only in chat, **`sql.enabled`** flag, loaded user count; **no** JDBC URL, host, user, password. **save** — **`saveAllUserProfiles()`** (same as **`/auraskills save`** for online users). **reload** — **not** a storage hot-swap; points to **`/auraskills reload`** for config/skill reload and **restart** to change backend. |
+| **Not in Sprint 63** | Live **migrate** YAML↔SQL; **Bukkit** **`mergeskills`** / **`removeallmodifiers`** (console); SQL **dump**/admin — see **`SPRINT_63_MANUAL_STORAGE.md`**. |

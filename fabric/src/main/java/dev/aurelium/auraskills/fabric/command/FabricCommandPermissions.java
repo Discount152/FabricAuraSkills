@@ -123,6 +123,13 @@ public final class FabricCommandPermissions {
     public static final String PRESET = "auraskills.command.preset";
 
     /**
+     * Bukkit {@code StorageCommand} (see {@code plugin.yml}). **Sprint 63** — **info** / **save** /
+     * **reload** explainer; default <strong>deny</strong>. Reference also has **console-only**
+     * **mergeskills** / **removeallmodifiers** (not in this Fabric batch).
+     */
+    public static final String STORAGE = "auraskills.command.storage";
+
+    /**
      * Bukkit {@code /sk top} / {@code skilltop} (see {@code plugin.yml}). **Sprint 47:** also
      * {@code /top}, {@code /skilltop}, and under {@code /auraskills} / {@code /sk|skill}.
      */
