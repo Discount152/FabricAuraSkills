@@ -154,6 +154,30 @@ public final class FabricItemRegistry implements ItemRegistry {
     }
 
     /**
+     * Synchronous, server thread: try to add {@code count} of a <strong>registered</strong> item
+     * into the player’s main+hotbar storage (Bukkit “storage” parity).
+     *
+     * @return how many items <strong>did not</strong> fit (0 = all merged into inventory)
+     */
+    public int tryMergeRegisteredItemCount(
+            ServerPlayerEntity player, NamespacedId id, int count) {
+        if (count <= 0) {
+            return 0;
+        }
+        ItemStack template = getItem(id);
+        if (template == null || template.isEmpty()) {
+            return count;
+        }
+        ItemStack toGive = template.copy();
+        toGive.setCount(count);
+        ItemStack leftover = FabricItemInventoryUtil.addItemToInventory(player.getInventory(), toGive);
+        if (leftover == null || leftover.isEmpty()) {
+            return 0;
+        }
+        return leftover.getCount();
+    }
+
+    /**
      * Synchronous, server thread: give a <strong>registered</strong> item stack. When {@code amount}
      * is {@code -1}, uses the template stack size (Bukkit {@code /item give} default).
      *
@@ -167,11 +191,9 @@ public final class FabricItemRegistry implements ItemRegistry {
             return -1;
         }
         int count = amount == -1 ? template.getCount() : Math.max(1, amount);
-        ItemStack toGive = template.copy();
-        toGive.setCount(count);
-        ItemStack leftover = FabricItemInventoryUtil.addItemToInventory(player.getInventory(), toGive);
-        if (leftover != null && !leftover.isEmpty()) {
-            user.getUnclaimedItems().add(new KeyIntPair(key.toString(), leftover.getCount()));
+        int notFit = tryMergeRegisteredItemCount(player, key, count);
+        if (notFit > 0) {
+            user.getUnclaimedItems().add(new KeyIntPair(key.toString(), notFit));
             user.setShouldSave(true);
             String msg =
                     plugin.getPrefix(user.getLocale())

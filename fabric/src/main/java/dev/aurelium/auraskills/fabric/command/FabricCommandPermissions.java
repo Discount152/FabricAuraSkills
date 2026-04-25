@@ -73,6 +73,12 @@ public final class FabricCommandPermissions {
     public static final String OPEN_MENU = "auraskills.command.openmenu";
 
     /**
+     * Bukkit {@code SkillsRootCommand} {@code claimitems} (see {@code plugin.yml} — default
+     * <strong>true</strong> under {@code auraskills.command.user}). **Sprint 56.**
+     */
+    public static final String CLAIMITEMS = "auraskills.command.claimitems";
+
+    /**
      * Bukkit {@code /sk top} / {@code skilltop} (see {@code plugin.yml}). **Sprint 47:** also
      * {@code /top}, {@code /skilltop}, and under {@code /auraskills} / {@code /sk|skill}.
      */

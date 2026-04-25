@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.84
+
+### Changes
+
+- **Fabric: `claimitems` + shared merge (Sprint 56):** **`/claimitems`**, **`/skills|/sk|/skill|/auraskills claimitems`**, `auraskills.command.claimitems` (Bukkit default **true**). **Merges** the **`User`** unclaimed list into the player inventory in order, using **`FabricItemRegistry#tryMergeRegisteredItemCount`** (also used by **`addRegisteredItemToInventory`** for **`/item give`** → overflow). Bukkit **opens Slate UnclaimedItemsMenu**; Fabric is a **one-shot** command. **Perms** test + **lang** `claimitems.*`. **Docs** `SPRINT_56_MANUAL_CLAIMITEMS.md`, audit / MENU / ledger / backlog, **`projectVersion` 2.3.83 → 2.3.84**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test`.
+
 ## 2.3.83
 
 ### Changes

@@ -22,7 +22,7 @@ public final class FabricBrigadierCommands {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         FabricAuraSkillsMod.LOGGER.info(
-                "Registering Brigadier: /auraskills (…), /skills, /sk|skill, /stats, /openmenu, leaderboard, /multiplier|/toggle|/abtoggle|/lang, /modifier, /trait, /item (modifier|trait|ignore|requirement|multiplier|register|unregister|give), /armor (modifier|trait|requirement|multiplier), /mana, /skilllevel, /xp — see fabric/COMMAND_PARITY_AUDIT.md");
+                "Registering Brigadier: /auraskills (…), /skills, /sk|skill, /stats, /openmenu, /claimitems, /skills|/sk|/skill|/auraskills claimitems, leaderboard, /multiplier|/toggle|/abtoggle|/lang, /modifier, /trait, /item (modifier|trait|ignore|requirement|multiplier|register|unregister|give), /armor (modifier|trait|requirement|multiplier), /mana, /skilllevel, /xp — see fabric/COMMAND_PARITY_AUDIT.md");
 
         registerAuraskillsAndAliases(dispatcher);
         dispatcher.register(FabricOpenMenuCommands.openMenuRoot());
@@ -44,6 +44,7 @@ public final class FabricBrigadierCommands {
         dispatcher.register(FabricManaCommands.manaCommandRoot());
         dispatcher.register(FabricSkillLevelCommands.skillLevelRoot());
         dispatcher.register(FabricXpCommands.xpRoot());
+        dispatcher.register(FabricClaimItemsCommands.claimItemsLiteral());
     }
 
     /**
@@ -76,7 +77,8 @@ public final class FabricBrigadierCommands {
                 .then(FabricItemArmorModifierCommands.armorCommandRoot())
                 .then(FabricXpCommands.xpRoot())
                 .then(FabricManaCommands.manaCommandRoot())
-                .then(FabricSkillLevelCommands.skillLevelRoot());
+                .then(FabricSkillLevelCommands.skillLevelRoot())
+                .then(FabricClaimItemsCommands.claimItemsLiteral());
     }
 
     private static int skillsAliasDefault(CommandContext<ServerCommandSource> ctx) {
@@ -125,10 +127,12 @@ public final class FabricBrigadierCommands {
                 .then(FabricPlayerModifierCommands.modifierCommandRoot())
                 .then(FabricPlayerModifierCommands.traitCommandRoot())
                 .then(FabricItemArmorModifierCommands.itemCommandRoot())
-                .then(FabricItemArmorModifierCommands.armorCommandRoot()));
+                .then(FabricItemArmorModifierCommands.armorCommandRoot())
+                .then(FabricClaimItemsCommands.claimItemsLiteral()));
         dispatcher.register(literal("skills")
                 .requires(FabricCommandRequirements.permission(FabricCommandPermissions.SKILLS, true))
-                .executes(FabricBrigadierCommands::skills));
+                .executes(FabricBrigadierCommands::skills)
+                .then(FabricClaimItemsCommands.claimItemsLiteral()));
         dispatcher.register(literal("stats")
                 .requires(FabricCommandRequirements.permission(FabricCommandPermissions.STATS, true))
                 .executes(FabricBrigadierCommands::stats));

@@ -436,4 +436,12 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Perms** | **`auraskills.command.item.register`** (register+unregister, Bukkit), **`auraskills.command.item.give`** |
 | **Suggestions** | **`FabricCommandSuggestionProviders#registeredItemKeys`** — **`/item unregister`**, second arg of **`/item give`** |
 
-| **Not in Sprint 55** | Bukkit **ExternalItemProvider** / dynamic namespaces; full **`/claimitems`**; **N/A** for armor. **Manual:** `SPRINT_55_MANUAL_ITEM_REGISTER_GIVE.md`. |
+| **Not in Sprint 55** | Bukkit **ExternalItemProvider** / dynamic namespaces; **`/claimitems`** — **Sprint 56**; **N/A** for armor. **Manual:** `SPRINT_55_MANUAL_ITEM_REGISTER_GIVE.md`. |
+
+## Sprint 56 — **`/claimitems`** (unclaimed → inventory) (shipped, partial)
+
+| Area | Shipped on Fabric (bounded) |
+|------|-----------------------------|
+| **Commands** | **`/claimitems`**, **`/skills\|/sk\|/skill\|/auraskills claimitems`**, `auraskills.command.claimitems` (Bukkit: default **true** under `command.user`); **player**-only; empty list → **`CLAIMITEMS_NO_ITEMS`** |
+| **State** | **`User#getUnclaimedItems()`**; **`tryMergeRegisteredItemCount`** in **`FabricItemRegistry`** (shared with **`/item give`** / **`addRegisteredItemToInventory`**); **`setShouldSave`** on list change |
+| **Not in Sprint 56** | Bukkit **Slate** **UnclaimedItemsMenu** (per-slot **click** UI); see **`fabric/COMMAND_PARITY_AUDIT.md`**. **Manual:** `SPRINT_56_MANUAL_CLAIMITEMS.md`. |
