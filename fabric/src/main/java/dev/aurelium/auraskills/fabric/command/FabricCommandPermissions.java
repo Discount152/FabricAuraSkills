@@ -98,6 +98,12 @@ public final class FabricCommandPermissions {
     public static final String TRANSFER = "auraskills.command.transfer";
 
     /**
+     * Bukkit {@code profile skills|stats} (see {@code plugin.yml} — default <strong>true</strong>).
+     * **Sprint 59** — read-only {@link dev.aurelium.auraskills.common.user.UserState} inspection.
+     */
+    public static final String PROFILE = "auraskills.command.profile";
+
+    /**
      * Bukkit {@code /sk top} / {@code skilltop} (see {@code plugin.yml}). **Sprint 47:** also
      * {@code /top}, {@code /skilltop}, and under {@code /auraskills} / {@code /sk|skill}.
      */

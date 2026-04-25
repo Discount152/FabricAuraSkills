@@ -461,3 +461,11 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Commands** | **`/transfer <from-uuid> <to-uuid>`** + mirrors on **`/skills`**, **`/sk`**, **`/skill`**, **`/auraskills`**, top-level **`/transfer`** — **`auraskills.command.transfer`** (default **deny** / op-style) |
 | **Data** | **`UserState`** only (skills, XP, persistent stat/trait modifiers, mana); **`User#applyState`** for **online** target + **`StorageProvider#applyState`** for **offline** target; **`FabricUserDataTransfer`** (online check, YAML file check, post-apply **save**); **`RewardManager#updatePermissions`** after online apply |
 | **Not in Sprint 58** | Full **profile** parity (jobs, unclaimed items, ability data, locale, action bar, … are **not** in `UserState`); **backup**/**profile**/**storage** admin commands — see **`SPRINT_58_MANUAL_TRANSFER.md`** |
+
+## Sprint 59 — **`/profile`** (read-only `UserState` inspection) (shipped, partial)
+
+| Area | Shipped on Fabric (bounded) |
+|------|-----------------------------|
+| **Commands** | **`/profile skills <player>`** / **`/profile stats <player>`** + mirrors on **`/auraskills`**, **`/skills`**, **`/sk`**, **`/skill`**, and top-level **`/profile`** — **`auraskills.command.profile`** (default **true**, like Bukkit `plugin.yml`) |
+| **Data** | **`UserState`** (same scope as **Sprint 58** **`/transfer`**): **skills** uses **`messages_*`** **`commands.profile.skills`**, **stats** uses **`commands.profile.stats`** + **Granite** footer: **mana**, **raw stat/trait** modifier lines + disclaimer. **Name → UUID:** online (case-insensitive) then **`NameToIdCache#findByName`**. **Offline (YAML):** no **`userdata/<uuid>.yml`** when **file** storage — error (aligned with **transfer** pre-check) |
+| **Not in Sprint 59** | Bukkit **async** `loadState` (Fabric **sync**); **Slate** / full “profile” product surface; **backup** / **preset** / **storage** mutation — see **`SPRINT_59_MANUAL_PROFILE.md`**. Bukkit **stats** view does not append mana + modifier dumps |

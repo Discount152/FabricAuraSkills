@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.87
+
+### Changes
+
+- **Fabric: `/profile` (Sprint 59):** **`/profile skills|stats <player>`** and mirrors on **`/auraskills`**, **`/skills`**, **`/sk`**, **`/skill`**, + top-level **`/profile`**; **`auraskills.command.profile`** (default **allow**). **Read-only** inspection of the same **`UserState`** model as **Sprint 58** **`/transfer`**: **skills/XP** ( **`commands.profile.*`** messages), **stats** with reward-derived **base** + **modifier** + **total** (Bukkit **profile stats**), then **Granite** lines for **mana**, **raw stat/trait** persistent modifiers, and an explicit “not a full account” disclaimer. **`FabricUserDataRead`**: name → UUID (**online** + **`NameToIdCache`**); offline **YAML** without **`userdata/<uuid>.yml`** rejected when on **file** storage. **Bukkit** has **no** top-level `/profile` and **async** offline **load**; Bukkit **stats** has **no** mana/modifier **footer**. **Docs** `SPRINT_59_MANUAL_PROFILE.md`, `COMMAND_PARITY_AUDIT`, `MENU_AND_COMMANDS_PORT`, `PARITY_AUDIT_LEDGER_PHASE1` (CMD-001, CMD-008), `PARITY_BACKLOG`, **`projectVersion` 2.3.86 → 2.3.87**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test`.
+
 ## 2.3.86
 
 ### Changes
