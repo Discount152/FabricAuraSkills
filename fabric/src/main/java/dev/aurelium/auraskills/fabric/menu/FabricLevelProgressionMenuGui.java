@@ -22,16 +22,8 @@ import java.util.Locale;
 
 /**
  * One-skill “level progression” view: live level + XP from {@link User}, not full Bukkit
- * {@code level_progression.yml} / reward tables. **Sprint 33:** titles/format keys from
- * {@link FabricBuiltInMenuConfig} / {@code menus/level_progression.yml} {@code granite:}. **Sprint 34:**
- * main/back slots from {@code granite.layout}. **Sprint 35:** opened only via
- * {@link FabricMenuRegistry} with {@link FabricMenuContext#ofSkill(Skill)}. **Sprint 36:** main/back items
- * from {@code granite.items.main} / {@code granite.items.back}. **Sprint 38:** <strong>Back</strong> reopens
- * <strong>Skills</strong> with the same {@link FabricMenuContext#listPage()} the player had when opening
- * this menu (clamped in the list GUI). **Sprint 70:** hopper at {@link #SLOT_OPEN_SOURCES} opens
- * <strong>sources</strong> for the same skill, passing this context’s list page to {@link
- * FabricAuraSkillsMenus#openSources} (Back from sources returns to this progression view with the
- * same Skills return page).
+ * {@code level_progression.yml} / reward tables. **Sprint 100:** tries bundled GraniteLib template first; on
+ * failure uses the built-in path below.
  */
 final class FabricLevelProgressionMenuGui {
 
@@ -68,6 +60,23 @@ final class FabricLevelProgressionMenuGui {
             return;
         }
         User user = plugin.getUserManager().getUser(player.getUuid());
+        if (user == null) {
+            return;
+        }
+        if (FabricLevelProgressionTemplateSupport.tryOpen(player, plugin, context, user)) {
+            return;
+        }
+        openBuiltIn(player, plugin, context, skill, cfg, def, user);
+    }
+
+    private static void openBuiltIn(
+            ServerPlayerEntity player,
+            FabricAuraSkills plugin,
+            FabricMenuContext context,
+            Skill skill,
+            FabricMenuYamlSlice cfg,
+            FabricMenuYamlSlice def,
+            User user) {
         Locale locale = user.getLocale();
         var msg = plugin.getMessageProvider();
         String skillName = msg.getSkillDisplayName(skill, locale, true);

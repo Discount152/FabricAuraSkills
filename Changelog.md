@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.128
+
+### Changes
+
+- **Fabric + GraniteLib: Sprint 100 — template-backed `level_progression` prototype (`FabricAuraSkills-2.3.128.jar`):** Bundled **`assets/auraskills/granite/templates/level_progression.yml`** — **28-slot** level grid (same 7×4 order as **`sources`**), paged levels **1…maxLevel**, **`FabricLevelProgressionTemplateSupport`** + **`FabricLevelProgressionPlaceholders`** (`{skill}`, `{skill_display}`, `{level}`, `{level_status}`, `{level_xp_required}`, `{current_xp}`, `{page}`, `{total_pages}`). Status lines use **`FabricGraniteText`** (**`level_progression_status_*`**). **Navigation:** **`GraniteTemplateActionNames`** extended with **`level_row`**, **`open_sources`**, **`open_abilities`** (fixed wiring: back → Skills, prev/next → registry open with **`FabricMenuContext#progressionPage`**). **`FabricMenuContext`** gains **`progressionPage`** (0-based) + **`withProgressionPage`**. **`FabricLevelProgressionMenuGui`** tries template first, then existing built-in (main + back + hopper sources). **Tests:** **`FabricLevelProgressionBundledTemplateParseTest`**, **`FabricMenuContextTest`** updates, **`GraniteTemplateItemsTest`** / **`GraniteTemplateActionNamesTest`**. **Docs:** **`fabric/SPRINT_100_MANUAL_LEVEL_PROGRESSION_TEMPLATE_PROTOTYPE.md`**, parity pointers. **Slate / `MenuFileManager`** still **not** complete. **Bedrock / Geyser** not tested. **`projectVersion` 2.3.127 → 2.3.128**. **Build:** `.\gradlew -PfabricOnly=true :granitelib-fabric:test :fabric:test :fabric:build` — **PASS**.
+
 ## 2.3.127
 
 ### Changes

@@ -19,6 +19,7 @@ class FabricMenuContextTest {
         assertNull(c.skill());
         assertNull(c.stat());
         assertEquals(0, c.listPage());
+        assertEquals(0, c.progressionPage());
     }
 
     @Test
@@ -27,9 +28,32 @@ class FabricMenuContextTest {
     }
 
     @Test
+    void withProgressionPage() {
+        Skill s = Skills.FARMING;
+        assertEquals(
+                2,
+                FabricMenuContext.ofSkill(s).withListPage(1).withProgressionPage(2).progressionPage());
+    }
+
+    @Test
+    void withListPage_preservesProgressionPage() {
+        Skill s = Skills.FARMING;
+        FabricMenuContext c =
+                FabricMenuContext.ofSkill(s).withProgressionPage(4).withListPage(3);
+        assertEquals(3, c.listPage());
+        assertEquals(4, c.progressionPage());
+    }
+
+    @Test
     void listPage_clampsNegativeInRecord() {
-        FabricMenuContext c = new FabricMenuContext(null, null, -1);
+        FabricMenuContext c = new FabricMenuContext(null, null, -1, 0);
         assertEquals(0, c.listPage());
+    }
+
+    @Test
+    void progressionPage_clampsNegativeInRecord() {
+        FabricMenuContext c = new FabricMenuContext(null, null, 0, -1);
+        assertEquals(0, c.progressionPage());
     }
 
     @Test

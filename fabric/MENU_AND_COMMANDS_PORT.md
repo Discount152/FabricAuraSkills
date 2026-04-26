@@ -611,6 +611,17 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 
 | **Not in Sprint 99** | New menu migration; disk YAML; full action engine; Slate-complete. |
 
+## Sprint 100 — **level_progression** GraniteLib template prototype (level grid + paging) (shipped, bounded)
+
+| Area | Shipped on Fabric (bounded) |
+|------|-----------------------------|
+| **Template** | Bundled **`assets/auraskills/granite/templates/level_progression.yml`** (v0 schema). Constant **`FabricLevelProgressionTemplateSupport.TEMPLATE_RESOURCE_PATH`**. |
+| **Behavior** | **`FabricLevelProgressionMenuGui.open`** tries **`FabricLevelProgressionTemplateSupport.tryOpen`** first: **fill**, **28** level slots (same order as **`FabricSourcesMenuGui.builtinSourceGridSlots()`**), **previous / next** pages over levels **1..maxLevel**, **back** → Skills, **sources** (hopper **50**) → sources with list-page return, **abilities** (nether star **51**) → abilities when supported. On any failure → **existing built-in** **`openBuiltIn`** (single main + back + hopper). |
+| **Placeholders** | **`FabricLevelProgressionPlaceholders`:** `{skill}`, `{skill_display}`, `{level}`, `{level_status}`, `{level_xp_required}`, `{current_xp}`, `{page}`, `{total_pages}` — unresolved `{...}` → fallback. |
+| **Chat** | Unchanged — GUI exception → **`menu_fallback`** + chat. |
+| **Gaps (Partial)** | **Not** disk override, **not** hot reload, **not** full action engine, **not** Slate **`MenuFileManager`** parity. **Bedrock** not run-time tested. |
+| **Manual** | **`SPRINT_100_MANUAL_LEVEL_PROGRESSION_TEMPLATE_PROTOTYPE.md`** |
+
 ## Sprint 98 — **sources** GraniteLib template prototype (dynamic grid) (shipped, bounded)
 
 | Area | Shipped on Fabric (bounded) |

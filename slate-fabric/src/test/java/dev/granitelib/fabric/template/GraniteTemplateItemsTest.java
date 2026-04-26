@@ -96,6 +96,35 @@ class GraniteTemplateItemsTest {
     }
 
     @Test
+    void findLevelGridDefinition() {
+        GraniteTemplateItem row =
+                new GraniteTemplateItem(
+                        List.of(10),
+                        "minecraft:lime_dye",
+                        Optional.empty(),
+                        List.of(),
+                        OptionalInt.empty(),
+                        OptionalInt.empty(),
+                        Optional.of(GraniteTemplateActionNames.LEVEL_ROW));
+        GraniteMenuTemplate t =
+                new GraniteMenuTemplate("lp", "s", 6, Optional.empty(), Map.of("foo", row), Optional.empty());
+        assertNotNull(GraniteTemplateItems.findLevelGridDefinition(t));
+        GraniteTemplateItem keyed =
+                new GraniteTemplateItem(
+                        List.of(11),
+                        "minecraft:lime_dye",
+                        Optional.empty(),
+                        List.of(),
+                        OptionalInt.empty(),
+                        OptionalInt.empty(),
+                        Optional.of(GraniteTemplateActionNames.LEVEL_ROW));
+        GraniteMenuTemplate t2 =
+                new GraniteMenuTemplate(
+                        "lp", "s", 6, Optional.empty(), Map.of("level", keyed, "foo", row), Optional.empty());
+        assertEquals(keyed, GraniteTemplateItems.findLevelGridDefinition(t2));
+    }
+
+    @Test
     void actionEquals() {
         GraniteTemplateItem i =
                 new GraniteTemplateItem(

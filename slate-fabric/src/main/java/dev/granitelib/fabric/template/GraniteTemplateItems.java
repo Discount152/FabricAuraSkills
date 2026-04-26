@@ -57,4 +57,20 @@ public final class GraniteTemplateItems {
         }
         return null;
     }
+
+    /** Level grid: YAML key {@code level}, else first item with {@link GraniteTemplateActionNames#LEVEL_ROW}. */
+    public static @Nullable GraniteTemplateItem findLevelGridDefinition(GraniteMenuTemplate template) {
+        GraniteTemplateItem byKey = template.items().get("level");
+        if (byKey != null) {
+            return byKey;
+        }
+        for (GraniteTemplateItem item : template.items().values()) {
+            if (item.action()
+                    .filter(a -> GraniteTemplateActionNames.LEVEL_ROW.equalsIgnoreCase(a))
+                    .isPresent()) {
+                return item;
+            }
+        }
+        return null;
+    }
 }
