@@ -3,6 +3,7 @@ package dev.aurelium.auraskills.fabric.command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import dev.aurelium.auraskills.fabric.storage.FabricOfflinePlayerDataAuraStripping;
+import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import dev.aurelium.auraskills.fabric.storage.FabricServerPlayerDataPaths;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
@@ -37,7 +38,7 @@ public final class FabricResetHealthCommands {
         ServerCommandSource source = ctx.getSource();
         if (source.isExecutedByPlayer() || source.getEntity() != null) {
             source.sendError(
-                    Text.translatable("auraskills.granite.command.resethealth.console_only"));
+                    FabricGraniteText.key("auraskills.granite.command.resethealth.console_only"));
             return 0;
         }
         MinecraftServer server = source.getServer();
@@ -52,7 +53,7 @@ public final class FabricResetHealthCommands {
                     FabricOfflinePlayerDataAuraStripping.stripFromOfflinePlayerDataFiles(
                             FabricServerPlayerDataPaths.overworldPlayerData(server), online);
             source.sendFeedback(
-                    () -> Text.translatable(
+                    () -> FabricGraniteText.key(
                             "auraskills.granite.command.resethealth.summary",
                             r.offlineFilesScanned(),
                             r.filesWithModifiersStripped(),
@@ -60,7 +61,7 @@ public final class FabricResetHealthCommands {
                     true);
         } catch (IOException e) {
             source.sendError(
-                    Text.translatable(
+                    FabricGraniteText.key(
                             "auraskills.granite.command.resethealth.io_error", e.getMessage()));
             return 0;
         }

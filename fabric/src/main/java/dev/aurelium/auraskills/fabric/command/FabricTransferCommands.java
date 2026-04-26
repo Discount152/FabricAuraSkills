@@ -8,6 +8,7 @@ import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.common.user.UserState;
 import dev.aurelium.auraskills.common.util.text.TextUtil;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
+import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import dev.aurelium.auraskills.fabric.user.FabricUserDataTransfer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -56,13 +57,13 @@ public final class FabricTransferCommands {
                                 to = UUID.fromString(StringArgumentType.getString(ctx, ARG_TO));
                             } catch (IllegalArgumentException e) {
                                 source.sendError(
-                                        Text.translatable(
+                                        FabricGraniteText.key(
                                                 "auraskills.granite.command.transfer.bad_uuid"));
                                 return 0;
                             }
                             if (from.equals(to)) {
                                 source.sendError(
-                                        Text.translatable(
+                                        FabricGraniteText.key(
                                                 "auraskills.granite.command.transfer.self"));
                                 return 0;
                             }
@@ -72,7 +73,7 @@ public final class FabricTransferCommands {
                                             p.getServer(), from)
                                     && !FabricUserDataTransfer.hasYamlDataFile(p, from)) {
                                 source.sendError(
-                                        Text.translatable(
+                                        FabricGraniteText.key(
                                                 "auraskills.granite.command.transfer.no_source_data",
                                                 from.toString()));
                                 return 0;
@@ -86,7 +87,7 @@ public final class FabricTransferCommands {
                                                     "Transfer: no user map entry for online source "
                                                             + from);
                                     source.sendError(
-                                            Text.translatable(
+                                            FabricGraniteText.key(
                                                     "auraskills.granite.command.transfer.source_not_loaded",
                                                     from.toString()));
                                     return 0;
@@ -125,7 +126,7 @@ public final class FabricTransferCommands {
                         .warn(
                                 "Transfer: target " + to + " is online but not in the user map.");
                 source.sendError(
-                        Text.translatable(
+                        FabricGraniteText.key(
                                 "auraskills.granite.command.transfer.target_not_loaded",
                                 to.toString()));
                 return 0;
@@ -153,7 +154,7 @@ public final class FabricTransferCommands {
                                         to.toString()));
         source.sendFeedback(() -> Text.literal(p.getPrefix(lo) + body), true);
         source.sendFeedback(
-                () -> Text.translatable(
+                () -> FabricGraniteText.key(
                         "auraskills.granite.command.transfer.source_unchanged", from.toString()),
                 false);
         return 1;

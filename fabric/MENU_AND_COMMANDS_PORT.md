@@ -20,7 +20,9 @@
 
 **Sprint 89 (code):** **`SPRINT_89_MANUAL_SOURCES_CHAT_TRANSLATION.md`** — **`/sources`** **paged chat** (console/RCON + GUI fallback) and **`sources.bad_sort`** use **`FabricGraniteText`**. **`2.3.120+`**.
 
-**Recommended next (Java-side):** Operator validation **`SPRINT_88`** + **`SPRINT_89`** on **`2.3.120+`**; or **Sprint 87** when a **Bedrock** tester is available.
+**Sprint 90 (code):** **`SPRINT_90_MANUAL_GLOBAL_GRANITE_TEXT_AUDIT.md`** — all remaining Fabric **command** paths that used **`Text.translatable("auraskills.granite…")`** now use **`FabricGraniteText`**; **`FabricGraniteJavaSourcesTranslatableScanTest`** guards the full **`dev.aurelium.auraskills.fabric`** main tree. **`2.3.121+`**.
+
+**Recommended next (Java-side):** Operator validation on **`2.3.121+`** (**`SPRINT_90`** manual); or **Sprint 87** when a **Bedrock** tester is available.
 
 This document is the **engineering plan** for shipping **menus and the full command tree together** (one release goal), by **porting Slate** to Fabric instead of writing a second menu engine.
 

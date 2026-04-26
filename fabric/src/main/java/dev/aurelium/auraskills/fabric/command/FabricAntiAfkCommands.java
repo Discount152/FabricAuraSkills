@@ -8,6 +8,7 @@ import dev.aurelium.auraskills.common.user.AntiAfkLog;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.common.util.text.TextUtil;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
+import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import dev.aurelium.auraskills.fabric.user.FabricUserDataRead;
 import dev.aurelium.auraskills.fabric.user.FabricUserDataTransfer;
 import net.minecraft.server.command.CommandManager;
@@ -124,7 +125,7 @@ public final class FabricAntiAfkCommands {
         var uuidOpt = FabricUserDataRead.resolveUuid(source.getServer(), nameArg);
         if (uuidOpt.isEmpty()) {
             source.sendError(
-                    Text.translatable(
+                    FabricGraniteText.key(
                             "auraskills.granite.command.profile.player_not_found", nameArg));
             return 0;
         }
@@ -132,7 +133,7 @@ public final class FabricAntiAfkCommands {
         if (source.getEntity() instanceof ServerPlayerEntity sp
                 && sp.getUuid().equals(uuid)) {
             source.sendError(
-                    Text.translatable("auraskills.granite.command.antiafk.other_target_only"));
+                    FabricGraniteText.key("auraskills.granite.command.antiafk.other_target_only"));
             return 0;
         }
         int offset = (page - 1) * perPage;
@@ -143,7 +144,7 @@ public final class FabricAntiAfkCommands {
             User user = p.getUserManager().getUser(uuid);
             if (user == null) {
                 source.sendError(
-                        Text.translatable("auraskills.granite.command.profile.source_not_loaded", uuid));
+                        FabricGraniteText.key("auraskills.granite.command.profile.source_not_loaded", uuid));
                 return 0;
             }
             if (user.getStoredAntiAfkLogs().isEmpty()) {
@@ -176,7 +177,7 @@ public final class FabricAntiAfkCommands {
                                                 .executeSync(
                                                         () ->
                                                                 source.sendError(
-                                                                        Text.translatable(
+                                                                        FabricGraniteText.key(
                                                                                 "auraskills.granite.command.antiafk.load_failed")));
 
                                     }
@@ -219,7 +220,7 @@ public final class FabricAntiAfkCommands {
                                             .executeSync(
                                                     () ->
                                                             source.sendError(
-                                                                    Text.translatable(
+                                                                    FabricGraniteText.key(
                                                                             "auraskills.granite.command.antiafk.load_failed")));
 
                                 }

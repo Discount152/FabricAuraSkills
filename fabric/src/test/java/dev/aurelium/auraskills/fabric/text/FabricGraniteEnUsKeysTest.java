@@ -154,4 +154,38 @@ class FabricGraniteEnUsKeysTest {
             assertTrue(json.contains("\"" + key + "\""), "missing " + key);
         }
     }
+
+    @Test
+    void sprint90GlobalCommandGraniteKeysPresentInEnUs() throws Exception {
+        String json;
+        try (InputStream in =
+                FabricGraniteEnUsKeysTest.class.getResourceAsStream(
+                        "/assets/auraskills/lang/en_us.json")) {
+            assertTrue(in != null, "classpath /assets/auraskills/lang/en_us.json");
+            json = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+        }
+        for (String key :
+                new String[] {
+                    "auraskills.granite.command.profile.player_not_found",
+                    "auraskills.granite.command.profile.no_userdata_file",
+                    "auraskills.granite.command.profile.source_not_loaded",
+                    "auraskills.granite.command.profile.load_failed",
+                    "auraskills.granite.command.profile.userstate_disclaimer",
+                    "auraskills.granite.command.profile.mana_line",
+                    "auraskills.granite.command.profile.stat_mods_header",
+                    "auraskills.granite.command.profile.trait_mods_header",
+                    "auraskills.granite.command.profile.modifier_none",
+                    "auraskills.granite.command.confirmation.no_pending",
+                    "auraskills.granite.command.confirmation.mismatch",
+                    "auraskills.granite.command.xp.amount_positive",
+                    "auraskills.granite.command.xp.amount_non_negative",
+                    "auraskills.granite.command.level.count_positive",
+                    "auraskills.granite.command.storage.info_header",
+                    "auraskills.granite.command.resethealth.console_only",
+                    "auraskills.granite.command.item_armor_mod.players_only",
+                    "auraskills.granite.command.item_armor_mod.empty_hand"
+                }) {
+            assertTrue(json.contains("\"" + key + "\""), "missing " + key);
+        }
+    }
 }

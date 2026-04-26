@@ -9,6 +9,7 @@ import dev.aurelium.auraskills.common.message.type.CommandMessage;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.common.util.text.TextUtil;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
+import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -96,7 +97,7 @@ public final class FabricManaAbilityCommands {
                                             .orElse(null);
                             if (target == null) {
                                 source.sendError(
-                                        Text.translatable(
+                                        FabricGraniteText.key(
                                                 "auraskills.granite.command.xp"
                                                         + ".player_not_found",
                                                 name));
@@ -105,7 +106,7 @@ public final class FabricManaAbilityCommands {
                             if (source.getEntity() instanceof ServerPlayerEntity self
                                     && self.getUuid().equals(target.getUuid())) {
                                 source.sendError(
-                                        Text.translatable(
+                                        FabricGraniteText.key(
                                                 "auraskills.granite.command"
                                                         + ".manaability.other_target_only"));
                                 return 0;

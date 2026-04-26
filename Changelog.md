@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.121
+
+### Changes
+
+- **Fabric: Sprint 90 — global Granite `Text.translatable` audit (`FabricAuraSkills-2.3.121.jar`):** All remaining **player-visible** Fabric command paths that used **`Text.translatable("auraskills.granite…")`** now use **`FabricGraniteText.key`** — **storage**, **backup**, **preset**, **profile**, **claimitems**, **confirmation**, **transfer**, **leaderboard**, **modifiers**, **item/armor**, **utilities**, **shortcuts**, **anti-AFK**, **mana abilities**, **reset health**, **amount rules**, and related feedback. **Tests:** **`FabricGraniteJavaSourcesTranslatableScanTest`** walks **`src/main/java/dev/aurelium/auraskills/fabric`** and bans raw Granite translatables; **`FabricGraniteEnUsKeysTest.sprint90GlobalCommandGraniteKeysPresentInEnUs`**. **Doc:** **`fabric/SPRINT_90_MANUAL_GLOBAL_GRANITE_TEXT_AUDIT.md`**, parity pointers. **Bedrock / Geyser** not run-time tested. **`projectVersion` 2.3.120 → 2.3.121**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test :fabric:build` — **PASS**.
+
 ## 2.3.120
 
 ### Changes

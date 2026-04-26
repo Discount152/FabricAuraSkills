@@ -2,6 +2,7 @@ package dev.aurelium.auraskills.fabric.command;
 
 import dev.aurelium.auraskills.api.skill.Skill;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
+import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -86,10 +87,10 @@ public final class FabricCommandConfirmation {
         }
         if (cur == null) {
             source.sendError(
-                    Text.translatable("auraskills.granite.command.confirmation.no_pending"));
+                    FabricGraniteText.key("auraskills.granite.command.confirmation.no_pending"));
         } else {
             source.sendError(
-                    Text.translatable("auraskills.granite.command.confirmation.mismatch"));
+                    FabricGraniteText.key("auraskills.granite.command.confirmation.mismatch"));
         }
         return false;
     }

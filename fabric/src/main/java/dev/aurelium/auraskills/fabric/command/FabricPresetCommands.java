@@ -95,7 +95,7 @@ public final class FabricPresetCommands {
                             if (names.isEmpty()) {
                                 source.sendFeedback(
                                         () ->
-                                                Text.translatable(
+                                                FabricGraniteText.key(
                                                         "auraskills.granite.command.preset.list_empty"),
                                         false);
                                 return 1;
@@ -108,14 +108,14 @@ public final class FabricPresetCommands {
                                 body.append("  ").append(n).append("\n");
                             }
                             String header =
-                                    Text.translatable(
+                                    FabricGraniteText.key(
                                                     "auraskills.granite.command.preset.list_header",
                                                     total)
                                             .getString();
                             String out = header + "\n" + body;
                             if (truncated) {
                                 out +=
-                                        Text.translatable(
+                                        FabricGraniteText.key(
                                                         "auraskills.granite.command.preset"
                                                                 + ".list_truncated",
                                                         total - MAX_LIST,
@@ -166,12 +166,12 @@ public final class FabricPresetCommands {
                             }
                             String entries = getConfirmEntries(p, preset, lo);
                             String header =
-                                    Text.translatable(
+                                    FabricGraniteText.key(
                                                     "auraskills.granite.command.preset.info_header",
                                                     nameArg)
                                             .getString();
                             String footer =
-                                    Text.translatable(
+                                    FabricGraniteText.key(
                                                     "auraskills.granite.command.preset.info_footer")
                                             .getString();
                             String out = header + "\n" + entries + "\n" + footer;
@@ -208,7 +208,7 @@ public final class FabricPresetCommands {
                                                             "{entries}",
                                                             entries));
                             String extra =
-                                    Text.translatable(
+                                    FabricGraniteText.key(
                                                     "auraskills.granite.command.preset"
                                                             + ".load_preview_run_confirm",
                                                     nameArg)
@@ -242,7 +242,7 @@ public final class FabricPresetCommands {
                                     p.getPluginFolder(), nameArg);
                             if (zip == null) {
                                 source.sendError(
-                                        Text.translatable(
+                                        FabricGraniteText.key(
                                                 "auraskills.granite.command.preset"
                                                         + ".path_not_in_presets"));
                                 return 0;
@@ -252,7 +252,7 @@ public final class FabricPresetCommands {
                                 return 0;
                             }
                             String loading =
-                                    Text.translatable(
+                                    FabricGraniteText.key(
                                                     "auraskills.granite.command.preset.loading")
                                             .getString();
                             source.sendFeedback(() -> Text.literal(p.getPrefix(lo) + loading), true);
@@ -277,7 +277,7 @@ public final class FabricPresetCommands {
                         .executeSync(
                                 () ->
                                         source.sendError(
-                                                Text.translatable(
+                                                FabricGraniteText.key(
                                                         "auraskills.granite.command.preset"
                                                                 + ".preapply_skipped")));
                 return;
@@ -288,7 +288,7 @@ public final class FabricPresetCommands {
                     .executeSync(
                             () ->
                                     source.sendError(
-                                            Text.translatable(
+                                            FabricGraniteText.key(
                                                     "auraskills.granite.command.preset"
                                                             + ".preapply_failed")));
             return;
@@ -302,7 +302,7 @@ public final class FabricPresetCommands {
                     .executeSync(
                             () ->
                                     source.sendError(
-                                            Text.translatable(
+                                            FabricGraniteText.key(
                                                     "auraskills.granite.command.preset.error",
                                                     e.getMessage())));
             return;
@@ -312,7 +312,7 @@ public final class FabricPresetCommands {
                     .executeSync(
                             () ->
                                     source.sendError(
-                                            Text.translatable(
+                                            FabricGraniteText.key(
                                                     "auraskills.granite.command.preset.error",
                                                     String.valueOf(e.getMessage()))));
             return;
@@ -328,7 +328,7 @@ public final class FabricPresetCommands {
                                 } catch (Exception e) {
                                     p.logger().severe("reloadFromDisk after preset failed", e);
                                     source.sendError(
-                                            Text.translatable(
+                                            FabricGraniteText.key(
                                                     "auraskills.granite.command.preset.reload_failed",
                                                     String.valueOf(e.getMessage())));
                                     return;
@@ -345,7 +345,7 @@ public final class FabricPresetCommands {
                                                                 "{name}",
                                                                 nameArg));
                                 String reloadNote =
-                                        Text.translatable(
+                                        FabricGraniteText.key(
                                                         "auraskills.granite.command.preset.reload_note")
                                                 .getString();
                                 source.sendFeedback(
@@ -359,7 +359,7 @@ public final class FabricPresetCommands {
                     .executeSync(
                             () ->
                                     source.sendError(
-                                            Text.translatable(
+                                            FabricGraniteText.key(
                                                     "auraskills.granite.command.preset.error",
                                                     String.valueOf(e.getMessage()))));
         }
@@ -399,24 +399,24 @@ public final class FabricPresetCommands {
     private static @Nullable ConfigPreset loadPrepared(
             FabricAuraSkills p, String nameArg, ServerCommandSource source, Locale lo) {
         if (FabricPresetNameValidator.validateZipFileName(nameArg).isPresent()) {
-            source.sendError(Text.translatable("auraskills.granite.command.preset.unsafe_name"));
+            source.sendError(FabricGraniteText.key("auraskills.granite.command.preset.unsafe_name"));
             return null;
         }
         File zip = FabricPresetNameValidator.resolveSafePresetZip(p.getPluginFolder(), nameArg);
         if (zip == null) {
             source.sendError(
-                    Text.translatable("auraskills.granite.command.preset.path_not_in_presets"));
+                    FabricGraniteText.key("auraskills.granite.command.preset.path_not_in_presets"));
             return null;
         }
         if (!zip.isFile()) {
-            source.sendError(Text.translatable("auraskills.granite.command.preset.missing_zip"));
+            source.sendError(FabricGraniteText.key("auraskills.granite.command.preset.missing_zip"));
             return null;
         }
         try {
             return p.getPresetManager().preparePreset(nameArg);
         } catch (PresetLoadException e) {
             source.sendError(
-                    Text.translatable("auraskills.granite.command.preset.error", e.getMessage()));
+                    FabricGraniteText.key("auraskills.granite.command.preset.error", e.getMessage()));
             return null;
         }
     }

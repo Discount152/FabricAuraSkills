@@ -132,35 +132,35 @@ public final class FabricStorageCommands {
                             String dataRoot = p.getPluginFolder().getName();
                             int loaded = p.getUserManager().getUserMap().size();
                             String out =
-                                    Text.translatable("auraskills.granite.command.storage.info_header")
+                                    FabricGraniteText.key("auraskills.granite.command.storage.info_header")
                                             .getString()
                                             + "\n"
-                                            + Text.translatable(
+                                            + FabricGraniteText.key(
                                                             "auraskills.granite.command.storage"
                                                                     + ".info_backend",
                                                             backend,
                                                             shortImpl)
                                                     .getString()
                                             + "\n"
-                                            + Text.translatable(
+                                            + FabricGraniteText.key(
                                                             "auraskills.granite.command.storage"
                                                                     + ".info_fqcn",
                                                             implFq)
                                                     .getString()
                                             + "\n"
-                                            + Text.translatable(
+                                            + FabricGraniteText.key(
                                                             "auraskills.granite.command.storage"
                                                                     + ".info_data_root",
                                                             dataRoot)
                                                     .getString()
                                             + "\n"
-                                            + Text.translatable(
+                                            + FabricGraniteText.key(
                                                             "auraskills.granite.command.storage"
                                                                     + ".info_loaded",
                                                             loaded)
                                                     .getString()
                                             + "\n"
-                                            + Text.translatable(
+                                            + FabricGraniteText.key(
                                                             "auraskills.granite.command.storage"
                                                                     + ".info_secrets",
                                                             p.configBoolean(Option.SQL_ENABLED)
@@ -168,7 +168,7 @@ public final class FabricStorageCommands {
                                                                     : "false")
                                                     .getString()
                                             + "\n"
-                                            + Text.translatable(
+                                            + FabricGraniteText.key(
                                                             "auraskills.granite.command.storage"
                                                                     + ".info_note")
                                                     .getString();
@@ -202,7 +202,7 @@ public final class FabricStorageCommands {
                                 int n = p.saveAllUserProfiles();
                                 source.sendFeedback(
                                         () ->
-                                                Text.translatable(
+                                                FabricGraniteText.key(
                                                         "auraskills.granite.command.storage"
                                                                 + ".save_done",
                                                         n),
@@ -211,7 +211,7 @@ public final class FabricStorageCommands {
                             } catch (Exception e) {
                                 p.logger().severe("Storage save command failed", e);
                                 source.sendError(
-                                        Text.translatable(
+                                        FabricGraniteText.key(
                                                 "auraskills.granite.command.storage.save_failed",
                                                 String.valueOf(e.getMessage())));
                                 return 0;
@@ -232,7 +232,7 @@ public final class FabricStorageCommands {
                             ServerCommandSource source = ctx.getSource();
                             source.sendFeedback(
                                     () ->
-                                            Text.translatable(
+                                            FabricGraniteText.key(
                                                     "auraskills.granite.command.storage"
                                                             + ".reload_info"),
                                     false);
@@ -257,7 +257,7 @@ public final class FabricStorageCommands {
                             if (from == null) {
                                 ctx.getSource()
                                         .sendError(
-                                                Text.translatable(
+                                                FabricGraniteText.key(
                                                         "auraskills.granite.command.storage"
                                                                 + ".merge_unknown_from",
                                                         fromR));
@@ -266,7 +266,7 @@ public final class FabricStorageCommands {
                             if (to == null) {
                                 ctx.getSource()
                                         .sendError(
-                                                Text.translatable(
+                                                FabricGraniteText.key(
                                                         "auraskills.granite.command.storage"
                                                                 + ".merge_unknown_to",
                                                         toR));
@@ -275,7 +275,7 @@ public final class FabricStorageCommands {
                             if (from.getId().equals(to.getId())) {
                                 ctx.getSource()
                                         .sendError(
-                                                Text.translatable(
+                                                FabricGraniteText.key(
                                                         "auraskills.granite.command.storage"
                                                                 + ".merge_same_skill"));
                                 return 0;
@@ -283,7 +283,7 @@ public final class FabricStorageCommands {
                             ServerCommandSource source = ctx.getSource();
                             source.sendFeedback(
                                     () ->
-                                            Text.translatable(
+                                            FabricGraniteText.key(
                                                     "auraskills.granite.command.storage"
                                                             + ".merge_preview",
                                                     fromR,
@@ -312,7 +312,7 @@ public final class FabricStorageCommands {
                             if (ctx.getSource().getEntity() != null) {
                                 ctx.getSource()
                                         .sendError(
-                                                Text.translatable(
+                                                FabricGraniteText.key(
                                                         "auraskills.granite.command.storage"
                                                                 + ".confirm_console_only"));
                                 return 0;
@@ -324,7 +324,7 @@ public final class FabricStorageCommands {
                             if (fromS == null) {
                                 ctx.getSource()
                                         .sendError(
-                                                Text.translatable(
+                                                FabricGraniteText.key(
                                                         "auraskills.granite.command.storage"
                                                                 + ".merge_unknown_from",
                                                         fromR));
@@ -333,7 +333,7 @@ public final class FabricStorageCommands {
                             if (toS == null) {
                                 ctx.getSource()
                                         .sendError(
-                                                Text.translatable(
+                                                FabricGraniteText.key(
                                                         "auraskills.granite.command.storage"
                                                                 + ".merge_unknown_to",
                                                         toR));
@@ -342,7 +342,7 @@ public final class FabricStorageCommands {
                             if (fromS.getId().equals(toS.getId())) {
                                 ctx.getSource()
                                         .sendError(
-                                                Text.translatable(
+                                                FabricGraniteText.key(
                                                         "auraskills.granite.command.storage"
                                                                 + ".merge_same_skill"));
                                 return 0;
@@ -370,14 +370,14 @@ public final class FabricStorageCommands {
             preBackup = p.getBackupProvider().saveBackupSync(true);
             if (preBackup == null) {
                 source.sendError(
-                        Text.translatable(
+                        FabricGraniteText.key(
                                 "auraskills.granite.command.storage.mutation_prereq_skipped"));
                 return 0;
             }
         } catch (Exception e) {
             p.logger().severe("Pre-mutation storage backup (UserState) failed", e);
             source.sendError(
-                    Text.translatable(
+                    FabricGraniteText.key(
                             "auraskills.granite.command.storage.mutation_prereq_failed"));
             return 0;
         }
@@ -420,7 +420,7 @@ public final class FabricStorageCommands {
         } catch (Exception e) {
             p.logger().severe("mergeskills loadStates/merge failed", e);
             source.sendError(
-                    Text.translatable(
+                    FabricGraniteText.key(
                             "auraskills.granite.command.storage.merge_failed",
                             String.valueOf(e.getMessage())));
             return 0;
@@ -433,7 +433,7 @@ public final class FabricStorageCommands {
         String backupName = preBackup.getName();
         source.sendFeedback(
                 () ->
-                        Text.translatable(
+                        FabricGraniteText.key(
                                 "auraskills.granite.command.storage.merge_done",
                                 fromS.getId().toString(),
                                 toS.getId().toString(),
@@ -444,7 +444,7 @@ public final class FabricStorageCommands {
                                 backupName),
                 true);
         source.sendFeedback(
-                () -> Text.translatable("auraskills.granite.command.storage.mutation_online_note"),
+                () -> FabricGraniteText.key("auraskills.granite.command.storage.mutation_online_note"),
                 false);
         return 1;
     }
@@ -465,7 +465,7 @@ public final class FabricStorageCommands {
                             ServerCommandSource source = ctx.getSource();
                             source.sendFeedback(
                                     () ->
-                                            Text.translatable(
+                                            FabricGraniteText.key(
                                                     "auraskills.granite.command.storage"
                                                             + ".remove_mod_preview"),
                                     false);
@@ -490,7 +490,7 @@ public final class FabricStorageCommands {
                             if (ctx.getSource().getEntity() != null) {
                                 ctx.getSource()
                                         .sendError(
-                                                Text.translatable(
+                                                FabricGraniteText.key(
                                                         "auraskills.granite.command.storage"
                                                                 + ".confirm_console_only"));
                                 return 0;
@@ -506,7 +506,7 @@ public final class FabricStorageCommands {
                                 if (preBackup == null) {
                                     ctx.getSource()
                                             .sendError(
-                                                    Text.translatable(
+                                                    FabricGraniteText.key(
                                                             "auraskills.granite.command.storage"
                                                                     + ".mutation_prereq_skipped"));
                                     return 0;
@@ -516,7 +516,7 @@ public final class FabricStorageCommands {
                                         .severe("Pre-mutation storage backup (UserState) failed", e);
                                 ctx.getSource()
                                         .sendError(
-                                                Text.translatable(
+                                                FabricGraniteText.key(
                                                         "auraskills.granite.command.storage"
                                                                 + ".mutation_prereq_failed"));
                                 return 0;
@@ -557,7 +557,7 @@ public final class FabricStorageCommands {
                                 p.logger().severe("removeallmodifiers failed", e);
                                 ctx.getSource()
                                         .sendError(
-                                                Text.translatable(
+                                                FabricGraniteText.key(
                                                         "auraskills.granite.command.storage"
                                                                 + ".remove_mod_failed",
                                                         String.valueOf(e.getMessage())));
@@ -568,7 +568,7 @@ public final class FabricStorageCommands {
                             ctx.getSource()
                                     .sendFeedback(
                                             () ->
-                                                    Text.translatable(
+                                                    FabricGraniteText.key(
                                                             "auraskills.granite.command.storage"
                                                                     + ".remove_mod_done",
                                                             fs,
@@ -580,7 +580,7 @@ public final class FabricStorageCommands {
                             ctx.getSource()
                                     .sendFeedback(
                                             () ->
-                                                    Text.translatable(
+                                                    FabricGraniteText.key(
                                                             "auraskills.granite.command.storage"
                                                                     + ".mutation_online_note"),
                                             false);

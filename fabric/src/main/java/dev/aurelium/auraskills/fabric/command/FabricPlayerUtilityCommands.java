@@ -13,6 +13,7 @@ import dev.aurelium.auraskills.common.ui.ActionBarToggleSubcommand;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.common.util.text.TextUtil;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
+import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -115,7 +116,7 @@ public final class FabricPlayerUtilityCommands {
                                     .orElse(null);
                     if (target == null) {
                         source.sendError(
-                                Text.translatable(
+                                FabricGraniteText.key(
                                         "auraskills.granite.command.xp.player_not_found", name));
                         return 0;
                     }
@@ -185,7 +186,7 @@ public final class FabricPlayerUtilityCommands {
                     ServerCommandSource source = ctx.getSource();
                     if (!(source.getEntity() instanceof ServerPlayerEntity player)) {
                         source.sendError(
-                                Text.translatable(
+                                FabricGraniteText.key(
                                         "auraskills.granite.command.utility.players_only"));
                         return 0;
                     }
@@ -260,7 +261,7 @@ public final class FabricPlayerUtilityCommands {
                     ServerCommandSource source = ctx.getSource();
                     if (!(source.getEntity() instanceof ServerPlayerEntity player)) {
                         source.sendError(
-                                Text.translatable(
+                                FabricGraniteText.key(
                                         "auraskills.granite.command.utility.players_only"));
                         return 0;
                     }

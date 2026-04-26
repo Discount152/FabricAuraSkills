@@ -1,5 +1,6 @@
 package dev.aurelium.auraskills.fabric.command;
 
+import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 
@@ -17,7 +18,7 @@ public final class FabricCommandAmountRules {
      */
     public static boolean requirePositiveForAdd(double amount, ServerCommandSource source) {
         if (amount <= 0.0) {
-            source.sendError(Text.translatable("auraskills.granite.command.xp.amount_positive"));
+            source.sendError(FabricGraniteText.key("auraskills.granite.command.xp.amount_positive"));
             return false;
         }
         return true;
@@ -29,7 +30,7 @@ public final class FabricCommandAmountRules {
      */
     public static boolean requireNonNegative(double amount, ServerCommandSource source) {
         if (amount < 0.0) {
-            source.sendError(Text.translatable("auraskills.granite.command.xp.amount_non_negative"));
+            source.sendError(FabricGraniteText.key("auraskills.granite.command.xp.amount_non_negative"));
             return false;
         }
         return true;
@@ -40,7 +41,7 @@ public final class FabricCommandAmountRules {
      */
     public static boolean requirePositiveIntForAdd(int amount, ServerCommandSource source) {
         if (amount <= 0) {
-            source.sendError(Text.translatable("auraskills.granite.command.level.count_positive"));
+            source.sendError(FabricGraniteText.key("auraskills.granite.command.level.count_positive"));
             return false;
         }
         return true;

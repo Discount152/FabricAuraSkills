@@ -6,6 +6,7 @@ import dev.aurelium.auraskills.api.skill.Skill;
 import dev.aurelium.auraskills.api.skill.Skills;
 import dev.aurelium.auraskills.common.config.Option;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
+import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import dev.aurelium.auraskills.fabric.menu.FabricAuraSkillsMenus;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.server.command.ServerCommandSource;
@@ -106,7 +107,7 @@ public final class FabricSkillShortcutCommands {
                             ServerCommandSource s = ctx.getSource();
                             if (!p.configBoolean(Option.ENABLE_SKILL_COMMANDS)) {
                                 s.sendError(
-                                        Text.translatable(
+                                        FabricGraniteText.key(
                                                 "auraskills.granite.command.skill_root"
                                                         + ".global_disabled"));
                                 return 0;
@@ -115,14 +116,14 @@ public final class FabricSkillShortcutCommands {
                                     .loadConfigEnabledMap()
                                     .getOrDefault(skill, false)) {
                                 s.sendError(
-                                        Text.translatable(
+                                        FabricGraniteText.key(
                                                 "auraskills.granite.command.skill_root"
                                                         + ".not_enabled"));
                                 return 0;
                             }
                             if (!(s.getEntity() instanceof ServerPlayerEntity self)) {
                                 s.sendError(
-                                        Text.translatable(
+                                        FabricGraniteText.key(
                                                 "auraskills.granite.command.utility"
                                                         + ".players_only"));
                                 return 0;
@@ -130,14 +131,14 @@ public final class FabricSkillShortcutCommands {
                             if (!Permissions.check(
                                     self, skillPermissionKey(skill), true)) {
                                 s.sendError(
-                                        Text.translatable(
+                                        FabricGraniteText.key(
                                                 "auraskills.granite.command"
                                                         + ".permission_denied"));
                                 return 0;
                             }
                             if (!skill.isEnabled()) {
                                 s.sendError(
-                                        Text.translatable(
+                                        FabricGraniteText.key(
                                                 "auraskills.granite.command.skill_root"
                                                         + ".unavailable"));
                                 return 0;

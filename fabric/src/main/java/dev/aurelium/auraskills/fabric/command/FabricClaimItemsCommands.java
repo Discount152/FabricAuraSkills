@@ -6,6 +6,7 @@ import dev.aurelium.auraskills.common.message.type.CommandMessage;
 import dev.aurelium.auraskills.common.message.type.MenuMessage;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
+import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import dev.aurelium.auraskills.fabric.item.FabricUnclaimedItemsMerge;
 import dev.aurelium.auraskills.fabric.menu.FabricAuraSkillsMenus;
 import net.minecraft.server.command.ServerCommandSource;
@@ -37,7 +38,7 @@ public final class FabricClaimItemsCommands {
         ServerCommandSource source = ctx.getSource();
         if (!(source.getEntity() instanceof ServerPlayerEntity player)) {
             source.sendError(
-                    Text.translatable("auraskills.granite.command.claimitems.players_only"));
+                    FabricGraniteText.key("auraskills.granite.command.claimitems.players_only"));
             return 0;
         }
         return FabricCommandPluginState.runtimeReadyOrEmpty()
@@ -84,7 +85,7 @@ public final class FabricClaimItemsCommands {
         ServerCommandSource source = ctx.getSource();
         if (!(source.getEntity() instanceof ServerPlayerEntity player)) {
             source.sendError(
-                    Text.translatable("auraskills.granite.command.claimitems.players_only"));
+                    FabricGraniteText.key("auraskills.granite.command.claimitems.players_only"));
             return 0;
         }
         return FabricCommandPluginState.runtimeReadyOrEmpty()
@@ -126,14 +127,14 @@ public final class FabricClaimItemsCommands {
         int sizeAfter = user.getUnclaimedItems().size();
         if (sizeAfter == 0) {
             source.sendFeedback(
-                    () -> Text.translatable(
+                    () -> FabricGraniteText.key(
                             "auraskills.granite.command.claimitems" + ".all_claimed"),
                     true);
             return 1;
         }
         if (touch > 0) {
             source.sendFeedback(
-                    () -> Text.translatable(
+                    () -> FabricGraniteText.key(
                             "auraskills.granite.command.claimitems" + ".partial",
                             sizeAfter,
                             touch),

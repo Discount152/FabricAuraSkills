@@ -736,13 +736,13 @@ public final class FabricItemArmorModifierCommands {
 
     private static int notPlayer(ServerCommandSource s) {
         s.sendError(
-                Text.translatable("auraskills.granite.command.item_armor_mod.players_only"));
+                FabricGraniteText.key("auraskills.granite.command.item_armor_mod.players_only"));
         return 0;
     }
 
     private static int emptyHand(ServerCommandSource s) {
         s.sendError(
-                Text.translatable("auraskills.granite.command.item_armor_mod.empty_hand"));
+                FabricGraniteText.key("auraskills.granite.command.item_armor_mod.empty_hand"));
         return 0;
     }
 
@@ -1789,7 +1789,7 @@ public final class FabricItemArmorModifierCommands {
                             } catch (IllegalArgumentException ex) {
                                 ctx.getSource()
                                         .sendError(
-                                                Text.translatable(
+                                                FabricGraniteText.key(
                                                         "auraskills.granite.command.item"
                                                                 + ".bad_key",
                                                         key));
@@ -1849,7 +1849,7 @@ public final class FabricItemArmorModifierCommands {
                             } catch (IllegalArgumentException ex) {
                                 ctx.getSource()
                                         .sendError(
-                                                Text.translatable(
+                                                FabricGraniteText.key(
                                                         "auraskills.granite.command.item"
                                                                 + ".bad_key",
                                                         key));
@@ -1908,7 +1908,7 @@ public final class FabricItemArmorModifierCommands {
                             if (target == null) {
                                 ctx.getSource()
                                         .sendError(
-                                                Text.translatable(
+                                                FabricGraniteText.key(
                                                         "auraskills.granite.command.xp"
                                                                 + ".player_not_found",
                                                         targetName));
@@ -1933,7 +1933,7 @@ public final class FabricItemArmorModifierCommands {
                             } catch (IllegalArgumentException ex) {
                                 ctx.getSource()
                                         .sendError(
-                                                Text.translatable(
+                                                FabricGraniteText.key(
                                                         "auraskills.granite.command.item"
                                                                 + ".bad_key",
                                                         key));

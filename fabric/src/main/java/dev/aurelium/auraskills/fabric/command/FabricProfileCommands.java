@@ -14,6 +14,7 @@ import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.common.user.UserState;
 import dev.aurelium.auraskills.common.util.text.TextUtil;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
+import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import dev.aurelium.auraskills.fabric.user.FabricUserDataRead;
 import dev.aurelium.auraskills.fabric.user.FabricUserDataTransfer;
 import net.minecraft.server.MinecraftServer;
@@ -151,7 +152,7 @@ public final class FabricProfileCommands {
                                     && !FabricUserDataTransfer.isPlayerOnline(server, uuid)
                                     && !FabricUserDataTransfer.hasYamlDataFile(p, uuid)) {
                                 source.sendError(
-                                        Text.translatable(
+                                        FabricGraniteText.key(
                                                 "auraskills.granite.command.profile.no_userdata_file",
                                                 uuid));
                                 return 0;
@@ -161,7 +162,7 @@ public final class FabricProfileCommands {
                                         FabricUserDataTransfer.getStateForOnlineUser(p, uuid);
                                 if (state == null) {
                                     source.sendError(
-                                            Text.translatable(
+                                            FabricGraniteText.key(
                                                     "auraskills.granite.command.profile"
                                                             + ".source_not_loaded",
                                                     uuid.toString()));
@@ -172,7 +173,7 @@ public final class FabricProfileCommands {
                             UserState state = FabricUserDataRead.loadUserState(p, server, uuid);
                             if (state == null) {
                                 source.sendError(
-                                        Text.translatable(
+                                        FabricGraniteText.key(
                                                 "auraskills.granite.command.profile.load_failed"));
                                 return 0;
                             }
@@ -181,7 +182,7 @@ public final class FabricProfileCommands {
                 .orElseGet(
                         () -> {
                             source.sendError(
-                                    Text.translatable(
+                                    FabricGraniteText.key(
                                             "auraskills.granite.command.profile.player_not_found",
                                             nameArg));
                             return 0;
@@ -223,7 +224,7 @@ public final class FabricProfileCommands {
         String out =
                 line.replaceAll("(\\u005C\\u006E)|(\\n)", "\n")
                         + "\n"
-                        + Text.translatable("auraskills.granite.command.profile.userstate_disclaimer")
+                        + FabricGraniteText.key("auraskills.granite.command.profile.userstate_disclaimer")
                                 .getString();
         source.sendFeedback(() -> Text.literal(out), false);
     }
@@ -287,7 +288,7 @@ public final class FabricProfileCommands {
         StringBuilder userState = new StringBuilder();
         userState
                 .append(
-                        Text.translatable(
+                        FabricGraniteText.key(
                                         "auraskills.granite.command.profile.mana_line",
                                         NumberUtil.format1(state.mana()))
                                 .getString())
@@ -320,7 +321,7 @@ public final class FabricProfileCommands {
                         + "\n"
                         + userState
                         + "\n"
-                        + Text.translatable("auraskills.granite.command.profile.userstate_disclaimer")
+                        + FabricGraniteText.key("auraskills.granite.command.profile.userstate_disclaimer")
                                 .getString();
         source.sendFeedback(() -> Text.literal(out), false);
     }
@@ -333,13 +334,13 @@ public final class FabricProfileCommands {
             java.util.function.Function<T, String> line) {
         String h =
                 p.getMessageProvider()
-                        .applyFormatting(Text.translatable(headerKey).getString());
+                        .applyFormatting(FabricGraniteText.key(headerKey).getString());
         if (items.isEmpty()) {
             return h
                     + " "
                     + p.getMessageProvider()
                             .applyFormatting(
-                                    Text.translatable("auraskills.granite.command.profile.modifier_none")
+                                    FabricGraniteText.key("auraskills.granite.command.profile.modifier_none")
                                             .getString())
                     + "\n";
         }

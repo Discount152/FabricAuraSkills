@@ -150,7 +150,7 @@ public final class FabricBackupCommands {
         }
         if (file == null) {
             source.sendError(
-                    Text.translatable("auraskills.granite.command.backup.skipped_too_many_users"));
+                    FabricGraniteText.key("auraskills.granite.command.backup.skipped_too_many_users"));
             return;
         }
         String line =
@@ -176,7 +176,7 @@ public final class FabricBackupCommands {
                             if (!dir.isDirectory()) {
                                 source.sendFeedback(
                                         () ->
-                                                Text.translatable(
+                                                FabricGraniteText.key(
                                                         "auraskills.granite.command.backup.list_empty"),
                                         false);
                                 return 1;
@@ -185,7 +185,7 @@ public final class FabricBackupCommands {
                             if (raw == null || raw.length == 0) {
                                 source.sendFeedback(
                                         () ->
-                                                Text.translatable(
+                                                FabricGraniteText.key(
                                                         "auraskills.granite.command.backup.list_empty"),
                                         false);
                                 return 1;
@@ -212,7 +212,7 @@ public final class FabricBackupCommands {
                                                 i + 1, f.getName(), sizeKb, when));
                             }
                             String header =
-                                    Text.translatable(
+                                    FabricGraniteText.key(
                                                     "auraskills.granite.command.backup.list_header",
                                                     total)
                                             .getString();
@@ -222,7 +222,7 @@ public final class FabricBackupCommands {
                             }
                             if (total > show) {
                                 body.append(
-                                        Text.translatable(
+                                        FabricGraniteText.key(
                                                         "auraskills.granite.command.backup.list_truncated",
                                                         total - show)
                                                 .getString());
@@ -246,7 +246,7 @@ public final class FabricBackupCommands {
                             ctx.getSource()
                                     .sendFeedback(
                                             () ->
-                                                    Text.translatable(
+                                                    FabricGraniteText.key(
                                                             "auraskills.granite.command.backup.info_body"),
                                             false);
                             return 1;
@@ -286,7 +286,7 @@ public final class FabricBackupCommands {
                                             .applyFormatting(
                                                     p.getMsg(CommandMessage.BACKUP_LOAD_CONFIRM, lo));
                             String extra =
-                                    Text.translatable(
+                                    FabricGraniteText.key(
                                                     "auraskills.granite.command.backup.load_preview_run_confirm",
                                                     file.getName())
                                             .getString();
@@ -359,7 +359,7 @@ public final class FabricBackupCommands {
                         .executeSync(
                                 () ->
                                         source.sendError(
-                                                Text.translatable(
+                                                FabricGraniteText.key(
                                                         "auraskills.granite.command.backup"
                                                                 + ".prerestore_skipped")));
                 return;
@@ -370,7 +370,7 @@ public final class FabricBackupCommands {
                     .executeSync(
                             () ->
                                     source.sendError(
-                                            Text.translatable(
+                                            FabricGraniteText.key(
                                                     "auraskills.granite.command.backup.prerestore_failed")));
             return;
         }
@@ -401,7 +401,7 @@ public final class FabricBackupCommands {
                                                     source.sendFeedback(
                                                             () -> Text.literal(out), false);
                                                     String caveat =
-                                                            Text.translatable(
+                                                            FabricGraniteText.key(
                                                                             "auraskills.granite.command"
                                                                                     + ".backup.online_refreshed_note")
                                                                     .getString();
@@ -434,13 +434,13 @@ public final class FabricBackupCommands {
             FabricAuraSkills p, String nameArg, ServerCommandSource source, Locale lo) {
         if (FabricBackupPathValidator.validateFileNameToken(nameArg).isPresent()) {
             source.sendError(
-                    Text.translatable("auraskills.granite.command.backup.unsafe_filename"));
+                    FabricGraniteText.key("auraskills.granite.command.backup.unsafe_filename"));
             return null;
         }
         File f = FabricBackupPathValidator.resolveSafeBackupFile(p.getPluginFolder(), nameArg);
         if (f == null) {
             source.sendError(
-                    Text.translatable(
+                    FabricGraniteText.key(
                             "auraskills.granite.command.backup.path_not_in_backups_or_no_folder"));
             return null;
         }
