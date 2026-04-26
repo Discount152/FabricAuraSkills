@@ -3,8 +3,11 @@
 | Field | Value |
 |--------|--------|
 | **Sprint** | **87** — **runtime validation only** (no default feature work) |
+| **Status** | **Deferred** — no Bedrock tester / Bedrock client currently available to run this pass. |
 | **Goal** | First **dedicated** pass: Bedrock players via **Geyser + Floodgate** on the **same** Fabric server running **Granite Skills** + **GraniteLib** behave **safely** and **acceptably** vs Java-validated command / menu / action-bar behavior. |
 | **Out of scope** | New commands, new menus, full Slate parity, renames, balance/XP/storage changes **unless** a **confirmed** Bedrock/Geyser bug requires a **small** safe fix. **JobsCommand** and third-party plugin ecosystems remain out of scope (see **`PARITY_BACKLOG.md`**). |
+
+This sprint is **prepared** but **not executed**. **Bedrock/Geyser** runtime validation remains **required** before claiming **release-grade cross-play** support, but it **does not block** continued **Java/Fabric** development (polish, menu/lore cleanup, parity gaps, docs, packaging, release prep).
 
 ## Hard scope (reminder)
 
