@@ -2,7 +2,7 @@
 
 | Field | Value |
 |--------|--------|
-| **Build (in-repo `projectVersion`)** | **2.3.112** (expected JAR: `FabricAuraSkills-2.3.112.jar`) |
+| **Build (in-repo `projectVersion`)** | **2.3.112** (expected JAR: `FabricAuraSkills-2.3.112.jar`); for **stuck bar after level-up in smart** see **2.3.113** and **`SPRINT_81B_MANUAL_SMART_ACTION_BAR_LEVELUP_FIX.md`**. |
 | **Sprint 81 (runtime) finding** | **Smart** mode behaves as designed. **Problem:** old **`userdata`** with legacy **`action_bar.idle`** and **no** **`idle_mode`** was being treated like **always**-on until the player cycled **`/abtoggle`**. **81A** migrates that cohort to **smart** (or **off** when `idle: false`) and **persists** **`idle_mode`**. |
 | **Sprint 81A code focus** | **No** change to the **smart visibility tracker**; **YAML/SQL load** + **SQL save** + **Fabric/Bukkit** `/abtoggle` **subcommands**. |
 
@@ -47,6 +47,8 @@ action_bar:
 **Bukkit:** `/skills toggle …`, `abtoggle` alias; **Fabric:** top-level `/toggle`, `/abtoggle` and mirrors on `/skills` / etc. as already registered.
 
 ## Java validation (operator)
+
+**If the idle bar stays on forever after a health/mana level-up while `/abtoggle status` says Smart, that is Sprint 81B** ( **`SPRINT_81B_MANUAL_SMART_ACTION_BAR_LEVELUP_FIX.md`**, **2.3.113+** ), not an 81A migration issue.
 
 1. Deploy **2.3.112**; **full restart** recommended.
 2. Use the **same** legacy test player that previously loaded in **always**-style from **`idle: true` only**.

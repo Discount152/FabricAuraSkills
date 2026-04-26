@@ -151,6 +151,12 @@ public abstract class ActionBarManager {
             st.visibleUntilMs = Math.max(st.visibleUntilMs, now + (long) join * MS_PER_TICK);
         }
 
+        // Sprint 81B: "stable" values are only updated when the smart window is *over* (see !inWindow
+        // block below). While the window is open after a level-up, current h/max/m stays different
+        // from those stables *every* tick. Extending on stable-diff must run only when we were
+        // *not* already in a window, or we re-extend forever. Intra-window changes use inWin* below.
+        boolean wasInWindow = now < st.visibleUntilMs;
+
         int healthTicks = Math.max(0, plugin.configInt(Option.ACTION_BAR_SHOW_AFTER_HEALTH_CHANGE_TICKS));
         int manaTicks = Math.max(0, plugin.configInt(Option.ACTION_BAR_SHOW_AFTER_MANA_CHANGE_TICKS));
 
@@ -167,7 +173,7 @@ public abstract class ActionBarManager {
         } else {
             boolean dHealth = h != st.stableH || mh != st.stableMaxH;
             boolean dMana = m != st.stableM || mm != st.stableMaxM;
-            if (dHealth || dMana) {
+            if (shouldExtendSmartIdleWindowFromStableDiff(wasInWindow, dHealth, dMana)) {
                 int ext = pickExtendTicks(dHealth, dMana, healthTicks, manaTicks);
                 if (ext > 0) {
                     st.visibleUntilMs = Math.max(st.visibleUntilMs, now + (long) ext * MS_PER_TICK);
@@ -223,6 +229,16 @@ public abstract class ActionBarManager {
         } else {
             return manaTicks;
         }
+    }
+
+    /**
+     * "Stable" HP/mana are frozen until the smart visibility window ends. While the window is open,
+     * they intentionally differ from current values, so a stable-vs-current check must not extend
+     * the window on every tick (Sprint 81B).
+     */
+    static boolean shouldExtendSmartIdleWindowFromStableDiff(
+            boolean wasInWindow, boolean dHealth, boolean dMana) {
+        return (dHealth || dMana) && !wasInWindow;
     }
 
     private void sendIdleActionBarMessage(User user) {

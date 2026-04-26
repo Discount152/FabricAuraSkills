@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.113
+
+### Changes
+
+- **Granite: Smart idle action bar after health/mana level-up (Sprint 81B):** Fixed **smart** mode leaving the health/mana action bar on **indefinitely** after a max HP or max mana change. **Cause (81B):** `stable*` display snapshots are only refreshed when the visibility window **ends**; the stable-vs-current branch extended `visibleUntil` on **every** tick while the window was open, because current values still differed from those stables. **Fix:** only apply that extension when the player was **not** already in the window (`!wasInWindow`); **in-window** changes continue to use the **`inWin*`** path. **Tests:** `ActionBarManagerSmartIdleStableTest` (`common`). **Doc:** `fabric/SPRINT_81B_MANUAL_SMART_ACTION_BAR_LEVELUP_FIX.md`; **SPRINT_81/81A/80** + parity note. **Diagnostic:** if the bar misbehaves, run **`/abtoggle status`** — mode staying **Smart** with a stuck bar was this visibility bug, not a mode flip. **`projectVersion` 2.3.112 → 2.3.113**. **Build:** `.\gradlew -PfabricOnly=true :common:test :fabric:test :fabric:build` and `.\gradlew :bukkit:compileJava` (shared `ActionBarManager`). **Bedrock** not run-time tested.
+
 ## 2.3.112
 
 ### Changes
