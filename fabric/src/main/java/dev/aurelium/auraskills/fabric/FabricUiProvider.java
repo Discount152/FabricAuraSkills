@@ -4,6 +4,10 @@ import dev.aurelium.auraskills.api.skill.Skill;
 import dev.aurelium.auraskills.common.ui.ActionBarManager;
 import dev.aurelium.auraskills.common.ui.UiProvider;
 import dev.aurelium.auraskills.common.user.User;
+import dev.aurelium.auraskills.fabric.text.FabricTextAdapter;
+import net.minecraft.network.packet.s2c.play.SubtitleS2CPacket;
+import net.minecraft.network.packet.s2c.play.TitleFadeS2CPacket;
+import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
@@ -11,10 +15,12 @@ import java.text.NumberFormat;
 
 public final class FabricUiProvider implements UiProvider {
 
+    private final FabricAuraSkills plugin;
     private final ActionBarManager actionBarManager;
     private final FabricBossBarManager bossBarManager = new FabricBossBarManager();
 
     public FabricUiProvider(FabricAuraSkills plugin) {
+        this.plugin = plugin;
         this.actionBarManager = new FabricActionBarManager(plugin, this);
     }
 
@@ -39,10 +45,13 @@ public final class FabricUiProvider implements UiProvider {
     @Override
     public void sendActionBar(User user, String message) {
         ServerPlayerEntity player = FabricUser.getPlayer(user);
-        if (player == null || message.isEmpty()) {
+        if (player == null || message == null || message.isEmpty()) {
             return;
         }
-        player.sendMessage(Text.literal(message), true);
+        Text line =
+                FabricTextAdapter.toNativeText(
+                        plugin.getMessageProvider().stringToComponent(message), plugin.getServer());
+        player.sendMessage(line, true);
     }
 
     @Override
@@ -56,6 +65,20 @@ public final class FabricUiProvider implements UiProvider {
         if (player == null) {
             return;
         }
-        player.sendMessage(Text.literal(title), false);
+        int fadeInTicks = Math.max(0, fadeIn);
+        int stayTicks = Math.max(0, stay);
+        int fadeOutTicks = Math.max(0, fadeOut);
+        Text titleText =
+                FabricTextAdapter.toNativeText(
+                        plugin.getMessageProvider().stringToComponent(title == null ? "" : title),
+                        plugin.getServer());
+        Text subtitleText =
+                FabricTextAdapter.toNativeText(
+                        plugin.getMessageProvider().stringToComponent(subtitle == null ? "" : subtitle),
+                        plugin.getServer());
+        var net = player.networkHandler;
+        net.sendPacket(new TitleFadeS2CPacket(fadeInTicks, stayTicks, fadeOutTicks));
+        net.sendPacket(new TitleS2CPacket(titleText));
+        net.sendPacket(new SubtitleS2CPacket(subtitleText));
     }
 }

@@ -87,19 +87,13 @@
 
 ## Known issues (record; **not fixed in Sprint 78** unless product approves a hotfix)
 
-### 1) Raw MiniMessage in player-facing text (Java)
+### 1) Raw MiniMessage in player-facing text (Java) — **addressed in Sprint 79 (code)**
 
-**Observed (reported for Sprint 78 tracking):** Formatted text sometimes shows **literal MiniMessage** tags (e.g. **`<red>`**, nested tags) instead of parsed styling in at least:
+**Observed (Sprint 78 / screenshots):** Literal tags such as **`<green>`**, **`<bold>`**, **`<red>20/20`**, **`<aqua>… Mana`**) in level-up chat and action bar / HUD.
 
-- **Skill level-up** (chat and/or system message path)
-- **Health / action bar** related display
-- **Mana / action bar** related display
+**Sprint 79 fix (in-repo):** **`FabricMessageProvider`** now matches **Bukkit** — `stringToComponent` / `applyFormatting` / `componentToString` go through **`FabricTextFormatter`** (MiniMessage + legacy), not legacy-only. **`FabricUiProvider#sendActionBar`** and **`sendTitle`** use **`FabricTextAdapter.toNativeText(...)`** instead of **`Text.literal`**. See **`SPRINT_79_MANUAL_TEXT_RENDERING.md`**, **`projectVersion` 2.3.109**.
 
-**Not in Sprint 78 scope** per operator directive: do **not** swerve this sprint into a full formatting pass; expect a **future** text-rendering / MiniMessage pass.
-
-**If seen during your smoke run:** set **Result** = **Pass (with known issue)** or add **Fail** if unreadable, and paste one example line in **Notes** (and screenshot in PR if useful).
-
-**Screenshot:** If a capture matches this (e.g. level-up chat), reference it here and file under this issue.
+**Retest:** Re-run the minimum smoke on **2.3.109+** JARs and re-mark any row that was **Fail (raw tags)** as **Pass** or file a follow-up.
 
 ### 2) Other
 
@@ -119,5 +113,5 @@ If you fix a small bug discovered during your run, list commit / file and re-run
 
 ## Recommended next sprint
 
-- **Format / MiniMessage:** dedicated sprint for **parsing** or **plain-text** paths where tags leak (level-up, bars)—after Java smoke is **green** or **Fail** issues triaged.
+- **After 2.3.109:** Re-run **Sprint 78** minimum table on a disposable host to confirm no raw tags (or document remaining edge cases on **`FabricTextAdapter` Gson** fallback).
 - **Bedrock / Geyser** command-menu smoke—**separate** sprint; **out of Sprint 78** scope.

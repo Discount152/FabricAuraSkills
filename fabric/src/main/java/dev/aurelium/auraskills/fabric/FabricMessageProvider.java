@@ -1,12 +1,17 @@
 package dev.aurelium.auraskills.fabric;
 
 import dev.aurelium.auraskills.common.message.MessageProvider;
+import dev.aurelium.auraskills.fabric.text.FabricTextFormatter;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
+/**
+ * Bukkit uses {@code TextFormatter#toComponent} for {@link #stringToComponent} (see {@code
+ * BukkitMessageProvider}). Fabric previously used only {@link
+ * net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer}, so MiniMessage tags from
+ * YAML (e.g. {@code <green>}) were shown literally. This matches Bukkit: MiniMessage in, legacy
+ * string out for {@link #applyFormatting} / {@link #componentToString} round-trips.
+ */
 public final class FabricMessageProvider extends MessageProvider {
-
-    private static final LegacyComponentSerializer LEGACY = LegacyComponentSerializer.legacySection();
 
     public FabricMessageProvider(FabricAuraSkills plugin) {
         super(plugin);
@@ -14,17 +19,16 @@ public final class FabricMessageProvider extends MessageProvider {
 
     @Override
     public String applyFormatting(String message) {
-        Component c = LEGACY.deserialize(message);
-        return LEGACY.serialize(c);
+        return FabricTextFormatter.toString(FabricTextFormatter.toComponent(message));
     }
 
     @Override
     public String componentToString(Component component) {
-        return LEGACY.serialize(component);
+        return FabricTextFormatter.toString(component);
     }
 
     @Override
     public Component stringToComponent(String message) {
-        return LEGACY.deserialize(message);
+        return FabricTextFormatter.toComponent(message);
     }
 }

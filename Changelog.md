@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.109
+
+### Changes
+
+- **Fabric: Text rendering (Sprint 79):** **MiniMessage** / tag strings no longer show **raw** in **chat** or **action bar** / **level-up title** paths. **Cause:** **`FabricMessageProvider#stringToComponent`** used **legacy** serializer only (unlike Bukkit **`TextFormatter#toComponent`**). **`sendActionBar`** / **`sendTitle`** used **`Text.literal`**; title was not real overlay. **Fix:** delegate **`stringToComponent`**, **`applyFormatting`**, **`componentToString`** to **`FabricTextFormatter`**; **`FabricUiProvider`** — **`stringToComponent` + `FabricTextAdapter.toNativeText`**, **title** via **`TitleFadeS2CPacket` / `TitleS2CPacket` / `SubtitleS2CPacket`**. **Tests:** `FabricTextFormatterTest`. **Doc:** `SPRINT_79_MANUAL_TEXT_RENDERING.md`, **`SPRINT_78_…`** known-issue update. **Bedrock** not run-time tested. **`projectVersion` 2.3.108 → 2.3.109**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test` and `:fabric:build` — **PASS**.
+
 ## 2.3.108
 
 ### Changes
