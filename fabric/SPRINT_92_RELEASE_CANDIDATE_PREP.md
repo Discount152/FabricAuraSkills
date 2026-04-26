@@ -53,8 +53,8 @@
 
 ## Part F — Tag status
 
-- **Created locally:** **`v2.3.122-fabric-rc1`** with message `FabricAuraSkills 2.3.122 Fabric release candidate 1` — **if** present after Sprint 92 commit (`git tag -l 'v2.3.122-fabric-rc1'`).
-- **Deferred only if:** maintainer skips tag intentionally (document reason here): *— none by default.*
+- **Created locally:** **`v2.3.122-fabric-rc1`** (annotated) — message: `FabricAuraSkills 2.3.122 Fabric release candidate 1`. Verify: `git tag -l -n1 v2.3.122-fabric-rc1`.
+- **Push:** not run — operator: `git push origin v2.3.122-fabric-rc1` when ready.
 
 ## Final recommendation
 
