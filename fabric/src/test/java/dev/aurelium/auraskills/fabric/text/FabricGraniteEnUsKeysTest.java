@@ -135,4 +135,23 @@ class FabricGraniteEnUsKeysTest {
             assertTrue(json.contains("\"" + key + "\""), "missing " + key);
         }
     }
+
+    @Test
+    void sprint89SourcesPagedChatKeysPresentInEnUs() throws Exception {
+        String json;
+        try (InputStream in =
+                FabricGraniteEnUsKeysTest.class.getResourceAsStream(
+                        "/assets/auraskills/lang/en_us.json")) {
+            assertTrue(in != null, "classpath /assets/auraskills/lang/en_us.json");
+            json = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+        }
+        for (String key :
+                new String[] {
+                    "auraskills.granite.command.sources.header",
+                    "auraskills.granite.command.sources.continuation",
+                    "auraskills.granite.command.sources.line"
+                }) {
+            assertTrue(json.contains("\"" + key + "\""), "missing " + key);
+        }
+    }
 }

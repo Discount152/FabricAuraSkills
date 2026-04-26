@@ -7,6 +7,7 @@ import dev.aurelium.auraskills.api.skill.Skill;
 import dev.aurelium.auraskills.common.message.type.CommandMessage;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
+import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -57,7 +58,7 @@ public final class FabricSourcesCommands {
                         () -> {
                             ctx.getSource()
                                     .sendError(
-                                            Text.translatable(
+                                            FabricGraniteText.key(
                                                     "auraskills.granite.command.sources.bad_sort",
                                                     sortRaw));
                             return 0;

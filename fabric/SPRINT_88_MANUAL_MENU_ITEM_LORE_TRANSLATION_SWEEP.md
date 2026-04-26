@@ -3,6 +3,7 @@
 | Field | Value |
 |--------|--------|
 | **Sprint** | **88** |
+| **Status** | **Accepted (code)** — **operator validation NRP** at doc time. **`/sources` paged chat** raw-key follow-up = **Sprint 89** (**`2.3.120+`**, **`SPRINT_89_MANUAL_SOURCES_CHAT_TRANSLATION.md`**). |
 | **Build** | **`FabricAuraSkills-2.3.119.jar`** (`projectVersion` **2.3.119**) |
 | **Reason** | Sprint **83** fixed command/menu **titles** and **“opened”** feedback; deeper **built-in menu GUIs** still used **`Text.translatable`** for **item names/lore** and controls, so **vanilla Java** clients could show raw **`auraskills.granite.*`** keys. Sprint **88** routes those paths through **`FabricGraniteText`**. |
 | **Bedrock / Geyser** | **Not tested** — **87** remains **deferred** (no Bedrock tester). |
@@ -21,9 +22,9 @@
 - **Commands (menu feedback)** — **`FabricOpenMenuCommands`**, **`FabricOpenMenuAbilities`**, **`FabricOpenMenuLeaderboard`**
 - **Sources GUI failure line** — **`FabricSourcesOpenSupport`** (`sources.menu_fallback` only)
 
-## Known exclusions
+## Known exclusions (superseded for chat by Sprint 89)
 
-- **`FabricSourcesOpenSupport#sendChatListing`** — **`/sources`** (and console) **paged chat** output still uses **`Text.translatable`** for header/continuation/lines. Vanilla may still see raw Granite keys there until a future sweep.
+- **`/sources` paged chat** — was **`Text.translatable`** until **Sprint 89** (**`FabricGraniteText`** for **`sendChatListing`** on **`2.3.120+`**). See **`SPRINT_89_MANUAL_SOURCES_CHAT_TRANSLATION.md`**.
 - **YAML-overridden format keys** — menus resolve keys via **`FabricMenuYamlSlice#resolveFormatKey`**; custom keys must exist in server lang (or the helper falls back to showing the key string).
 
 ## Java operator checklist (vanilla client)

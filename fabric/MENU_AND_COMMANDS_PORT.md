@@ -16,9 +16,11 @@
 
 **Sprint 87:** **`SPRINT_87_MANUAL_BEDROCK_GEYSER_VALIDATION.md`** — **Bedrock/Geyser** validation is **planned and documented**; **runtime pass deferred** until a **Bedrock** tester is available. **Does not block** Java/Fabric menu polish.
 
-**Sprint 88 (code):** **`SPRINT_88_MANUAL_MENU_ITEM_LORE_TRANSLATION_SWEEP.md`** — built-in menu **item names/lore**, **titles** (incl. paging subtitle), **navigation** controls, **leaderboard**/**abilities**/**sources** rows, and **`openmenu`** menu-open feedback use **`FabricGraniteText`** so **vanilla Java** clients do not see raw **`auraskills.granite.*`** in inventory packets. **`2.3.119+`**. **`/sources`** chat listing path still uses **`translatable`** (non-menu).
+**Sprint 88 (code):** **`SPRINT_88_MANUAL_MENU_ITEM_LORE_TRANSLATION_SWEEP.md`** — built-in menu **item names/lore**, **titles** (incl. paging subtitle), **navigation** controls, **leaderboard**/**abilities**/**sources** rows, and **`openmenu`** menu-open feedback use **`FabricGraniteText`** so **vanilla Java** clients do not see raw **`auraskills.granite.*`** in inventory packets. **`2.3.119+`**.
 
-**Recommended next (Java-side):** Operator validation per **`SPRINT_88`**; optional **`/sources`** chat literal sweep; or **Sprint 87** when a **Bedrock** tester is available.
+**Sprint 89 (code):** **`SPRINT_89_MANUAL_SOURCES_CHAT_TRANSLATION.md`** — **`/sources`** **paged chat** (console/RCON + GUI fallback) and **`sources.bad_sort`** use **`FabricGraniteText`**. **`2.3.120+`**.
+
+**Recommended next (Java-side):** Operator validation **`SPRINT_88`** + **`SPRINT_89`** on **`2.3.120+`**; or **Sprint 87** when a **Bedrock** tester is available.
 
 This document is the **engineering plan** for shipping **menus and the full command tree together** (one release goal), by **porting Slate** to Fabric instead of writing a second menu engine.
 

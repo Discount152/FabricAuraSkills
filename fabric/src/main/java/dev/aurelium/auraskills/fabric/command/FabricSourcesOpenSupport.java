@@ -43,25 +43,27 @@ public final class FabricSourcesOpenSupport {
         for (int start = 0; start < list.size(); start += LINES_PER_MESSAGE) {
             int end = Math.min(start + LINES_PER_MESSAGE, list.size());
             int page = (start / LINES_PER_MESSAGE) + 1;
-            MutableText out;
+            MutableText out = Text.empty();
             if (start == 0) {
-                out = Text.translatable(
-                        "auraskills.granite.command.sources.header",
-                        skill.getDisplayName(lo, false),
-                        sortKey(sort),
-                        list.size(),
-                        page,
-                        totalPages);
+                out.append(
+                        FabricGraniteText.key(
+                                "auraskills.granite.command.sources.header",
+                                skill.getDisplayName(lo, false),
+                                sortKey(sort),
+                                list.size(),
+                                page,
+                                totalPages));
             } else {
-                out = Text.translatable(
-                        "auraskills.granite.command.sources.continuation", page, totalPages);
+                out.append(
+                        FabricGraniteText.key(
+                                "auraskills.granite.command.sources.continuation", page, totalPages));
             }
             for (int i = start; i < end; i++) {
                 int index = i + 1;
                 XpSource s = list.get(i);
                 out.append(Text.literal("\n"));
                 out.append(
-                        Text.translatable(
+                        FabricGraniteText.key(
                                 "auraskills.granite.command.sources.line",
                                 index,
                                 s.getDisplayName(lo),
@@ -90,7 +92,7 @@ public final class FabricSourcesOpenSupport {
         List<XpSource> list = FabricSourcesListSupport.buildSorted(loaded, sort, lo);
         if (list.isEmpty()) {
             feedbackSource.sendFeedback(
-                    () -> Text.translatable(
+                    () -> FabricGraniteText.key(
                             "auraskills.granite.command.sources.empty",
                             skill.getDisplayName(lo, false)),
                     false);

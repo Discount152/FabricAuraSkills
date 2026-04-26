@@ -9,9 +9,9 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 /**
- * Fails if built-in menu / openmenu sources use {@code Text.translatable("auraskills.granite…")}
- * again — vanilla clients would see raw keys in inventory packets. ({@link FabricGraniteText}
- * sends literals resolved on the server.)
+ * Fails if targeted Fabric UI/command sources use {@code Text.translatable("auraskills.granite…")}
+ * again — vanilla clients would see raw keys. ({@link FabricGraniteText} sends literals resolved on
+ * the server.)
  */
 class FabricMenuGuiTranslatableScanTest {
 
@@ -30,7 +30,9 @@ class FabricMenuGuiTranslatableScanTest {
                     "src/main/java/dev/aurelium/auraskills/fabric/menu/FabricMenuRegistry.java",
                     "src/main/java/dev/aurelium/auraskills/fabric/command/FabricOpenMenuCommands.java",
                     "src/main/java/dev/aurelium/auraskills/fabric/command/FabricOpenMenuAbilities.java",
-                    "src/main/java/dev/aurelium/auraskills/fabric/command/FabricOpenMenuLeaderboard.java");
+                    "src/main/java/dev/aurelium/auraskills/fabric/command/FabricOpenMenuLeaderboard.java",
+                    "src/main/java/dev/aurelium/auraskills/fabric/command/FabricSourcesOpenSupport.java",
+                    "src/main/java/dev/aurelium/auraskills/fabric/command/FabricSourcesCommands.java");
 
     private static final String BANNED_SNIPPET = "Text.translatable(\"auraskills.granite";
 

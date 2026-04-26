@@ -3,14 +3,14 @@
 | Field | Value |
 |--------|--------|
 | **Sprint** | **82** — **runtime validation only** (no default feature work) |
-| **Status** | **Pass (operator) — Java matrix closed enough to move on.** Core/menu/action-bar, XP/skilllevel **view**, and **permissioned-staff** **`storage`** / **`backup`** / **`preset`** / prefixed **`item`** roots validated in-game with **`auraskills.*`** (LuckPerms). **Intentional gaps:** destructive backup/preset paths, **`item register`/`give`** on disposable data only. **Menu inventory text:** Sprint **88** (**`2.3.119+`**, **`SPRINT_88_MANUAL_MENU_ITEM_LORE_TRANSLATION_SWEEP.md`**) replaces **`Text.translatable`** with **`FabricGraniteText`** on built-in menu GUIs — **operator re-verify** on vanilla client recommended; **`/sources`** paged **chat** may still use **`translatable`**. **Bedrock/Geyser:** **not tested** — **`SPRINT_87_MANUAL_BEDROCK_GEYSER_VALIDATION.md`** prepared; **runtime validation deferred** (no Bedrock tester); see **`PARITY_BACKLOG.md`**. **Java/Fabric** work may continue. |
+| **Status** | **Pass (operator) — Java matrix closed enough to move on.** Core/menu/action-bar, XP/skilllevel **view**, and **permissioned-staff** **`storage`** / **`backup`** / **`preset`** / prefixed **`item`** roots validated in-game with **`auraskills.*`** (LuckPerms). **Intentional gaps:** destructive backup/preset paths, **`item register`/`give`** on disposable data only. **Menu inventory text:** Sprint **88** (**`2.3.119+`**) + **`/sources`** paged **chat** Sprint **89** (**`2.3.120+`**, **`SPRINT_89_MANUAL_SOURCES_CHAT_TRANSLATION.md`**) — **`FabricGraniteText`** on GUI + chat listing paths; **operator re-verify** on vanilla (and console for **`/sources`** chat) recommended. **Bedrock/Geyser:** **not tested** — **`SPRINT_87_MANUAL_BEDROCK_GEYSER_VALIDATION.md`** prepared; **runtime validation deferred** (no Bedrock tester); see **`PARITY_BACKLOG.md`**. **Java/Fabric** work may continue. |
 | **Minimum artifact** | **`FabricAuraSkills-2.3.114.jar`** (includes Sprints **79** text, **81–81C** action bar). Repo doc milestone **`2.3.115`**: matrix protocol. **Sprint 83 re-test target:** **`FabricAuraSkills-2.3.116.jar`** — run **at least** the Sprint 83 operator minimum (see **`SPRINT_83_MANUAL_JAVA_SMOKE_PATCH_TRANSLATIONS_MANA.md`**), then continue the rest of this matrix. Always record the **exact** JAR name in **Environment**. |
 | **Bedrock / Geyser** | **Not tested** — Sprint **87** manual prepared (**`SPRINT_87_MANUAL_BEDROCK_GEYSER_VALIDATION.md`**); **runtime validation deferred** until a Bedrock tester/client is available. [PARITY_BACKLOG.md](PARITY_BACKLOG.md) *Bedrock / Geyser validation follow-up*. |
 
 
 **Related:** Canonical minimum set lives in **`SPRINT_78_JAVA_SMOKE_EXECUTION_RESULTS.md`**. **Sprint 80** = text re-verify on 2.3.109+. This doc (**82**) = **full matrix** re-execution on **2.3.114+** after **81C** closed the **Java** smart action bar lane.
 
-**Sprint 83 (code):** **Accepted** in-repo (**2026-04-26**); **`FabricGraniteText`** + **`/mana view`** self vs **other** fix — see **`SPRINT_83_MANUAL_JAVA_SMOKE_PATCH_TRANSLATIONS_MANA.md`**, artifact **`FabricAuraSkills-2.3.116.jar`**. Core smoke rows below reclassified after follow-up validation; matrix separates **Java pass** results from **permission/OP pending** retests (not “Brigadier = code bug” by default). **Known gap (superseded for GUIs by Sprint 88):** deeper **menu item** names/lore used **`Text.translatable`** until **`2.3.119`**; see **`SPRINT_88_MANUAL_MENU_ITEM_LORE_TRANSLATION_SWEEP.md`**. **`/sources`** chat listing remains a possible follow-up.
+**Sprint 83 (code):** **Accepted** in-repo (**2026-04-26**); **`FabricGraniteText`** + **`/mana view`** self vs **other** fix — see **`SPRINT_83_MANUAL_JAVA_SMOKE_PATCH_TRANSLATIONS_MANA.md`**, artifact **`FabricAuraSkills-2.3.116.jar`**. Core smoke rows below reclassified after follow-up validation; matrix separates **Java pass** results from **permission/OP pending** retests (not “Brigadier = code bug” by default). **Known gap (closed for targeted paths):** menu GUIs — **88** (**`2.3.119`**); **`/sources`** paged chat — **89** (**`2.3.120`**). See **`SPRINT_88`** / **`SPRINT_89`** manuals.
 
 **Sprint 84 (code):** **`SPRINT_84_MANUAL_COMMAND_SMOKE_PATCH.md`** — XP/skilllevel **`FabricGraniteText`**, item/xp root registration, admin **`requires`**; validate on **`2.3.117+`**.
 
@@ -21,6 +21,8 @@
 **Sprint 87 (Bedrock/Geyser — deferred):** **`SPRINT_87_MANUAL_BEDROCK_GEYSER_VALIDATION.md`** — checklist ready for **Geyser + Floodgate** (**`2.3.118+`**); **not executed** (no Bedrock tester). Cross-play **release-grade** claims still require this pass when feasible.
 
 **Sprint 88 (code — menu item/lore):** **`SPRINT_88_MANUAL_MENU_ITEM_LORE_TRANSLATION_SWEEP.md`** — built-in **`Fabric*MenuGui`** / paging / **`openmenu`** menu feedback: **`FabricGraniteText`** for **`auraskills.granite.*`** on inventory-visible paths; **`FabricAuraSkills-2.3.119.jar`**. Re-run the **menu hover** checks in **`SPRINT_88`** on a **vanilla Java** client (**NRP** until operator).
+
+**Sprint 89 (code — `/sources` chat):** **`SPRINT_89_MANUAL_SOURCES_CHAT_TRANSLATION.md`** — **`sendChatListing`**, **`sources.empty`**, **`sources.bad_sort`**; **`FabricAuraSkills-2.3.120.jar`**.
 
 ### Matrix classification (Sprint 86)
 
@@ -292,13 +294,13 @@ Console watch not fully captured in this pass.
 - **Java** core / menu / action-bar / representative commands / **permissioned-staff** **`storage`**, **`backup`**, **`preset`**, and prefixed **`item`** roots: **Pass** (tester had **`auraskills.*`** globally via LuckPerms).
 - **Destructive** paths (**`backup load`/`restore`**, **`preset load`**, **`backup create`**, **`item register`/`give`**): **Skip** in this matrix unless explicitly run on **disposable** data — not required to consider the Java smoke matrix “closed enough.”
 - **Bedrock / Geyser:** **Not tested** — **87** manual **deferred** (no Bedrock tester); see **Recommended next**.
-- **Deeper menu item / lore** for raw **`auraskills.granite.*`**: **Sprint 88** addresses built-in **GUI** paths (**`2.3.119+`**); operator **Pass/Fail** per **`SPRINT_88_MANUAL_MENU_ITEM_LORE_TRANSLATION_SWEEP.md`**. **`/sources`** chat listing excluded.
+- **Deeper menu item / lore** and **`/sources`** chat: **Sprints 88–89** (**`2.3.120+`**); operator **Pass/Fail** per **`SPRINT_88`** / **`SPRINT_89`** manuals.
 
 ### Intentional follow-ups (not matrix failures)
 
 - **`/backup load` / `restore`**, **`/preset load`**, preview→**confirm** flows — exercise only on **disposable** worlds; confirmation-helper rows stay **Pending/Skip** until then.
 - **`item register` / `give`** — **Skip** until disposable item/key test.
-- **Sprint 88** menu GUI sweep — operator validation on **`2.3.119+`** (vanilla Java); **`/sources`** chat literal sweep still optional.
+- **Sprints 88–89** — operator validation on **`2.3.120+`** (vanilla Java + console **`/sources`** chat).
 - **Bedrock/Geyser** — **`SPRINT_87_MANUAL_BEDROCK_GEYSER_VALIDATION.md`** **deferred** until a Bedrock tester exists; update **`PARITY_BACKLOG.md`** when executed.
 
 **Bugs fixed during Sprint 82 (small scope only):**
@@ -308,12 +310,12 @@ No code changes during Sprint 82 matrix editing. Sprint **83** — core **`Fabri
 **Known issues left open:**
 
 - **Normal players** must remain **denied/hidden** for staff admin commands unless granted explicit nodes — production defaults should not mirror the **`auraskills.*`** tester setup.
-- Built-in **menu GUIs** should use **`FabricGraniteText`** as of **88** (**`2.3.119+`**); if raw keys appear, file against **`SPRINT_88`** / follow-up. **`/sources`** chat listing may still use **`translatable`**.
+- Built-in **menu GUIs** (**88**) and **`/sources`** paged **chat** (**89**) should use **`FabricGraniteText`** on **`2.3.120+`**; if raw keys appear, file a follow-up.
 - **Bedrock/Geyser** — **`SPRINT_87_MANUAL_BEDROCK_GEYSER_VALIDATION.md`** **deferred** (no tester); **required** before **release-grade cross-play** claims; this **82** file stays **Java** baseline.
 
 **Recommended next sprint:**
 
-- **Java-side:** Operator **`SPRINT_88`** validation on **`2.3.119+`**; optional **`/sources`** chat **`FabricGraniteText`** sweep; or another prioritized Java runtime issue.
+- **Java-side:** Operator **`SPRINT_88`** + **`SPRINT_89`** validation on **`2.3.120+`**; or another prioritized Java runtime issue.
 - **Bedrock/Geyser:** **`SPRINT_87_MANUAL_BEDROCK_GEYSER_VALIDATION.md`** — run when a **Bedrock** tester/client is available (**`2.3.118+`**); **not** blocking continued Java/Fabric work.
 
 Top-level **`/item`** and **`/xp`** remain **vanilla**; Granite **`item`** and **`xp`** are **prefixed only**.
