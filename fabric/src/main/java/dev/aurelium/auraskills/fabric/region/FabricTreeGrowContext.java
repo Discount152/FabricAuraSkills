@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
  * Carries the {@code y} of the current {@link net.minecraft.world.gen.feature.TreeFeature} generation
  * (Bukkit {@code StructureGrowEvent} / sapling grow height) for {@code check_replace} cleanup.
  * Tree generation is single-threaded on the server; use a thread local for the duration of
- * {@code Feature#generate} on {@code TreeFeature}.
+ * {@code TreeFeature#generate(FeatureContext)}.
  */
 public final class FabricTreeGrowContext {
 

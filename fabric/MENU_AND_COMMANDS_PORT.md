@@ -604,3 +604,26 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Command lane** | **`FabricCommandConfirmation`**: after a successful **preview**, register a **pending key**; **`confirm` executors** call **`verifyPendingOrError`** (clears on success). **backup** = resolved **`.yml` basename**; **preset** = resolved **`.zip` basename**; **mergeskills** = `storage:mergeskills:<fromKey>:<toKey>`; **removeallmodifiers** = constant. **Console/RCON** share one pending slot (see class javadoc). **No** new **menu**; **not** `MenuFileManager` / full Slate. |
 | **Related** | **`SPRINT_74_MANUAL_CONFIRMATION_FLOWS.md`**, **COMMAND_PARITY_AUDIT**, **ledger** **AS-007** / **CMD-009/011/012** updates. |
 
+## Sprint 75 — **Java dedicated-server** acceptance (process, not code)
+
+| Area | Notes |
+|------|--------|
+| **Scope** | Real **dedicated** Fabric server + **Java** clients; verify **Sprints 57–74** commands/menus. **Not** Geyser/Bedrock this sprint. |
+| **Doc** | **`SPRINT_75_MANUAL_JAVA_DEDICATED_ACCEPTANCE.md`** — build evidence + operator checklist; **`projectVersion`** bump documents the checklist revision. **Blocked** until **Sprint 76A** + **Sprint 76B** dedicated-server startup fixes are deployed (see below). |
+
+## Sprint 76A — **Dedicated-server startup** (anvil mixin + GraniteLib version text)
+
+| Area | Notes |
+|------|--------|
+| **Blocker** | Mixin **apply** failed on **`AnvilScreenHandler`** with **`@Shadow` `field_22482`**; log often says **“No refMap loaded”** — see **`SPRINT_76A_STARTUP_BLOCKER_ANVIL_MIXIN.md`**. |
+| **Fix** | **VarHandle**s for `ForgingScreenHandler#player` and `AnvilScreenHandler#levelCost` (Yarn + intermediary); **GraniteLib** **`${version}`** → **`processResources`** `expand` in **`slate-fabric/build.gradle.kts`** (**`granitelibVersion`**, e.g. **0.1.0-alpha.2**). |
+| **Unblocks** | **Sprint 75** Java smoke once **`FabricAuraSkills-<ver>.jar`** boots on the test host. |
+
+## Sprint 76B — **Dedicated-server startup** (tree / region `TreeFeature` mixin)
+
+| Area | Notes |
+|------|--------|
+| **Blocker** | Mixin **apply** failed on **`TreeFeatureGrowContextMixin`**: **NPE** preparing **`@Inject` at HEAD** on **`Feature#generate`** (abstract in **`Feature.class`**) — see **`SPRINT_76B_STARTUP_BLOCKER_TREE_FEATURE_MIXIN.md`**. |
+| **Fix** | **`@Mixin(TreeFeature.class)`** + full JVM **`generate(Lnet/minecraft/world/gen/feature/util/FeatureContext;)Z`** at **HEAD** / **RETURN**; behavior unchanged ( **`FabricTreeGrowContext`** ). |
+| **Unblocks** | Next dedicated startup gate for **Sprint 75** once operator confirms **“Done”** with **2.3.105+** (or current **`projectVersion`**). |
+

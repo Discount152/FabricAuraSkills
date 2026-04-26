@@ -2,6 +2,24 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.105
+
+### Changes
+
+- **Fabric: Startup hotfix (Sprint 76B):** Dedicated server failed mixin apply on **`TreeFeatureGrowContextMixin`** — **`NullPointerException`** preparing **`@Inject` at HEAD** for **`auraskills$treeFeatureGenHead`**, target **`method_13151` (`Feature#generate`)**. **Cause:** the mixin targeted **`Feature.class`**; **`Feature#generate(FeatureContext)`** is **abstract** (no bytecode **HEAD** in **`Feature.class`**), so the injector’s instruction node was **null**. **Fix:** **`@Mixin(TreeFeature.class)`** with explicit descriptor **`generate(Lnet/minecraft/world/gen/feature/util/FeatureContext;)Z`** (avoids the other **`generate`** overload on **`TreeFeature`**) at **HEAD** / **RETURN**; **`FabricTreeGrowContext`** javadoc aligned. **Doc:** `fabric/SPRINT_76B_STARTUP_BLOCKER_TREE_FEATURE_MIXIN.md` (**GraniteLib** log vs **`granitelibVersion`**: JiJ vs external duplicate JAR). **`projectVersion` 2.3.104 → 2.3.105**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test` — run by maintainer. **Runtime dedicated proof:** operator deploy **`FabricAuraSkills-2.3.105.jar`**; confirm **no** fatal **`TreeFeatureGrowContextMixin`**; **Sprint 75** remains gated until **“Done”** is confirmed.
+
+## 2.3.104
+
+### Changes
+
+- **Fabric: Startup hotfix (Sprint 76A):** Dedicated server could crash with **`AnvilScreenHandlerAnvilDiscountMixin`** — `InvalidMixinException` for **`@Shadow` `field_22482`** on **`class_1706`**. **Cause:** `field_22482` is **`ForgingScreenHandler#player`** (parent class), not an **`AnvilScreenHandler`** field; “**No refMap loaded**” made the bad shadow show up. **Fix:** `VarHandle` access to `player` on **`ForgingScreenHandler`** and `levelCost` on **`AnvilScreenHandler`** (Yarn vs intermediary **`field_22482` / `field_7770`**). **GraniteLib:** `slate-fabric` **`processResources`** expands **`fabric.mod.json`** **`${version}`** to **`granitelibVersion`** (e.g. **0.1.0-alpha.2**). **Doc:** `fabric/SPRINT_76A_STARTUP_BLOCKER_ANVIL_MIXIN.md`. **`projectVersion` 2.3.103 → 2.3.104**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test` — **PASS**. **Runtime dedicated proof:** operator deploy **`FabricAuraSkills-2.3.104.jar`**.
+
+## 2.3.103
+
+### Changes
+
+- **Process: Java dedicated-server acceptance (Sprint 75):** Checklist and **CI build evidence** in **`fabric/SPRINT_75_MANUAL_JAVA_DEDICATED_ACCEPTANCE.md`** for validating **Sprints 57–74** command + menu work on a **real** Fabric **dedicated** server (operators fill **`Result` / `Notes`**; **not** Bedrock this sprint). **Build** (in-repo): `.\gradlew -PfabricOnly=true :fabric:test` → `.\gradlew -PfabricOnly=true :fabric:build` → `.\gradlew -PfabricOnly=true :granitelib-fabric:build` — **all SUCCESS**; **artifact** `fabric/build/libs/FabricAuraSkills-<version>.jar`. **`projectVersion` 2.3.102 → 2.3.103**.
+
 ## 2.3.102
 
 ### Changes
