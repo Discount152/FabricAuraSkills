@@ -643,3 +643,11 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Doc** | **`SPRINT_77_JAVA_COMMAND_MENU_SMOKE_RESULTS.md`** — environment, JARs, startup proof, **Pass** on **Skills** menu for **two** Java players; full matrix **NRP** until operators complete tables. |
 | **Links** | **`SPRINT_75_MANUAL_JAVA_DEDICATED_ACCEPTANCE.md`** (startup **PASS** + extended checklist). |
 
+## Sprint 78 — **Java minimum smoke execution** (operator checklist; not in-repo)
+
+| Area | Notes |
+|------|--------|
+| **Scope** | Run **`SPRINT_75`** / **`SPRINT_78`** **minimum** command+menu set on disposable dedicated server; **watch console**; **no** new features. **Bedrock** not tested. **Raw MiniMessage** in chat/bars: **known issue**, document—**separate** formatting sprint. |
+| **Doc** | **`SPRINT_78_JAVA_SMOKE_EXECUTION_RESULTS.md`** — pass/fail/pending per row; **Cursor cannot execute** in-world tests. |
+| **Links** | **`SPRINT_75_MANUAL_JAVA_DEDICATED_ACCEPTANCE.md`** (sync tables). |
+

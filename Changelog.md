@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.108
+
+### Changes
+
+- **Process: Java minimum smoke (Sprint 78):** Added **`SPRINT_78_JAVA_SMOKE_EXECUTION_RESULTS.md`** — **minimum** dedicated-server command/menu set, **two-player** rows, **known issue** ( **raw MiniMessage** in level-up / action-bar-style text; **not fixed** this sprint by default), **no** in-repo in-game execution (operators replace **Pending** with **Pass/Fail/Skip**). Updated **`SPRINT_75_MANUAL_JAVA_DEDICATED_ACCEPTANCE.md`** (Sprint 78 tables + pass gate), **`SPRINT_77_JAVA_COMMAND_MENU_SMOKE_RESULTS.md`** (next step), **MENU** / **PARITY_BACKLOG** / **PARITY_AUDIT_LEDGER**. **`projectVersion` 2.3.107 → 2.3.108**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test` — **no code path changes**.
+
 ## 2.3.107
 
 ### Changes

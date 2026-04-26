@@ -26,11 +26,15 @@
 
 ## Java command/menu smoke (Sprint 77)
 
-**Narrative + tables:** `fabric/SPRINT_77_JAVA_COMMAND_MENU_SMOKE_RESULTS.md`
+**Narrative + early tables:** `fabric/SPRINT_77_JAVA_COMMAND_MENU_SMOKE_RESULTS.md`
 
-**Proven in the Sprint 77 operator sample (not exhaustive):** two **Java** players (**RedPaint_**, **Deskount**) both opened the **Skills** menu successfully after clean startup.
+**Proven in the Sprint 77 operator sample (not exhaustive):** two **Java** players (**RedPaint_**, **Deskount**) both opened the **Skills** menu successfully after clean startup; **`/skills`** / **`/openmenu skills`** — **Pass** (see Sprint 77).
 
-**Full matrix:** Complete the **Pass/Fail/Skip** tables in **`SPRINT_77_…md`** and/or the sections below; watch **console** for exceptions during each command.
+## Sprint 78 — minimum Java smoke (canonical execution record)
+
+**Primary doc:** `fabric/SPRINT_78_JAVA_SMOKE_EXECUTION_RESULTS.md` — **minimum** command/menu set, **two-player** rows, **known issues** (e.g. raw MiniMessage), **fixes** (if any). Replace **Pending (operator)** in that file with **Pass** / **Fail** / **Skip** when you run the disposable host. **Sprint 78 in-repo** cannot execute in-game; **this** checklist and **`SPRINT_78_…md`** should match after your session.
+
+**Watch console** for every command: **ERROR**, mixin, menu click, **missing translation** key, **permission** denials, **raw MiniMessage** in chat/action bar ( **known issue** — record, do **not** treat as a Sprint 78 code fix unless approved).
 
 ---
 
@@ -62,53 +66,46 @@ These commands are expected to pass from a clean tree (release discipline; **not
 
 ## Checklist (fill `Result` / `Notes`)
 
+**Authoritative row-by-row table for the Sprint 78 minimum set:** `SPRINT_78_JAVA_SMOKE_EXECUTION_RESULTS.md` — when you run tests, **copy** the final **Result** / **Notes** back into the tables below, or keep a single source of truth in **78** only.
+
 Use **Pass** / **Fail** / **Skip** + **Notes** (include console lines if **Fail**).
 
-### Core command roots (Java player)
+### Sprint 78 minimum set (Java player) — sync from `SPRINT_78…` when run
 
 | Check | Result | Notes |
 |------|--------|--------|
-| `/auraskills`, `/auraskills help` | | |
-| `/skills`, `/sk`, `/skill` | | |
-| `/stats` | | |
-| `/openmenu skills`, `/openmenu stats` | | (Sprint 77 sample: Skills **Pass** for 2 players) |
+| `/auraskills`, `/auraskills help` | **Pending (operator)** | |
+| `/skills` | **Pass** | Sprint 77; menu OK |
+| `/sk`, `/skill` | **Pending (operator)** | |
+| `/stats` | **Pending (operator)** | |
+| `/openmenu skills` | **Pass** | Sprint 77; two players |
+| `/openmenu stats` | **Pending (operator)** | |
+| `/farming`, `/mining` | **Pending (operator)** | adjust id if not enabled |
+| `/openmenu level_progression farming`, `/openmenu stat_info strength` | **Pending (operator)** | |
+| `/sources farming`, `/openmenu sources farming` | **Pending (operator)** | |
+| `/openmenu unclaimed_items` | **Pending (operator)** | |
+| `/openmenu leaderboard` (+ average, farming) | **Pending (operator)** | |
+| `/openmenu abilities` (+ farming) | **Pending (operator)** | |
+| `/mana`, `/top`, `/top average`, `/skilltop farming`, `/rank`, `/skillrank farming` | **Pending (operator)** | |
+| `/profile skills <player>`, `/profile stats <player>` | **Pending (operator)** | |
+| `/storage info`, `/backup info`, `/backup list`, `/preset list` | **Pending (operator)** | |
+| **Two-player:** `openmenu` skills/stats/leaderboard/abilities + `/mana view <other>` | **Pending (operator)** | e.g. RedPaint_ / Deskount |
 
-### Menus and openmenu (Java player)
-
-| Check | Result | Notes |
-|------|--------|--------|
-| `/skills`, `/stats` GUIs | | |
-| Skill shortcuts, `/openmenu level_progression`, `/openmenu stat_info` | | |
-| `/sources`, `/openmenu sources` | | |
-| `/openmenu unclaimed_items`, leaderboards, abilities | | |
-
-### Representative commands (Java player)
-
-| Check | Result | Notes |
-|------|--------|--------|
-| `/mana`, `/xp`, `/skilllevel`, leaderboards, `/multiplier`, `/toggle`, `/abtoggle`, `/lang`, `/profile`, `/sources` | | |
-| **Two-player** openmenu / profile / `/mana view` | | (players **RedPaint_** & **Deskount** available in Sprint 77 log) |
-
-### Safe admin (console or op)
+### Extended / optional (if time)
 
 | Check | Result | Notes |
 |------|--------|--------|
-| `/storage info` | | |
-| `/backup info`, `/backup list` | | |
-| `/preset list` | | |
-| **Confirmation flows** (preview/confirm) | | **Disposable** data only for destructive tests |
-
-### Item / claim (disposable items)
-
-| Check | Result | Notes |
-|------|--------|--------|
-| `/item register` / `give`, `/claimitems`, unclaimed menu | | |
+| `/xp`, `/skilllevel`, `/multiplier`, `/toggle`, `/abtoggle`, `/lang` | | |
+| **Confirmation** (backup/preset/storage) | | **Disposable** data only |
+| **Item** / **claim** | | **Disposable** items only |
 
 ---
 
 ## Pass / fail gate
 
 - **Startup:** use **Sprint 77** / this doc **Startup validation** when current.
-- **Feature acceptance:** this checklist is **in progress** until operators fill the tables or file known gaps in **`SPRINT_77`** / backlog.
+- **Sprint 78 minimum smoke:** use **`SPRINT_78_JAVA_SMOKE_EXECUTION_RESULTS.md`**; **Sprint 78** is **closed** for Java minimum-set purposes when that file has no **Pending** in the **minimum** table (or every row is **Skip** with reason).
+- **Feature acceptance (full 75):** this checklist is **in progress** until all **targeted** rows (including **extended**) **Pass** or **Skip (documented)**.
+- **Known issue:** **raw MiniMessage** in chat / bars — see Sprint 78 doc; may be **Pass (with known issue)** for messaging — **separate** formatting sprint, not a blocker to **recording** smoke results.
 
-**Definition of “done” for full Sprint 75 product acceptance:** all **targeted** rows **Pass** or **Skip (documented)**, and **no** unexplained **ERROR**/stack traces in console for covered commands. **Bedrock** remains a **separate** acceptance track.
+**Definition of “done” for full Sprint 75 product acceptance:** all **targeted** rows **Pass** or **Skip (documented)**, and **no** unexplained **ERROR** / stack traces in console for covered commands (except **documented** known text-rendering). **Bedrock** remains a **separate** acceptance track.

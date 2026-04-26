@@ -120,6 +120,6 @@ Done (7.091s)! For help, type "help"
 
 ## Next recommended step
 
-1. **Operators:** Continue **Sprint 75** row-by-row on the **same** (or fresh disposable) host; update **`SPRINT_75_MANUAL_JAVA_DEDICATED_ACCEPTANCE.md`** with **`Result` / `Notes`**, console excerpts, and link here.
-2. **Product:** When Java matrix is **green enough**, plan **Sprint 78+** for **Bedrock** smoke (Geyser/Floodgate) per **PAPER_PARITY_PROGRAM.md** §5 — **not** Sprint 77.
+1. **Sprint 78 (Java minimum smoke execution):** Run the **minimum set** on the disposable host and fill **`SPRINT_78_JAVA_SMOKE_EXECUTION_RESULTS.md`** and the **Sprint 78** tables in **`SPRINT_75_MANUAL_JAVA_DEDICATED_ACCEPTANCE.md`**. **In-repo Cursor** cannot execute in-game commands; operators own **Pass/Fail/Pending** replacement.
+2. **Product:** When **Java** matrix is **green enough**, plan a **Bedrock** command-menu smoke (Geyser/Floodgate **players**) per **PAPER_PARITY_PROGRAM.md** §5 — **not** Sprint 78.
 3. **No** further “startup-blocker” sprint for **`FabricWorldManager`** unless a **new** log with a **regression** appears against current source.
