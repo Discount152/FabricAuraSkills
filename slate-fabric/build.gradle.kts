@@ -28,6 +28,15 @@ dependencies {
     mappings("net.fabricmc:yarn:1.21.11+build.4:v2")
     modImplementation("net.fabricmc:fabric-loader:0.18.4")
     modImplementation("net.fabricmc.fabric-api:fabric-api:0.141.3+1.21.11")
+
+    // Template YAML (Spike 0 / Sprint 95) — JiJ so standalone granitelib-fabric resolves at runtime.
+    // 2.3 — Loom JiJ semver warning on plain "2.2"
+    implementation("org.yaml:snakeyaml:2.3")
+    include(implementation("org.yaml:snakeyaml:2.3")!!)
+
+    testImplementation(platform("org.junit:junit-bom:5.13.2"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks.withType<org.gradle.api.tasks.bundling.Jar>().configureEach {
@@ -37,6 +46,10 @@ tasks.withType<org.gradle.api.tasks.bundling.Jar>().configureEach {
 tasks.withType<JavaCompile>().configureEach {
     options.encoding = "UTF-8"
     options.release.set(21)
+}
+
+tasks.named<Test>("test") {
+    useJUnitPlatform()
 }
 
 val granitelibVersion: String =

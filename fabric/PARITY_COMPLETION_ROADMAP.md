@@ -64,11 +64,13 @@ GraniteLib (`:granitelib-fabric`, on-disk **`slate-fabric/`) is a **real library
 | Track | Status |
 |-------|--------|
 | **Container / click plumbing** (e.g. `GraniteContainerMenus`) | **Partial** — enough for current built-ins. |
-| **Template loading, YAML layouts, `MenuFileManager`** | **Not complete** |
+| **Template loading, YAML layouts, `MenuFileManager`** | **Spike 0 started** — read-only v0 YAML + model in GraniteLib (**`SPRINT_95_GRANITELIB_TEMPLATE_SPIKE0.md`**); **not** wired to live menus |
 | **Contexts, paging, global items, rich click actions** | **Not complete** |
 | **Public API + docs for external mods** | **Partial / evolving** |
 
 **Sprint 94 (planning only):** **`SPRINT_94_GRANITELIB_SLATE_PARITY_PLAN.md`** — dedicated **Path A** roadmap: Slate vs GraniteLib capability inventories, gap table, menu-by-menu classification, phased implementation (**A–H**), risks, future acceptance criteria, and **Sprint 95** (Spike 0) recommendation. **No code** in Sprint 94; **Bedrock/Geyser** remains deferred.
+
+**Sprint 95 (Spike 0 — GraniteLib code):** **`SPRINT_95_GRANITELIB_TEMPLATE_SPIKE0.md`** — `dev.granitelib.fabric.template.{model,load}`: immutable **`GraniteMenuTemplate`** / items, **SnakeYAML** read-only loader + validation, unit tests; **JiJ** SnakeYAML in **`granitelib-fabric`**. **No** production menu behavior change; **Slate parity** still **not** complete.
 
 ---
 
@@ -94,5 +96,5 @@ GraniteLib (`:granitelib-fabric`, on-disk **`slate-fabric/`) is a **real library
 
 1. **Hold** “final release” until **two-JAR** policy is what operators run in production and docs match.
 2. **Execute** Bedrock validation when a tester exists.
-3. **Drive** Slate/GraniteLib framework work as its own program (Path A) using **`SPRINT_94_GRANITELIB_SLATE_PARITY_PLAN.md`** as the implementation spine, not as a side effect of smoke fixes.
+3. **Drive** Slate/GraniteLib framework work as its own program (Path A) using **`SPRINT_94_GRANITELIB_SLATE_PARITY_PLAN.md`** + **`SPRINT_95_GRANITELIB_TEMPLATE_SPIKE0.md`** (Spike 0 bridgehead), not as a side effect of smoke fixes. **Next:** Sprint **96** — first template-driven menu (**stat_info** recommended) with code fallback.
 4. **Revisit** Jobs / economy bridges only if the owner reopens scope.
