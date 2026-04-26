@@ -3,6 +3,7 @@
 | Field | Value |
 |--------|--------|
 | **Tested artifact (in-repo)** | **`projectVersion` 2.3.113** → `FabricAuraSkills-2.3.113.jar` (build locally or from CI) |
+| **Sprint 81C follow-up** | If **smart** still **sticks** on **2.3.113**, deploy **`2.3.114`** and see **`SPRINT_81C_MANUAL_SMART_ACTION_BAR_STUCK_FIX.md`** ( **`SmartIdleObsDisplay`** — single last-observed tuple). The **81B** `!wasInWindow` fix did not remove all re-extension paths (legacy **inWin*** model). |
 | **Depends on** | **Sprint 81** (smart bar), **Sprint 81A** (legacy migration + `/abtoggle` subcommands) |
 
 ## Bug summary (fixed in code)

@@ -12,7 +12,7 @@
 
 **Sprint 81A:** Same commands + optional first arg **`status`**, **`smart`**, **`always`**, **`off`**; **legacy** YAML/SQL **`idle` without `idle_mode`** loads as **smart** or **off** and **marks save** to persist **`idle_mode`**. See **`SPRINT_81A_MANUAL_ACTION_BAR_LEGACY_MIGRATION.md`**.
 
-**Sprint 81B:** No command change. **Smart** idle health/mana window after max HP/mana level-up: **`ActionBarManager`** — **`SPRINT_81B_MANUAL_SMART_ACTION_BAR_LEVELUP_FIX.md`**. Diagnostic: **`/abtoggle status`** (mode vs visibility bug).
+**Sprint 81B:** No command change. **Smart** idle — first visibility guard ( **`!wasInWindow`** for **stable** diff). **`SPRINT_81B_MANUAL_SMART_ACTION_BAR_LEVELUP_FIX.md`**. **Sprint 81C:** No command change. **`SmartIdleObsDisplay`** in **`ActionBarManager`** — **`SPRINT_81C_MANUAL_SMART_ACTION_BAR_STUCK_FIX.md`**. Diagnostic: **`/abtoggle status`** (mode vs timer).
 
 **Runtime product:** **Fabric** + **Geyser/Floodgate**; **Bukkit** `CommandRegistrar` + ACF is the **in-repo reference only**, not a second shipped runtime.
 

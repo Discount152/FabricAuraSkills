@@ -5,9 +5,10 @@
 | **Sprint 81 (code + docs in repo)** | **Accepted** |
 | **In-game / operator proof** | **Pending** — use the checklist below; do not mark “production validated” until a human runs it. |
 | **Sprint 81A (legacy `idle` → `idle_mode` migration)** | See **`SPRINT_81A_MANUAL_ACTION_BAR_LEGACY_MIGRATION.md`** — **2.3.112+** migrates old **`idle` without `idle_mode`** to **smart** (or **off**) instead of **always**-style. |
-| **Sprint 81B (level-up smart window stuck on)** | See **`SPRINT_81B_MANUAL_SMART_ACTION_BAR_LEVELUP_FIX.md`** — **2.3.113+** fixes **smart** idle bar staying visible **forever** after max HP/mana changes (stable-diff extension every tick). |
+| **Sprint 81B (level-up smart window — partial)** | **`SPRINT_81B_MANUAL_SMART_ACTION_BAR_LEVELUP_FIX.md`**, JAR **2.3.113** — `!wasInWindow` for **stable** diff. |
+| **Sprint 81C (smart sticky after trigger — final model)** | **`SPRINT_81C_MANUAL_SMART_ACTION_BAR_STUCK_FIX.md`**, JAR **2.3.114+** — **`SmartIdleObsDisplay`**, one **last-observed** tuple; no separate **stable** + **inWin** fight. |
 
-**Build / version:** `FabricAuraSkills-2.3.111.jar` for **Sprint 81** core code; for **legacy default + `/abtoggle status|smart|…`**, use **`2.3.112`** ( **`SPRINT_81A_…` manual**). For **level-up smart bar fix**, use **`2.3.113`** (**81B** manual). Current `projectVersion` is in `gradle.properties`. Use the **current GraniteLib** install policy for your server (split vs JiJ — see project docs as needed).
+**Build / version:** `FabricAuraSkills-2.3.111.jar` for **Sprint 81** core code; for **legacy default + `/abtoggle status|smart|…`**, use **`2.3.112`** ( **`SPRINT_81A_…` manual**). For **smart** idle bar that **stops** after triggers, use **`2.3.114`** (**81C** manual; **81B** on **2.3.113** is a partial step). Current `projectVersion` is in `gradle.properties`. Use the **current GraniteLib** install policy for your server (split vs JiJ — see project docs as needed).
 
 **Problem:** Granite’s **idle** health/mana line used the only vanilla **action bar** slot on a fast timer, so it **outcompeted** other mods (e.g. **Litematica** mode text) that also use that line. **Sprint 79** fixed **MiniMessage** rendering, but the **concurrent resend** issue remained.
 

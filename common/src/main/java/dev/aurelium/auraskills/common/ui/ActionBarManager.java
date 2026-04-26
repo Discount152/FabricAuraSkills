@@ -151,58 +151,35 @@ public abstract class ActionBarManager {
             st.visibleUntilMs = Math.max(st.visibleUntilMs, now + (long) join * MS_PER_TICK);
         }
 
-        // Sprint 81B: "stable" values are only updated when the smart window is *over* (see !inWindow
-        // block below). While the window is open after a level-up, current h/max/m stays different
-        // from those stables *every* tick. Extending on stable-diff must run only when we were
-        // *not* already in a window, or we re-extend forever. Intra-window changes use inWin* below.
-        boolean wasInWindow = now < st.visibleUntilMs;
-
+        // Sprint 81C: one observed display tuple. Extend only when h/maxH/m/maxM (as shown) *change*
+        // from the last tick's observation — not via separate stable + in-window baselines (81A/81B)
+        // that could re-extend every tick. See {@link SmartIdleObsDisplay}.
         int healthTicks = Math.max(0, plugin.configInt(Option.ACTION_BAR_SHOW_AFTER_HEALTH_CHANGE_TICKS));
         int manaTicks = Math.max(0, plugin.configInt(Option.ACTION_BAR_SHOW_AFTER_MANA_CHANGE_TICKS));
-
-        if (!st.hasStableDisplay) {
-            st.stableH = h;
-            st.stableMaxH = mh;
-            st.stableM = m;
-            st.stableMaxM = mm;
-            st.inWinH = h;
-            st.inWinMaxH = mh;
-            st.inWinM = m;
-            st.inWinMaxM = mm;
-            st.hasStableDisplay = true;
-        } else {
-            boolean dHealth = h != st.stableH || mh != st.stableMaxH;
-            boolean dMana = m != st.stableM || mm != st.stableMaxM;
-            if (shouldExtendSmartIdleWindowFromStableDiff(wasInWindow, dHealth, dMana)) {
-                int ext = pickExtendTicks(dHealth, dMana, healthTicks, manaTicks);
-                if (ext > 0) {
-                    st.visibleUntilMs = Math.max(st.visibleUntilMs, now + (long) ext * MS_PER_TICK);
-                }
-            }
-        }
+        SmartIdleObsDisplay.Four current = new SmartIdleObsDisplay.Four(h, mh, m, mm);
+        SmartIdleObsDisplay.Four last =
+                st.hasObs
+                        ? new SmartIdleObsDisplay.Four(st.obsH, st.obsMaxH, st.obsM, st.obsMaxM)
+                        : null;
+        SmartIdleObsDisplay.ObsTickResult r =
+                SmartIdleObsDisplay.process(
+                        st.hasObs,
+                        last,
+                        st.visibleUntilMs,
+                        current,
+                        now,
+                        healthTicks,
+                        manaTicks,
+                        MS_PER_TICK);
+        st.hasObs = true;
+        st.obsH = r.newObs().h();
+        st.obsMaxH = r.newObs().maxH();
+        st.obsM = r.newObs().m();
+        st.obsMaxM = r.newObs().maxM();
+        st.visibleUntilMs = r.newVisibleUntilMs();
 
         boolean inWindow = now < st.visibleUntilMs;
-        if (inWindow) {
-            boolean hNow = h != st.inWinH || mh != st.inWinMaxH;
-            boolean mNow = m != st.inWinM || mm != st.inWinMaxM;
-            if (hNow || mNow) {
-                int ext = pickExtendTicks(hNow, mNow, healthTicks, manaTicks);
-                if (ext > 0) {
-                    st.visibleUntilMs = Math.max(st.visibleUntilMs, now + (long) ext * MS_PER_TICK);
-                }
-            }
-            st.inWinH = h;
-            st.inWinMaxH = mh;
-            st.inWinM = m;
-            st.inWinMaxM = mm;
-        }
-
-        inWindow = now < st.visibleUntilMs;
         if (!inWindow) {
-            st.stableH = h;
-            st.stableMaxH = mh;
-            st.stableM = m;
-            st.stableMaxM = mm;
             if (plugin.configBoolean(Option.ACTION_BAR_HIDE_WHEN_FULL_AND_IDLE)
                     && h >= mh
                     && m >= mm
@@ -219,26 +196,6 @@ public abstract class ActionBarManager {
         }
         sendIdleActionBarMessage(user);
         st.lastSendMs = now;
-    }
-
-    private static int pickExtendTicks(boolean dHealth, boolean dMana, int healthTicks, int manaTicks) {
-        if (dHealth && dMana) {
-            return Math.max(healthTicks, manaTicks);
-        } else if (dHealth) {
-            return healthTicks;
-        } else {
-            return manaTicks;
-        }
-    }
-
-    /**
-     * "Stable" HP/mana are frozen until the smart visibility window ends. While the window is open,
-     * they intentionally differ from current values, so a stable-vs-current check must not extend
-     * the window on every tick (Sprint 81B).
-     */
-    static boolean shouldExtendSmartIdleWindowFromStableDiff(
-            boolean wasInWindow, boolean dHealth, boolean dMana) {
-        return (dHealth || dMana) && !wasInWindow;
     }
 
     private void sendIdleActionBarMessage(User user) {
@@ -473,15 +430,11 @@ public abstract class ActionBarManager {
     private static final class IdleActionBarState {
         long visibleUntilMs;
         long lastSendMs;
-        int stableH;
-        int stableMaxH;
-        int stableM;
-        int stableMaxM;
-        boolean hasStableDisplay;
-        int inWinH;
-        int inWinMaxH;
-        int inWinM;
-        int inWinMaxM;
+        boolean hasObs;
+        int obsH;
+        int obsMaxH;
+        int obsM;
+        int obsMaxM;
         @Nullable String lastWorldKey;
     }
 
