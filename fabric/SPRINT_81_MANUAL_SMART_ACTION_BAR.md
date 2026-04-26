@@ -1,12 +1,77 @@
 # Sprint 81 — Smart health/mana action bar (manual validation)
 
-**Build / version:** `FabricAuraSkills-2.3.111.jar` (or current `projectVersion` in `gradle.properties` when built).
+| Item | State |
+|------|--------|
+| **Sprint 81 (code + docs in repo)** | **Accepted** |
+| **In-game / operator proof** | **Pending** — use the checklist below; do not mark “production validated” until a human runs it. |
+
+**Build / version:** `FabricAuraSkills-2.3.111.jar` (or current `projectVersion` in `gradle.properties` when built). Use the **current GraniteLib** install policy for your server (split vs JiJ — see project docs as needed).
 
 **Problem:** Granite’s **idle** health/mana line used the only vanilla **action bar** slot on a fast timer, so it **outcompeted** other mods (e.g. **Litematica** mode text) that also use that line. **Sprint 79** fixed **MiniMessage** rendering, but the **concurrent resend** issue remained.
 
 **Root fix (server-side):** In **`smart`** mode ( **default in embedded `config.yml`** for **`action_bar.mode`**; **legacy** player files with **`idle: true`** and no **`idle_mode`** stay **always**-style for backward compatibility), Granite **only** sends the idle line during **short windows** after relevant events, then **stops** sending. **No** blank packets to “clear” the line.
 
 **Reference screenshot (conceptual):** Before — HP/mana text always above hotbar. After (idle) — other mods’ action bar text can show until the next **smart** window.
+
+---
+
+## Operator validation checklist (dedicated / Java server)
+
+Fill **Pass** / **Fail** / **Skip (reason)** when you run this on a real server. **In-repo / CI** cannot run Minecraft.
+
+### Artifact
+
+Deploy:
+
+```text
+FabricAuraSkills-2.3.111.jar
+```
+
+Use the **matching** GraniteLib policy your host uses (same world / mod folder layout as for other Granite sprints).
+
+### Startup
+
+Confirm the log shows (wording may vary slightly by loader; capture `latest.log` on failure):
+
+- **auraskills** (or mod id) version **2.3.111** (or the version on the JAR you built)
+- **Fabric / AuraSkills** mod enabled
+- **Done (...)! For help, type "help"** (or equivalent) — server finished loading
+
+### Smart action bar — Java client
+
+1. **Join** with a **Java** client. Confirm **HP/mana** appears **briefly** after join.
+2. Stand **idle** at **full** HP and **full** mana. Confirm HP/mana **stops** being resent after the **configured** visibility window.
+3. Trigger **Litematica** (or another mod) **action bar** mode text. With Granite **idle** (smart, full, stable), confirm **Litematica** text **can** appear (Granite is not camping the line).
+4. **Take damage.** Confirm HP/mana (or the idle line) appears **briefly** again.
+5. **Heal** or **regen.** Confirm the line shows while **displayed** values change, then **hides** again when stable.
+6. **Spend** or **change** mana (if you can in your build). Confirm mana line appears briefly, then **hides** after stable.
+
+### `/abtoggle` cycle
+
+Run **`/abtoggle`** (or `/toggle` mirror) and confirm the shown mode advances:
+
+**smart → always → off → smart**
+
+(If messages use translated strings, the **order** and **persistence** after relog are what matter.)
+
+### Console watch (operators)
+
+Check **`latest.log`** for:
+
+- [ ] **Action bar**-related **exceptions** (none expected)
+- [ ] **Missing** message / translation keys for **toggle** feedback
+- [ ] **Storage** save/load problems for **`idle_mode`** (YAML or SQL)
+- [ ] **SQL** schema or migration issues if you use **MySQL** storage
+- [ ] **Raw** MiniMessage-style tags (`<red>`, etc.) in player-visible chat/action bar (should **not** appear post–Sprint 79; report if they do with **2.3.111**)
+
+### Bedrock / Geyser / Floodgate
+
+- Do **not** mark **Bedrock validated** unless a **Bedrock** player through **Geyser/Floodgate** actually runs the same **visibility** and **/abtoggle** checks on your server. Until then, status stays **Java-only proof** or **untested**.
+
+### After validation
+
+- If something **fails:** open a **tiny patch** sprint or a focused issue (attach `latest.log` + `userdata` sample if storage-related).
+- If **all Pass:** the project is ready to schedule a separate **Bedrock/Geyser player validation** sprint, or to continue the broader **Java smoke matrix** (Sprint 78 / 80 style) on current artifacts.
 
 ---
 
