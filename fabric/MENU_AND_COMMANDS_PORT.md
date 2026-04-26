@@ -12,7 +12,9 @@
 
 **Sprint 85 (code):** **`SPRINT_85_MANUAL_COMMAND_TREE_PATCH.md`** — root **`.executes`** + **`requires`** for **`item`**, **`storage`**, **`backup`**, **`preset`** (bare-root parse). Artifact **`2.3.118+`**.
 
-**Sprint 86 (docs):** **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`** — LuckPerms **`auraskills.*`** clarification for staff testing; **readable plain English** command output = **Pass**; **`/auraskills`** = usage root (not a menu); console/RCON vs in-game rows separated. No command code changes in Sprint 86.
+**Sprint 86 (docs):** **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`** — LuckPerms **`auraskills.*`**; final in-game staff **Pass** for **`storage`** / **`backup`** / **`preset`** / prefixed **`item`** roots; **Java** smoke matrix closeout (destructive paths **Skip** until disposable). No command code in Sprint 86.
+
+**Sprint 87 (recommended):** **Bedrock/Geyser** validation pass **or** menu item/lore translation sweep — see **`SPRINT_82`** matrix *Recommended next sprint*.
 
 This document is the **engineering plan** for shipping **menus and the full command tree together** (one release goal), by **porting Slate** to Fabric instead of writing a second menu engine.
 

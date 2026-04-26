@@ -3,7 +3,7 @@
 | Field | Value |
 |--------|--------|
 | **Sprint** | **82** — **runtime validation only** (no default feature work) |
-| **Status** | **Partial (operator).** **Pass:** core/menu/action-bar rows, **`/auraskills`** usage root, **`/storage info`** as permissioned staff, XP/skilllevel **view** (readable lines, no raw keys), console/RCON admin roots (**`storage info`**, **`backup info`**, **`preset list`**, **`auraskills item`**). **Sprint 86 (docs):** clarified that **readable plain English** (including admin diagnostics) is **Pass**, not a failure; earlier smoke confusion was largely **LuckPerms** — tester **Deskount** now has **`auraskills.*`** globally. **Remaining:** final in-game permissioned-staff confirmation for bare **`/storage`**, **`/backup`**, **`/preset`**, prefixed **`item`**, backup list/create, item subcommands — see **Failures / Pending Retest**. **Bedrock/Geyser:** not tested. |
+| **Status** | **Pass (operator) — Java matrix closed enough to move on.** Core/menu/action-bar, XP/skilllevel **view**, and **permissioned-staff** **`storage`** / **`backup`** / **`preset`** / prefixed **`item`** roots (**`/auraskills`**, **`/skills`**, **`/sk`**, **`/skill`**) validated in-game with **`auraskills.*`** (LuckPerms) on the tester account. **Readable plain English** = **Pass**. **Intentional gaps:** destructive **`backup load`/`restore`**, **`preset load`**, **`backup create`**, **`item register`/`give`** — **Skip** or **Pending** until run on **disposable** data; **deeper menu item/lore** raw-key sweep = **watch-list** only. **Bedrock/Geyser:** **not tested**. **Recommended next:** **Sprint 87 — Bedrock/Geyser validation** (preferred now that Java smoke is clean) or **Sprint 87 — menu item/lore `FabricGraniteText` sweep**. |
 | **Minimum artifact** | **`FabricAuraSkills-2.3.114.jar`** (includes Sprints **79** text, **81–81C** action bar). Repo doc milestone **`2.3.115`**: matrix protocol. **Sprint 83 re-test target:** **`FabricAuraSkills-2.3.116.jar`** — run **at least** the Sprint 83 operator minimum (see **`SPRINT_83_MANUAL_JAVA_SMOKE_PATCH_TRANSLATIONS_MANA.md`**), then continue the rest of this matrix. Always record the **exact** JAR name in **Environment**. |
 | **Bedrock / Geyser** | **Explicitly not tested** this sprint; see [PARITY_BACKLOG.md](PARITY_BACKLOG.md) *Bedrock / Geyser validation follow-up*. |
 
@@ -16,7 +16,7 @@
 
 **Sprint 85 (code):** **`SPRINT_85_MANUAL_COMMAND_TREE_PATCH.md`** — **`item`** / **`storage`** / **`backup`** / **`preset`** root executors + permission gates (**`2.3.118+`**).
 
-**Sprint 86 (docs / matrix):** Permission context documented (**`auraskills.*`** for **Deskount**); matrix rows reclassified — readable plain text = **Pass**; **Pending** = not yet re-run in-game after permission fix, not assumed **Fail**.
+**Sprint 86 (docs / matrix):** Permission context (**`auraskills.*`** globally via LuckPerms); readable plain text = **Pass**. **Final in-game staff sweep:** **`/storage`**, **`/storage info`**, **`/backup`**, **`/backup info`**, **`/backup list`**, **`/preset`**, **`/preset list`**, **`/auraskills|/skills|/sk|/skill item`** — all **Pass as permissioned staff** (see admin + item tables).
 
 ### Matrix classification (Sprint 86)
 
@@ -46,7 +46,7 @@
 | **Server OS / host** | (optional) |
 | **Java player name(s)** | e.g. Deskount (staff tester) |
 | **Second Java player** (two-player tests) | or **Skip (single player)** |
-| **Console / RCON** | **Y** — **`storage info`**, **`backup info`**, **`preset list`**, **`auraskills item`** confirmed from console |
+| **Console / RCON** | **Y** — same admin/item roots confirmed earlier from console; **final sweep** also confirmed **in-game** as permissioned staff |
 | **Full restart** before pass | Y / N (recommended after JAR change) |
 
 ---
@@ -173,16 +173,18 @@ Substitute **`<skill>`** / **`<stat>`** with IDs **enabled** on your `config` (e
 
 | Command | Result | Notes |
 |---------|--------|--------|
-| `/storage` (bare root) | Pending final in-game retest as permissioned staff | **Sprint 85** added root usage executor. **Console/RCON** can run admin roots without LP. In-game: retest with **`auraskills.*`**; readable **usage** line = **Pass**. |
-| `/storage info` | Pass as permissioned staff | Readable storage diagnostics in-game (e.g. loaded profiles count, **`sql.enabled`**, Sprint 63–64 explainer). **Plain English diagnostics are expected**, not a failure. **`auraskills.*`** granted for tester. Also **`/auraskills|/skills|/sk|/skill storage info`**. **Console/RCON:** **Pass** observed. |
-| `/backup` (bare root) | Pending final in-game retest as permissioned staff | **Sprint 85** root usage. Retest in-game after **`auraskills.*`**. |
-| `/backup info` | Pass (console/RCON); Pending final in-game confirmation as permissioned staff | **Console/RCON:** **Pass** observed. In-game: record separately when run. |
-| `/backup list` | Pending final in-game retest as permissioned staff | **Disposable data** only for any destructive follow-ups. |
-| `/preset` (bare root) | Pending final in-game retest as permissioned staff | **Sprint 85** root usage. |
-| `/preset list` | Pass (console/RCON); Pending final in-game confirmation as permissioned staff | **Console/RCON:** **Pass** observed. In-game: record separately when run. |
-| `/backup create` (optional, disposable) | Pending final in-game retest as permissioned staff | **Disposable data only.** |
+| `/storage` (bare root) | Pass as permissioned staff | Readable **usage** (**`storage.usage_root`**) or subcommand suggestions. **`auraskills.command.storage`** (or **`auraskills.*`**). Normal players without storage perms stay **denied/hidden**. |
+| `/storage info` | Pass as permissioned staff | Readable storage diagnostics (loaded profiles, **`sql.enabled`**, Sprint 63–64 explainer). **Plain English = Pass.** Also under **`/auraskills|/skills|/sk|/skill storage info`**. |
+| `/backup` (bare root) | Pass as permissioned staff | Readable **usage**; **`backup`** or **`backup.load`** perm family. Normal players without backup perms stay **denied/hidden**. |
+| `/backup info` | Pass as permissioned staff | Readable backup help/diagnostics. |
+| `/backup list` | Pass as permissioned staff | Readable list output. |
+| `/preset` (bare root) | Pass as permissioned staff | Readable **usage**. **`auraskills.command.preset`**. Normal players stay **denied/hidden**. |
+| `/preset list` | Pass as permissioned staff | Readable preset list output. |
+| `/backup create` (optional, disposable) | Skip (not run this pass) | **Disposable data only** if executed; not required to close the Java smoke matrix. Run on a throwaway server/world if needed. |
 
-**Do not** run **restore** / **preset load** on production. Disposable-only for destructive confirms.
+**Do not** run **restore** / **preset load** on production. Staff **`mergeskills`** / **`removeallmodifiers`** **confirm** steps remain **console/RCON-only** by design — not part of this matrix closeout.
+
+**Normal players** should remain **denied** or **hidden** for **`storage`**, **`backup`**, **`preset`**, and **`item`** admin trees unless intentionally granted those nodes.
 
 ---
 
@@ -190,7 +192,7 @@ Substitute **`<skill>`** / **`<stat>`** with IDs **enabled** on your `config` (e
 
 | Test | Result | Notes |
 |------|--------|--------|
-| `/backup load fake.yml confirm` (no pending) | Pending disposable-data / permissioned-staff retest | Retest as OP/console or with backup permissions. Expected: no mutation and clear no-pending/invalid-file style error. |
+| `/backup load fake.yml confirm` (no pending) | Skip (not run this pass) | When tested on disposable data: expect no mutation and a clear no-pending/invalid-file style error. |
 | If disposable backups: preview → **confirm** with **mismatch** | Skip | Requires disposable backup data; not run in this pass. |
 
 ---
@@ -199,10 +201,12 @@ Substitute **`<skill>`** / **`<stat>`** with IDs **enabled** on your `config` (e
 
 | Test | Result | Notes |
 |------|--------|--------|
-| `/auraskills item` (bare; usage / suggestions) | Pass (console/RCON); Pending final in-game retest as permissioned staff | **Console/RCON:** **Pass** observed for **`auraskills item`**. **In-game:** retest with **`auraskills.*`**; readable **usage** = **Pass**. **Top-level `/item`** is **vanilla** (shows **`modify`** / **`replace`**); **Granite** item is **only** under **`/auraskills|/skills|/sk|/skill item`**. **Sprint 85** fixed bare-root parse (**`item.usage_root`**). |
-| `/skills item`, `/sk item`, `/skill item` | Pending final in-game retest as permissioned staff | Same subtree as **`/auraskills item`**; confirm after **`auraskills.*`**. |
-| `/auraskills item register <key>` | Pending final in-game retest as permissioned staff | Do **not** mark **Fail** until retested with **`auraskills.*`**. Subtree includes **`modifier`**, **`trait`**, **`ignore`**, **`requirement`**, **`multiplier`**, **`register`**, **`unregister`**, **`give`**. |
-| `/auraskills item give <player> <key>` | Pending final in-game retest as permissioned staff | Disposable item / safe target only. |
+| `/auraskills item` (bare; usage / suggestions) | Pass as permissioned staff | Readable **usage** (**`item.usage_root`**) / subtree. **Top-level `/item`** is **vanilla**; **Granite** item is only **`/auraskills|/skills|/sk|/skill item`**. Normal players without **`item.*`** perms stay **denied/hidden**. |
+| `/skills item` | Pass as permissioned staff | Same subtree as **`/auraskills item`**. |
+| `/sk item` | Pass as permissioned staff | Same. |
+| `/skill item` | Pass as permissioned staff | Same. |
+| `/auraskills item register <key>` | Skip (not run this pass) | Subtree: **`modifier`**, **`trait`**, **`ignore`**, **`requirement`**, **`multiplier`**, **`register`**, **`unregister`**, **`give`**. Run on **disposable** items/keys when validating. |
+| `/auraskills item give <player> <key>` | Skip (not run this pass) | Disposable item / safe target only when tested. |
 | `/claimitems` | Pass | |
 | `/claimitems all` | Pass | |
 | `/openmenu unclaimed_items` | Pass | |
@@ -252,7 +256,7 @@ Watch for **literal** `raw` tags: `<green>`, `<red>`, `<aqua>`, `<bold>`, `<rese
 
 Console watch not fully captured in this pass.
 
-**Console / RCON (Sprint 86):** **`storage info`**, **`backup info`**, **`preset list`**, and **`auraskills item`** roots were **confirmed working** from console/RCON. In-game permissioned-staff results for the same commands should still be recorded in the rows above when run.
+**Console / RCON:** **`storage info`**, **`backup info`**, **`preset list`**, **`auraskills item`** were confirmed from console earlier. **Final in-game staff sweep** (Sprint 86 closeout): same family of roots + **`/storage`**, **`/backup`**, **`/preset`** bare roots, **`/backup list`**, prefixed **`item`** on all alias roots — **Pass as permissioned staff** (see tables).
 
 | Issue | Seen Y/N | Log snippet / line |
 |-------|----------|---------------------|
@@ -269,27 +273,29 @@ Console watch not fully captured in this pass.
 
 | Category | Pass | Fail | Skip |
 |----------|------|------|------|
-| Startup | | | |
-| Core roots | | | |
-| Menus | | | |
-| Commands | | | |
-| Two-player | | | |
-| Admin (safe) | | | |
-| Item / unclaimed | | | |
-| Text / action bar | | | |
+| Startup | Pass | | |
+| Core roots | Pass | | |
+| Menus | Pass | | |
+| Commands (incl. staff roots) | Pass | | |
+| Two-player | Pass | | |
+| Admin (safe read paths) | Pass | | |
+| Item roots (prefixed) | Pass | | |
+| Text / action bar | Pass | | |
+| Destructive / disposable-only | | | Skip unless run on disposable data |
 
-**Summary:** Core/menu/action-bar/XP/skilllevel/**`/storage info`** rows validated for permissioned staff (**`auraskills.*`** on **Deskount**) and key console/RCON admin roots. **Pending** rows are **not** failures — they await final in-game confirmation after the permission setup clarification.
+**Matrix closeout narrative (Sprint 86 final in-game staff sweep):**
 
-### Failures / Pending Retest
+- **Java** core / menu / action-bar / representative commands / **permissioned-staff** **`storage`**, **`backup`**, **`preset`**, and prefixed **`item`** roots: **Pass** (tester had **`auraskills.*`** globally via LuckPerms).
+- **Destructive** paths (**`backup load`/`restore`**, **`preset load`**, **`backup create`**, **`item register`/`give`**): **Skip** in this matrix unless explicitly run on **disposable** data — not required to consider the Java smoke matrix “closed enough.”
+- **Bedrock / Geyser:** **Not tested** — see **Recommended next**.
+- **Deeper menu item / lore** for raw **`auraskills.granite.*`**: **watch-list** only (follow-up sprint), not a matrix **Fail**.
 
-- **`/storage`** bare root — **Pending** final in-game retest as permissioned staff unless already confirmed (readable **usage** = **Pass**).
-- **`/backup`**, **`/backup list`**, **`/backup create`** — **Pending** final in-game retest as permissioned staff; **`create`** is disposable-data only. **`/backup info`:** **Console/RCON Pass** observed; in-game staff confirmation still to record if not yet run.
-- **`/preset`**, **`/preset list`** — **Pending** final in-game retest as permissioned staff unless already confirmed. **`preset list`:** **Console/RCON Pass** observed; in-game staff confirmation still to record if not yet run.
-- **`/auraskills|/skills|/sk|/skill item`** — **`auraskills item`:** **Console/RCON Pass** observed; prefixed in-game **`item`** paths — **Pending** final retest as permissioned staff unless already confirmed.
-- **`item register` / `item give`** — **Pending** disposable-data / permissioned-staff retest (do **not** mark **Fail** until retested with **`auraskills.*`**).
-- Confirmation helper rows — **Pending** disposable-data / permissioned-staff retest.
-- Deeper menu item names/lore — follow-up only if raw Granite keys are observed.
-- **Bedrock/Geyser** player validation remains not tested.
+### Intentional follow-ups (not matrix failures)
+
+- **`/backup load` / `restore`**, **`/preset load`**, preview→**confirm** flows — exercise only on **disposable** worlds; confirmation-helper rows stay **Pending/Skip** until then.
+- **`item register` / `give`** — **Skip** until disposable item/key test.
+- Deeper **menu** item names/lore — **Sprint 87** optional **`FabricGraniteText`** sweep if raw keys are seen.
+- **Bedrock/Geyser** — **not tested**; **Sprint 87** validation recommended.
 
 **Bugs fixed during Sprint 82 (small scope only):**
 
@@ -297,12 +303,15 @@ No code changes during Sprint 82 matrix editing. Sprint **83** — core **`Fabri
 
 **Known issues left open:**
 
-- Remaining admin/item rows need **final in-game permissioned-staff confirmation** after tester was granted **`auraskills.*`** globally (LuckPerms).
-- Deeper Fabric menu item names/lore may still show raw translation keys if they use `Text.translatable`; fix with `FabricGraniteText` pattern when observed.
-- Bedrock/Geyser player validation remains not tested.
+- **Normal players** must remain **denied/hidden** for staff admin commands unless granted explicit nodes — production defaults should not mirror the **`auraskills.*`** tester setup.
+- Deeper Fabric **menu** item names/lore may still show raw translation keys if they use `Text.translatable`; **`FabricGraniteText`** pattern when observed (**Sprint 87** candidate).
+- **Bedrock/Geyser** player validation **not** run for this matrix.
 
-**Recommended next (operator — completes Sprint 86 validation):**
+**Recommended next sprint:**
 
-Run the **Pending** rows in-game as **Deskount** (or equivalent staff account with **`auraskills.*`**) on **`FabricAuraSkills-2.3.118.jar`** (or newer): bare **`/storage`**, **`/backup`**, **`/preset`**, prefixed **`item`**, **`backup list`**, **`backup create`** (disposable), **`item register`/`give`** (disposable). Record **Pass** when output is readable plain text. **No code** unless a command still **fails** with correct permissions. Top-level **`/item`** and **`/xp`** remain **vanilla**; Granite **`item`** and **`xp`** are **prefixed only**.
+- **Sprint 87 — Bedrock/Geyser validation pass** (preferred: Java dedicated smoke matrix is otherwise in good shape), **or**
+- **Sprint 87 — Menu item/lore translation sweep** (`FabricGraniteText` / watch-list).
+
+Top-level **`/item`** and **`/xp`** remain **vanilla**; Granite **`item`** and **`xp`** are **prefixed only**.
 
 **Screenshots / logs (optional):** (paths or PR)

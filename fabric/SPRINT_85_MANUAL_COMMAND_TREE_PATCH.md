@@ -112,12 +112,12 @@ Normal players without these nodes should see **no** suggestion path / **permiss
 
 ## Sprint 86 — permission context and matrix rules (docs only)
 
-Early smoke runs were often blocked by **LuckPerms** (missing **`auraskills.command.*`** nodes), not by Brigadier bugs. After granting **`auraskills.*`** globally to the tester (**Deskount**), in-game staff commands should be re-evaluated.
+Early smoke runs were often blocked by **LuckPerms** (missing **`auraskills.command.*`** nodes), not by Brigadier bugs. After granting **`auraskills.*`** globally to the tester account, in-game staff commands were re-validated.
 
 - **Readable plain English** (including multi-line admin diagnostics) is **Pass**, not a failure.
 - **`/auraskills`** with a long **usage** line is **expected**; it is **not** a menu command.
-- **Console/RCON** **`storage info`**, **`backup info`**, **`preset list`**, **`auraskills item`** were **confirmed**; in-game rows are updated separately in **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`**.
-- Do **not** treat **Pending** (not yet re-run after **`auraskills.*`**) as **Fail**.
+- **Console/RCON** **`storage info`**, **`backup info`**, **`preset list`**, **`auraskills item`** were confirmed first; **final in-game staff sweep** then marked **Pass as permissioned staff** for **`/storage`**, **`/storage info`**, **`/backup`**, **`/backup info`**, **`/backup list`**, **`/preset`**, **`/preset list`**, and **`/auraskills|/skills|/sk|/skill item`** — see **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`**.
+- Destructive **`backup`/`preset`** confirms, **`backup create`**, **`item register`/`give`** remain **Skip** until run on **disposable** data; **Bedrock/Geyser** still **not tested**.
 
 ## Related
 
