@@ -596,3 +596,11 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Gaps (Partial)** | Not Slate/YAML slot maps; no per-template **ItemBuilder** skulls; **Bedrock** clicks **NRP**. |
 | **Manual** | **`SPRINT_73_MANUAL_ABILITIES_MENU.md`** |
 
+## Sprint 74 — **Confirmation** command wiring (`FabricCommandConfirmation`) (shipped, partial)
+
+| Area | Shipped on Fabric (bounded) |
+|------|-----------------------------|
+| **Bukkit ref** | **`ConfirmManager`** — **per-issuer** `String` in a map, **30s** expiry, **ACF** “run twice with the same arg” (no separate confirm **inventory** menu in `bukkit/.../menus` for these flows). |
+| **Command lane** | **`FabricCommandConfirmation`**: after a successful **preview**, register a **pending key**; **`confirm` executors** call **`verifyPendingOrError`** (clears on success). **backup** = resolved **`.yml` basename**; **preset** = resolved **`.zip` basename**; **mergeskills** = `storage:mergeskills:<fromKey>:<toKey>`; **removeallmodifiers** = constant. **Console/RCON** share one pending slot (see class javadoc). **No** new **menu**; **not** `MenuFileManager` / full Slate. |
+| **Related** | **`SPRINT_74_MANUAL_CONFIRMATION_FLOWS.md`**, **COMMAND_PARITY_AUDIT**, **ledger** **AS-007** / **CMD-009/011/012** updates. |
+

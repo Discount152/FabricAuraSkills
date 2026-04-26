@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.102
+
+### Changes
+
+- **Fabric: Confirmation helper (Sprint 74):** **`FabricCommandConfirmation`** — **per-subject** (player UUID or single **console/RCON** slot) **pending string** with **30s** expiry, matching the **reference** `ConfirmManager` time window. Wires **preview → literal `confirm`** for **`/backup` load|restore**, **`/preset` load**, **`/storage` mergeskills** and **removeallmodifiers** so **confirm** must follow the same **resolved** target as **preview** (or **`no_pending`** / **`mismatch`**). **Lang:** `auraskills.granite.command.confirmation.*`. **Docs:** `fabric/SPRINT_74_MANUAL_CONFIRMATION_FLOWS.md`, `MENU_AND_COMMANDS_PORT`, `COMMAND_PARITY_AUDIT`, `PARITY_AUDIT_LEDGER_PHASE1` (**AS-007**), **`projectVersion` 2.3.101 → 2.3.102**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test`. **Parity: Partial** (Bukkit = repeat command, Fabric = **`confirm` literal** + shared helper; **no** confirm **menu** / Slate). **Bedrock: N/A** for storage **confirm** (console/RCON only); backup/preset **confirm** follow normal command routing.
+
 ## 2.3.101
 
 ### Changes

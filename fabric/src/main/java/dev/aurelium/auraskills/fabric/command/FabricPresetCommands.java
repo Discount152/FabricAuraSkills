@@ -202,6 +202,12 @@ public final class FabricPresetCommands {
                                             .getString();
                             String out = p.getPrefix(lo) + confirm + "\n" + extra;
                             source.sendFeedback(() -> Text.literal(out), false);
+                            File zip = FabricPresetNameValidator.resolveSafePresetZip(
+                                    p.getPluginFolder(), nameArg);
+                            if (zip != null) {
+                                FabricCommandConfirmation.registerPending(
+                                        p, source, zip.getName());
+                            }
                             return 1;
                         })
                 .orElseGet(
@@ -219,6 +225,19 @@ public final class FabricPresetCommands {
                             ServerCommandSource source = ctx.getSource();
                             Locale lo = localeForSource(source, p);
                             String nameArg = StringArgumentType.getString(ctx, ARG_NAME);
+                            File zip = FabricPresetNameValidator.resolveSafePresetZip(
+                                    p.getPluginFolder(), nameArg);
+                            if (zip == null) {
+                                source.sendError(
+                                        Text.translatable(
+                                                "auraskills.granite.command.preset"
+                                                        + ".path_not_in_presets"));
+                                return 0;
+                            }
+                            if (!FabricCommandConfirmation.verifyPendingOrError(
+                                    source, zip.getName())) {
+                                return 0;
+                            }
                             String loading =
                                     Text.translatable(
                                                     "auraskills.granite.command.preset.loading")

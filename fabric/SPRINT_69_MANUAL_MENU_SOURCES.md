@@ -22,7 +22,7 @@ Reference registration: `bukkit/.../menus/MenuRegistrar.java` — `Slate#buildMe
 **Other reference UI (not in `MenuRegistrar` default seven):**
 
 - **Unclaimed items** — Bukkit `UnclaimedItemsMenu` + **`/claimitems`**; Fabric: **chat/merge** command only (**Sprint 56**), no Slate **UnclaimedItemsMenu**. **Status: Partial / Missing (UI).**
-- **Confirm flows** — Bukkit `ConfirmManager`; Fabric: not ported as inventory. **Status: Missing.**
+- **Confirm flows** — Bukkit `ConfirmManager` (**chat** two-step, **not** a default `MenuRegistrar` screen). Fabric: **no** confirm **inventory**; **Sprint 74** adds **`FabricCommandConfirmation`** for **command** **preview**/**`confirm`** (see **`SPRINT_74_MANUAL_CONFIRMATION_FLOWS.md`**). **Status: Partial** (command helper; not Slate **menu** parity).
 - **Profile / account** — Bukkit has richer account UX; Fabric **`/profile`** is **read-only** chat (**Sprint 59**). **Status: Partial (non-menu).**
 
 **Sprint 70** adds bounded **`/openmenu sources …`**, **`FabricSourcesOpenSupport`**, and a **level progression** hopper (slot 50) that passes **`listPage()`** to **`openSources`** so **Back** can restore the **Skills** list page. See **`SPRINT_70_MANUAL_SOURCES_OPENMENU.md`**.

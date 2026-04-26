@@ -268,17 +268,21 @@ public final class FabricStorageCommands {
                                                                 + ".merge_same_skill"));
                                 return 0;
                             }
-                            ctx.getSource()
-                                    .sendFeedback(
-                                            () ->
-                                                    Text.translatable(
-                                                            "auraskills.granite.command.storage"
-                                                                    + ".merge_preview",
-                                                            fromR,
-                                                            toR,
-                                                            from.getId().toString(),
-                                                            to.getId().toString()),
-                                            false);
+                            ServerCommandSource source = ctx.getSource();
+                            source.sendFeedback(
+                                    () ->
+                                            Text.translatable(
+                                                    "auraskills.granite.command.storage"
+                                                            + ".merge_preview",
+                                                    fromR,
+                                                    toR,
+                                                    from.getId().toString(),
+                                                    to.getId().toString()),
+                                    false);
+                            FabricCommandConfirmation.registerPending(
+                                    p,
+                                    source,
+                                    FabricCommandConfirmation.storageMergePendingKey(from, to));
                             return 1;
                         })
                 .orElseGet(
@@ -329,6 +333,12 @@ public final class FabricStorageCommands {
                                                 Text.translatable(
                                                         "auraskills.granite.command.storage"
                                                                 + ".merge_same_skill"));
+                                return 0;
+                            }
+                            if (!FabricCommandConfirmation.verifyPendingOrError(
+                                    ctx.getSource(),
+                                    FabricCommandConfirmation.storageMergePendingKey(
+                                            fromS, toS))) {
                                 return 0;
                             }
                             return runMergeSkillsConfirm(p, ctx.getSource(), fromS, toS);
@@ -440,13 +450,17 @@ public final class FabricStorageCommands {
         return FabricCommandPluginState.runtimeReadyOrEmpty()
                 .map(
                         p -> {
-                            ctx.getSource()
-                                    .sendFeedback(
-                                            () ->
-                                                    Text.translatable(
-                                                            "auraskills.granite.command.storage"
-                                                                    + ".remove_mod_preview"),
-                                            false);
+                            ServerCommandSource source = ctx.getSource();
+                            source.sendFeedback(
+                                    () ->
+                                            Text.translatable(
+                                                    "auraskills.granite.command.storage"
+                                                            + ".remove_mod_preview"),
+                                    false);
+                            FabricCommandConfirmation.registerPending(
+                                    p,
+                                    source,
+                                    FabricCommandConfirmation.STORAGE_PENDING_REMOVE_ALL_MODIFIERS);
                             return 1;
                         })
                 .orElseGet(
@@ -467,6 +481,11 @@ public final class FabricStorageCommands {
                                                 Text.translatable(
                                                         "auraskills.granite.command.storage"
                                                                 + ".confirm_console_only"));
+                                return 0;
+                            }
+                            if (!FabricCommandConfirmation.verifyPendingOrError(
+                                    ctx.getSource(),
+                                    FabricCommandConfirmation.STORAGE_PENDING_REMOVE_ALL_MODIFIERS)) {
                                 return 0;
                             }
                             final File preBackup;

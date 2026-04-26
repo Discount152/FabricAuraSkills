@@ -281,6 +281,8 @@ public final class FabricBackupCommands {
                                             .getString();
                             String out = p.getPrefix(lo) + confirm + "\n" + extra;
                             source.sendFeedback(() -> Text.literal(out), false);
+                            FabricCommandConfirmation.registerPending(
+                                    p, source, file.getName());
                             return 1;
                         })
                 .orElseGet(
@@ -311,6 +313,10 @@ public final class FabricBackupCommands {
                                                                         .BACKUP_LOAD_FILE_NOT_FOUND,
                                                                 lo));
                                 source.sendError(Text.literal(p.getPrefix(lo) + nf));
+                                return 0;
+                            }
+                            if (!FabricCommandConfirmation.verifyPendingOrError(
+                                    source, target.getName())) {
                                 return 0;
                             }
                             String loading =
