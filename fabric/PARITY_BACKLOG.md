@@ -32,7 +32,23 @@ The following are **not** part of the default **Granite** product roadmap. The *
 - **Sprint 81** — **Smart idle action bar (code):** **`ActionBarManager`** — **health/mana** idle line **stops** resending in **smart** mode so **other** action bar text (e.g. **Litematica**) can show; **`/abtoggle`**, **`action_bar` config keys**, **`ActionBarIdleMode`**, `userdata` **`idle_mode`**; **`SPRINT_81_MANUAL_SMART_ACTION_BAR.md`**; **`projectVersion` 2.3.111**. **Bedrock** not validated; server-side only.
 - **Sprint 81A** — **Legacy `idle` migration + explicit `/abtoggle`:** **`ActionBarIdleMode#resolveOnLoad`**, **SQL** always writes **`idle_mode`**; **`SPRINT_81A_MANUAL_ACTION_BAR_LEGACY_MIGRATION.md`**; **`projectVersion` 2.3.112**. **Bedrock** not required.
 - **Sprint 81B** — **Smart idle — first stable guard:** **`ActionBarManager`** — **`!wasInWindow`** for **stable** diff; **`SPRINT_81B_MANUAL_SMART_ACTION_BAR_LEVELUP_FIX.md`**; **`2.3.113`**. **Superseded in part** by **81C`.
-- **Sprint 81C** — **Smart idle — observed snapshot only:** **`SmartIdleObsDisplay`** in **`ActionBarManager#tickSmartIdle`**; **`SPRINT_81C_MANUAL_SMART_ACTION_BAR_STUCK_FIX.md`**; **`2.3.114`**. **Bedrock** not run-time tested.
+- **Sprint 81C** — **Smart idle — observed snapshot only:** **`SmartIdleObsDisplay`** in **`ActionBarManager#tickSmartIdle`**; **`SPRINT_81C_MANUAL_SMART_ACTION_BAR_STUCK_FIX.md`**; **`2.3.114`**. **Java** runtime **Pass**; **Bedrock** not run-time tested (see follow-up below).
+
+## Bedrock / Geyser validation follow-up
+
+Sprint **81C** closed the **Java** action bar conflict path for **Smart** / **Always** / **Off** health+mana **idle** line behavior. This has **not** yet been validated with a **Bedrock** player through **Geyser/Floodgate**.
+
+A **future** validation sprint should test:
+
+- Bedrock player can join with **Granite Skills** installed **server-side** (Fabric mod on dedicated server; Bedrock does not install the mod).
+- Health/mana **action bar** appears in **Smart** mode only during **relevant** visibility windows.
+- **Smart** mode **stops** sending Granite idle health/mana while **idle** (no sticky “always” behavior).
+- **`/abtoggle` `status`**, **`smart`**, **`always`**, and **`off`** work from **Bedrock** chat (Floodgate-linked identity).
+- **Off** mode suppresses Granite health/mana on the **action bar**.
+- **Always** mode remains **persistent** for the idle line when otherwise enabled.
+- No disconnects, packet errors, or **unreadable** formatting in Bedrock’s action bar / chat surfaces.
+
+**Not** in scope until scheduled: this is a **backlog** pointer only — the **next** practical move for operators remains the broader **Java** smoke matrix (**Sprint 78** / **80**).
 
 ## Geyser / Floodgate / Bedrock (cross-platform acceptance)
 
