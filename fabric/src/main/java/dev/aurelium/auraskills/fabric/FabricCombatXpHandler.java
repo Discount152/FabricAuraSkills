@@ -55,6 +55,12 @@ public final class FabricCombatXpHandler {
             return;
         }
         if (entity instanceof ServerPlayerEntity player) {
+            if (damageTaken > 0) {
+                User u = plugin.getUserManager().getUser(player.getUuid());
+                if (u != null) {
+                    plugin.getUiProvider().getActionBarManager().onIdleCombatOrDamage(u);
+                }
+            }
             handlePlayerDamaged(player, source, baseDamageTaken, damageTaken);
         } else {
             handleNonPlayerDamaged(entity, source, damageTaken);

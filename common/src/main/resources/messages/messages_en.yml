@@ -634,6 +634,9 @@ commands:
     enabled: "<green>Your skills action bar has been enabled"
     disabled: "<red>Your skills action bar has been disabled"
     not_enabled: "<yellow>Skills action bar is not enabled on this server!"
+    mode_smart: "<gray>Action bar: <aqua>smart<gray> (short HP/mana windows — other action bar text can show while idle.)"
+    mode_always: "<gray>Action bar: <yellow>always<gray> (health/mana updates continuously when idle.)"
+    mode_off: "<gray>Action bar: <red>off<gray> (no Granite idle health/mana on the action bar.)"
     desc: Toggles your own skills action bar.
   top:
     desc: Shows the top players in a skill

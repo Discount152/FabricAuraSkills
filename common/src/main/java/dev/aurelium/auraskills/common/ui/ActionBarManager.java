@@ -12,6 +12,7 @@ import dev.aurelium.auraskills.common.ui.UiProvider.FormatType;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.common.util.text.TextUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 public abstract class ActionBarManager {
 
     public static final int PAUSE_MS = 750;
+    private static final long MS_PER_TICK = 50L;
     protected final AuraSkillsPlugin plugin;
     private final UiProvider uiProvider;
 
@@ -28,6 +30,7 @@ public abstract class ActionBarManager {
     private final Map<UUID, Integer> timer = new ConcurrentHashMap<>();
     private final Map<UUID, Integer> currentAction = new ConcurrentHashMap<>();
     private final Map<Locale, String> idleMessageCache = new ConcurrentHashMap<>();
+    private final Map<UUID, IdleActionBarState> idleSmartState = new ConcurrentHashMap<>();
 
     public ActionBarManager(AuraSkillsPlugin plugin, UiProvider uiProvider) {
         this.plugin = plugin;
@@ -67,13 +70,12 @@ public abstract class ActionBarManager {
                 if (!plugin.configBoolean(Option.ACTION_BAR_IDLE) || !plugin.configBoolean(Option.ACTION_BAR_ENABLED)) {
                     return;
                 }
+                long now = System.currentTimeMillis();
                 for (User user : plugin.getUserManager().getOnlineUsers()) {
                     UUID uuid = user.getUuid();
-                    // Check player setting
                     if (!user.isActionBarEnabled(ActionBarType.IDLE)) {
                         continue;
                     }
-                    // Check disabled worlds
                     if (plugin.getWorldManager().isDisabledWorld(getWorldName(user))) {
                         continue;
                     }
@@ -85,34 +87,11 @@ public abstract class ActionBarManager {
                         continue;
                     }
 
-                    boolean formatLast = plugin.configBoolean(Option.ACTION_BAR_FORMAT_LAST);
-                    Locale locale = user.getLocale();
-
-                    String base;
-                    if (formatLast) {
-                        base = plugin.getMessageProvider().getRaw(ActionBarMessage.IDLE, locale);
-                    } else {
-                        String cache = idleMessageCache.get(locale);
-                        if (cache != null) { // Cache hit
-                            base = cache;
-                        } else { // Cache miss
-                            base = plugin.getMsg(ActionBarMessage.IDLE, locale);
-                            idleMessageCache.put(locale, base);
-                        }
+                    if (user.getActionBarIdleMode() == ActionBarIdleMode.ALWAYS) {
+                        sendIdleActionBarMessage(user);
+                        continue;
                     }
-
-                    String message = TextUtil.replace(base,
-                            "{hp}", getHp(user),
-                            "{max_hp}", getMaxHp(user),
-                            "{mana}", getMana(user),
-                            "{max_mana}", getMaxMana(user));
-                    message = replacePlaceholderApi(user, message);
-
-                    if (formatLast) {
-                        message = plugin.getMessageProvider().applyFormatting(message);
-                    }
-
-                    uiProvider.sendActionBar(user, message);
+                    tickSmartIdle(user, now);
                 }
             }
         };
@@ -120,6 +99,171 @@ public abstract class ActionBarManager {
             plugin.getScheduler().timerAsync(task, 0, plugin.configInt(Option.ACTION_BAR_UPDATE_PERIOD) * 50L, TimeUnit.MILLISECONDS);
         } else {
             plugin.getScheduler().timerSync(task, 0, plugin.configInt(Option.ACTION_BAR_UPDATE_PERIOD) * 50L, TimeUnit.MILLISECONDS);
+        }
+    }
+
+    /**
+     * Short window after profile load / trait recalculation on join.
+     */
+    public void onIdleUserLoaded(User user) {
+        extendIdleWindow(user, plugin.configInt(Option.ACTION_BAR_SHOW_ON_JOIN_TICKS));
+    }
+
+    /**
+     * Dimension / server world change without relying on displayed HP/mana delta.
+     */
+    public void onIdleWorldChanged(User user) {
+        extendIdleWindow(user, plugin.configInt(Option.ACTION_BAR_SHOW_ON_JOIN_TICKS));
+        IdleActionBarState st = idleSmartState.get(user.getUuid());
+        if (st != null) {
+            st.lastWorldKey = null;
+        }
+    }
+
+    /**
+     * Combat or general player damage — extends the smart window so the bar stays readable in fights.
+     */
+    public void onIdleCombatOrDamage(User user) {
+        extendIdleWindow(user, plugin.configInt(Option.ACTION_BAR_SHOW_AFTER_COMBAT_TICKS));
+    }
+
+    private void extendIdleWindow(User user, int ticks) {
+        long now = System.currentTimeMillis();
+        long add = Math.max(0, ticks) * MS_PER_TICK;
+        IdleActionBarState st = idleSmartState.computeIfAbsent(user.getUuid(), u -> new IdleActionBarState());
+        st.visibleUntilMs = Math.max(st.visibleUntilMs, now + add);
+    }
+
+    private void tickSmartIdle(User user, long now) {
+        String world = getWorldName(user);
+        int h = parsePositiveInt(getHp(user));
+        int mh = parsePositiveInt(getMaxHp(user));
+        int m = parsePositiveInt(getMana(user));
+        int mm = parsePositiveInt(getMaxMana(user));
+
+        IdleActionBarState st = idleSmartState.computeIfAbsent(user.getUuid(), u -> new IdleActionBarState());
+
+        if (st.lastWorldKey == null) {
+            st.lastWorldKey = world;
+        } else if (!st.lastWorldKey.equals(world)) {
+            st.lastWorldKey = world;
+            int join = plugin.configInt(Option.ACTION_BAR_SHOW_ON_JOIN_TICKS);
+            st.visibleUntilMs = Math.max(st.visibleUntilMs, now + (long) join * MS_PER_TICK);
+        }
+
+        int healthTicks = Math.max(0, plugin.configInt(Option.ACTION_BAR_SHOW_AFTER_HEALTH_CHANGE_TICKS));
+        int manaTicks = Math.max(0, plugin.configInt(Option.ACTION_BAR_SHOW_AFTER_MANA_CHANGE_TICKS));
+
+        if (!st.hasStableDisplay) {
+            st.stableH = h;
+            st.stableMaxH = mh;
+            st.stableM = m;
+            st.stableMaxM = mm;
+            st.inWinH = h;
+            st.inWinMaxH = mh;
+            st.inWinM = m;
+            st.inWinMaxM = mm;
+            st.hasStableDisplay = true;
+        } else {
+            boolean dHealth = h != st.stableH || mh != st.stableMaxH;
+            boolean dMana = m != st.stableM || mm != st.stableMaxM;
+            if (dHealth || dMana) {
+                int ext = pickExtendTicks(dHealth, dMana, healthTicks, manaTicks);
+                if (ext > 0) {
+                    st.visibleUntilMs = Math.max(st.visibleUntilMs, now + (long) ext * MS_PER_TICK);
+                }
+            }
+        }
+
+        boolean inWindow = now < st.visibleUntilMs;
+        if (inWindow) {
+            boolean hNow = h != st.inWinH || mh != st.inWinMaxH;
+            boolean mNow = m != st.inWinM || mm != st.inWinMaxM;
+            if (hNow || mNow) {
+                int ext = pickExtendTicks(hNow, mNow, healthTicks, manaTicks);
+                if (ext > 0) {
+                    st.visibleUntilMs = Math.max(st.visibleUntilMs, now + (long) ext * MS_PER_TICK);
+                }
+            }
+            st.inWinH = h;
+            st.inWinMaxH = mh;
+            st.inWinM = m;
+            st.inWinMaxM = mm;
+        }
+
+        inWindow = now < st.visibleUntilMs;
+        if (!inWindow) {
+            st.stableH = h;
+            st.stableMaxH = mh;
+            st.stableM = m;
+            st.stableMaxM = mm;
+            if (plugin.configBoolean(Option.ACTION_BAR_HIDE_WHEN_FULL_AND_IDLE)
+                    && h >= mh
+                    && m >= mm
+                    && mh > 0
+                    && mm > 0) {
+                return;
+            }
+            return;
+        }
+
+        int whileVis = Math.max(1, plugin.configInt(Option.ACTION_BAR_UPDATE_WHILE_VISIBLE_TICKS));
+        if (now - st.lastSendMs < (long) whileVis * MS_PER_TICK) {
+            return;
+        }
+        sendIdleActionBarMessage(user);
+        st.lastSendMs = now;
+    }
+
+    private static int pickExtendTicks(boolean dHealth, boolean dMana, int healthTicks, int manaTicks) {
+        if (dHealth && dMana) {
+            return Math.max(healthTicks, manaTicks);
+        } else if (dHealth) {
+            return healthTicks;
+        } else {
+            return manaTicks;
+        }
+    }
+
+    private void sendIdleActionBarMessage(User user) {
+        boolean formatLast = plugin.configBoolean(Option.ACTION_BAR_FORMAT_LAST);
+        Locale locale = user.getLocale();
+
+        String base;
+        if (formatLast) {
+            base = plugin.getMessageProvider().getRaw(ActionBarMessage.IDLE, locale);
+        } else {
+            String cache = idleMessageCache.get(locale);
+            if (cache != null) {
+                base = cache;
+            } else {
+                base = plugin.getMsg(ActionBarMessage.IDLE, locale);
+                idleMessageCache.put(locale, base);
+            }
+        }
+
+        String message = TextUtil.replace(base,
+                "{hp}", getHp(user),
+                "{max_hp}", getMaxHp(user),
+                "{mana}", getMana(user),
+                "{max_mana}", getMaxMana(user));
+        message = replacePlaceholderApi(user, message);
+
+        if (formatLast) {
+            message = plugin.getMessageProvider().applyFormatting(message);
+        }
+
+        uiProvider.sendActionBar(user, message);
+    }
+
+    private static int parsePositiveInt(String raw) {
+        if (raw == null || raw.isEmpty()) {
+            return 0;
+        }
+        try {
+            return Integer.parseInt(raw.trim());
+        } catch (NumberFormatException e) {
+            return 0;
         }
     }
 
@@ -186,6 +330,7 @@ public abstract class ActionBarManager {
         timer.clear();
         currentAction.clear();
         isPaused.clear();
+        idleSmartState.clear();
         clearMessageCache();
     }
 
@@ -195,6 +340,7 @@ public abstract class ActionBarManager {
         timer.remove(uuid);
         currentAction.remove(uuid);
         isPaused.remove(uuid);
+        idleSmartState.remove(uuid);
     }
 
     public void setPaused(User user, int time, TimeUnit timeUnit) {
@@ -306,6 +452,21 @@ public abstract class ActionBarManager {
 
     public void clearMessageCache() {
         idleMessageCache.clear();
+    }
+
+    private static final class IdleActionBarState {
+        long visibleUntilMs;
+        long lastSendMs;
+        int stableH;
+        int stableMaxH;
+        int stableM;
+        int stableMaxM;
+        boolean hasStableDisplay;
+        int inWinH;
+        int inWinMaxH;
+        int inWinM;
+        int inWinMaxM;
+        @Nullable String lastWorldKey;
     }
 
 }

@@ -19,6 +19,7 @@ import dev.aurelium.auraskills.common.region.BlockPosition;
 import dev.aurelium.auraskills.common.storage.StorageProvider;
 import dev.aurelium.auraskills.common.storage.sql.migration.SqlMigrator;
 import dev.aurelium.auraskills.common.storage.sql.pool.ConnectionPool;
+import dev.aurelium.auraskills.common.ui.ActionBarIdleMode;
 import dev.aurelium.auraskills.common.ui.ActionBarType;
 import dev.aurelium.auraskills.common.user.AntiAfkLog;
 import dev.aurelium.auraskills.common.user.SkillLevelMaps;
@@ -558,23 +559,32 @@ public class SqlStorageProvider extends StorageProvider {
     private List<KeyValueRow> getActionBarRow(User user) {
         List<KeyValueRow> rows = new ArrayList<>();
         boolean shouldSave = false;
-        // Only save if one of the action bars is disabled
         for (ActionBarType type : ActionBarType.values()) {
-            if (!user.isActionBarEnabled(type)) {
+            if (type != ActionBarType.IDLE && !user.isActionBarEnabled(type)) {
                 shouldSave = true;
             }
+        }
+        if (user.getActionBarIdleMode() != ActionBarIdleMode.SMART) {
+            shouldSave = true;
         }
         if (!shouldSave) {
             return rows;
         }
 
-        ActionBarType type = ActionBarType.IDLE;
-        String keyName = type.toString().toLowerCase(Locale.ROOT);
-        String value = String.valueOf(user.isActionBarEnabled(type));
-
-        var row = new KeyValueRow(ACTION_BAR_ID, null, keyName, value);
-        rows.add(row);
-
+        if (user.getActionBarIdleMode() != ActionBarIdleMode.SMART) {
+            rows.add(new KeyValueRow(
+                    ACTION_BAR_ID,
+                    null,
+                    "idle_mode",
+                    user.getActionBarIdleMode().name().toLowerCase(Locale.ROOT)));
+        }
+        for (ActionBarType type : ActionBarType.values()) {
+            if (!user.isActionBarEnabled(type)) {
+                String keyName = type.toString().toLowerCase(Locale.ROOT);
+                rows.add(new KeyValueRow(
+                        ACTION_BAR_ID, null, keyName, String.valueOf(user.isActionBarEnabled(type))));
+            }
+        }
         return rows;
     }
 

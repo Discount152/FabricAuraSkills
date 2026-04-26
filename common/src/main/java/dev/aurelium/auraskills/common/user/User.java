@@ -21,6 +21,7 @@ import dev.aurelium.auraskills.common.api.implementation.ApiSkillsUser;
 import dev.aurelium.auraskills.common.config.Option;
 import dev.aurelium.auraskills.common.jobs.JobsBatchData;
 import dev.aurelium.auraskills.common.mana.ManaAbilityData;
+import dev.aurelium.auraskills.common.ui.ActionBarIdleMode;
 import dev.aurelium.auraskills.common.ui.ActionBarType;
 import dev.aurelium.auraskills.common.util.data.KeyIntPair;
 import net.kyori.adventure.text.Component;
@@ -57,6 +58,7 @@ public abstract class User {
     private final Map<String, Object> metadata;
     private List<KeyIntPair> unclaimedItems;
     private final Map<ActionBarType, Boolean> actionBarSettings;
+    private ActionBarIdleMode actionBarIdleMode = ActionBarIdleMode.SMART;
     private final Set<Skill> jobs;
     private long lastJobSelectTime;
     private final List<AntiAfkLog> sessionAntiAfkLogs;
@@ -451,11 +453,26 @@ public abstract class User {
     }
 
     public boolean isActionBarEnabled(ActionBarType type) {
+        if (type == ActionBarType.IDLE) {
+            return actionBarIdleMode != ActionBarIdleMode.OFF;
+        }
         return actionBarSettings.getOrDefault(type, true);
     }
 
+    public @NotNull ActionBarIdleMode getActionBarIdleMode() {
+        return actionBarIdleMode;
+    }
+
+    public void setActionBarIdleMode(@NotNull ActionBarIdleMode actionBarIdleMode) {
+        this.actionBarIdleMode = actionBarIdleMode;
+    }
+
     public void setActionBarSetting(ActionBarType type, boolean enabled) {
-        this.actionBarSettings.put(type, enabled);
+        if (type == ActionBarType.IDLE) {
+            this.actionBarIdleMode = enabled ? ActionBarIdleMode.SMART : ActionBarIdleMode.OFF;
+        } else {
+            this.actionBarSettings.put(type, enabled);
+        }
     }
 
     public JobsBatchData getJobsBatchData() {

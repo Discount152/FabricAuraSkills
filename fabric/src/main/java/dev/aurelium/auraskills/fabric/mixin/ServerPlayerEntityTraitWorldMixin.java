@@ -45,5 +45,9 @@ public abstract class ServerPlayerEntityTraitWorldMixin {
         }
         FabricTraitManager tm = (FabricTraitManager) inst.getTraitManager();
         tm.onPlayerChangedServerWorld(player, from, to);
+        var user = inst.getUserManager().getUser(player.getUuid());
+        if (user != null) {
+            inst.getUiProvider().getActionBarManager().onIdleWorldChanged(user);
+        }
     }
 }

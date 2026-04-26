@@ -32,6 +32,14 @@ public enum Option {
     ACTION_BAR_USE_SUFFIX("action_bar.use_suffix", OptionType.BOOLEAN),
     ACTION_BAR_FORMAT_LAST("action_bar.format_last", OptionType.BOOLEAN),
     ACTION_BAR_UPDATE_ASYNC("action_bar.update_async", OptionType.BOOLEAN),
+    /** always | smart | off — default for new data when not specified; default embed is {@code smart}. */
+    ACTION_BAR_MODE("action_bar.mode", OptionType.STRING),
+    ACTION_BAR_SHOW_ON_JOIN_TICKS("action_bar.show_on_join_ticks", OptionType.INT),
+    ACTION_BAR_SHOW_AFTER_HEALTH_CHANGE_TICKS("action_bar.show_after_health_change_ticks", OptionType.INT),
+    ACTION_BAR_SHOW_AFTER_MANA_CHANGE_TICKS("action_bar.show_after_mana_change_ticks", OptionType.INT),
+    ACTION_BAR_SHOW_AFTER_COMBAT_TICKS("action_bar.show_after_combat_ticks", OptionType.INT),
+    ACTION_BAR_UPDATE_WHILE_VISIBLE_TICKS("action_bar.update_while_visible_ticks", OptionType.INT),
+    ACTION_BAR_HIDE_WHEN_FULL_AND_IDLE("action_bar.hide_when_full_and_idle", OptionType.BOOLEAN),
     // Boss bar options
     BOSS_BAR_ENABLED("boss_bar.enabled", OptionType.BOOLEAN),
     BOSS_BAR_MODE("boss_bar.mode", OptionType.STRING),

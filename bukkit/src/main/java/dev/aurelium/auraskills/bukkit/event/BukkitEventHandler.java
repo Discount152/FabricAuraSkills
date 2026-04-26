@@ -17,6 +17,7 @@ public class BukkitEventHandler implements EventHandler {
 
     @Override
     public void callUserLoadEvent(User user) {
+        user.getPlugin().getUiProvider().getActionBarManager().onIdleUserLoaded(user);
         Player player = ((BukkitUser) user).getPlayer();
         if (player != null) {
             UserLoadEvent event = new UserLoadEvent(player, user.toApi());

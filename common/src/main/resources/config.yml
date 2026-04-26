@@ -63,6 +63,13 @@ hooks:
 action_bar:
   enabled: true
   idle: true
+  mode: smart
+  show_on_join_ticks: 100
+  show_after_health_change_ticks: 100
+  show_after_mana_change_ticks: 100
+  show_after_combat_ticks: 120
+  update_while_visible_ticks: 10
+  hide_when_full_and_idle: true
   ability: true
   xp: false
   maxed: false

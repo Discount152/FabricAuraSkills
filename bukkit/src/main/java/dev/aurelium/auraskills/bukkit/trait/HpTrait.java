@@ -109,6 +109,7 @@ public class HpTrait extends TraitImpl {
             worldChangeHealth.put(player.getUniqueId(), player.getHealth());
         }
         User user = plugin.getUser(player);
+        plugin.getUiProvider().getActionBarManager().onIdleWorldChanged(user);
         if (Traits.HP.optionInt("update_delay") > 0) {
             plugin.getScheduler().scheduleAtEntity(player, () -> setWorldChange(event, player, user),
                     Traits.HP.optionInt("update_delay") * 50L, TimeUnit.MILLISECONDS);

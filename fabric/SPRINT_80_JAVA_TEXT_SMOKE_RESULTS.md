@@ -1,5 +1,7 @@
 # Sprint 80 — Java dedicated smoke re-run (2.3.109) + Sprint 79 text verification
 
+**Sprint 81 ( **2.3.111** JAR, code ):** The **health/mana** idle line uses **smart** / **always** / **off** and **`/abtoggle`**; see **`SPRINT_81_MANUAL_SMART_ACTION_BAR.md`**. **Sprint 80** procedures below still apply to **Sprint 79** text checks on the **2.3.109** or newer artifact; for **Litematica** / **action bar** coexistence, prefer validating on **2.3.111+**.
+
 **Purpose:** On a **disposable** dedicated Fabric **Java** server, deploy **`FabricAuraSkills-2.3.109.jar`**, then **re-run** the **minimum** command/menu matrix from **Sprint 78** and **visually** confirm the **Sprint 79** MiniMessage / text pipeline (level-up **chat**, **health/mana** action bar, **title** path).
 
 **In-repo / Cursor limit:** This file is filled by **operator** test runs. **CI cannot** open Minecraft. Default row state: **Pending (operator)** until you replace with **Pass** / **Fail** / **Skip (reason)** and commit or attach a PR with **`latest.log`**.

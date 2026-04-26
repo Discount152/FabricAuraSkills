@@ -15,7 +15,7 @@ import dev.aurelium.auraskills.bukkit.util.UpdateChecker;
 import dev.aurelium.auraskills.common.config.Option;
 import dev.aurelium.auraskills.common.leaderboard.SkillValue;
 import dev.aurelium.auraskills.common.message.type.CommandMessage;
-import dev.aurelium.auraskills.common.ui.ActionBarType;
+import dev.aurelium.auraskills.common.ui.ActionBarIdleMode;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.common.user.UserState;
 import dev.aurelium.auraskills.common.util.text.TextUtil;
@@ -216,13 +216,16 @@ public class SkillsRootCommand extends BaseCommand {
         User user = plugin.getUser(player);
         Locale locale = user.getLocale();
         if (plugin.configBoolean(Option.ACTION_BAR_ENABLED)) {
-            if (!user.isActionBarEnabled(ActionBarType.IDLE)) {
-                user.setActionBarSetting(ActionBarType.IDLE, true);
-                player.sendMessage(plugin.getPrefix(locale) + plugin.getMsg(CommandMessage.TOGGLE_ENABLED, locale));
-            } else {
-                user.setActionBarSetting(ActionBarType.IDLE, false);
-                player.sendMessage(plugin.getPrefix(locale) + plugin.getMsg(CommandMessage.TOGGLE_DISABLED, locale));
-            }
+            ActionBarIdleMode next = user.getActionBarIdleMode().nextInCycle();
+            user.setActionBarIdleMode(next);
+            user.setShouldSave(true);
+            CommandMessage key =
+                    switch (next) {
+                        case SMART -> CommandMessage.TOGGLE_MODE_SMART;
+                        case ALWAYS -> CommandMessage.TOGGLE_MODE_ALWAYS;
+                        case OFF -> CommandMessage.TOGGLE_MODE_OFF;
+                    };
+            player.sendMessage(plugin.getPrefix(locale) + plugin.getMsg(key, locale));
         } else {
             player.sendMessage(plugin.getPrefix(locale) + plugin.getMsg(CommandMessage.TOGGLE_NOT_ENABLED, locale));
         }

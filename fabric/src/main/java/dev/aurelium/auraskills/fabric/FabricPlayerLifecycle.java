@@ -38,6 +38,7 @@ public final class FabricPlayerLifecycle {
                 return;
             }
             User user = plugin.getUserManager().getUser(player.getUuid());
+            plugin.getUiProvider().getActionBarManager().resetActionBar(user);
             plugin.getScheduler().executeAsync(() -> {
                 try {
                     user.cleanUp();

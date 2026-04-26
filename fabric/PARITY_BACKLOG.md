@@ -29,6 +29,7 @@ The following are **not** part of the default **Granite** product roadmap. The *
 - **Sprint 78** — **Java minimum smoke execution (operator):** **`SPRINT_78_JAVA_SMOKE_EXECUTION_RESULTS.md`** + **`SPRINT_75_…`**, **Pending** until human fill. **`projectVersion` 2.3.108** (protocol). **In-repo agent** cannot run in-game smoke.
 - **Sprint 79** — **Fabric text / MiniMessage (code):** **`FabricMessageProvider`** + **`FabricUiProvider`** — **`SPRINT_79_MANUAL_TEXT_RENDERING.md`**, **`projectVersion` 2.3.109** (JAR).
 - **Sprint 80** — **Java smoke + text re-verify (operator):** **`SPRINT_80_JAVA_TEXT_SMOKE_RESULTS.md`** — run on **2.3.109**, **full restart** recommended, fill **Pass/Fail**; **`projectVersion` 2.3.110** (doc). **NRP** until operator. **Bedrock** not tested.
+- **Sprint 81** — **Smart idle action bar (code):** **`ActionBarManager`** — **health/mana** idle line **stops** resending in **smart** mode so **other** action bar text (e.g. **Litematica**) can show; **`/abtoggle`**, **`action_bar` config keys**, **`ActionBarIdleMode`**, `userdata` **`idle_mode`**; **`SPRINT_81_MANUAL_SMART_ACTION_BAR.md`**; **`projectVersion` 2.3.111**. **Bedrock** not validated; server-side only.
 
 ## Geyser / Floodgate / Bedrock (cross-platform acceptance)
 

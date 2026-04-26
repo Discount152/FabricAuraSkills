@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.111
+
+### Changes
+
+- **Granite: Smart idle action bar (Sprint 81):** The **health/mana** idle line no longer hammers the only vanilla action bar slot every `update_period` in **smart** mode ( **default in `config.yml`** and for **new** player data; legacy **`action_bar` `idle: true` without `idle_mode`** stays **continuous** = **always**). **Off** and **no silent packets** when hidden so **Litematica** / other mods can use the line. **Config:** `action_bar.mode`, `show_on_join_ticks`, `show_after_health_change_ticks`, `show_after_mana_change_ticks`, `show_after_combat_ticks`, `update_while_visible_ticks`, `hide_when_full_and_idle`. **`/abtoggle` / `toggle`:** cycles **smart → always → off → smart**; profiles store **`idle_mode`**. **Hooks:** user load, world change, combat/damage, timer compare on **display-rounded** int HP/mana. **Tests:** `ActionBarIdleModeTest`. **Doc:** `fabric/SPRINT_81_MANUAL_SMART_ACTION_BAR.md`. **Parity** doc updates. **`projectVersion` 2.3.110 → 2.3.111**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test` and `:fabric:build` — run by maintainer.
+
 ## 2.3.110
 
 ### Changes

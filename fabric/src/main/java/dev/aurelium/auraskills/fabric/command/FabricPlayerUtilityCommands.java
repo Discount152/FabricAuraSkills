@@ -8,7 +8,7 @@ import dev.aurelium.auraskills.api.util.NumberUtil;
 import dev.aurelium.auraskills.common.config.Option;
 import dev.aurelium.auraskills.common.level.LevelManager;
 import dev.aurelium.auraskills.common.message.type.CommandMessage;
-import dev.aurelium.auraskills.common.ui.ActionBarType;
+import dev.aurelium.auraskills.common.ui.ActionBarIdleMode;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.common.util.text.TextUtil;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
@@ -193,21 +193,17 @@ public final class FabricPlayerUtilityCommands {
                     }
                     Locale lo = user.getLocale();
                     if (p.configBoolean(Option.ACTION_BAR_ENABLED)) {
-                        if (!user.isActionBarEnabled(ActionBarType.IDLE)) {
-                            user.setActionBarSetting(ActionBarType.IDLE, true);
-                            user.setShouldSave(true);
-                            source.sendFeedback(
-                                    () -> Text.literal(
-                                            p.getMsg(CommandMessage.TOGGLE_ENABLED, lo)),
-                                    false);
-                        } else {
-                            user.setActionBarSetting(ActionBarType.IDLE, false);
-                            user.setShouldSave(true);
-                            source.sendFeedback(
-                                    () -> Text.literal(
-                                            p.getMsg(CommandMessage.TOGGLE_DISABLED, lo)),
-                                    false);
-                        }
+                        ActionBarIdleMode next = user.getActionBarIdleMode().nextInCycle();
+                        user.setActionBarIdleMode(next);
+                        user.setShouldSave(true);
+                        CommandMessage key =
+                                switch (next) {
+                                    case SMART -> CommandMessage.TOGGLE_MODE_SMART;
+                                    case ALWAYS -> CommandMessage.TOGGLE_MODE_ALWAYS;
+                                    case OFF -> CommandMessage.TOGGLE_MODE_OFF;
+                                };
+                        String msg = p.getMsg(key, lo);
+                        source.sendFeedback(() -> Text.literal(msg), false);
                     } else {
                         source.sendFeedback(
                                 () -> Text.literal(

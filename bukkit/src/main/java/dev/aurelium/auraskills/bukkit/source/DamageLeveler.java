@@ -31,13 +31,21 @@ public class DamageLeveler extends SourceLeveler {
     @EventHandler(priority = EventPriority.MONITOR)
     @SuppressWarnings("deprecation")
     public void onDamage(EntityDamageEvent event) {
-        if (disabled()) return;
         if (!(event.getEntity() instanceof Player player)) {
             return;
         }
-
-        if (player.hasMetadata("NPC")) return;
-
+        if (player.hasMetadata("NPC")) {
+            return;
+        }
+        if (event.getFinalDamage() > 0) {
+            User u = plugin.getUser(player);
+            if (u != null) {
+                plugin.getUiProvider().getActionBarManager().onIdleCombatOrDamage(u);
+            }
+        }
+        if (disabled()) {
+            return;
+        }
         var skillSource = getSource(event);
         if (skillSource == null) return;
 

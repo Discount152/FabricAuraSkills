@@ -16,6 +16,10 @@ public final class FabricEventHandler implements EventHandler {
 
     @Override
     public void callUserLoadEvent(User user) {
+        FabricAuraSkills plugin = FabricAuraSkills.getInstance();
+        if (plugin != null) {
+            plugin.getUiProvider().getActionBarManager().onIdleUserLoaded(user);
+        }
     }
 
     @Override

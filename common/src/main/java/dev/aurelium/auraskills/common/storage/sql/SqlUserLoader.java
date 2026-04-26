@@ -15,6 +15,7 @@ import dev.aurelium.auraskills.api.trait.TraitModifier;
 import dev.aurelium.auraskills.api.util.AuraSkillsModifier.Operation;
 import dev.aurelium.auraskills.api.util.NumberUtil;
 import dev.aurelium.auraskills.common.AuraSkillsPlugin;
+import dev.aurelium.auraskills.common.ui.ActionBarIdleMode;
 import dev.aurelium.auraskills.common.ui.ActionBarType;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.common.util.data.KeyIntPair;
@@ -25,7 +26,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 
 import static dev.aurelium.auraskills.common.storage.sql.SqlStorageProvider.*;
@@ -125,6 +128,7 @@ public class SqlUserLoader {
         // Load key values
         JsonArray keyValues = getJsonArray("key_values", rs);
         if (keyValues != null && !keyValues.isJsonNull()) {
+            Map<String, String> pendingActionBar = new HashMap<>();
             for (JsonElement keyValueElement : keyValues) {
                 JsonObject keyValueObj = keyValueElement.getAsJsonObject();
 
@@ -134,13 +138,17 @@ public class SqlUserLoader {
                 if (keyName == null) continue;
                 String value = getString(keyValueObj, "value");
 
+                if (dataId == ACTION_BAR_ID) {
+                    pendingActionBar.put(keyName, value);
+                    continue;
+                }
                 switch (dataId) {
                     case ABILITY_DATA_ID -> applyAbilityData(user, categoryId, keyName, value);
                     case UNCLAIMED_ITEMS_ID -> applyUnclaimedItem(user, keyName, value);
-                    case ACTION_BAR_ID -> applyActionBar(user, keyName, value);
                     case JOBS_ID -> applyJobs(user, keyName, value);
                 }
             }
+            applyActionBarBatch(user, pendingActionBar);
         }
 
         // Load modifiers
@@ -220,13 +228,48 @@ public class SqlUserLoader {
         user.getUnclaimedItems().add(pair);
     }
 
-    private void applyActionBar(User user, String keyName, String valueStr) {
-        try {
-            ActionBarType type = ActionBarType.valueOf(keyName.toUpperCase(Locale.ROOT));
-            boolean enabled = !valueStr.equals("false");
-            user.setActionBarSetting(type, enabled);
-        } catch (IllegalArgumentException ignored) {
+    private void applyActionBarBatch(User user, Map<String, String> rows) {
+        if (rows.isEmpty()) {
+            return;
         }
+        String modeStr = findCaseInsensitive(rows, "idle_mode");
+        if (modeStr != null) {
+            user.setActionBarIdleMode(ActionBarIdleMode.fromStringOr(modeStr, ActionBarIdleMode.SMART));
+        } else {
+            String legacyIdle = findCaseInsensitive(rows, "idle");
+            if (legacyIdle != null) {
+                if (!legacyIdle.equals("false")) {
+                    // Legacy: idle true meant continuous line
+                    user.setActionBarIdleMode(ActionBarIdleMode.ALWAYS);
+                } else {
+                    user.setActionBarIdleMode(ActionBarIdleMode.OFF);
+                }
+            }
+        }
+        for (Map.Entry<String, String> e : rows.entrySet()) {
+            if (e.getKey().equalsIgnoreCase("idle") || e.getKey().equalsIgnoreCase("idle_mode")) {
+                continue;
+            }
+            try {
+                ActionBarType type = ActionBarType.valueOf(e.getKey().toUpperCase(Locale.ROOT));
+                if (type == ActionBarType.IDLE) {
+                    continue;
+                }
+                boolean enabled = !e.getValue().equals("false");
+                user.setActionBarSetting(type, enabled);
+            } catch (IllegalArgumentException ignored) {
+            }
+        }
+    }
+
+    @Nullable
+    private static String findCaseInsensitive(Map<String, String> rows, String key) {
+        for (Map.Entry<String, String> e : rows.entrySet()) {
+            if (e.getKey() != null && e.getKey().equalsIgnoreCase(key)) {
+                return e.getValue();
+            }
+        }
+        return null;
     }
 
     private void applyJobs(User user, String keyName, String valueStr) {

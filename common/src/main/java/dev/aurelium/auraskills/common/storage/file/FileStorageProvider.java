@@ -11,10 +11,12 @@ import dev.aurelium.auraskills.api.trait.TraitModifier;
 import dev.aurelium.auraskills.api.util.AuraSkillsModifier;
 import dev.aurelium.auraskills.api.util.AuraSkillsModifier.Operation;
 import dev.aurelium.auraskills.common.AuraSkillsPlugin;
+import dev.aurelium.auraskills.common.config.Option;
 import dev.aurelium.auraskills.common.mana.ManaAbilityData;
 import dev.aurelium.auraskills.common.ref.PlayerRef;
 import dev.aurelium.auraskills.common.region.BlockPosition;
 import dev.aurelium.auraskills.common.storage.StorageProvider;
+import dev.aurelium.auraskills.common.ui.ActionBarIdleMode;
 import dev.aurelium.auraskills.common.ui.ActionBarType;
 import dev.aurelium.auraskills.common.user.AntiAfkLog;
 import dev.aurelium.auraskills.common.user.SkillLevelMaps;
@@ -224,7 +226,25 @@ public class FileStorageProvider extends StorageProvider {
     }
 
     private void loadActionBar(ConfigurationNode node, User user) {
+        ConfigurationNode idleModeNode = node.node("idle_mode");
+        if (!idleModeNode.virtual()) {
+            user.setActionBarIdleMode(ActionBarIdleMode.fromStringOr(
+                    idleModeNode.getString(), ActionBarIdleMode.SMART));
+        } else if (!node.node("idle").virtual()) {
+            if (node.node("idle").getBoolean()) {
+                // Legacy "on" = continuous health/mana line
+                user.setActionBarIdleMode(ActionBarIdleMode.ALWAYS);
+            } else {
+                user.setActionBarIdleMode(ActionBarIdleMode.OFF);
+            }
+        } else {
+            user.setActionBarIdleMode(ActionBarIdleMode.fromStringOr(
+                    plugin.configString(Option.ACTION_BAR_MODE), ActionBarIdleMode.SMART));
+        }
         for (ActionBarType type : ActionBarType.values()) {
+            if (type == ActionBarType.IDLE) {
+                continue;
+            }
             String typeName = type.toString().toLowerCase(Locale.ROOT);
             if (!node.node(typeName).virtual()) {
                 user.setActionBarSetting(type, node.node(typeName).getBoolean());
@@ -379,8 +399,11 @@ public class FileStorageProvider extends StorageProvider {
 
         // Save action bar settings
         ConfigurationNode actionBarNode = root.node("action_bar");
+        actionBarNode.node("idle_mode").set(user.getActionBarIdleMode().name().toLowerCase(Locale.ROOT));
         for (ActionBarType type : ActionBarType.values()) {
-            if (type != ActionBarType.IDLE) continue; // Only save idle action bar for now
+            if (type != ActionBarType.IDLE) {
+                continue;
+            }
             boolean value = user.isActionBarEnabled(type);
             actionBarNode.node(type.toString().toLowerCase(Locale.ROOT)).set(value);
         }

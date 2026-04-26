@@ -357,7 +357,7 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 
 | Piece | Where |
 |-------|--------|
-| **Commands** | **`FabricPlayerUtilityCommands`**: **`/multiplier`** (self) and **`/multiplier <player>`**; **`/toggle`** and **`/abtoggle`** (same **action bar IDLE** logic, **Bukkit** shared perm **`abtoggle`**); **`/lang <code>`** with suggestions from **`MessageProvider#getLanguageCodes`**. |
+| **Commands** | **`FabricPlayerUtilityCommands`**: **`/multiplier`** (self) and **`/multiplier <player>`**; **`/toggle`** and **`/abtoggle`** ( **Sprint 81** — cycles **idle** action bar **smart → always → off**; `userdata` / SQL **`idle_mode`**; same perm **`abtoggle`**); **`/lang <code>`** with suggestions from **`MessageProvider#getLanguageCodes`**. |
 | **Mirrors** | **`/auraskills`**, **`/sk`**, **`/skill`**, plus top-level. |
 | **Shared** | **`FabricCommandLocaleArgs`**; **`setShouldSave(true)`** on **lang** + **toggle** after mutation. |
 | **Manual** | **`SPRINT_48_MANUAL_PLAYER_UTILITY.md`** |
@@ -523,7 +523,7 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 |------|-----------------------------|
 | **Commands** | **`/auraskills manaability`**, **`/skills\|/sk\|/skill manaability`** **resetcooldown** `<player> <ability> [fill_mana]` — **no** dedicated top-level **`/manaability`** (matches reference: only under **skills** alias + **`/auraskills`** on Fabric). **`auraskills.command.manaability.resetcooldown`** (default **deny**). **In-game** sender: target must be **another** online player (ACF `@Flags("other")`); **console/RCON** may target any online player. |
 | **Data** | **Other**’s **`User`**: if cooldown **&gt; 0** and not **activated**, set **0**; optional **boolean** `fill_mana` → **max** mana. **`user.setShouldSave(true)`**. **No** **`ManaAbilityRefreshEvent`** (Bukkit / api-bukkit). |
-| **vs `/abtoggle`** | **`/abtoggle`** / **`/toggle`** = **Sprint 48** **IDLE** **action bar** on/off; **independent** of this admin **cooldown** tool. |
+| **vs `/abtoggle`** | **`/abtoggle`** / **`/toggle`** = **Sprint 48/81** **IDLE** **action bar** policy (**Sprint 81** = **smart/always/off**); **independent** of this admin **cooldown** tool. |
 | **Not in Sprint 66** | **`ManaAbilityRefreshEvent`**; other **ManaAbility** subcommands (reference has **only** **resetcooldown**); **Jobs**; menus. Manual: **`SPRINT_66_MANUAL_MANA_ABILITY_COMMAND.md`**. |
 
 ## Sprint 67 — **`/antiafk logs`** (Bukkit `AntiAfkCommand`) (shipped, partial)
