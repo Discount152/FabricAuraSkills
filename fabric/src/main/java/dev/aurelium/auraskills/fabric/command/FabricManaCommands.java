@@ -11,6 +11,7 @@ import dev.aurelium.auraskills.common.message.MessageBuilder;
 import dev.aurelium.auraskills.common.message.type.CommandMessage;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
+import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -26,6 +27,12 @@ import static net.minecraft.server.command.CommandManager.literal;
  * {@link dev.aurelium.auraskills.common.commands.ManaCommand}; admin subcommands use
  * {@link FabricCommandMutationFeedback} / {@link FabricCommandAmountRules}. Registered as
  * {@code /mana …} and {@code /auraskills mana …}.
+ * <p>
+ * <strong>View (Sprint 83):</strong> {@code /mana view} with no second argument reuses
+ * {@link #executeSelf} (same as plain {@code /mana}) for players; console must use
+ * {@code /mana view &lt;player&gt;} for another player, which still requires
+ * {@link FabricCommandPermissions#MANA_OTHER}. Without {@code MANA_OTHER}, the {@code
+ * <player>} branch is not available in Brigadier, but the no-arg form works with {@code MANA} only.
  */
 public final class FabricManaCommands {
 
@@ -38,8 +45,11 @@ public final class FabricManaCommands {
         return literal("mana")
                 .executes(FabricManaCommands::executeSelf)
                 .then(literal("view")
-                        .requires(FabricCommandRequirements.permission(FabricCommandPermissions.MANA_OTHER, false))
+                        .executes(FabricManaCommands::executeSelf)
                         .then(CommandManager.argument(ARG_PLAYER, StringArgumentType.word())
+                                .requires(
+                                        FabricCommandRequirements.permission(
+                                                FabricCommandPermissions.MANA_OTHER, false))
                                 .suggests(FabricCommandSuggestionProviders.onlinePlayers())
                                 .executes(FabricManaCommands::executeView)))
                 .then(literal("add")
@@ -63,13 +73,16 @@ public final class FabricManaCommands {
     private static int executeSelf(CommandContext<ServerCommandSource> ctx) {
         ServerCommandSource source = ctx.getSource();
         if (!Permissions.check(source, FabricCommandPermissions.MANA, true)) {
-            source.sendError(Text.translatable("auraskills.granite.command.permission_denied"));
+            source.sendError(
+                    FabricGraniteText.key("auraskills.granite.command.permission_denied"));
             return 0;
         }
         return FabricCommandPluginState.runtimeReadyOrEmpty()
                 .map(p -> {
                     if (!(source.getEntity() instanceof ServerPlayerEntity player)) {
-                        source.sendError(Text.translatable("auraskills.granite.command.mana.console_specify"));
+                        source.sendError(
+                                FabricGraniteText.key(
+                                        "auraskills.granite.command.mana.console_specify"));
                         return 0;
                     }
                     User user = p.getUserManager().getUser(player.getUuid());
@@ -104,8 +117,9 @@ public final class FabricManaCommands {
                     ServerPlayerEntity target =
                             FabricCommandPlayerTarget.findOnline(source.getServer(), name).orElse(null);
                     if (target == null) {
-                        source.sendError(Text.translatable(
-                                "auraskills.granite.command.xp.player_not_found", name));
+                        source.sendError(
+                                FabricGraniteText.key(
+                                        "auraskills.granite.command.xp.player_not_found", name));
                         return 0;
                     }
                     User user = p.getUserManager().getUser(target.getUuid());
@@ -259,7 +273,8 @@ public final class FabricManaCommands {
         ServerPlayerEntity target =
                 FabricCommandPlayerTarget.findOnline(source.getServer(), name).orElse(null);
         if (target == null) {
-            source.sendError(Text.translatable("auraskills.granite.command.xp.player_not_found", name));
+            source.sendError(
+                    FabricGraniteText.key("auraskills.granite.command.xp.player_not_found", name));
             return 0;
         }
         User user = p.getUserManager().getUser(target.getUuid());

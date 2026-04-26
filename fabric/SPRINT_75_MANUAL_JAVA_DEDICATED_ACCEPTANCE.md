@@ -46,6 +46,10 @@
 
 **Doc:** `fabric/SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md` — run the **full** command + menu + safe-admin + item matrix on **`FabricAuraSkills-2.3.114+`** (includes **81C** smart action bar validation baseline). **Runtime only**; no feature scope by default. **Bedrock** not in scope. When 82 is complete, this acceptance gate can cite the **82** summary as the current **Java** proof.
 
+## Sprint 83 — smoke patch (translation wire + `/mana view`)
+
+**Doc:** `fabric/SPRINT_83_MANUAL_JAVA_SMOKE_PATCH_TRANSLATIONS_MANA.md` — deploy **`2.3.116+`** to fix **raw** `auraskills.granite.*` on **vanilla** clients and **`/mana view`** (self) without **`mana.other`**. Re-run affected **Sprint 78** / **82** rows. **Bedrock** not tested.
+
 ---
 
 ## CI / agent build evidence (in-repo, not a live server)

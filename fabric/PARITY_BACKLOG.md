@@ -34,6 +34,7 @@ The following are **not** part of the default **Granite** product roadmap. The *
 - **Sprint 81B** — **Smart idle — first stable guard:** **`ActionBarManager`** — **`!wasInWindow`** for **stable** diff; **`SPRINT_81B_MANUAL_SMART_ACTION_BAR_LEVELUP_FIX.md`**; **`2.3.113`**. **Superseded in part** by **81C`.
 - **Sprint 81C** — **Smart idle — observed snapshot only:** **`SmartIdleObsDisplay`** in **`ActionBarManager#tickSmartIdle`**; **`SPRINT_81C_MANUAL_SMART_ACTION_BAR_STUCK_FIX.md`**; **`2.3.114`**. **Java** runtime **Pass**; **Bedrock** not run-time tested (see follow-up below).
 - **Sprint 82** — **Java dedicated full smoke matrix (operator):** **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`** — execute the **Sprint 78** / **80**–style matrix on **`FabricAuraSkills-2.3.114+`**; record **Pass / Fail / Skip**; **NRP** until operators fill. **`projectVersion` 2.3.115** (doc / protocol). **Bedrock** not in scope. Supersedes *“next: Java 78/80”* in the backlog *Bedrock* follow-up line once 82 is **Pass**-complete (see that section).
+- **Sprint 83** — **Java smoke patch (code):** **`SPRINT_83_MANUAL_JAVA_SMOKE_PATCH_TRANSLATIONS_MANA.md`** — **`FabricGraniteText`** (server **literal** from `Language`) for **Sprint 82** raw `auraskills.granite.*` on **vanilla** clients; **`/mana view`** = **self** ( **`MANA` only**), **`/mana view <player>`** + **`MANA_OTHER`**; **`2.3.116`**. **Bedrock** not run-time tested.
 
 ## Bedrock / Geyser validation follow-up
 

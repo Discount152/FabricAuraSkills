@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.116
+
+### Changes
+
+- **Fabric: Java smoke fixes — translatable on vanilla clients (Sprint 83):** Players without the mod’s `assets/auraskills/lang` on the **client** saw **raw** `Text.translatable("auraskills.granite…")` keys (usage, help, **Skills/Stats** menu titles, “opened” feedback) because the client has no mod lang table. **Fix:** `FabricGraniteText#key` resolves keys with **`Language` on the server** and sends **`Text.literal(…)`** (still driven by the same `en_us.json` on the server). Wired for the Sprint 82 hit list: **root usage/help** (`FabricBrigadierCommands`), **menu titles** (`FabricMenuRegistry` built-in), **openmenu/auraskills** “opened” feedback (`FabricOpenMenuCommands#sendListMenuFeedback`), plus related **mana** command errors. **`/mana view`** (Sprint 82 / smoke matrix) **no-arg** = same as `/mana` (self); `auraskills.command.mana.other` is required **only** for **`/mana view <player>`** — the old tree put **`MANA_OTHER`** on the whole `view` subcommand, so `view` was **invisible** to Brigadier without that perm, producing “wrong syntax” for `/mana view`. **Tests:** `FabricGraniteEnUsKeysTest` (six `en_us` keys). **Doc:** `fabric/SPRINT_83_MANUAL_JAVA_SMOKE_PATCH_TRANSLATIONS_MANA.md`, smoke matrix and parity pointers. **Bedrock** not run-time tested. **`projectVersion` 2.3.115 → 2.3.116**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test :fabric:build` — **PASS**.
+
 ## 2.3.115
 
 ### Changes

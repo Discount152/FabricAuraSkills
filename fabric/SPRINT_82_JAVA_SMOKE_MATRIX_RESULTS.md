@@ -9,6 +9,8 @@
 
 **Related:** Canonical minimum set lives in **`SPRINT_78_JAVA_SMOKE_EXECUTION_RESULTS.md`**. **Sprint 80** = text re-verify on 2.3.109+. This doc (**82**) = **full matrix** re-execution on **2.3.114+** after **81C** closed the **Java** smart action bar lane.
 
+**Sprint 83 (code):** first smoke run had **raw** `auraskills.granite.*` in chat/GUI and `/mana view` **Brigadier** issues — see **`SPRINT_83_MANUAL_JAVA_SMOKE_PATCH_TRANSLATIONS_MANA.md`**, **`2.3.116+`**. Re-test matrix rows: **`/auraskills`**, **`/auraskills help`**, **Skills/Stats** titles, **“opened”** lines, **`/mana`**, **`/mana view`**, **`/mana view <player>`**.
+
 ---
 
 ## Environment (fill when you run)
@@ -103,7 +105,8 @@ Substitute **`<skill>`** / **`<stat>`** with IDs **enabled** on your `config` (e
 | Command | Result | Notes |
 |---------|--------|--------|
 | `/mana` | | |
-| `/mana view <player>` | | |
+| `/mana view` (self; same as `/mana` for players) | | |
+| `/mana view <player>` (requires `auraskills.command.mana.other`) | | |
 | `/xp view <player> <skill>` | | |
 | `/skilllevel view <player> <skill>` | | |
 | `/top` | | |

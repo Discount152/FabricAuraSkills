@@ -14,6 +14,7 @@ import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.item.FabricUnclaimedItemsMerge;
 import dev.aurelium.auraskills.fabric.menu.FabricAuraSkillsMenus;
 import dev.aurelium.auraskills.fabric.menu.FabricMenuKeys;
+import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -672,10 +673,10 @@ public final class FabricOpenMenuCommands {
             String menuId) {
         if (source.getEntity() instanceof ServerPlayerEntity srcPlayer
                 && srcPlayer.getUuid().equals(menuRecipient.getUuid())) {
-            source.sendFeedback(() -> Text.translatable(selfKey), true);
+            source.sendFeedback(() -> FabricGraniteText.key(selfKey), true);
         } else {
             source.sendFeedback(
-                    () -> Text.translatable(
+                    () -> FabricGraniteText.key(
                             "auraskills.granite.command.openmenu.opened_for",
                             menuId,
                             menuRecipient.getName().getString()),

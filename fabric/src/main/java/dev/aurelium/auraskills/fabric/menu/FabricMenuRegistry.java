@@ -1,6 +1,7 @@
 package dev.aurelium.auraskills.fabric.menu;
 
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
+import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
@@ -86,7 +87,7 @@ public final class FabricMenuRegistry {
                 }
                 return;
             }
-            title = Text.translatable(slice.titleTranslationKey());
+            title = FabricGraniteText.key(slice.titleTranslationKey());
         } else if (plugin != null && FabricMenuKeys.STATS.equals(id)) {
             FabricMenuYamlSlice slice =
                     plugin.getBuiltInMenuConfig().getSlice(id, FabricMenuYamlSlice.defaultStats());
@@ -97,9 +98,9 @@ public final class FabricMenuRegistry {
                 }
                 return;
             }
-            title = Text.translatable(slice.titleTranslationKey());
+            title = FabricGraniteText.key(slice.titleTranslationKey());
         } else {
-            title = Text.translatable(def.titleTranslationKey());
+            title = FabricGraniteText.key(def.titleTranslationKey());
         }
         def.opener().open(player, plugin, title, context);
     }

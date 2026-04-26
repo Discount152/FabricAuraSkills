@@ -14,6 +14,8 @@
 
 **Sprint 82:** Full **Java dedicated** smoke matrix execution on **`2.3.114+`** (post–**81C** action bar) — use **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`** as the **primary** results record; keep this file’s **minimum** rows in sync or reference the 82 summary when 82 is **Pass**-complete.
 
+**Sprint 83:** **Raw** `auraskills.granite.*` on **vanilla** Java clients + **`/mana view`** Brigadier issue — fixed in **`2.3.116+`** — see **`SPRINT_83_MANUAL_JAVA_SMOKE_PATCH_TRANSLATIONS_MANA.md`**. Re-test the listed rows on the new JAR.
+
 ---
 
 ## Artifacts to record when you run (copy into Notes)
@@ -52,6 +54,7 @@
 | `/openmenu abilities` | **Pending (operator)** | | |
 | `/openmenu abilities farming` | **Pending (operator)** | | |
 | `/mana` | **Pending (operator)** | | |
+| `/mana view` | **Pending (operator)** | | self: same as `/mana` (**2.3.116+**); see **SPRINT_83** |
 | `/top` | **Pending (operator)** | | |
 | `/top average` | **Pending (operator)** | | |
 | `/skilltop farming` | **Pending (operator)** | | |
@@ -99,7 +102,23 @@
 
 **Retest:** Re-run the minimum smoke on **2.3.109+** JARs and re-mark any row that was **Fail (raw tags)** as **Pass** or file a follow-up.
 
-### 2) Other
+### 2) Raw `auraskills.granite.*` translation keys (vanilla client) — **addressed in Sprint 83 (code)**
+
+**Observed (Sprint 82):** Chat and **built-in** menu titles/feedback showed **literal** keys such as **`auraskills.granite.command.auraskills_usage`**, **`…help`**, **`…menu.skills_title`**, **`…stats_title`**, **`…skills_opened`**, **`…stats_opened`**.
+
+**Cause:** `Text.translatable` is resolved on the **client**; vanilla clients lack mod `lang` assets.
+
+**Sprint 83 fix:** **`FabricGraniteText`** + server **literal** text for the hot paths; **`2.3.116+`**. See **`SPRINT_83_MANUAL_JAVA_SMOKE_PATCH_TRANSLATIONS_MANA.md`**.
+
+**Retest:** Minimum smoke on **`2.3.116+`** with a **vanilla** Java client (no client mod).
+
+### 3) `/mana view` Brigadier failure (Sprint 82) — **addressed in Sprint 83 (code)**
+
+**Cause:** **`MANA_OTHER`** on the entire **`view`** subcommand hid **`view`** from players who only had **`auraskills.command.mana`**. **`/mana view <player>`** still requires **`mana.other`**; **`/mana view`** with **no** target reuses **self** mana (same as **`/mana`**).
+
+**Doc:** **SPRINT_83** manual; **COMMAND_PARITY_AUDIT** (Mana row).
+
+### 4) Other
 
 | ID | Description | Block release? |
 |----|-------------|----------------|

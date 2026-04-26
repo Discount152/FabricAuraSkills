@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import dev.aurelium.auraskills.fabric.FabricAuraSkillsMod;
 import dev.aurelium.auraskills.fabric.menu.FabricAuraSkillsMenus;
+import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -185,14 +186,15 @@ public final class FabricBrigadierCommands {
     private static int auraskillsUsage(CommandContext<ServerCommandSource> ctx) {
         ctx.getSource()
                 .sendFeedback(
-                        () -> Text.translatable("auraskills.granite.command.auraskills_usage"),
+                        () -> FabricGraniteText.key("auraskills.granite.command.auraskills_usage"),
                         false);
         return 1;
     }
 
     private static int auraskillsHelp(CommandContext<ServerCommandSource> ctx) {
         ctx.getSource()
-                .sendFeedback(() -> Text.translatable("auraskills.granite.command.help"), false);
+                .sendFeedback(
+                        () -> FabricGraniteText.key("auraskills.granite.command.help"), false);
         return 1;
     }
 
@@ -221,7 +223,8 @@ public final class FabricBrigadierCommands {
                         return 0;
                     }
                     FabricAuraSkillsMenus.open(FabricAuraSkillsMenus.Id.SKILLS, player, p);
-                    source.sendFeedback(() -> Text.translatable("auraskills.granite.menu.skills_opened"), true);
+                    source.sendFeedback(
+                            () -> FabricGraniteText.key("auraskills.granite.menu.skills_opened"), true);
                     return 1;
                 })
                 .orElseGet(() -> {
@@ -239,7 +242,8 @@ public final class FabricBrigadierCommands {
                         return 0;
                     }
                     FabricAuraSkillsMenus.open(FabricAuraSkillsMenus.Id.STATS, player, p);
-                    source.sendFeedback(() -> Text.translatable("auraskills.granite.menu.stats_opened"), true);
+                    source.sendFeedback(
+                            () -> FabricGraniteText.key("auraskills.granite.menu.stats_opened"), true);
                     return 1;
                 })
                 .orElseGet(() -> {
