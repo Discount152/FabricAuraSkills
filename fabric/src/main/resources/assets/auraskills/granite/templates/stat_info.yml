@@ -1,0 +1,27 @@
+# Sprint 96 — bundled v0 template for stat_info (GraniteLib YAML schema v0).
+# Fallback: built-in FabricStatInfoMenuGui if load/validation/render fails.
+id: stat_info
+title: "Stat Info: {stat_display}"
+rows: 6
+
+fill:
+  material: minecraft:black_stained_glass_pane
+  name: " "
+
+items:
+  stat:
+    material: minecraft:book
+    slot: 22
+    name: "{stat_display}"
+    lore:
+      - "{stat_description}"
+      - ""
+      - "Current value: {stat_value}"
+    action: stat_panel
+  back:
+    material: minecraft:arrow
+    slot: 45
+    name: "Back"
+    lore:
+      - "Return to stats"
+    action: back

@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.124
+
+### Changes
+
+- **Fabric: Sprint 96 — template-backed `stat_info` prototype (`FabricAuraSkills-2.3.124.jar`):** Bundled GraniteLib **v0 YAML** at **`assets/auraskills/granite/templates/stat_info.yml`** drives **`stat_info`** when load/validation/render succeeds: **fill** + static **stat** / **Back** items, **`GraniteContainerMenus#openClickable9x6`**, minimal placeholders **`{stat}`**, **`{stat_display}`**, **`{stat_description}`**, **`{stat_value}`** (local expander only — not a global engine). **`FabricStatInfoTemplateSupport`**: strict item id resolution (unknown id → built-in fallback); **Back** wired like the built-in menu. Any failure → **existing `FabricStatInfoMenuGui` built-in path** (warn log, no server crash). **`custom_model_data`** in YAML is **not applied** yet (documented). **Tests:** **`FabricStatInfoPlaceholdersTest`**, **`FabricStatInfoBundledTemplateParseTest`**. **Docs:** **`fabric/SPRINT_96_MANUAL_STAT_INFO_TEMPLATE_PROTOTYPE.md`**, parity pointers. **Full Slate / `MenuFileManager` parity** still **open**. **Bedrock / Geyser** not tested. **`projectVersion` 2.3.123 → 2.3.124**. **Build:** `.\gradlew -PfabricOnly=true :granitelib-fabric:test :fabric:test :fabric:build` — **PASS**.
+
 ## 2.3.123
 
 ### Changes

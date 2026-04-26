@@ -64,13 +64,15 @@ GraniteLib (`:granitelib-fabric`, on-disk **`slate-fabric/`) is a **real library
 | Track | Status |
 |-------|--------|
 | **Container / click plumbing** (e.g. `GraniteContainerMenus`) | **Partial** — enough for current built-ins. |
-| **Template loading, YAML layouts, `MenuFileManager`** | **Spike 0 started** — read-only v0 YAML + model in GraniteLib (**`SPRINT_95_GRANITELIB_TEMPLATE_SPIKE0.md`**); **not** wired to live menus |
+| **Template loading, YAML layouts, `MenuFileManager`** | **In progress** — v0 YAML + loader in GraniteLib (**95**); **`stat_info`** **prototype** loads bundled template with **built-in fallback** (**`SPRINT_96_MANUAL_STAT_INFO_TEMPLATE_PROTOTYPE.md`**); **not** full Slate / disk reload / `MenuFileManager` |
 | **Contexts, paging, global items, rich click actions** | **Not complete** |
 | **Public API + docs for external mods** | **Partial / evolving** |
 
 **Sprint 94 (planning only):** **`SPRINT_94_GRANITELIB_SLATE_PARITY_PLAN.md`** — dedicated **Path A** roadmap: Slate vs GraniteLib capability inventories, gap table, menu-by-menu classification, phased implementation (**A–H**), risks, future acceptance criteria, and **Sprint 95** (Spike 0) recommendation. **No code** in Sprint 94; **Bedrock/Geyser** remains deferred.
 
 **Sprint 95 (Spike 0 — GraniteLib code):** **`SPRINT_95_GRANITELIB_TEMPLATE_SPIKE0.md`** — `dev.granitelib.fabric.template.{model,load}`: immutable **`GraniteMenuTemplate`** / items, **SnakeYAML** read-only loader + validation, unit tests; **JiJ** SnakeYAML in **`granitelib-fabric`**. **No** production menu behavior change; **Slate parity** still **not** complete.
+
+**Sprint 96 (`stat_info` prototype):** **`SPRINT_96_MANUAL_STAT_INFO_TEMPLATE_PROTOTYPE.md`** — bundled **`assets/auraskills/granite/templates/stat_info.yml`**; **`FabricStatInfoTemplateSupport`** + minimal placeholders; **safe fallback** to built-in **`FabricStatInfoMenuGui`**. **Not** full Slate parity; **Bedrock** still deferred.
 
 ---
 
@@ -96,5 +98,5 @@ GraniteLib (`:granitelib-fabric`, on-disk **`slate-fabric/`) is a **real library
 
 1. **Hold** “final release” until **two-JAR** policy is what operators run in production and docs match.
 2. **Execute** Bedrock validation when a tester exists.
-3. **Drive** Slate/GraniteLib framework work as its own program (Path A) using **`SPRINT_94_GRANITELIB_SLATE_PARITY_PLAN.md`** + **`SPRINT_95_GRANITELIB_TEMPLATE_SPIKE0.md`** (Spike 0 bridgehead), not as a side effect of smoke fixes. **Next:** Sprint **96** — first template-driven menu (**stat_info** recommended) with code fallback.
+3. **Drive** Slate/GraniteLib framework work as its own program (Path A) using **`SPRINT_94`**–**`SPRINT_96`** docs, not as a side effect of smoke fixes. **Next:** Sprint **97** — e.g. **`sources`** template path or **`stat_info`** parity polish (traits / CMD).
 4. **Revisit** Jobs / economy bridges only if the owner reopens scope.

@@ -34,7 +34,9 @@
 
 **Sprint 95 (GraniteLib Spike 0 — code):** **`SPRINT_95_GRANITELIB_TEMPLATE_SPIKE0.md`** — `dev.granitelib.fabric.template`: **`GraniteMenuTemplate`** + read-only **YAML** loader (**SnakeYAML** JiJ), validation, unit tests; **no** live **`Fabric*MenuGui`** replacement. **Slate/YAML parity** still **open**.
 
-**Recommended next (Java-side):** **Sprint 96** — optional template path for **`stat_info`** (see Sprint 95) + built-in fallback; deploy **two-JAR** **`2.3.123`** RC as needed; **Sprint 87** when a **Bedrock** tester exists.
+**Sprint 96 (first template menu — `stat_info`):** **`SPRINT_96_MANUAL_STAT_INFO_TEMPLATE_PROTOTYPE.md`** — bundled **`assets/auraskills/granite/templates/stat_info.yml`**, **`FabricStatInfoTemplateSupport`**, minimal **`{stat_*}`** placeholders, **strict** item ids, **Back** wired; **built-in `FabricStatInfoMenuGui` fallback** on any failure. **Not** full Slate.
+
+**Recommended next (Java-side):** **Sprint 97** — **`sources`** template prototype or **`stat_info`** feature parity (traits / CMD); **two-JAR** **`2.3.124+`**; **Sprint 87** when a **Bedrock** tester exists.
 
 This document is the **engineering plan** for shipping **menus and the full command tree together** (one release goal), by **porting Slate** to Fabric instead of writing a second menu engine.
 

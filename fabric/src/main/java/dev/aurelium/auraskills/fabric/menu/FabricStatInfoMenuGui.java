@@ -31,6 +31,10 @@ import java.util.Locale;
  * {@code granite.items.back}. **Sprint 38:** <strong>Back</strong> reopens <strong>Stats</strong> with the
  * same {@link FabricMenuContext#listPage()} the player had when opening this menu (clamped in the list GUI);
  * early exits when {@code stat_info} is disabled also preserve that page.
+ *
+ * <p><strong>Sprint 96:</strong> tries bundled GraniteLib v0 YAML at
+ * {@link FabricStatInfoTemplateSupport#TEMPLATE_RESOURCE_PATH}; on any failure, uses this built-in path (safe
+ * fallback).
  */
 final class FabricStatInfoMenuGui {
 
@@ -65,6 +69,19 @@ final class FabricStatInfoMenuGui {
                     .executeSync(() -> FabricAuraSkillsMenus.open(FabricAuraSkillsMenus.Id.STATS, player, plugin));
             return;
         }
+        if (FabricStatInfoTemplateSupport.tryOpen(player, plugin, context, stat)) {
+            return;
+        }
+        openBuiltIn(player, plugin, context, stat, cfg, def);
+    }
+
+    private static void openBuiltIn(
+            ServerPlayerEntity player,
+            FabricAuraSkills plugin,
+            FabricMenuContext context,
+            Stat stat,
+            FabricMenuYamlSlice cfg,
+            FabricMenuYamlSlice def) {
         User user = plugin.getUserManager().getUser(player.getUuid());
         Locale locale = user.getLocale();
         MessageProvider msg = plugin.getMessageProvider();
