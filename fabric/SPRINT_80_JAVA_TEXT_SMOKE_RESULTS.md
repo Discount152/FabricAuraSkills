@@ -1,6 +1,6 @@
 # Sprint 80 — Java dedicated smoke re-run (2.3.109) + Sprint 79 text verification
 
-**Sprint 81 ( **2.3.111** JAR, code ):** The **health/mana** idle line uses **smart** / **always** / **off** and **`/abtoggle`**; see **`SPRINT_81_MANUAL_SMART_ACTION_BAR.md`**. **Sprint 80** procedures below still apply to **Sprint 79** text checks on the **2.3.109** or newer artifact; for **Litematica** / **action bar** coexistence, prefer validating on **2.3.111+**.
+**Sprint 81 ( **2.3.111** JAR, code ):** The **health/mana** idle line uses **smart** / **always** / **off** and **`/abtoggle`**; see **`SPRINT_81_MANUAL_SMART_ACTION_BAR.md`**. **Sprint 81A (2.3.112+):** legacy **`idle`-only** migration + **`/abtoggle status|smart|always|off`** — **`SPRINT_81A_MANUAL_ACTION_BAR_LEGACY_MIGRATION.md`**. **Sprint 80** procedures below still apply to **Sprint 79** text checks on the **2.3.109** or newer artifact; for **Litematica** / **action bar** coexistence, prefer validating on **2.3.112+** (or **2.3.111** for core smart behavior only).
 
 **Purpose:** On a **disposable** dedicated Fabric **Java** server, deploy **`FabricAuraSkills-2.3.109.jar`**, then **re-run** the **minimum** command/menu matrix from **Sprint 78** and **visually** confirm the **Sprint 79** MiniMessage / text pipeline (level-up **chat**, **health/mana** action bar, **title** path).
 

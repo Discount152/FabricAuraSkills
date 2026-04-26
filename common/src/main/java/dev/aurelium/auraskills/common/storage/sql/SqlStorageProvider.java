@@ -558,31 +558,21 @@ public class SqlStorageProvider extends StorageProvider {
 
     private List<KeyValueRow> getActionBarRow(User user) {
         List<KeyValueRow> rows = new ArrayList<>();
-        boolean shouldSave = false;
+        rows.add(
+                new KeyValueRow(
+                        ACTION_BAR_ID,
+                        null,
+                        "idle_mode",
+                        user.getActionBarIdleMode().name().toLowerCase(Locale.ROOT)));
         for (ActionBarType type : ActionBarType.values()) {
-            if (type != ActionBarType.IDLE && !user.isActionBarEnabled(type)) {
-                shouldSave = true;
+            if (type == ActionBarType.IDLE) {
+                continue;
             }
-        }
-        if (user.getActionBarIdleMode() != ActionBarIdleMode.SMART) {
-            shouldSave = true;
-        }
-        if (!shouldSave) {
-            return rows;
-        }
-
-        if (user.getActionBarIdleMode() != ActionBarIdleMode.SMART) {
-            rows.add(new KeyValueRow(
-                    ACTION_BAR_ID,
-                    null,
-                    "idle_mode",
-                    user.getActionBarIdleMode().name().toLowerCase(Locale.ROOT)));
-        }
-        for (ActionBarType type : ActionBarType.values()) {
             if (!user.isActionBarEnabled(type)) {
                 String keyName = type.toString().toLowerCase(Locale.ROOT);
-                rows.add(new KeyValueRow(
-                        ACTION_BAR_ID, null, keyName, String.valueOf(user.isActionBarEnabled(type))));
+                rows.add(
+                        new KeyValueRow(
+                                ACTION_BAR_ID, null, keyName, String.valueOf(user.isActionBarEnabled(type))));
             }
         }
         return rows;

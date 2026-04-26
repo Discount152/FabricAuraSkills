@@ -23,6 +23,15 @@ public enum ActionBarIdleMode {
      */
     OFF;
 
+    /** Short label for chat (e.g. status line). */
+    public @NotNull String displayName() {
+        return switch (this) {
+            case SMART -> "Smart";
+            case ALWAYS -> "Always";
+            case OFF -> "Off";
+        };
+    }
+
     public static @NotNull ActionBarIdleMode fromStringOr(@Nullable String raw, @NotNull ActionBarIdleMode ifMissing) {
         if (raw == null) {
             return ifMissing;
@@ -42,4 +51,38 @@ public enum ActionBarIdleMode {
             case OFF -> SMART;
         };
     }
+
+    /**
+     * @param hasExplicitIdleModeKey true if {@code idle_mode} was present in storage
+     * @param hasLegacyIdleKey       true if the legacy boolean {@code idle} key was present
+     * @param configModeDefault      global default from config when neither key is present
+     */
+    public static @NotNull ActionBarLoadResolution resolveOnLoad(
+            boolean hasExplicitIdleModeKey,
+            @Nullable String explicitIdleModeRaw,
+            boolean hasLegacyIdleKey,
+            boolean legacyIdleTrue,
+            @NotNull String configModeDefault) {
+        if (hasExplicitIdleModeKey) {
+            return new ActionBarLoadResolution(
+                    fromStringOr(explicitIdleModeRaw, SMART), false);
+        }
+        if (hasLegacyIdleKey) {
+            if (legacyIdleTrue) {
+                // Sprint 81A: was treated as "always" in 81; product default is now smart
+                return new ActionBarLoadResolution(SMART, true);
+            }
+            return new ActionBarLoadResolution(OFF, true);
+        }
+        return new ActionBarLoadResolution(
+                fromStringOr(configModeDefault, SMART), false);
+    }
+
+    /**
+     * @param shouldPersistWhenIdleMissing true if a legacy {@code idle} key without
+     *                                     {@code idle_mode} was converted (needs save)
+     */
+    public record ActionBarLoadResolution(
+            @NotNull ActionBarIdleMode mode,
+            boolean shouldPersistWhenIdleMissing) {}
 }

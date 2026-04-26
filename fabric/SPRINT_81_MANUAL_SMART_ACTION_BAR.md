@@ -4,12 +4,13 @@
 |------|--------|
 | **Sprint 81 (code + docs in repo)** | **Accepted** |
 | **In-game / operator proof** | **Pending** — use the checklist below; do not mark “production validated” until a human runs it. |
+| **Sprint 81A (legacy `idle` → `idle_mode` migration)** | See **`SPRINT_81A_MANUAL_ACTION_BAR_LEGACY_MIGRATION.md`** — **2.3.112+** migrates old **`idle` without `idle_mode`** to **smart** (or **off**) instead of **always**-style. |
 
-**Build / version:** `FabricAuraSkills-2.3.111.jar` (or current `projectVersion` in `gradle.properties` when built). Use the **current GraniteLib** install policy for your server (split vs JiJ — see project docs as needed).
+**Build / version:** `FabricAuraSkills-2.3.111.jar` for **Sprint 81** core code; for **legacy default + `/abtoggle status|smart|…`**, use **`2.3.112`** ( **`SPRINT_81A_…` manual**). Current `projectVersion` is in `gradle.properties`. Use the **current GraniteLib** install policy for your server (split vs JiJ — see project docs as needed).
 
 **Problem:** Granite’s **idle** health/mana line used the only vanilla **action bar** slot on a fast timer, so it **outcompeted** other mods (e.g. **Litematica** mode text) that also use that line. **Sprint 79** fixed **MiniMessage** rendering, but the **concurrent resend** issue remained.
 
-**Root fix (server-side):** In **`smart`** mode ( **default in embedded `config.yml`** for **`action_bar.mode`**; **legacy** player files with **`idle: true`** and no **`idle_mode`** stay **always**-style for backward compatibility), Granite **only** sends the idle line during **short windows** after relevant events, then **stops** sending. **No** blank packets to “clear” the line.
+**Root fix (server-side):** In **`smart`** mode ( **default in embedded `config.yml`** for **`action_bar.mode`**), Granite **only** sends the idle line during **short windows** after relevant events, then **stops** sending. **No** blank packets to “clear” the line. **Sprint 81A** ( **2.3.112** ) fixes **old** saves that had only legacy **`idle:`** and no **`idle_mode`**: they migrate to **smart** (or **off**) and persist **`idle_mode`** — so players are **not** stuck in de facto **always** until `/abtoggle`.
 
 **Reference screenshot (conceptual):** Before — HP/mana text always above hotbar. After (idle) — other mods’ action bar text can show until the next **smart** window.
 
@@ -89,15 +90,15 @@ Check **`latest.log`** for:
 
 **Existing** keys (unchanged in meaning): `enabled`, `idle`, `update_period` ( **scheduler** tick for the **idle** task base loop — still used; **always** mode sends each tick of this period), etc.
 
-**Default “product” mode:** **smart** in **embedded** `config.yml`. **Old** player `userdata` with **`idle: true`** only → **always** (legacy). **`idle: false`** → **off**.
+**Default “product” mode:** **smart** in **embedded** `config.yml`. **Pre–81A** on-disk `userdata` could show **always**-style for **`idle: true` only**; **81A** migrates that to **smart** and writes **`idle_mode`**. **`idle: false`** without **`idle_mode`** → **off** (unchanged intent).
 
 ---
 
-## `/abtoggle` / `toggle` behavior (Sprint 81)
+## `/abtoggle` / `toggle` behavior (Sprint 81, extended Sprint 81A)
 
 - **Permission:** `auraskills.command.abtoggle` (unchanged name).
-- **Action:** Cycles per-player **idle** mode: **smart → always → off → smart**.
-- **Storage:** `userdata/<uuid>.yml` (or SQL key-value): **`action_bar.idle_mode`**, and legacy **`action_bar.idle`** bool.
+- **Action:** Cycles per-player **idle** mode: **smart → always → off → smart** with **no** argument. **Sprint 81A** adds: **`status`**, **`smart`**, **`always`**, **`off`** (see **`SPRINT_81A_MANUAL_ACTION_BAR_LEGACY_MIGRATION.md`**).
+- **Storage:** `userdata/<uuid>.yml` (or SQL key-value): **`action_bar.idle_mode`**, and legacy **`action_bar.idle`** bool ( **`idle` retained** for compatibility).
 
 ---
 
@@ -111,7 +112,7 @@ Check **`latest.log`** for:
 6. **Regen to full** — line should follow **integer**-rounded values, then the window should **end**; idle should **not** run forever on tiny **float** differences.
 7. **Spend mana** (or use an ability that changes displayed mana) — mana should appear, then **hide** after a stable period.
 8. **Change dimension** / teleport to another world — a **new** **show_on_join**-style window should run ( **Fabric** mixin + **Bukkit** `PlayerChangedWorld` hook ).
-9. **`/abtoggle`** — feedback should mention **smart** / **always** / **off** ( **`messages_*.yml`**, **`CommandMessage.TOGGLE_MODE_*` ).
+9. **`/abtoggle`** — feedback should mention **smart** / **always** / **off** ( **`messages_*.yml`**, **`CommandMessage.TOGGLE_MODE_SET_*`**, **`TOGGLE_MODE_STATUS`** where applicable).
 
 ---
 
@@ -138,7 +139,7 @@ Check **`latest.log`** for:
 - [ ] **Join** / **world change** / **damage** / **stat change (ints)** re-open a **visible** window.
 - [ ] **No** blank / clear action bar packets from Granite when **hidden** (unavoidable: cannot prove absence in console — **in-client** / packet capture is optional; **Minecraft** shows other text when idle).
 - [ ] **`/abtoggle`** cycles and **persists** across **relog** (check `userdata` or behavior).
-- [ ] **Legacy** profile with **`idle: true`** (no `idle_mode`) still behaves like **continuous** line (**always**).
+- [ ] **Legacy** profile: on **2.3.111** only, **`idle: true`** without **`idle_mode`** could match **always**-style; on **2.3.112+** it should load as **smart** unless **`idle_mode`** says otherwise — see **81A** manual.
 - [ ] **Unit** tests **`ActionBarIdleModeTest`** pass in CI / local **`fabric:test`**.
 
 ## Known limitations

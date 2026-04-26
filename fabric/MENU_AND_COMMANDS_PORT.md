@@ -357,7 +357,7 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 
 | Piece | Where |
 |-------|--------|
-| **Commands** | **`FabricPlayerUtilityCommands`**: **`/multiplier`** (self) and **`/multiplier <player>`**; **`/toggle`** and **`/abtoggle`** ( **Sprint 81** — cycles **idle** action bar **smart → always → off**; `userdata` / SQL **`idle_mode`**; same perm **`abtoggle`**); **`/lang <code>`** with suggestions from **`MessageProvider#getLanguageCodes`**. |
+| **Commands** | **`FabricPlayerUtilityCommands`**: **`/multiplier`** (self) and **`/multiplier <player>`**; **`/toggle`** and **`/abtoggle`** ( **Sprint 81** — cycles **idle** action bar **smart → always → off**; **Sprint 81A** — optional **`status`**, **`smart`**, **`always`**, **`off`**; `userdata` / SQL **`idle_mode`**; same perm **`abtoggle`**); **`/lang <code>`** with suggestions from **`MessageProvider#getLanguageCodes`**. |
 | **Mirrors** | **`/auraskills`**, **`/sk`**, **`/skill`**, plus top-level. |
 | **Shared** | **`FabricCommandLocaleArgs`**; **`setShouldSave(true)`** on **lang** + **toggle** after mutation. |
 | **Manual** | **`SPRINT_48_MANUAL_PLAYER_UTILITY.md`** |

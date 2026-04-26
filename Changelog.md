@@ -2,11 +2,17 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.112
+
+### Changes
+
+- **Granite: Action bar legacy migration + `/abtoggle` subcommands (Sprint 81A):** **YAML/SQL** load uses **`ActionBarIdleMode#resolveOnLoad`**: if **`idle_mode` is missing** but legacy **`idle`** is present, **`idle: true` → smart** and **`idle: false` → off**, with **`User#setShouldSave(true)`** so **`idle_mode` is written** on the next save. If **`idle_mode` is present**, it wins (unchanged). **SQL save** always persists **`idle_mode`** so key-value rows are self-consistent. **`/toggle`** / **`/abtoggle`**: no-arg still **cycles smart → always → off → smart**; optional **`status`**, **`smart`**, **`always`**, **`off`**. New messages: **`TOGGLE_MODE_SET_*`**, **`TOGGLE_MODE_STATUS`**, **`TOGGLE_INVALID_SUBCOMMAND`** (`messages_en.yml`). **Bukkit** ACF: optional first arg; **tab** completion. **Tests:** `ActionBarIdleModeTest` ( **`resolveOnLoad`**, **`ActionBarToggleSubcommand`**). **Doc:** `fabric/SPRINT_81A_MANUAL_ACTION_BAR_LEGACY_MIGRATION.md`; **SPRINT_81** manual note; **PARITY** / **MENU** / **COMMAND** / **SPRINT_80** / **LEDGER** pointers. **`projectVersion` 2.3.111 → 2.3.112**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test` and `:fabric:build` — run by maintainer. **Bedrock** not required this sprint.
+
 ## 2.3.111
 
 ### Changes
 
-- **Granite: Smart idle action bar (Sprint 81):** The **health/mana** idle line no longer hammers the only vanilla action bar slot every `update_period` in **smart** mode ( **default in `config.yml`** and for **new** player data; legacy **`action_bar` `idle: true` without `idle_mode`** stays **continuous** = **always**). **Off** and **no silent packets** when hidden so **Litematica** / other mods can use the line. **Config:** `action_bar.mode`, `show_on_join_ticks`, `show_after_health_change_ticks`, `show_after_mana_change_ticks`, `show_after_combat_ticks`, `update_while_visible_ticks`, `hide_when_full_and_idle`. **`/abtoggle` / `toggle`:** cycles **smart → always → off → smart**; profiles store **`idle_mode`**. **Hooks:** user load, world change, combat/damage, timer compare on **display-rounded** int HP/mana. **Tests:** `ActionBarIdleModeTest`. **Doc:** `fabric/SPRINT_81_MANUAL_SMART_ACTION_BAR.md`. **Parity** doc updates. **`projectVersion` 2.3.110 → 2.3.111**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test` and `:fabric:build` — run by maintainer.
+- **Granite: Smart idle action bar (Sprint 81):** The **health/mana** idle line no longer hammers the only vanilla action bar slot every `update_period` in **smart** mode ( **default in `config.yml`** and for **new** player data). **Off** and **no silent packets** when hidden so **Litematica** / other mods can use the line. **Config:** `action_bar.mode`, `show_on_join_ticks`, `show_after_health_change_ticks`, `show_after_mana_change_ticks`, `show_after_combat_ticks`, `update_while_visible_ticks`, `hide_when_full_and_idle`. **`/abtoggle` / `toggle`:** cycles **smart → always → off → smart**; profiles store **`idle_mode`**. (Legacy **YAML `idle` without `idle_mode` → always-style** was superseded in **2.3.112 / Sprint 81A** by migration to **smart**/**off**.) **Hooks:** user load, world change, combat/damage, timer compare on **display-rounded** int HP/mana. **Tests:** `ActionBarIdleModeTest`. **Doc:** `fabric/SPRINT_81_MANUAL_SMART_ACTION_BAR.md`. **Parity** doc updates. **`projectVersion` 2.3.110 → 2.3.111**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test` and `:fabric:build` — run by maintainer.
 
 ## 2.3.110
 

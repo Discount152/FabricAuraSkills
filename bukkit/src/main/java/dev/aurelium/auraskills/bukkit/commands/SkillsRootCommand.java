@@ -16,6 +16,7 @@ import dev.aurelium.auraskills.common.config.Option;
 import dev.aurelium.auraskills.common.leaderboard.SkillValue;
 import dev.aurelium.auraskills.common.message.type.CommandMessage;
 import dev.aurelium.auraskills.common.ui.ActionBarIdleMode;
+import dev.aurelium.auraskills.common.ui.ActionBarToggleSubcommand;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.common.user.UserState;
 import dev.aurelium.auraskills.common.util.text.TextUtil;
@@ -211,23 +212,51 @@ public class SkillsRootCommand extends BaseCommand {
     @Subcommand("toggle")
     @CommandAlias("abtoggle")
     @CommandPermission("auraskills.command.abtoggle")
+    @CommandCompletion("status|smart|always|off")
     @Description("%desc_toggle")
-    public void onActionBarToggle(Player player) {
+    public void onActionBarToggle(Player player, @Optional String sub) {
         User user = plugin.getUser(player);
         Locale locale = user.getLocale();
-        if (plugin.configBoolean(Option.ACTION_BAR_ENABLED)) {
-            ActionBarIdleMode next = user.getActionBarIdleMode().nextInCycle();
-            user.setActionBarIdleMode(next);
-            user.setShouldSave(true);
-            CommandMessage key =
-                    switch (next) {
-                        case SMART -> CommandMessage.TOGGLE_MODE_SMART;
-                        case ALWAYS -> CommandMessage.TOGGLE_MODE_ALWAYS;
-                        case OFF -> CommandMessage.TOGGLE_MODE_OFF;
-                    };
-            player.sendMessage(plugin.getPrefix(locale) + plugin.getMsg(key, locale));
-        } else {
-            player.sendMessage(plugin.getPrefix(locale) + plugin.getMsg(CommandMessage.TOGGLE_NOT_ENABLED, locale));
+        if (!plugin.configBoolean(Option.ACTION_BAR_ENABLED)) {
+            player.sendMessage(
+                    plugin.getPrefix(locale) + plugin.getMsg(CommandMessage.TOGGLE_NOT_ENABLED, locale));
+            return;
+        }
+        ActionBarToggleSubcommand.Result parsed = ActionBarToggleSubcommand.parse(sub);
+        switch (parsed.kind()) {
+            case INVALID -> player.sendMessage(
+                    plugin.getPrefix(locale)
+                            + plugin.getMsg(CommandMessage.TOGGLE_INVALID_SUBCOMMAND, locale));
+            case STATUS -> {
+                String m =
+                        plugin.getMsg(CommandMessage.TOGGLE_MODE_STATUS, locale)
+                                .replace("{mode}", user.getActionBarIdleMode().displayName());
+                player.sendMessage(plugin.getPrefix(locale) + m);
+            }
+            case CYCLE -> {
+                ActionBarIdleMode next = user.getActionBarIdleMode().nextInCycle();
+                user.setActionBarIdleMode(next);
+                user.setShouldSave(true);
+                CommandMessage key =
+                        switch (next) {
+                            case SMART -> CommandMessage.TOGGLE_MODE_SET_SMART;
+                            case ALWAYS -> CommandMessage.TOGGLE_MODE_SET_ALWAYS;
+                            case OFF -> CommandMessage.TOGGLE_MODE_SET_OFF;
+                        };
+                player.sendMessage(plugin.getPrefix(locale) + plugin.getMsg(key, locale));
+            }
+            case SET_MODE -> {
+                ActionBarIdleMode m = java.util.Objects.requireNonNull(parsed.mode());
+                user.setActionBarIdleMode(m);
+                user.setShouldSave(true);
+                CommandMessage key =
+                        switch (m) {
+                            case SMART -> CommandMessage.TOGGLE_MODE_SET_SMART;
+                            case ALWAYS -> CommandMessage.TOGGLE_MODE_SET_ALWAYS;
+                            case OFF -> CommandMessage.TOGGLE_MODE_SET_OFF;
+                        };
+                player.sendMessage(plugin.getPrefix(locale) + plugin.getMsg(key, locale));
+            }
         }
     }
 

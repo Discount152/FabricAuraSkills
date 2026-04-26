@@ -226,20 +226,19 @@ public class FileStorageProvider extends StorageProvider {
     }
 
     private void loadActionBar(ConfigurationNode node, User user) {
-        ConfigurationNode idleModeNode = node.node("idle_mode");
-        if (!idleModeNode.virtual()) {
-            user.setActionBarIdleMode(ActionBarIdleMode.fromStringOr(
-                    idleModeNode.getString(), ActionBarIdleMode.SMART));
-        } else if (!node.node("idle").virtual()) {
-            if (node.node("idle").getBoolean()) {
-                // Legacy "on" = continuous health/mana line
-                user.setActionBarIdleMode(ActionBarIdleMode.ALWAYS);
-            } else {
-                user.setActionBarIdleMode(ActionBarIdleMode.OFF);
-            }
-        } else {
-            user.setActionBarIdleMode(ActionBarIdleMode.fromStringOr(
-                    plugin.configString(Option.ACTION_BAR_MODE), ActionBarIdleMode.SMART));
+        ConfigurationNode idleModeKey = node.node("idle_mode");
+        ConfigurationNode legacyIdle = node.node("idle");
+        boolean hasLegacyIdle = !legacyIdle.virtual();
+        boolean legacyIdleTrue = hasLegacyIdle && legacyIdle.getBoolean();
+        ActionBarIdleMode.ActionBarLoadResolution r = ActionBarIdleMode.resolveOnLoad(
+                !idleModeKey.virtual(),
+                idleModeKey.getString(),
+                hasLegacyIdle,
+                legacyIdleTrue,
+                plugin.configString(Option.ACTION_BAR_MODE));
+        user.setActionBarIdleMode(r.mode());
+        if (r.shouldPersistWhenIdleMissing()) {
+            user.setShouldSave(true);
         }
         for (ActionBarType type : ActionBarType.values()) {
             if (type == ActionBarType.IDLE) {

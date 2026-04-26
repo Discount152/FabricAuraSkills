@@ -634,10 +634,12 @@ commands:
     enabled: "<green>Your skills action bar has been enabled"
     disabled: "<red>Your skills action bar has been disabled"
     not_enabled: "<yellow>Skills action bar is not enabled on this server!"
-    mode_smart: "<gray>Action bar: <aqua>smart<gray> (short HP/mana windows — other action bar text can show while idle.)"
-    mode_always: "<gray>Action bar: <yellow>always<gray> (health/mana updates continuously when idle.)"
-    mode_off: "<gray>Action bar: <red>off<gray> (no Granite idle health/mana on the action bar.)"
-    desc: Toggles your own skills action bar.
+    mode_set_smart: "<gray>Action bar mode set to <aqua>Smart</aqua><gray>. Health/mana will only show when relevant."
+    mode_set_always: "<gray>Action bar mode set to <yellow>Always</yellow><gray>. Health/mana will stay visible."
+    mode_set_off: "<gray>Action bar mode set to <red>Off</red><gray>. Granite Skills will not show health/mana in the action bar."
+    mode_status: "<gray>Current action bar mode: <aqua>{mode}</aqua><gray>."
+    invalid_subcommand: "<red>Unknown option. Use <yellow>status</yellow>, <yellow>smart</yellow>, <yellow>always</yellow>, <yellow>off</yellow>, or no argument to cycle."
+    desc: Toggles your own skills action bar (or use status / smart / always / off).
   top:
     desc: Shows the top players in a skill
     power_header: "<white>--==<aqua><bold>All Skills Leaderboard</bold><white>==--"

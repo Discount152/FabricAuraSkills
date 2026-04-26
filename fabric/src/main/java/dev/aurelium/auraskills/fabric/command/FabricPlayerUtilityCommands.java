@@ -9,6 +9,7 @@ import dev.aurelium.auraskills.common.config.Option;
 import dev.aurelium.auraskills.common.level.LevelManager;
 import dev.aurelium.auraskills.common.message.type.CommandMessage;
 import dev.aurelium.auraskills.common.ui.ActionBarIdleMode;
+import dev.aurelium.auraskills.common.ui.ActionBarToggleSubcommand;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.common.util.text.TextUtil;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
@@ -17,7 +18,10 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Locale;
+import java.util.Objects;
 import java.util.function.Function;
 
 import static net.minecraft.server.command.CommandManager.literal;
@@ -31,6 +35,7 @@ public final class FabricPlayerUtilityCommands {
 
     private static final String ARG_TARGET = "player";
     private static final String ARG_LANG = "language";
+    private static final String ARG_ABTOGGLE_SUB = "sub";
 
     private FabricPlayerUtilityCommands() {}
 
@@ -49,19 +54,28 @@ public final class FabricPlayerUtilityCommands {
     }
 
     public static LiteralArgumentBuilder<ServerCommandSource> toggleRoot() {
-        return literal("toggle")
-                .requires(
-                        FabricCommandRequirements.permission(
-                                FabricCommandPermissions.ABTOGGLE, true))
-                .executes(FabricPlayerUtilityCommands::executeToggle);
+        return buildActionBarToggleLiteral("toggle");
     }
 
     public static LiteralArgumentBuilder<ServerCommandSource> abToggleRoot() {
-        return literal("abtoggle")
+        return buildActionBarToggleLiteral("abtoggle");
+    }
+
+    private static LiteralArgumentBuilder<ServerCommandSource> buildActionBarToggleLiteral(
+            String name) {
+        return literal(name)
                 .requires(
                         FabricCommandRequirements.permission(
                                 FabricCommandPermissions.ABTOGGLE, true))
-                .executes(FabricPlayerUtilityCommands::executeAbToggle);
+                .executes(ctx -> executeActionBarToggle(ctx, null))
+                .then(
+                        CommandManager.argument(ARG_ABTOGGLE_SUB, StringArgumentType.word())
+                                .executes(
+                                        ctx ->
+                                                executeActionBarToggle(
+                                                        ctx,
+                                                        StringArgumentType.getString(
+                                                                ctx, ARG_ABTOGGLE_SUB))));
     }
 
     public static LiteralArgumentBuilder<ServerCommandSource> langRoot() {
@@ -75,14 +89,6 @@ public final class FabricPlayerUtilityCommands {
                                         FabricCommandSuggestionProviders
                                                 .languageCodes())
                                 .executes(FabricPlayerUtilityCommands::executeLang));
-    }
-
-    private static int executeAbToggle(CommandContext<ServerCommandSource> ctx) {
-        return executeActionBarToggle(ctx);
-    }
-
-    private static int executeToggle(CommandContext<ServerCommandSource> ctx) {
-        return executeActionBarToggle(ctx);
     }
 
     private static int executeMultiplierSelf(CommandContext<ServerCommandSource> ctx) {
@@ -171,7 +177,8 @@ public final class FabricPlayerUtilityCommands {
                                 p.getDefaultLanguage())));
     }
 
-    private static int executeActionBarToggle(CommandContext<ServerCommandSource> ctx) {
+    private static int executeActionBarToggle(
+            CommandContext<ServerCommandSource> ctx, @Nullable String rawSub) {
         return run(
                 ctx,
                 p -> {
@@ -192,26 +199,58 @@ public final class FabricPlayerUtilityCommands {
                         return 0;
                     }
                     Locale lo = user.getLocale();
-                    if (p.configBoolean(Option.ACTION_BAR_ENABLED)) {
-                        ActionBarIdleMode next = user.getActionBarIdleMode().nextInCycle();
-                        user.setActionBarIdleMode(next);
-                        user.setShouldSave(true);
-                        CommandMessage key =
-                                switch (next) {
-                                    case SMART -> CommandMessage.TOGGLE_MODE_SMART;
-                                    case ALWAYS -> CommandMessage.TOGGLE_MODE_ALWAYS;
-                                    case OFF -> CommandMessage.TOGGLE_MODE_OFF;
-                                };
-                        String msg = p.getMsg(key, lo);
-                        source.sendFeedback(() -> Text.literal(msg), false);
-                    } else {
+                    if (!p.configBoolean(Option.ACTION_BAR_ENABLED)) {
                         source.sendFeedback(
                                 () -> Text.literal(
                                         p.getMsg(CommandMessage.TOGGLE_NOT_ENABLED, lo)),
                                 false);
+                        return 1;
                     }
-                    return 1;
+                    ActionBarToggleSubcommand.Result sub =
+                            ActionBarToggleSubcommand.parse(rawSub);
+                    return switch (sub.kind()) {
+                        case INVALID -> {
+                            source.sendError(
+                                    Text.literal(
+                                            p.getMsg(
+                                                    CommandMessage.TOGGLE_INVALID_SUBCOMMAND, lo)));
+                            yield 0;
+                        }
+                        case STATUS -> {
+                            String m =
+                                    p.getMsg(CommandMessage.TOGGLE_MODE_STATUS, lo)
+                                            .replace(
+                                                    "{mode}",
+                                                    user.getActionBarIdleMode().displayName());
+                            source.sendFeedback(() -> Text.literal(m), false);
+                            yield 1;
+                        }
+                        case CYCLE -> {
+                            ActionBarIdleMode next = user.getActionBarIdleMode().nextInCycle();
+                            user.setActionBarIdleMode(next);
+                            user.setShouldSave(true);
+                            String msg = p.getMsg(messageKeyForSet(next), lo);
+                            source.sendFeedback(() -> Text.literal(msg), false);
+                            yield 1;
+                        }
+                        case SET_MODE -> {
+                            ActionBarIdleMode m = Objects.requireNonNull(sub.mode());
+                            user.setActionBarIdleMode(m);
+                            user.setShouldSave(true);
+                            String msg = p.getMsg(messageKeyForSet(m), lo);
+                            source.sendFeedback(() -> Text.literal(msg), false);
+                            yield 1;
+                        }
+                    };
                 });
+    }
+
+    private static CommandMessage messageKeyForSet(ActionBarIdleMode mode) {
+        return switch (mode) {
+            case SMART -> CommandMessage.TOGGLE_MODE_SET_SMART;
+            case ALWAYS -> CommandMessage.TOGGLE_MODE_SET_ALWAYS;
+            case OFF -> CommandMessage.TOGGLE_MODE_SET_OFF;
+        };
     }
 
     private static int executeLang(CommandContext<ServerCommandSource> ctx) {

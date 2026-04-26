@@ -15,6 +15,7 @@ import dev.aurelium.auraskills.api.trait.TraitModifier;
 import dev.aurelium.auraskills.api.util.AuraSkillsModifier.Operation;
 import dev.aurelium.auraskills.api.util.NumberUtil;
 import dev.aurelium.auraskills.common.AuraSkillsPlugin;
+import dev.aurelium.auraskills.common.config.Option;
 import dev.aurelium.auraskills.common.ui.ActionBarIdleMode;
 import dev.aurelium.auraskills.common.ui.ActionBarType;
 import dev.aurelium.auraskills.common.user.User;
@@ -229,22 +230,20 @@ public class SqlUserLoader {
     }
 
     private void applyActionBarBatch(User user, Map<String, String> rows) {
-        if (rows.isEmpty()) {
-            return;
-        }
         String modeStr = findCaseInsensitive(rows, "idle_mode");
-        if (modeStr != null) {
-            user.setActionBarIdleMode(ActionBarIdleMode.fromStringOr(modeStr, ActionBarIdleMode.SMART));
-        } else {
-            String legacyIdle = findCaseInsensitive(rows, "idle");
-            if (legacyIdle != null) {
-                if (!legacyIdle.equals("false")) {
-                    // Legacy: idle true meant continuous line
-                    user.setActionBarIdleMode(ActionBarIdleMode.ALWAYS);
-                } else {
-                    user.setActionBarIdleMode(ActionBarIdleMode.OFF);
-                }
-            }
+        String legacyIdle = findCaseInsensitive(rows, "idle");
+        boolean hasExplicit = modeStr != null;
+        boolean hasLegacy = legacyIdle != null;
+        boolean legacyIdleTrue = hasLegacy && !"false".equalsIgnoreCase(legacyIdle);
+        ActionBarIdleMode.ActionBarLoadResolution r = ActionBarIdleMode.resolveOnLoad(
+                hasExplicit,
+                modeStr,
+                hasLegacy,
+                legacyIdleTrue,
+                plugin.configString(Option.ACTION_BAR_MODE));
+        user.setActionBarIdleMode(r.mode());
+        if (r.shouldPersistWhenIdleMissing()) {
+            user.setShouldSave(true);
         }
         for (Map.Entry<String, String> e : rows.entrySet()) {
             if (e.getKey().equalsIgnoreCase("idle") || e.getKey().equalsIgnoreCase("idle_mode")) {
