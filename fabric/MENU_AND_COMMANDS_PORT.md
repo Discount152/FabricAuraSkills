@@ -608,8 +608,8 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 
 | Area | Notes |
 |------|--------|
-| **Scope** | Real **dedicated** Fabric server + **Java** clients; verify **Sprints 57–74** commands/menus. **Not** Geyser/Bedrock this sprint. |
-| **Doc** | **`SPRINT_75_MANUAL_JAVA_DEDICATED_ACCEPTANCE.md`** — build evidence + operator checklist; **`projectVersion`** bump documents the checklist revision. **Blocked** until **Sprint 76A** + **Sprint 76B** + **Sprint 76C** dedicated-server startup fixes are deployed (see below). |
+| **Scope** | Real **dedicated** Fabric server + **Java** clients; verify **Sprints 57–74** commands/menus. **Not** Geyser/Bedrock **player** pass for this charter (see **Sprint 77** / **PAPER_PARITY_PROGRAM** §5). |
+| **Doc** | **`SPRINT_75_MANUAL_JAVA_DEDICATED_ACCEPTANCE.md`** — checklist + **`Result` / `Notes`**. **Startup validation:** **PASS** on **FabricAuraSkills 2.3.106** + external **GraniteLib 2.3.104** (operator); see **`SPRINT_77_JAVA_COMMAND_MENU_SMOKE_RESULTS.md`**. **Full** command/menu matrix: **NRP** until filled. |
 
 ## Sprint 76A — **Dedicated-server startup** (anvil mixin + GraniteLib version text)
 
@@ -634,4 +634,12 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Blocker** | **`FabricWorldManager#loadWorlds`** — **`UnsupportedOperationException`** on **`add`** to immutable **`Set.of()`** for **`check_block_replace.blocked_worlds`** — see **`SPRINT_76C_STARTUP_BLOCKER_WORLD_MANAGER.md`**. |
 | **Fix** | **`blockedCheckBlockReplaceWorlds = Sets.newConcurrentHashSet()`** in **`loadWorlds`**, same as the other two sets. |
 | **Unblocks** | **Sprint 75** once the server **boots** with **2.3.106+** (or current **`projectVersion`**) and operator confirms **“Done”**. |
+
+## Sprint 77 — **Java dedicated command/menu smoke** (runtime validation, not code)
+
+| Area | Notes |
+|------|--------|
+| **Scope** | **Java** players on a **dedicated** server; exercise **Sprint 75** checklist / representative commands and **built-in** menus; **no** new features. **Bedrock** command-menu UX **not** in scope. |
+| **Doc** | **`SPRINT_77_JAVA_COMMAND_MENU_SMOKE_RESULTS.md`** — environment, JARs, startup proof, **Pass** on **Skills** menu for **two** Java players; full matrix **NRP** until operators complete tables. |
+| **Links** | **`SPRINT_75_MANUAL_JAVA_DEDICATED_ACCEPTANCE.md`** (startup **PASS** + extended checklist). |
 

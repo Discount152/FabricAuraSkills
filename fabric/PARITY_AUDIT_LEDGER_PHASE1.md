@@ -4,6 +4,8 @@
 
 **Purpose:** Expand the seeded **`fabricauraskills_parity_audit_sheet.xlsx`** into a **repo-anchored** planning spine using this file as the **canonical Pass 1** list (bootstrap + commands + menus + listener map). The **workbook** is the editable **dashboard** (charts, filters); it must not become a second source of truth — **if a row disagrees, this markdown in-repo wins** until reconciled.
 
+**Sprint 77 (process):** **Dedicated-server startup** is **PASS** in operator logs for **FabricAuraSkills 2.3.106**; **Java** **Skills** menu **partial** proof for **two** players; **full** `CMD-*` / `MENU-*` **Java** runtime matrix **NRP** — see **`SPRINT_77_JAVA_COMMAND_MENU_SMOKE_RESULTS.md`**, **`SPRINT_75_MANUAL_JAVA_DEDICATED_ACCEPTANCE.md`**. **Bedrock/Geyser player** command-menu validation **out of Sprint 77** scope.
+
 **Reference anchor files (Bukkit module — audit source, not runtime):** `bukkit/.../AuraSkills.java`, `CommandRegistrar.java`, `MenuRegistrar.java` (plus current Fabric mappings in `fabric/...`).
 
 **Status values** (use in `Audit Matrix` → Status): `Missing` | `Stub` | `Partial` | `Equivalent` | `Needs Regression Proof` — prefer **Partial** or **Needs Regression Proof** over **Stub** when Fabric already implements real logic.

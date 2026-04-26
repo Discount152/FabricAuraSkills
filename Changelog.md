@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.107
+
+### Changes
+
+- **Process: Java dedicated smoke (Sprint 77):** Documents **startup PASS** and **sample** Java proof (**Skills** menu for two players) on **FabricAuraSkills 2.3.106** with external **GraniteLib 2.3.104**, MC **1.21.11**, Loader **0.18.4**, Fabric API **0.141.3+1.21.11**, **Java 21** — **`fabric/SPRINT_77_JAVA_COMMAND_MENU_SMOKE_RESULTS.md`**. **`SPRINT_75_MANUAL_JAVA_DEDICATED_ACCEPTANCE.md`** updated: **startup validation PASS**, full command/menu matrix **NRP** until operators fill tables. **Sprint 76C** world-manager fix is **in** **`FabricWorldManager`** line for **`2.3.106`**; no code change this sprint. **MENU_AND_COMMANDS_PORT**, **PARITY_BACKLOG**, **PARITY_AUDIT_LEDGER_PHASE1**, **COMMAND_PARITY_AUDIT** — Sprint 77 pointers. **Bedrock/Geyser player validation** explicitly **not** Sprint 77. **`projectVersion` 2.3.106 → 2.3.107** (doc revision). **Build:** `.\gradlew -PfabricOnly=true :fabric:test` — expected **PASS**.
+
 ## 2.3.106
 
 ### Changes
