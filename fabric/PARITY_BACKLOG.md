@@ -33,6 +33,7 @@ The following are **not** part of the default **Granite** product roadmap. The *
 - **Sprint 81A** — **Legacy `idle` migration + explicit `/abtoggle`:** **`ActionBarIdleMode#resolveOnLoad`**, **SQL** always writes **`idle_mode`**; **`SPRINT_81A_MANUAL_ACTION_BAR_LEGACY_MIGRATION.md`**; **`projectVersion` 2.3.112**. **Bedrock** not required.
 - **Sprint 81B** — **Smart idle — first stable guard:** **`ActionBarManager`** — **`!wasInWindow`** for **stable** diff; **`SPRINT_81B_MANUAL_SMART_ACTION_BAR_LEVELUP_FIX.md`**; **`2.3.113`**. **Superseded in part** by **81C`.
 - **Sprint 81C** — **Smart idle — observed snapshot only:** **`SmartIdleObsDisplay`** in **`ActionBarManager#tickSmartIdle`**; **`SPRINT_81C_MANUAL_SMART_ACTION_BAR_STUCK_FIX.md`**; **`2.3.114`**. **Java** runtime **Pass**; **Bedrock** not run-time tested (see follow-up below).
+- **Sprint 82** — **Java dedicated full smoke matrix (operator):** **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`** — execute the **Sprint 78** / **80**–style matrix on **`FabricAuraSkills-2.3.114+`**; record **Pass / Fail / Skip**; **NRP** until operators fill. **`projectVersion` 2.3.115** (doc / protocol). **Bedrock** not in scope. Supersedes *“next: Java 78/80”* in the backlog *Bedrock* follow-up line once 82 is **Pass**-complete (see that section).
 
 ## Bedrock / Geyser validation follow-up
 
@@ -48,7 +49,7 @@ A **future** validation sprint should test:
 - **Always** mode remains **persistent** for the idle line when otherwise enabled.
 - No disconnects, packet errors, or **unreadable** formatting in Bedrock’s action bar / chat surfaces.
 
-**Not** in scope until scheduled: this is a **backlog** pointer only — the **next** practical move for operators remains the broader **Java** smoke matrix (**Sprint 78** / **80**).
+**Not** in scope until scheduled: this is a **backlog** pointer only. The **active** **Java** matrix is **Sprint 82** — **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`** (artifact **`2.3.114+`**). **Sprint 78** (minimum) and **Sprint 80** (text re-run) are **prerequisites / partial**; **82** is the full execution record.
 
 ## Geyser / Floodgate / Bedrock (cross-platform acceptance)
 

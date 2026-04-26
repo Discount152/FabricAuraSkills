@@ -12,6 +12,8 @@
 
 **Sprint 80:** Re-execute this matrix on **`FabricAuraSkills-2.3.109.jar`** and record **Sprint 79** text fix proof — see **`SPRINT_80_JAVA_TEXT_SMOKE_RESULTS.md`**. **Full server restart** preferred before first run after upgrading from pre-79 JARs.
 
+**Sprint 82:** Full **Java dedicated** smoke matrix execution on **`2.3.114+`** (post–**81C** action bar) — use **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`** as the **primary** results record; keep this file’s **minimum** rows in sync or reference the 82 summary when 82 is **Pass**-complete.
+
 ---
 
 ## Artifacts to record when you run (copy into Notes)

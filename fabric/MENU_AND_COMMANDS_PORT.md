@@ -4,6 +4,8 @@
 
 **Cross-platform acceptance:** Menus and commands are **high risk** for **Java vs Bedrock** differences. The shipped mod must remain usable for **Bedrock players joining through Geyser + Floodgate** on the Fabric server — not only for direct **Java** clients. Do **not** assume Java-only inventory packets, click semantics, or chat UX; **validate** (or **document** known gaps) for the Bedrock path. See **§Geyser / Bedrock** in [PARITY_BACKLOG.md](PARITY_BACKLOG.md).
 
+**Sprint 82 (process):** **Java** dedicated-server **command + menu** smoke matrix execution — see **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`**. **Runtime validation** on **`2.3.114+`**; does **not** add commands/menus. **Bedrock** not in scope for 82. Update **[COMMAND_PARITY_AUDIT.md](COMMAND_PARITY_AUDIT.md)** only if 82 **changes** command surface (bugs fixed) vs prior audit.
+
 This document is the **engineering plan** for shipping **menus and the full command tree together** (one release goal), by **porting Slate** to Fabric instead of writing a second menu engine.
 
 Work still lands in **multiple commits/PRs**; “one big push” means **one coordinated program**, not a single patch.

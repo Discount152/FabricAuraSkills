@@ -42,6 +42,10 @@
 
 **After Sprint 79:** re-check the **Sprint 78** / **Sprint 75** tables for any row previously marked for **raw tags**; expect **Pass** for engine paths on **2.3.109+** unless a follow-up bug is found.
 
+## Sprint 82 — full Java smoke matrix (dedicated server)
+
+**Doc:** `fabric/SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md` — run the **full** command + menu + safe-admin + item matrix on **`FabricAuraSkills-2.3.114+`** (includes **81C** smart action bar validation baseline). **Runtime only**; no feature scope by default. **Bedrock** not in scope. When 82 is complete, this acceptance gate can cite the **82** summary as the current **Java** proof.
+
 ---
 
 ## CI / agent build evidence (in-repo, not a live server)

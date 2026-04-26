@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.115
+
+### Changes
+
+- **Process: Java dedicated smoke matrix (Sprint 82):** **`fabric/SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`** — canonical place to record **Pass / Fail / Skip** for the **full** command + menu matrix on a **disposable Java dedicated** server using **`FabricAuraSkills-2.3.114+`** ( **Sprint 79** text + **81–81C** action bar ). Supersedes ad-hoc re-runs; **`SPRINT_78`** (minimum) and **`SPRINT_80`** (text re-run) cross-link here. **In-repo agent cannot execute** in-game; rows stay **NRP** until operators fill them. **Bedrock** not in scope. **`projectVersion` 2.3.114 → 2.3.115** (doc / protocol). **Build:** `.\gradlew -PfabricOnly=true :fabric:test` — expected **PASS** (no code change).
+
 ## 2.3.114
 
 ### Changes
