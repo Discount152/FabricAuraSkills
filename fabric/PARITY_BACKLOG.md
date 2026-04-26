@@ -23,7 +23,8 @@ The following are **not** part of the default **Granite** product roadmap. The *
 ## Java dedicated-server startup (reference)
 
 - **Sprint 76A** — **`AnvilScreenHandlerAnvilDiscountMixin`** + **`@Shadow`** on an inherited `player` field could crash bootstrap when refMap is missing; **VarHandle** fix + **GraniteLib** `fabric.mod.json` version expansion — **`SPRINT_76A_STARTUP_BLOCKER_ANVIL_MIXIN.md`**, **`projectVersion` 2.3.104**.
-- **Sprint 76B** — **`TreeFeatureGrowContextMixin`** targeted **`Feature#generate`** (abstract → no **HEAD** node) — **`SPRINT_76B_STARTUP_BLOCKER_TREE_FEATURE_MIXIN.md`**, **`projectVersion` 2.3.105**. **Sprint 75** acceptance checklist is **blocked** until a **booting** JAR is confirmed on a test host (**76A** + **76B** startup fixes deployed).
+- **Sprint 76B** — **`TreeFeatureGrowContextMixin`** targeted **`Feature#generate`** (abstract → no **HEAD** node) — **`SPRINT_76B_STARTUP_BLOCKER_TREE_FEATURE_MIXIN.md`**, **`projectVersion` 2.3.105**.
+- **Sprint 76C** — **`FabricWorldManager#loadWorlds`**: `blockedCheckBlockReplaceWorlds` was never switched from immutable `Set.of()` to a mutable set while the code added config entries — **`SPRINT_76C_STARTUP_BLOCKER_WORLD_MANAGER.md`**, **`projectVersion` 2.3.106**. **Sprint 75** acceptance checklist is **blocked** until a **booting** JAR is confirmed on a test host (**76A** + **76B** + **76C** startup fixes deployed).
 
 ## Geyser / Floodgate / Bedrock (cross-platform acceptance)
 

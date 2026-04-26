@@ -30,6 +30,7 @@ public final class FabricWorldManager implements WorldManager {
             ConfigurationNode config = loader.loadUserFile("config.yml");
             blockedWorlds = Sets.newConcurrentHashSet();
             disabledWorlds = Sets.newConcurrentHashSet();
+            blockedCheckBlockReplaceWorlds = Sets.newConcurrentHashSet();
             int count = 0;
             for (String w : config.node("blocked_worlds").getList(String.class, new ArrayList<>())) {
                 blockedWorlds.add(w);

@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.106
+
+### Changes
+
+- **Fabric: Startup hotfix (Sprint 76C):** **`FabricWorldManager#loadWorlds`** crashed with **`UnsupportedOperationException`** on **`ImmutableCollections$AbstractImmutableCollection.add`** (line 43). **Cause:** **`blockedCheckBlockReplaceWorlds`** was initialized with immutable **`Set.of()`** but **`loadWorlds`** only replaced **`blockedWorlds`** and **`disabledWorlds`** with **`Sets.newConcurrentHashSet()`** — the **`check_block_replace.blocked_worlds`** list was populated into a still-frozen set. **Fix:** assign **`blockedCheckBlockReplaceWorlds = Sets.newConcurrentHashSet()`** in **`loadWorlds`** with the other two sets (same **reload** semantics: fresh mutable sets per load). **Doc:** `fabric/SPRINT_76C_STARTUP_BLOCKER_WORLD_MANAGER.md`. **GraniteLib:** if the server mod list still shows **0.1.0-alpha.1** while **`granitelibVersion`** is **0.1.0-alpha.2**, remove duplicate external **`granitelib-fabric`** or redeploy the JiJ build — see doc. **`projectVersion` 2.3.105 → 2.3.106**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test` and `:fabric:build` — run by maintainer. **World/disabled/blocked** behavior: unchanged intent; this restores the intended **mutable** storage for **check_replace** world blocks. **Sprint 75** remains gated on dedicated **“Done”** proof.
+
 ## 2.3.105
 
 ### Changes

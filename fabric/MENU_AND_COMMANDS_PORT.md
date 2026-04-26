@@ -609,7 +609,7 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | Area | Notes |
 |------|--------|
 | **Scope** | Real **dedicated** Fabric server + **Java** clients; verify **Sprints 57–74** commands/menus. **Not** Geyser/Bedrock this sprint. |
-| **Doc** | **`SPRINT_75_MANUAL_JAVA_DEDICATED_ACCEPTANCE.md`** — build evidence + operator checklist; **`projectVersion`** bump documents the checklist revision. **Blocked** until **Sprint 76A** + **Sprint 76B** dedicated-server startup fixes are deployed (see below). |
+| **Doc** | **`SPRINT_75_MANUAL_JAVA_DEDICATED_ACCEPTANCE.md`** — build evidence + operator checklist; **`projectVersion`** bump documents the checklist revision. **Blocked** until **Sprint 76A** + **Sprint 76B** + **Sprint 76C** dedicated-server startup fixes are deployed (see below). |
 
 ## Sprint 76A — **Dedicated-server startup** (anvil mixin + GraniteLib version text)
 
@@ -626,4 +626,12 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Blocker** | Mixin **apply** failed on **`TreeFeatureGrowContextMixin`**: **NPE** preparing **`@Inject` at HEAD** on **`Feature#generate`** (abstract in **`Feature.class`**) — see **`SPRINT_76B_STARTUP_BLOCKER_TREE_FEATURE_MIXIN.md`**. |
 | **Fix** | **`@Mixin(TreeFeature.class)`** + full JVM **`generate(Lnet/minecraft/world/gen/feature/util/FeatureContext;)Z`** at **HEAD** / **RETURN**; behavior unchanged ( **`FabricTreeGrowContext`** ). |
 | **Unblocks** | Next dedicated startup gate for **Sprint 75** once operator confirms **“Done”** with **2.3.105+** (or current **`projectVersion`**). |
+
+## Sprint 76C — **Dedicated-server startup** (`FabricWorldManager` world lists)
+
+| Area | Notes |
+|------|--------|
+| **Blocker** | **`FabricWorldManager#loadWorlds`** — **`UnsupportedOperationException`** on **`add`** to immutable **`Set.of()`** for **`check_block_replace.blocked_worlds`** — see **`SPRINT_76C_STARTUP_BLOCKER_WORLD_MANAGER.md`**. |
+| **Fix** | **`blockedCheckBlockReplaceWorlds = Sets.newConcurrentHashSet()`** in **`loadWorlds`**, same as the other two sets. |
+| **Unblocks** | **Sprint 75** once the server **boots** with **2.3.106+** (or current **`projectVersion`**) and operator confirms **“Done”**. |
 
