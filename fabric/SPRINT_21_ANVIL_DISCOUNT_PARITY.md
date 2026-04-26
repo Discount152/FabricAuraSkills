@@ -27,6 +27,7 @@
 
 ## Status
 
+- **Sprint 76A:** Implementation still injects at **`updateResult` TAIL**; the **mixin class** no longer uses **`@Shadow`** for **`player`** / **`levelCost`** (see **`SPRINT_76A_STARTUP_BLOCKER_ANVIL_MIXIN.md`**) — behavior target is unchanged when **`VarHandle`** init succeeds.
 - **In-repo, single-owner anvil, logical server:** **Equivalent** to the reference for cost math, formula, min cost **1**, and world/trait gates, modulo **viewer / Wisdom** (documented).
 - **Multi-viewer or strict Bukkit viewer-order semantics:** **Needs Regression Proof** or follow-up.
 - **Full Bukkit `BukkitTraitManager` (traits):** **`DoubleDropTrait`** core on Fabric since **Sprint 22** — **`SPRINT_22_DOUBLE_DROP_PARITY.md`**.

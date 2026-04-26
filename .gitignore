@@ -46,4 +46,10 @@ fabric/run/
 # Timestamped copies of every Fabric mod build (see :fabric:archiveFabricModJar); keep locally
 fabric-mod-jar-history/
 
+# Local server / operator logs under the fabric module (not part of the source tree)
+fabric/logs/
+
+# Local strict-transition / smoke harness checkouts (optional; not shipped)
+run-strict/
+
 htmlReport/

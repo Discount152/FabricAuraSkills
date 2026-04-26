@@ -22,7 +22,9 @@
 
 **Sprint 90 (code):** **`SPRINT_90_MANUAL_GLOBAL_GRANITE_TEXT_AUDIT.md`** — all remaining Fabric **command** paths that used **`Text.translatable("auraskills.granite…")`** now use **`FabricGraniteText`**; **`FabricGraniteJavaSourcesTranslatableScanTest`** guards the full **`dev.aurelium.auraskills.fabric`** main tree. **`2.3.121+`**.
 
-**Recommended next (Java-side):** Operator validation on **`2.3.121+`** (**`SPRINT_90`** manual); or **Sprint 87** when a **Bedrock** tester is available.
+**Sprint 91 (code + docs):** **`SPRINT_91_MANUAL_FABRIC_RELEASE_READINESS.md`** — release artifact map, **`README`** server install, committed **76A** anvil mixin + **`slate-fabric`** version expansion, tree hygiene. **`2.3.122+`**.
+
+**Recommended next (Java-side):** **Sprint 87** when a **Bedrock** tester is available; or release tagging using **`2.3.122+`** artifacts.
 
 This document is the **engineering plan** for shipping **menus and the full command tree together** (one release goal), by **porting Slate** to Fabric instead of writing a second menu engine.
 

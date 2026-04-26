@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.122
+
+### Changes
+
+- **Fabric: Sprint 91 — release readiness + working-tree hygiene (`FabricAuraSkills-2.3.122.jar`):** **Committed** the previously **local-only** **Sprint 76A** **`AnvilScreenHandlerAnvilDiscountMixin`** fix (**`VarHandle`** for **`ForgingScreenHandler#player`** / **`AnvilScreenHandler#levelCost`** — no fragile **`@Shadow`** when refmaps are missing). **`slate-fabric`:** **`processResources`** expands **`${version}`** in **`fabric.mod.json`** from root **`granitelibVersion`** (fixes Loader warning / unexpanded GraniteLib version). **Docs:** **`fabric/SPRINT_76A_STARTUP_BLOCKER_ANVIL_MIXIN.md`**, **`SPRINT_21_ANVIL_DISCOUNT_PARITY.md`** status note, **`fabric/SPRINT_91_MANUAL_FABRIC_RELEASE_READINESS.md`** (artifacts, install, dirty-tree triage). **Root `README.md`:** operator **server install** bullets. **`.gitignore`:** **`fabric/logs/`**, **`run-strict/`**. **Sprint 90 manual:** operator checklist marked **Pass**. **Parity pointers** updated. **Bedrock / Geyser** still not run-time tested. **`projectVersion` 2.3.121 → 2.3.122**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test :fabric:build` — **PASS**.
+
 ## 2.3.121
 
 ### Changes

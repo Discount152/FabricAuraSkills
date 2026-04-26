@@ -6,6 +6,8 @@
 | **Build / artifact** | **`FabricAuraSkills-2.3.121.jar`** (`projectVersion` **2.3.121**) |
 | **Bedrock / Geyser** | **Not tested** — deferred (**`SPRINT_87_MANUAL_BEDROCK_GEYSER_VALIDATION.md`**) |
 
+**Operator validation:** **Pass** on **`FabricAuraSkills-2.3.121.jar`** (Java checklist below). **Bedrock** still deferred.
+
 ## Search / audit scope
 
 - **Grep / scan:** `fabric/src/main/java/dev/aurelium/auraskills/fabric/**` for `Text.translatable("auraskills.granite` (and equivalent).
@@ -79,11 +81,11 @@ Spot-check that feedback is **readable** (no raw **`auraskills.granite.*`** keys
 
 ## Checklist (operator)
 
-- [ ] JAR **`FabricAuraSkills-2.3.121.jar`** (or newer with these commits) on test server
-- [ ] Full restart after swap
-- [ ] Java client: storage / backup / preset / item / xp / skilllevel / sources / profile samples — **no raw granite keys** in chat or menus tested
-- [ ] Console/RCON: `/sources` chat path if used — **no raw keys**
-- [ ] Bedrock: **Skip** (deferred)
+- [x] JAR **`FabricAuraSkills-2.3.121.jar`** on test server
+- [x] Full restart after swap
+- [x] Java client: storage / backup / preset / item / xp / skilllevel / sources / profile samples — **no raw granite keys** in chat or menus tested
+- [x] Console/RCON: `/sources` chat path if used — **no raw keys**
+- [x] Bedrock: **Skip** (deferred — no tester)
 
 ## Recommended next sprint
 

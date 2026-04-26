@@ -42,6 +42,14 @@ The remapped Fabric mod JAR is produced under `fabric/build/libs/` (name include
 
 A full multi-loader build may use `./gradlew clean build` depending on your environment; see `settings.gradle.kts` and [CONTRIBUTING.md](CONTRIBUTING.md) for the layout you need.
 
+## Server install (operators)
+
+1. Build or download **`FabricAuraSkills-<version>.jar`** (version matches **`projectVersion`** in `gradle.properties`; release builds should record the exact filename in your runbook).
+2. Place the JAR in the dedicated server’s **`mods/`** folder alongside a compatible **Fabric Loader**, **Fabric API**, and **Minecraft** version (see `supportedMCVersions` / `releaseTitle` in `gradle.properties` and your server’s `fabric.mod.json` dependency pins).
+3. **GraniteLib** is **Jar-in-Jar** inside the main mod — do **not** add a separate `granitelib` mod JAR unless you are deliberately testing a standalone GraniteLib build.
+4. Optional: `:fabric:archiveFabricModJar` (or a full `:fabric:build`) can also copy timestamped JARs under **`fabric-mod-jar-history/`** for rollback notes — see `fabric/build.gradle.kts`.
+5. Operator smoke and text-rendering checklists: **`fabric/SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`**, **`fabric/SPRINT_90_MANUAL_GLOBAL_GRANITE_TEXT_AUDIT.md`**, **`fabric/SPRINT_91_MANUAL_FABRIC_RELEASE_READINESS.md`**.
+
 ## Upstream Bukkit/Spigot API (reference)
 
 The **Bukkit** API, Javadocs, and Maven coordinates for `dev.aurelium:auraskills-api-bukkit` describe the **original plugin**, not the Fabric mod in this repository. This port does not ship the same API surface. For upstream plugin development, see the [API wiki](https://wiki.aurelium.dev/auraskills/api) and [Javadocs](https://docs.aurelium.dev/auraskills-api-bukkit/) published for that product line.

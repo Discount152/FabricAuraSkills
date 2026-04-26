@@ -38,3 +38,15 @@ tasks.withType<JavaCompile>().configureEach {
     options.encoding = "UTF-8"
     options.release.set(21)
 }
+
+val granitelibVersion: String =
+    requireNotNull(rootProject.findProperty("granitelibVersion") as? String) {
+        "root gradle.properties must define granitelibVersion (see granitelib standalone metadata)"
+    }
+
+tasks.processResources {
+    inputs.property("version", granitelibVersion)
+    filesMatching("fabric.mod.json") {
+        expand("version" to granitelibVersion)
+    }
+}
