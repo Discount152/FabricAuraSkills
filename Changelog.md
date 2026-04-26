@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.126
+
+### Changes
+
+- **Fabric: Sprint 98 — template-backed `sources` prototype (`FabricAuraSkills-2.3.126.jar`):** First **dynamic** GraniteLib v0 template menu: bundled **`assets/auraskills/granite/templates/sources.yml`** drives **`sources`** when load/validation/render succeeds — **fill**, **28-slot** source grid (same order as built-in **`FabricSourcesMenuGui`**), **back / previous / next / sort** with wired actions (**`back`**, **`previous_page`**, **`next_page`**, **`cycle_sort`**), **`source_row`** grid item. **`FabricSourcesTemplateSupport`** + **`FabricSourcesPlaceholders`** (`{skill}`, `{skill_display}`, `{source_name}`, `{source_xp}`, `{source_type}`, `{sort}`, `{page}`, `{total_pages}`); strict **unknown item id** and **unresolved `{...}`** → **built-in fallback**; **nav action** mismatch → fallback; **`custom_model_data`** via **`FabricStatInfoItemComponents`**. **`FabricSourcesMenuGui`** tries template first, then existing built-in path. **Chat/console** **`FabricSourcesOpenSupport`** unchanged. **Tests:** **`FabricSourcesBundledTemplateParseTest`**, **`FabricSourcesPlaceholdersTest`**. **Docs:** **`fabric/SPRINT_98_MANUAL_SOURCES_TEMPLATE_PROTOTYPE.md`**, parity pointers. **Full Slate / `MenuFileManager` parity** still **open**. **Bedrock / Geyser** not tested. **`projectVersion` 2.3.125 → 2.3.126**. **Build:** `.\gradlew -PfabricOnly=true :granitelib-fabric:test :fabric:test :fabric:build` — **PASS**.
+
 ## 2.3.125
 
 ### Changes

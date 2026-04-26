@@ -24,7 +24,7 @@ import java.util.Locale;
 /**
  * 6×9 “sources” list for one skill, opened from {@code /sources} for in-game players (**Sprint
  * 69**). Control row (back / page / sorter) matches Bukkit default {@code menus/sources.yml} slot
- * positions. Not a Slate port — uses {@link GraniteContainerMenus#openClickable9x6} only.
+ * positions. **Sprint 98:** tries bundled GraniteLib template first; on failure uses this built-in path.
  */
 final class FabricSourcesMenuGui {
 
@@ -38,6 +38,18 @@ final class FabricSourcesMenuGui {
     private static final int GRID_COLS = 7;
 
     private FabricSourcesMenuGui() {
+    }
+
+    /**
+     * Bukkit default grid: {@code source_start 1,1} → {@code source_end 4,8} (7×4, 28 slots), row-major
+     * order. Exposed for template validation (**Sprint 98**).
+     */
+    static List<Integer> builtinSourceGridSlots() {
+        List<Integer> out = new ArrayList<>(ITEMS_PER_PAGE);
+        for (int i = 0; i < ITEMS_PER_PAGE; i++) {
+            out.add(sourceSlotInPage(i));
+        }
+        return List.copyOf(out);
     }
 
     /**
@@ -58,12 +70,28 @@ final class FabricSourcesMenuGui {
             int returnToSkillsListPage) {
         User user = plugin.getUserManager().getUser(player.getUuid());
         Locale lo = user.getLocale();
-        var msg = plugin.getMessageProvider();
         var loaded = plugin.getSkillManager().getSkill(skill);
         List<XpSource> all = FabricSourcesListSupport.buildSorted(loaded, sort, lo);
         if (all.isEmpty()) {
             return;
         }
+        if (FabricSourcesTemplateSupport.tryOpen(
+                player, plugin, skill, sort, page, returnToSkillsListPage, all, lo)) {
+            return;
+        }
+        openBuiltIn(player, plugin, skill, sort, page, returnToSkillsListPage, all, lo);
+    }
+
+    private static void openBuiltIn(
+            ServerPlayerEntity player,
+            FabricAuraSkills plugin,
+            Skill skill,
+            FabricSourceSortType sort,
+            int page,
+            int returnToSkillsListPage,
+            List<XpSource> all,
+            Locale lo) {
+        var msg = plugin.getMessageProvider();
         int maxPage = FabricListMenuPaging.maxPageIndex(all.size(), ITEMS_PER_PAGE);
         int p = FabricListMenuPaging.clampPage(page, all.size(), ITEMS_PER_PAGE);
         int from = p * ITEMS_PER_PAGE;

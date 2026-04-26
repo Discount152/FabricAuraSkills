@@ -601,6 +601,17 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 
 | **Not in Sprint 70** | Full **`sources.yml`** load; **Slate** `sources` template items; **leaderboard** / **abilities**; **unclaimed** — see **Sprint 71**; **MenuFileManager** merge. |
 
+## Sprint 98 — **sources** GraniteLib template prototype (dynamic grid) (shipped, bounded)
+
+| Area | Shipped on Fabric (bounded) |
+|------|-----------------------------|
+| **Template** | Bundled **`assets/auraskills/granite/templates/sources.yml`** (v0 schema). Constant **`FabricSourcesTemplateSupport.TEMPLATE_RESOURCE_PATH`**. |
+| **Behavior** | **`FabricSourcesMenuGui.open`** tries **`FabricSourcesTemplateSupport.tryOpen`** first: **fill**, **28** source slots (same order as **`builtinSourceGridSlots()`**), **back / previous / next / sort** with fixed actions; **dynamic** per-source name/lore from YAML + placeholders. On any failure → **existing built-in** **`openBuiltIn`** path (unchanged semantics). |
+| **Placeholders** | **`FabricSourcesPlaceholders`:** `{skill}`, `{skill_display}`, `{source_name}`, `{source_xp}`, `{source_type}`, `{sort}`, `{page}`, `{total_pages}` — unresolved `{...}` → fallback. |
+| **Chat** | **`FabricSourcesOpenSupport`** unchanged — GUI exception → **`menu_fallback`** + chat; console/RCON → chat listing. |
+| **Gaps (Partial)** | **Not** disk override, **not** hot reload, **not** full action/placeholder engine, **not** Slate **`MenuFileManager`** parity. **Bedrock** not run-time tested. |
+| **Manual** | **`SPRINT_98_MANUAL_SOURCES_TEMPLATE_PROTOTYPE.md`** |
+
 ## Sprint 71 — **Unclaimed items** menu (`/claimitems`, `/openmenu unclaimed_items`) (shipped, partial)
 
 | Area | Shipped on Fabric (bounded) |
