@@ -3,9 +3,9 @@
 | Field | Value |
 |--------|--------|
 | **Sprint** | **82** — **runtime validation only** (no default feature work) |
-| **Status** | **Pass (operator) — Java matrix closed enough to move on.** Core/menu/action-bar, XP/skilllevel **view**, and **permissioned-staff** **`storage`** / **`backup`** / **`preset`** / prefixed **`item`** roots (**`/auraskills`**, **`/skills`**, **`/sk`**, **`/skill`**) validated in-game with **`auraskills.*`** (LuckPerms) on the tester account. **Readable plain English** = **Pass**. **Intentional gaps:** destructive **`backup load`/`restore`**, **`preset load`**, **`backup create`**, **`item register`/`give`** — **Skip** or **Pending** until run on **disposable** data; **deeper menu item/lore** raw-key sweep = **watch-list** only. **Bedrock/Geyser:** **not tested**. **Recommended next:** **Sprint 87 — Bedrock/Geyser validation** (preferred now that Java smoke is clean) or **Sprint 87 — menu item/lore `FabricGraniteText` sweep**. |
+| **Status** | **Pass (operator) — Java matrix closed enough to move on.** Core/menu/action-bar, XP/skilllevel **view**, and **permissioned-staff** **`storage`** / **`backup`** / **`preset`** / prefixed **`item`** roots validated in-game with **`auraskills.*`** (LuckPerms). **Intentional gaps:** destructive backup/preset paths, **`item register`/`give`** on disposable data only; **menu lore** raw keys = **watch-list**. **Bedrock/Geyser:** **Sprint 87** — **`SPRINT_87_MANUAL_BEDROCK_GEYSER_VALIDATION.md`** (**`2.3.118+`**); outcome recorded in **`PARITY_BACKLOG.md`** after operator run. |
 | **Minimum artifact** | **`FabricAuraSkills-2.3.114.jar`** (includes Sprints **79** text, **81–81C** action bar). Repo doc milestone **`2.3.115`**: matrix protocol. **Sprint 83 re-test target:** **`FabricAuraSkills-2.3.116.jar`** — run **at least** the Sprint 83 operator minimum (see **`SPRINT_83_MANUAL_JAVA_SMOKE_PATCH_TRANSLATIONS_MANA.md`**), then continue the rest of this matrix. Always record the **exact** JAR name in **Environment**. |
-| **Bedrock / Geyser** | **Explicitly not tested** this sprint; see [PARITY_BACKLOG.md](PARITY_BACKLOG.md) *Bedrock / Geyser validation follow-up*. |
+| **Bedrock / Geyser** | **Sprint 87** — see **`SPRINT_87_MANUAL_BEDROCK_GEYSER_VALIDATION.md`** and [PARITY_BACKLOG.md](PARITY_BACKLOG.md) *Bedrock / Geyser validation follow-up*. (This **82** doc is **Java** execution; Bedrock outcome recorded after operator runs **87**.) |
 
 
 **Related:** Canonical minimum set lives in **`SPRINT_78_JAVA_SMOKE_EXECUTION_RESULTS.md`**. **Sprint 80** = text re-verify on 2.3.109+. This doc (**82**) = **full matrix** re-execution on **2.3.114+** after **81C** closed the **Java** smart action bar lane.
@@ -17,6 +17,8 @@
 **Sprint 85 (code):** **`SPRINT_85_MANUAL_COMMAND_TREE_PATCH.md`** — **`item`** / **`storage`** / **`backup`** / **`preset`** root executors + permission gates (**`2.3.118+`**).
 
 **Sprint 86 (docs / matrix):** Permission context (**`auraskills.*`** globally via LuckPerms); readable plain text = **Pass**. **Final in-game staff sweep:** **`/storage`**, **`/storage info`**, **`/backup`**, **`/backup info`**, **`/backup list`**, **`/preset`**, **`/preset list`**, **`/auraskills|/skills|/sk|/skill item`** — all **Pass as permissioned staff** (see admin + item tables).
+
+**Sprint 87 (runtime — Bedrock/Geyser):** **`SPRINT_87_MANUAL_BEDROCK_GEYSER_VALIDATION.md`** — operator validation on **Geyser + Floodgate**; minimum artifact **`FabricAuraSkills-2.3.118.jar`** (or newer). Java matrix rows here remain **Java-only** until **87** results are recorded in **`PARITY_BACKLOG.md`**.
 
 ### Matrix classification (Sprint 86)
 
@@ -294,8 +296,8 @@ Console watch not fully captured in this pass.
 
 - **`/backup load` / `restore`**, **`/preset load`**, preview→**confirm** flows — exercise only on **disposable** worlds; confirmation-helper rows stay **Pending/Skip** until then.
 - **`item register` / `give`** — **Skip** until disposable item/key test.
-- Deeper **menu** item names/lore — **Sprint 87** optional **`FabricGraniteText`** sweep if raw keys are seen.
-- **Bedrock/Geyser** — **not tested**; **Sprint 87** validation recommended.
+- Deeper **menu** item names/lore — optional **`FabricGraniteText`** sweep (**post–87** or separate doc sprint) if raw keys are seen.
+- **Bedrock/Geyser** — **Sprint 87** manual (**`SPRINT_87_MANUAL_BEDROCK_GEYSER_VALIDATION.md`**); update **`PARITY_BACKLOG.md`** when complete.
 
 **Bugs fixed during Sprint 82 (small scope only):**
 
@@ -304,13 +306,13 @@ No code changes during Sprint 82 matrix editing. Sprint **83** — core **`Fabri
 **Known issues left open:**
 
 - **Normal players** must remain **denied/hidden** for staff admin commands unless granted explicit nodes — production defaults should not mirror the **`auraskills.*`** tester setup.
-- Deeper Fabric **menu** item names/lore may still show raw translation keys if they use `Text.translatable`; **`FabricGraniteText`** pattern when observed (**Sprint 87** candidate).
-- **Bedrock/Geyser** player validation **not** run for this matrix.
+- Deeper Fabric **menu** item names/lore may still show raw translation keys if they use `Text.translatable`; **`FabricGraniteText`** pattern when observed (lane after **87** or separate sprint).
+- **Bedrock/Geyser** — run **`SPRINT_87_MANUAL_BEDROCK_GEYSER_VALIDATION.md`**; this **82** file stays Java baseline.
 
 **Recommended next sprint:**
 
-- **Sprint 87 — Bedrock/Geyser validation pass** (preferred: Java dedicated smoke matrix is otherwise in good shape), **or**
-- **Sprint 87 — Menu item/lore translation sweep** (`FabricGraniteText` / watch-list).
+- **Sprint 87 — Bedrock/Geyser validation pass** — **`SPRINT_87_MANUAL_BEDROCK_GEYSER_VALIDATION.md`** (artifact **`2.3.118+`**).
+- **Later:** Menu item/lore **`FabricGraniteText`** sweep (watch-list from **82**), **after** or in parallel with **87** **only** if resourced — not the same lane as **87**.
 
 Top-level **`/item`** and **`/xp`** remain **vanilla**; Granite **`item`** and **`xp`** are **prefixed only**.
 

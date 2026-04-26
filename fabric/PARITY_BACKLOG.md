@@ -38,23 +38,20 @@ The following are **not** part of the default **Granite** product roadmap. The *
 - **Sprint 84** — **Java command smoke patch (code):** **`SPRINT_84_MANUAL_COMMAND_SMOKE_PATCH.md`** — **`FabricGraniteText`** for **`xp.view_line`** / **`skilllevel.view_line`**; drop top-level **`/item`** + **`/xp`** (vanilla); **`permissionOrNonPlayerSource`** for storage/backup/preset; **`/storage mergeskills`** literal **`requires`**. **`FabricAuraSkills-2.3.117.jar`**. Operator re-run **`SPRINT_82`**. **Bedrock** not in scope.
 - **Sprint 85** — **Java command tree roots (code):** **`SPRINT_85_MANUAL_COMMAND_TREE_PATCH.md`** — root **`.executes`** + **`requires`** for **`item`**, **`storage`**, **`backup`**, **`preset`** (bare-root Brigadier parse). **`FabricAuraSkills-2.3.118.jar`**. Operator re-run **`SPRINT_82`** admin/item rows. **Bedrock** not in scope.
 - **Sprint 86** — **Java smoke matrix closeout (docs):** **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`** — after **`auraskills.*`** (LuckPerms) on the tester, **final in-game staff sweep** **Pass** for **`/storage`**, **`/storage info`**, **`/backup`**, **`/backup info`**, **`/backup list`**, **`/preset`**, **`/preset list`**, **`/auraskills|/skills|/sk|/skill item`**. Intentional **Skip** for destructive/disposable-only rows until run on throwaway data. **Java** matrix “closed enough”; **Bedrock/Geyser** still **not tested**. **`SPRINT_85_MANUAL_COMMAND_TREE_PATCH.md`**, port/ledger updated. **No** code / **`projectVersion`** bump for docs-only passes.
-- **Sprint 87 (recommended)** — **Bedrock/Geyser validation** (preferred next) **or** **menu item/lore `FabricGraniteText` sweep** — see **`SPRINT_82`** *Recommended next sprint*.
+- **Sprint 87** — **Bedrock/Geyser validation (runtime):** **`SPRINT_87_MANUAL_BEDROCK_GEYSER_VALIDATION.md`** — first dedicated operator pass on **Geyser + Floodgate**; artifact **`FabricAuraSkills-2.3.118.jar`** (or newer). **No** default feature work; **small** fixes only for **confirmed** Bedrock bugs. **Follow-up (deferred):** menu item/lore **`FabricGraniteText`** sweep remains a **separate** lane after **87** results.
 
 ## Bedrock / Geyser validation follow-up
 
-Sprint **81C** closed the **Java** action bar conflict path for **Smart** / **Always** / **Off** health+mana **idle** line behavior. This has **not** yet been validated with a **Bedrock** player through **Geyser/Floodgate**.
+Sprint **81C** closed the **Java** action bar conflict path for **Smart** / **Always** / **Off** health+mana **idle** line behavior. **Sprint 87** is the **scheduled** first validation with a **Bedrock** player through **Geyser/Floodgate** — see **`fabric/SPRINT_87_MANUAL_BEDROCK_GEYSER_VALIDATION.md`**.
 
-A **future** validation sprint should test:
+**87** should cover (minimum):
 
-- Bedrock player can join with **Granite Skills** installed **server-side** (Fabric mod on dedicated server; Bedrock does not install the mod).
-- Health/mana **action bar** appears in **Smart** mode only during **relevant** visibility windows.
-- **Smart** mode **stops** sending Granite idle health/mana while **idle** (no sticky “always” behavior).
-- **`/abtoggle` `status`**, **`smart`**, **`always`**, and **`off`** work from **Bedrock** chat (Floodgate-linked identity).
-- **Off** mode suppresses Granite health/mana on the **action bar**.
-- **Always** mode remains **persistent** for the idle line when otherwise enabled.
-- No disconnects, packet errors, or **unreadable** formatting in Bedrock’s action bar / chat surfaces.
+- Bedrock player joins with **Granite Skills** **server-side** only (Fabric mod on dedicated server).
+- Health/mana **action bar** in **Smart** / **Always** / **Off**; **`/abtoggle`** from Bedrock chat (Floodgate-linked identity).
+- Core **menus** (**Skills**, **Stats**, at least one detail path) and a **subset** of **player** commands.
+- No disconnects, packet spam, or **unreadable** formatting on Bedrock surfaces; **document** gaps.
 
-**Not** in scope until scheduled: this is a **backlog** pointer only. The **active** **Java** matrix is **Sprint 82** — **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`** (artifact **`2.3.114+`**). **Sprint 78** (minimum) and **Sprint 80** (text re-run) are **prerequisites / partial**; **82** is the full execution record.
+**Java** matrix closeout: **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`** (**Sprint 86**). After **87**, update this section with **date + Pass/Fail/limitations**.
 
 ## Geyser / Floodgate / Bedrock (cross-platform acceptance)
 

@@ -14,7 +14,7 @@
 
 **Sprint 86 (docs):** **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`** — LuckPerms **`auraskills.*`**; final in-game staff **Pass** for **`storage`** / **`backup`** / **`preset`** / prefixed **`item`** roots; **Java** smoke matrix closeout (destructive paths **Skip** until disposable). No command code in Sprint 86.
 
-**Sprint 87 (recommended):** **Bedrock/Geyser** validation pass **or** menu item/lore translation sweep — see **`SPRINT_82`** matrix *Recommended next sprint*.
+**Sprint 87 (runtime):** **`SPRINT_87_MANUAL_BEDROCK_GEYSER_VALIDATION.md`** — first **Bedrock/Geyser** validation on **`FabricAuraSkills-2.3.118+`**; no default feature work. **Deferred:** menu item/lore **`FabricGraniteText`** sweep (separate lane after **87** results).
 
 This document is the **engineering plan** for shipping **menus and the full command tree together** (one release goal), by **porting Slate** to Fabric instead of writing a second menu engine.
 
