@@ -3,7 +3,7 @@
 <p style="text-align:center;">
   Fabric dedicated-server port of the <strong>AuraSkills</strong> RPG skills system, maintained in
   <a href="https://github.com/Discount152/FabricAuraSkills">this repository</a>.
-  The mod embeds <strong>GraniteLib</strong> (<code>:granitelib-fabric</code>) for menu and layout work (Jar-in-Jar; see <code>docs/architecture/</code>).
+  <strong>Granite Skills</strong> gameplay (<strong>FabricAuraSkills</strong>) and the <strong>GraniteLib</strong> Fabric library (<code>:granitelib-fabric</code>, on-disk <code>slate-fabric/</code>) are <strong>two separate mods</strong> — install <strong>both</strong> JARs on dedicated servers (see <strong>Server install</strong> and <code>fabric/PARITY_COMPLETION_ROADMAP.md</code>).
 </p>
 
 <p style="text-align:center;">
@@ -18,7 +18,7 @@
 
 **AuraSkills** (formerly *Aurelium Skills*) is a skills/stats/abilities system originally shipped as a **Bukkit/Spigot** plugin. **Archy-X** continues that line on Spigot; the official site and plugin downloads are on [aurelium.dev](https://aurelium.dev/auraskills) with [wiki](https://wiki.aurelium.dev/auraskills) documentation.
 
-**This repository** is the **Fabric** dedicated-server build (**FabricAuraSkills**). It is a separate artifact from the Spigot plugin: install the JAR from this repo’s releases for Fabric servers. **GraniteLib** is the embedded library inside the mod JAR; it is **not** a standalone published Fabric mod in this release model ([distribution ADR](docs/architecture/granitelib-distribution-adr.md)).
+**This repository** is the **Fabric** dedicated-server build: the **gameplay mod** (**FabricAuraSkills**, mod id **`auraskills`**) plus the **GraniteLib** library mod (**`granitelib-fabric-*.jar`**, mod id **`granitelib`**). Install **both** remapped JARs from a release or local Gradle build. Optional **`-PembedGraniteJij=true`** can nest GraniteLib for legacy/dev convenience only — **not** the canonical product install (see **`fabric/SPRINT_93_TWO_JAR_RELEASE_AND_PARITY_RESET.md`**).
 
 Features mirror the original design at a high level (skills, stats, abilities, menus, rewards, loot); see the upstream wiki for conceptual detail and [server requirements](https://wiki.aurelium.dev/auraskills/server-requirements) where they still apply to game-version concepts.
 
@@ -31,25 +31,29 @@ git clone https://github.com/Discount152/FabricAuraSkills.git
 cd FabricAuraSkills
 ```
 
-**Fabric mod (typical):**
+**Fabric mods (typical — two JARs):**
 
 ```text
 # Windows
-.\gradlew.bat :fabric:build -PfabricOnly=true
+.\gradlew.bat -PfabricOnly=true :granitelib-fabric:build
+.\gradlew.bat -PfabricOnly=true :fabric:build
 ```
 
-The remapped Fabric mod JAR is produced under `fabric/build/libs/` (name includes `FabricAuraSkills` and the current `projectVersion` in `gradle.properties`).
+- Gameplay: `fabric/build/libs/FabricAuraSkills-<projectVersion>.jar`
+- GraniteLib: `slate-fabric/build/libs/granitelib-fabric-<projectVersion>.jar`
+
+**Legacy single-jar / JiJ (dev only):** `.\gradlew.bat -PfabricOnly=true -PembedGraniteJij=true :fabric:build`
 
 A full multi-loader build may use `./gradlew clean build` depending on your environment; see `settings.gradle.kts` and [CONTRIBUTING.md](CONTRIBUTING.md) for the layout you need.
 
 ## Server install (operators)
 
-1. Build or download **`FabricAuraSkills-<version>.jar`** (version matches **`projectVersion`** in `gradle.properties`; release builds should record the exact filename in your runbook).
-2. Place the JAR in the dedicated server’s **`mods/`** folder alongside a compatible **Fabric Loader**, **Fabric API**, and **Minecraft** version (see `supportedMCVersions` / `releaseTitle` in `gradle.properties` and your server’s `fabric.mod.json` dependency pins).
-3. **GraniteLib** is **Jar-in-Jar** inside the main mod — do **not** add a separate `granitelib` mod JAR unless you are deliberately testing a standalone GraniteLib build.
-4. Optional: `:fabric:archiveFabricModJar` (or a full `:fabric:build`) can also copy timestamped JARs under **`fabric-mod-jar-history/`** for rollback notes — see `fabric/build.gradle.kts`.
-5. Operator smoke and text-rendering checklists: **`fabric/SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`**, **`fabric/SPRINT_90_MANUAL_GLOBAL_GRANITE_TEXT_AUDIT.md`**, **`fabric/SPRINT_91_MANUAL_FABRIC_RELEASE_READINESS.md`**.
-6. **Release candidate (2.3.122):** operator-facing summary in **`fabric/RELEASE_NOTES_2.3.122.md`**; prep record **`fabric/SPRINT_92_RELEASE_CANDIDATE_PREP.md`**. Optional Git tag **`v2.3.122-fabric-rc1`** for Java-wide testing (push only when you intend to publish the RC pointer).
+1. Install **both** JARs in **`mods/`**: **Granite Skills** gameplay **`FabricAuraSkills-<version>.jar`** and **GraniteLib** **`granitelib-fabric-<version>.jar`** (see **`projectVersion`** in `gradle.properties` for the **filename** line; GraniteLib’s **mod version** inside `fabric.mod.json` is **`granitelibVersion`**).
+2. Use a compatible **Fabric Loader**, **Fabric API**, and **Minecraft** version (see `supportedMCVersions` / `releaseTitle` in `gradle.properties`).
+3. **Do not** leave **stale** older GraniteLib or gameplay JARs in `mods/`. **Do not** mix **external GraniteLib** with a build that still **Jar-in-Jars** GraniteLib (**`-PembedGraniteJij=true`**) — duplicate **`granitelib`** mod risk.
+4. **Full restart** after replacing JARs. Check **`latest.log`** for **`auraskills`** and **`granitelib`** loading with expected versions.
+5. Operator checklists: **`fabric/SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`**, **`fabric/SPRINT_90_MANUAL_GLOBAL_GRANITE_TEXT_AUDIT.md`**, **`fabric/PARITY_COMPLETION_ROADMAP.md`**.
+6. **Release notes:** **`fabric/RELEASE_NOTES_2.3.123.md`** (current two-JAR RC policy). Historical **`fabric/RELEASE_NOTES_2.3.122.md`** is **superseded** for packaging. Optional tags: **`v2.3.123-fabric-rc2`** (recommended for two-JAR RC); **`v2.3.122-fabric-rc1`** documents an earlier checkpoint with **JiJ-default** wording — **not** final packaging policy.
 
 ## Upstream Bukkit/Spigot API (reference)
 

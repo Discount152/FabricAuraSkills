@@ -1,7 +1,9 @@
 # FabricAuraSkills 2.3.122 Release Candidate Notes
 
+> **Superseded for install policy (Sprint 93):** this RC described **Jar-in-Jar GraniteLib as the default** production path. The **canonical** product architecture is **two JARs** (gameplay + GraniteLib). Use **`fabric/RELEASE_NOTES_2.3.123.md`**, **`fabric/SPRINT_93_TWO_JAR_RELEASE_AND_PARITY_RESET.md`**, and **`fabric/PARITY_COMPLETION_ROADMAP.md`**. Tag **`v2.3.122-fabric-rc1`** remains a useful **Java-smoke** checkpoint for the **2.3.122** codebase, **not** final-release packaging.
+
 **Artifact:** `FabricAuraSkills-2.3.122.jar`  
-**Status:** Java/Fabric validation pass; **Bedrock/Geyser not yet validated** at runtime.
+**Status:** Java/Fabric validation pass; **Bedrock/Geyser not yet validated** at runtime. **Packaging policy** below reflects **pre–Sprint 93** artifact shape only.
 
 ## Highlights
 

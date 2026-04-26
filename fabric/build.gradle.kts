@@ -8,6 +8,14 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.zip.ZipFile
 
+/**
+ * Canonical release: **split install** — gameplay mod + separate **`granitelib-fabric-*.jar`** (GraniteLib is a
+ * reusable Fabric library). Set **`-PembedGraniteJij=true`** only for **legacy / emergency** single-jar bundles
+ * (nested GraniteLib under {@code META-INF/jars/}); do not treat that layout as the final product architecture.
+ */
+val embedGraniteJij: Boolean =
+    findProperty("embedGraniteJij")?.toString()?.equals("true", ignoreCase = true) == true
+
 /** Ship JARs as {@code FabricAuraSkills-<projectVersion>[ -sources].jar} (version from root {@code projectVersion}). */
 tasks.withType<org.gradle.api.tasks.bundling.Jar>().configureEach {
     archiveBaseName.set("FabricAuraSkills")
@@ -73,15 +81,22 @@ dependencies {
 
     implementation(project(":api"))
     implementation(project(":common"))
-    // Slate Fabric port (skeleton); Loom expects namedElements between Loom subprojects.
-    implementation(project(":granitelib-fabric", configuration = "namedElements"))
 
     implementation("com.google.guava:guava:33.2.1-jre")
 
-    // Jar-in-Jar: ship api + common + granitelib-fabric inside the remapped mod (production server has only this one jar).
+    // GraniteLib: default = separate Fabric mod (`mods/granitelib-fabric-*.jar`). Optional JiJ for dev convenience only.
+    // Use compileOnly (not modImplementation) so Loom does not require a pre-existing remapped granitelib jar during :fabric configuration.
+    if (embedGraniteJij) {
+        implementation(project(":granitelib-fabric", configuration = "namedElements"))
+        include(implementation(project(":granitelib-fabric", configuration = "namedElements"))!!)
+    } else {
+        compileOnly(project(":granitelib-fabric"))
+        testImplementation(project(":granitelib-fabric"))
+    }
+
+    // Jar-in-Jar: ship api + common inside the remapped gameplay mod (not separate Fabric mods).
     include(implementation(project(":api"))!!)
     include(implementation(project(":common"))!!)
-    include(implementation(project(":granitelib-fabric", configuration = "namedElements"))!!)
 
     // :common uses these at runtime but they are not inside common.jar — mirror common/build.gradle.kts.
     implementation("dev.aurelium:polyglot:1.2.4") {
@@ -150,10 +165,17 @@ tasks.register("verifyFabricReleaseBundle") {
         }
         requireJar({ it.startsWith("api-") && it.endsWith(".jar") }, "JiJ must include api-*.jar")
         requireJar({ it.startsWith("common-") && it.endsWith(".jar") }, "JiJ must include common-*.jar")
-        requireJar(
-            { it.startsWith("granitelib-fabric-") && it.endsWith(".jar") },
-            "JiJ must include granitelib-fabric-*.jar",
-        )
+        val nestedGranitelib = nestedJars.filter { it.startsWith("granitelib-fabric-") && it.endsWith(".jar") }
+        if (embedGraniteJij) {
+            require(nestedGranitelib.isNotEmpty()) {
+                "embedGraniteJij=true: JiJ must include granitelib-fabric-*.jar — nested jars: $nestedJars"
+            }
+        } else {
+            require(nestedGranitelib.isEmpty()) {
+                "Canonical split release must not Jar-in-Jar GraniteLib (install granitelib-fabric-*.jar separately). " +
+                    "Found: $nestedGranitelib. For legacy single-jar only: -PembedGraniteJij=true :fabric:build"
+            }
+        }
         requireJar({ it == "configurate-core-4.1.2.jar" }, "JiJ must include configurate-core-4.1.2.jar")
         requireJar({ it == "configurate-yaml-4.1.2.jar" }, "JiJ must include configurate-yaml-4.1.2.jar")
         requireJar({ it.contains("polyglot") }, "JiJ must include polyglot")

@@ -3,7 +3,7 @@
 | Field | Value |
 |--------|--------|
 | **Sprint** | **82** — **runtime validation only** (no default feature work) |
-| **Status** | **Pass (operator) — Java matrix closed enough to move on.** Core/menu/action-bar, XP/skilllevel **view**, and **permissioned-staff** **`storage`** / **`backup`** / **`preset`** / prefixed **`item`** roots validated in-game with **`auraskills.*`** (LuckPerms). **Intentional gaps:** destructive backup/preset paths, **`item register`/`give`** on disposable data only. **Menu inventory text:** Sprint **88** (**`2.3.119+`**) + **`/sources`** paged **chat** Sprint **89** (**`2.3.120+`**, **`SPRINT_89_MANUAL_SOURCES_CHAT_TRANSLATION.md`**) — **`FabricGraniteText`** on GUI + chat listing paths. **Sprint 90** (**`2.3.121`**, **`SPRINT_90_MANUAL_GLOBAL_GRANITE_TEXT_AUDIT.md`**) — remaining **command** Granite keys → **`FabricGraniteText`** + full-tree scan; **operator checklist Pass**. **Sprint 91** (**`2.3.122+`**, **`SPRINT_91_MANUAL_FABRIC_RELEASE_READINESS.md`**) — release/install hygiene + **76A** mixin + GraniteLib version expansion in **`slate-fabric`**. **Bedrock/Geyser:** **not tested** — **`SPRINT_87_MANUAL_BEDROCK_GEYSER_VALIDATION.md`** prepared; **runtime validation deferred** (no Bedrock tester); see **`PARITY_BACKLOG.md`**. **Java/Fabric** work may continue. |
+| **Status** | **Pass (operator) — Java matrix closed enough to move on.** Core/menu/action-bar, XP/skilllevel **view**, and **permissioned-staff** **`storage`** / **`backup`** / **`preset`** / prefixed **`item`** roots validated in-game with **`auraskills.*`** (LuckPerms). **Intentional gaps:** destructive backup/preset paths, **`item register`/`give`** on disposable data only. **Menu inventory text:** Sprint **88** (**`2.3.119+`**) + **`/sources`** paged **chat** Sprint **89** (**`2.3.120+`**, **`SPRINT_89_MANUAL_SOURCES_CHAT_TRANSLATION.md`**) — **`FabricGraniteText`** on GUI + chat listing paths. **Sprint 90** (**`2.3.121`**, **`SPRINT_90_MANUAL_GLOBAL_GRANITE_TEXT_AUDIT.md`**) — remaining **command** Granite keys → **`FabricGraniteText`** + full-tree scan; **operator checklist Pass**. **Sprint 91** (**`2.3.122+`**, **`SPRINT_91_MANUAL_FABRIC_RELEASE_READINESS.md`**) — release/install hygiene + **76A** mixin + GraniteLib version expansion in **`slate-fabric`**. **Sprint 93** (**`2.3.123+`**, **`SPRINT_93_TWO_JAR_RELEASE_AND_PARITY_RESET.md`**, **`PARITY_COMPLETION_ROADMAP.md`**) — **two-JAR** canonical install; **built-in menus** explicitly **partial** vs full **Slate**. **Bedrock/Geyser:** **not tested** — **`SPRINT_87_MANUAL_BEDROCK_GEYSER_VALIDATION.md`** prepared; **runtime validation deferred** (no Bedrock tester); see **`PARITY_BACKLOG.md`**. **Java/Fabric** work may continue. |
 | **Minimum artifact** | **`FabricAuraSkills-2.3.114.jar`** (includes Sprints **79** text, **81–81C** action bar). Repo doc milestone **`2.3.115`**: matrix protocol. **Sprint 83 re-test target:** **`FabricAuraSkills-2.3.116.jar`** — run **at least** the Sprint 83 operator minimum (see **`SPRINT_83_MANUAL_JAVA_SMOKE_PATCH_TRANSLATIONS_MANA.md`**), then continue the rest of this matrix. Always record the **exact** JAR name in **Environment**. |
 | **Bedrock / Geyser** | **Not tested** — Sprint **87** manual prepared (**`SPRINT_87_MANUAL_BEDROCK_GEYSER_VALIDATION.md`**); **runtime validation deferred** until a Bedrock tester/client is available. [PARITY_BACKLOG.md](PARITY_BACKLOG.md) *Bedrock / Geyser validation follow-up*. |
 
@@ -30,6 +30,8 @@
 
 **Sprint 92 (docs — RC checkpoint):** **`RELEASE_NOTES_2.3.122.md`**, **`SPRINT_92_RELEASE_CANDIDATE_PREP.md`** — same **`2.3.122`** artifact; **`verifyFabricReleaseBundle`**; optional **`v2.3.122-fabric-rc1`**.
 
+**Sprint 93 (packaging + honesty pass):** **`SPRINT_93_TWO_JAR_RELEASE_AND_PARITY_RESET.md`**, **`PARITY_COMPLETION_ROADMAP.md`**, **`RELEASE_NOTES_2.3.123.md`** — **two-JAR** canonical release; built-in menus **≠** full Slate parity.
+
 ### Matrix classification (Sprint 86)
 
 | Runtime result | Matrix classification |
@@ -54,7 +56,7 @@
 | **Java** | (not re-confirmed in this pass) |
 | **FabricAuraSkills JAR** | **`FabricAuraSkills-2.3.118.jar`** (Sprint **85**; confirmed operator target) |
 | **Tester permission context** | **Deskount:** **`auraskills.*`** = **true** globally via **LuckPerms** (`lp user … permission info` shows **`auraskills.*`** plus explicit **`auraskills.command.mana`** / **`mana.other`**). Use this account for permissioned-staff command rows. |
-| **GraniteLib** | External JAR + version in `mods/` **or** JiJ-only (release bundle) — describe |
+| **GraniteLib** | **Canonical:** external **`granitelib-fabric-<version>.jar`** alongside gameplay (**Sprint 93**). **Legacy:** `-PembedGraniteJij=true` single-jar — not final policy |
 | **Server OS / host** | (optional) |
 | **Java player name(s)** | e.g. Deskount (staff tester) |
 | **Second Java player** (two-player tests) | or **Skip (single player)** |

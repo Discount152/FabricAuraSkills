@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.123
+
+### Changes
+
+- **Fabric: Sprint 93 — two-JAR release policy + parity roadmap reset (`FabricAuraSkills-2.3.123.jar` + `granitelib-fabric-2.3.123.jar`):** **Canonical install** is **gameplay + GraniteLib** as **separate** mods. Default **`:fabric:build`** no longer Jar-in-Jars **`granitelib-fabric`**; **`fabric.mod.json`** adds **`depends.granitelib`** (**`>=0.1.0-alpha.2`**). **`verifyFabricReleaseBundle`** rejects nested GraniteLib unless **`-PembedGraniteJij=true`** (legacy/dev). **Docs:** **`fabric/SPRINT_93_TWO_JAR_RELEASE_AND_PARITY_RESET.md`**, **`fabric/PARITY_COMPLETION_ROADMAP.md`**, **`fabric/RELEASE_NOTES_2.3.123.md`**; **README**, **RC1/RC2** notes, parity/command/menu audits corrected so **built-in menus ≠ Slate complete**. **`v2.3.122-fabric-rc1`** documented as **Java-smoke** checkpoint with **superseded** JiJ-default install wording. **Recommended:** **`v2.3.123-fabric-rc2`**. **Bedrock / Geyser** not tested. **`projectVersion` 2.3.122 → 2.3.123**. **Build:** `.\gradlew -PfabricOnly=true :granitelib-fabric:build :fabric:test :fabric:build :fabric:verifyFabricReleaseBundle` — **PASS**.
+
 ## 2.3.122
 
 ### Changes

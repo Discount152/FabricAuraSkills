@@ -2,6 +2,8 @@
 
 **Runtime:** **Fabric** only. This work implements **Fabric-native** menus and commands. The **reference** for *what* to cover is the **existing `bukkit` module** (ACF command tree, Slate menus) — **not** a goal of shipping Bukkit or Paper. **Final public** command roots, aliases, and **Granite Skills** copy are **TBD**; see **[PAPER_PARITY_PROGRAM.md](PAPER_PARITY_PROGRAM.md)**. This path is a **required** program track, not a side quest.
 
+**Sprint 93 correction:** The **built-in `Fabric*MenuGui`** set is a **functional partial** of the reference menu experience. It is **Java-smoke adequate**, **not** “Slate parity complete.” Full **Slate / YAML / `MenuFileManager`** parity is **open**; see **`PARITY_COMPLETION_ROADMAP.md`**.
+
 **Cross-platform acceptance:** Menus and commands are **high risk** for **Java vs Bedrock** differences. The shipped mod must remain usable for **Bedrock players joining through Geyser + Floodgate** on the Fabric server — not only for direct **Java** clients. Do **not** assume Java-only inventory packets, click semantics, or chat UX; **validate** (or **document** known gaps) for the Bedrock path. See **§Geyser / Bedrock** in [PARITY_BACKLOG.md](PARITY_BACKLOG.md).
 
 **Sprint 82 (process):** **Java** dedicated-server **command + menu** smoke matrix execution — see **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`**. **Runtime validation** on **`2.3.114+`**; does **not** add commands/menus. **Bedrock** not in scope for 82. Update **[COMMAND_PARITY_AUDIT.md](COMMAND_PARITY_AUDIT.md)** only if 82 **changes** command surface (bugs fixed) vs prior audit.
@@ -24,9 +26,11 @@
 
 **Sprint 91 (code + docs):** **`SPRINT_91_MANUAL_FABRIC_RELEASE_READINESS.md`** — release artifact map, **`README`** server install, committed **76A** anvil mixin + **`slate-fabric`** version expansion, tree hygiene. **`2.3.122+`**.
 
-**Sprint 92 (docs):** **`RELEASE_NOTES_2.3.122.md`**, **`SPRINT_92_RELEASE_CANDIDATE_PREP.md`** — **2.3.122** release-candidate checkpoint (Java); optional **`v2.3.122-fabric-rc1`**. **Bedrock** not tested.
+**Sprint 92 (docs):** **`RELEASE_NOTES_2.3.122.md`**, **`SPRINT_92_RELEASE_CANDIDATE_PREP.md`** — **2.3.122** RC checkpoint; **`v2.3.122-fabric-rc1`**. **Packaging superseded** by **Sprint 93**.
 
-**Recommended next (Java-side):** Share **`FabricAuraSkills-2.3.122.jar`** + release notes for broader Java RC testing; **Sprint 87** when a **Bedrock** tester is available; or a **docs triage** sprint for deferred untracked files.
+**Sprint 93 (packaging + parity reset):** **`SPRINT_93_TWO_JAR_RELEASE_AND_PARITY_RESET.md`**, **`PARITY_COMPLETION_ROADMAP.md`**, **`RELEASE_NOTES_2.3.123.md`** — **two JARs** canonical; built-in menus explicitly **partial** vs Slate. **`2.3.123+`**, **`v2.3.123-fabric-rc2`**.
+
+**Recommended next (Java-side):** Deploy **two-JAR** **`2.3.123`** RC; **Sprint 87** when a **Bedrock** tester exists; **Path A** Slate work as its own program; optional **docs triage**.
 
 This document is the **engineering plan** for shipping **menus and the full command tree together** (one release goal), by **porting Slate** to Fabric instead of writing a second menu engine.
 

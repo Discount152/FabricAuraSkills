@@ -38,9 +38,9 @@
 |--------|---------|
 | **Remapped JAR path** | `fabric/build/libs/FabricAuraSkills-2.3.122.jar` |
 | **Main `fabric.mod.json`** | `id`: **`auraskills`**, `version`: **`2.3.122`** |
-| **JiJ GraniteLib** | Entry **`META-INF/jars/granitelib-fabric-2.3.122-dev.jar`** present (`verifyFabricReleaseBundle` requires `granitelib-fabric-*.jar`) |
+| **JiJ GraniteLib (at RC1 time)** | **Pre–Sprint 93:** nested **`granitelib-fabric-*.jar`** was present — **superseded**; canonical install is **two JARs** (see Sprint 93) |
 | **Nested GraniteLib `fabric.mod.json`** | `id`: **`granitelib`**, `version`: **`0.1.0-alpha.2`** — **not** `${version}` |
-| **External GraniteLib JAR** | **Not required** for normal install (JiJ only). |
+| **External GraniteLib JAR** | **Required** for canonical install **after Sprint 93** — RC1 doc assumed JiJ-default; see **`RELEASE_NOTES_2.3.123.md`**. |
 
 ## Part D — Release note
 

@@ -1,5 +1,7 @@
 # Bukkit (reference) vs Fabric — command parity (Granite)
 
+**Parity framing (Sprint 93):** This audit is a **capability inventory** — **Partial** is common and does **not** mean “Slate/reference complete.” Full **AuraSkills + Slate** parity (including YAML menus, `MenuFileManager`, and the full ACF surface) is tracked in **`PARITY_COMPLETION_ROADMAP.md`** and **`MENU_AND_COMMANDS_PORT.md`**. **JobsCommand** remains **deferred / out of active scope** unless the owner reopens it.
+
 **Sprint 77 (Java dedicated smoke):** Operator **startup PASS** and **sample** **Java** **Skills** menu proof are recorded in **`SPRINT_77_JAVA_COMMAND_MENU_SMOKE_RESULTS.md`**.
 
 **Sprint 78 (Java minimum execution):** **`SPRINT_78_JAVA_SMOKE_EXECUTION_RESULTS.md`** is where **per-command** **Pass/Fail** for the **minimum** set should be recorded; the audit table below is **not** re-scored in-repo.

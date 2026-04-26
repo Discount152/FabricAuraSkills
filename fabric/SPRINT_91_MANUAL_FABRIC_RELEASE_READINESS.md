@@ -17,7 +17,7 @@
 | Remapped mod JAR | **`fabric/build/libs/FabricAuraSkills-<version>.jar`** | `<version>` = **`gradle.properties` → `projectVersion`** |
 | Sources JAR (optional) | **`fabric/build/libs/FabricAuraSkills-<version>-sources.jar`** | Debugging / compliance |
 | Timestamped history | **`fabric-mod-jar-history/`** | Populated when **`archiveFabricModJar`** / clean hooks run — optional local rollback trail |
-| GraniteLib | **JiJ inside** the main **`FabricAuraSkills`** JAR | Do not add a second **`granitelib`** mod in production unless intentionally testing standalone GraniteLib |
+| GraniteLib | **Separate mod JAR** (`granitelib-fabric-*.jar`) — **Sprint 93** restored two-JAR policy; JiJ-only was a **transitional** artifact shape | **Never** mix external + JiJ GraniteLib; see **`SPRINT_93_TWO_JAR_RELEASE_AND_PARITY_RESET.md`** |
 
 **Build (maintainer / CI):**
 
