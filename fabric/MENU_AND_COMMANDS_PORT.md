@@ -8,7 +8,7 @@
 
 **Sprint 83 (code — accepted 2026-04-26):** **`FabricGraniteText`** — server **literal** text for **Sprint 82**-reported `auraskills.granite.*` in **usage/help**, **Skills/Stats** built-in **titles** / **“opened”** feedback ( **`FabricMenuRegistry`**, **`FabricBrigadierCommands`**, **`FabricOpenMenuCommands`**). **`/mana view`** **no-arg** = **self**; **`/mana view <player>`** still **`mana.other`**. **Operator:** core **Sprint 82** rows **validated** on **`2.3.116+`**; deeper **menu item** lore may still use **`translatable`** (**follow-up**). **Doc:** **`SPRINT_83_MANUAL_JAVA_SMOKE_PATCH_TRANSLATIONS_MANA.md`**.
 
-**Sprint 84 (process):** **`SPRINT_84_MANUAL_JAVA_ADMIN_PERMISSIONED_RETEST.md`** — **console/RCON**, **OP**, **permissioned non-OP** retest for admin/data (**`/storage`**, **`/backup`**, **`/preset`**), **`/item`**, confirmation helper, **`/xp view`**, **`/skilllevel view`**; closes **Pending** rows on **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`**.
+**Sprint 84 (code + operator):** **`SPRINT_84_MANUAL_COMMAND_SMOKE_PATCH.md`** — **`FabricGraniteText`** for **`/xp view`** / **`/skilllevel view`**; no top-level **`/item`** or **`/xp`** (vanilla collision); **`permissionOrNonPlayerSource`** for **`/storage`**, **`/backup`**, **`/preset`**; **`/storage mergeskills`** permission on literal. Re-validate **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`** on **`2.3.117+`**.
 
 This document is the **engineering plan** for shipping **menus and the full command tree together** (one release goal), by **porting Slate** to Fabric instead of writing a second menu engine.
 

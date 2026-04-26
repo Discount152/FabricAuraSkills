@@ -2,7 +2,7 @@
 
 | Field | Value |
 |--------|--------|
-| **Sprint 83 status** | **Code accepted** (in-repo). **Operator:** Sprint **82** core rows (usage/help, Skills/Stats titles & feedback, mana self + staff **other**) **validated** on **`2.3.116+`** — see **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`**. **Next operator work:** Sprint **84** admin/permissioned retest — **`SPRINT_84_MANUAL_JAVA_ADMIN_PERMISSIONED_RETEST.md`**. |
+| **Sprint 83 status** | **Code accepted** (in-repo). **Operator:** Sprint **82** core rows **validated** on **`2.3.116+`** — see **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`**. **Follow-up:** Sprint **84** command patch — **`SPRINT_84_MANUAL_COMMAND_SMOKE_PATCH.md`**, **`2.3.117+`**. |
 | **Code acceptance (in-repo)** | **2026-04-26** — root cause and fix reviewed; **`:fabric:test`** / **`:fabric:build`** **PASS**; artifact **`FabricAuraSkills-2.3.116.jar`**. |
 | **Tested artifact (operator target)** | **`FabricAuraSkills-2.3.116.jar`** (`projectVersion` **2.3.116**). |
 | **Depends on** | **Sprint 82** smoke findings (raw `auraskills.granite.*` on vanilla clients; `/mana view` Brigadier). |
@@ -56,7 +56,7 @@ Set-Location "F:\FabricAuraSkills"
 ## Related docs
 
 - **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`** — full Java smoke matrix; re-run rows touched above first, then the rest.
-- **`SPRINT_84_MANUAL_JAVA_ADMIN_PERMISSIONED_RETEST.md`** — next operator sprint: admin/permissioned commands (**not** Sprint 83 scope).
+- **`SPRINT_84_MANUAL_COMMAND_SMOKE_PATCH.md`** — XP/skilllevel literals, item/xp roots, admin **`requires`** (**not** Sprint 83 scope).
 - **`SPRINT_78_JAVA_SMOKE_EXECUTION_RESULTS.md`** — minimum set; sync Pass/Fail when you run.
 - **`COMMAND_PARITY_AUDIT.md`** — command surface (Mana row).
 - **`Changelog.md`** — **2.3.116** user-visible notes.

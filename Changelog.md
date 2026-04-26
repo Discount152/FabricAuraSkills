@@ -2,6 +2,17 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.117
+
+### Changes
+
+- **Fabric: Sprint 84 — Java smoke command fixes (`FabricAuraSkills-2.3.117.jar`):**
+  - **`FabricGraniteText`** for **`/xp view`** and **`/skilllevel view`** feedback (**`FabricXpCommands`**, **`FabricSkillLevelCommands`**) so vanilla clients never see raw **`auraskills.granite.command.xp.view_line`** / **`skilllevel.view_line`**. **`player_not_found`** on those paths uses the same helper.
+  - **Vanilla collision:** stop registering top-level **`/item`** and **`/xp`** — use **`/auraskills …`**, **`/skills …`**, **`/sk …`**, **`/skill …`** only (trees unchanged under those roots). Top-level **`/armor`** and **`/skilllevel`** remain.
+  - **Storage / backup / preset:** **`FabricCommandRequirements.permissionOrNonPlayerSource`** so **console / RCON / non-player** sources are not blocked when LuckPerms does not grant **`auraskills.command.*`** to the console source. **`/storage mergeskills`** now has the same **`.requires(storage)`** on the literal as other **`/storage`** branches — fixes Brigadier showing only **`mergeskills`** when **`info`** failed permission, which produced misleading “wrong argument” parses for **`/storage info`**.
+  - **`/sk` default** denied feedback uses **`FabricGraniteText`** for **`permission_denied`**.
+  - **Tests:** **`FabricGraniteEnUsKeysTest`** includes **`xp.view_line`** and **`skilllevel.view_line`**. **Doc:** **`fabric/SPRINT_84_MANUAL_COMMAND_SMOKE_PATCH.md`**, **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`**, parity pointers. **Bedrock / Geyser** not run-time tested. **`projectVersion` 2.3.116 → 2.3.117**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test :fabric:build` — **PASS**.
+
 ## 2.3.116
 
 ### Changes

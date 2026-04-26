@@ -42,23 +42,26 @@ public final class FabricStorageCommands {
                 .then(
                         literal("info")
                                 .requires(
-                                        FabricCommandRequirements.permission(
+                                        FabricCommandRequirements.permissionOrNonPlayerSource(
                                                 FabricCommandPermissions.STORAGE, false))
                                 .executes(FabricStorageCommands::executeInfo))
                 .then(
                         literal("save")
                                 .requires(
-                                        FabricCommandRequirements.permission(
+                                        FabricCommandRequirements.permissionOrNonPlayerSource(
                                                 FabricCommandPermissions.STORAGE, false))
                                 .executes(FabricStorageCommands::executeSave))
                 .then(
                         literal("reload")
                                 .requires(
-                                        FabricCommandRequirements.permission(
+                                        FabricCommandRequirements.permissionOrNonPlayerSource(
                                                 FabricCommandPermissions.STORAGE, false))
                                 .executes(FabricStorageCommands::executeReload))
                 .then(
                         literal("mergeskills")
+                                .requires(
+                                        FabricCommandRequirements.permissionOrNonPlayerSource(
+                                                FabricCommandPermissions.STORAGE, false))
                                 .then(
                                         CommandManager.argument(ARG_FROM, StringArgumentType.word())
                                                 .suggests(skills)
@@ -67,12 +70,6 @@ public final class FabricStorageCommands {
                                                                         ARG_TO,
                                                                         StringArgumentType.word())
                                                                 .suggests(skills)
-                                                                .requires(
-                                                                        FabricCommandRequirements
-                                                                                .permission(
-                                                                                        FabricCommandPermissions
-                                                                                                .STORAGE,
-                                                                                        false))
                                                                 .executes(
                                                                         FabricStorageCommands
                                                                                 ::executeMergePreview)
@@ -80,7 +77,7 @@ public final class FabricStorageCommands {
                                                                         literal("confirm")
                                                                                 .requires(
                                                                                         FabricCommandRequirements
-                                                                                                .permission(
+                                                                                                .permissionOrNonPlayerSource(
                                                                                                         FabricCommandPermissions
                                                                                                                 .STORAGE,
                                                                                                         false))
@@ -94,15 +91,17 @@ public final class FabricStorageCommands {
                 .then(
                         literal("removeallmodifiers")
                                 .requires(
-                                        FabricCommandRequirements.permission(
+                                        FabricCommandRequirements.permissionOrNonPlayerSource(
                                                 FabricCommandPermissions.STORAGE, false))
                                 .executes(FabricStorageCommands::executeRemoveModifiersPreview)
                                 .then(
                                         literal("confirm")
                                                 .requires(
-                                                        FabricCommandRequirements.permission(
-                                                                FabricCommandPermissions.STORAGE,
-                                                                false))
+                                                        FabricCommandRequirements
+                                                                .permissionOrNonPlayerSource(
+                                                                        FabricCommandPermissions
+                                                                                .STORAGE,
+                                                                        false))
                                                 .requires(s -> s.getEntity() == null)
                                                 .executes(
                                                         FabricStorageCommands

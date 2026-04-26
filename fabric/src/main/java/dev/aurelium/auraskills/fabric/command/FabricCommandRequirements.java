@@ -20,6 +20,22 @@ public final class FabricCommandRequirements {
         return src -> Permissions.check(src, node, defaultGrant);
     }
 
+    /**
+     * Like {@link #permission} but allows non-player sources (console, RCON, functions) without an
+     * explicit provider grant. Many permission backends do not attach {@code auraskills.command.*}
+     * nodes to the console {@link ServerCommandSource}; admin commands would otherwise always fail
+     * from the server console even for operators.
+     */
+    public static Predicate<ServerCommandSource> permissionOrNonPlayerSource(
+            String node, boolean defaultGrant) {
+        return src -> {
+            if (!src.isExecutedByPlayer()) {
+                return true;
+            }
+            return Permissions.check(src, node, defaultGrant);
+        };
+    }
+
     public static boolean isPlayer(ServerCommandSource source) {
         return source.getEntity() instanceof ServerPlayerEntity;
     }

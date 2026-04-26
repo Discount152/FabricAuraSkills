@@ -45,13 +45,13 @@ public final class FabricPresetCommands {
                 .then(
                         literal("list")
                                 .requires(
-                                        FabricCommandRequirements.permission(
+                                        FabricCommandRequirements.permissionOrNonPlayerSource(
                                                 FabricCommandPermissions.PRESET, false))
                                 .executes(FabricPresetCommands::executeList))
                 .then(
                         literal("info")
                                 .requires(
-                                        FabricCommandRequirements.permission(
+                                        FabricCommandRequirements.permissionOrNonPlayerSource(
                                                 FabricCommandPermissions.PRESET, false))
                                 .then(
                                         CommandManager.argument(ARG_NAME, StringArgumentType.word())
@@ -60,7 +60,7 @@ public final class FabricPresetCommands {
                 .then(
                         literal("load")
                                 .requires(
-                                        FabricCommandRequirements.permission(
+                                        FabricCommandRequirements.permissionOrNonPlayerSource(
                                                 FabricCommandPermissions.PRESET, false))
                                 .then(
                                         CommandManager.argument(ARG_NAME, StringArgumentType.word())

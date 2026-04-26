@@ -3,7 +3,7 @@
 | Field | Value |
 |--------|--------|
 | **Sprint** | **82** — **runtime validation only** (no default feature work) |
-| **Status** | **Partial (operator) — classification accepted (2026-04-26).** **Pass:** core roots, menu smoke, action bar, mana self, mana **other** (**Pass as staff/tester**), two-player menus/profiles, claimitems/unclaimed. **Pending:** admin/data, confirmation helper, item register/give, **`/xp view`**, **`/skilllevel view`** — **not** treated as code failures until retested with proper context. **Next:** **`SPRINT_84_MANUAL_JAVA_ADMIN_PERMISSIONED_RETEST.md`**. **Bedrock/Geyser:** not tested. **Summary counts** pending Sprint **84** + final tally. |
+| **Status** | **Partial (operator).** **Pass:** core roots, menu smoke, action bar, mana, two-player menus/profiles, claimitems/unclaimed. **Sprint 84 (code `2.3.117`):** **`/xp view`** / **`/skilllevel view`** raw-key fix; Granite **`item`**/**`xp`** only under **`/auraskills`** and **`/skills|/sk|/skill`**; **`/storage`**, **`/backup`**, **`/preset`** console + Brigadier fixes — see **`SPRINT_84_MANUAL_COMMAND_SMOKE_PATCH.md`**. **Operator:** re-mark admin/item/xp rows on **`FabricAuraSkills-2.3.117.jar`**. **Bedrock/Geyser:** not tested. |
 | **Minimum artifact** | **`FabricAuraSkills-2.3.114.jar`** (includes Sprints **79** text, **81–81C** action bar). Repo doc milestone **`2.3.115`**: matrix protocol. **Sprint 83 re-test target:** **`FabricAuraSkills-2.3.116.jar`** — run **at least** the Sprint 83 operator minimum (see **`SPRINT_83_MANUAL_JAVA_SMOKE_PATCH_TRANSLATIONS_MANA.md`**), then continue the rest of this matrix. Always record the **exact** JAR name in **Environment**. |
 | **Bedrock / Geyser** | **Explicitly not tested** this sprint; see [PARITY_BACKLOG.md](PARITY_BACKLOG.md) *Bedrock / Geyser validation follow-up*. |
 
@@ -12,7 +12,7 @@
 
 **Sprint 83 (code):** **Accepted** in-repo (**2026-04-26**); **`FabricGraniteText`** + **`/mana view`** self vs **other** fix — see **`SPRINT_83_MANUAL_JAVA_SMOKE_PATCH_TRANSLATIONS_MANA.md`**, artifact **`FabricAuraSkills-2.3.116.jar`**. Core smoke rows below reclassified after follow-up validation; matrix separates **Java pass** results from **permission/OP pending** retests (not “Brigadier = code bug” by default). **Known gap:** deeper **menu item** names/lore may still use **`Text.translatable`**; raw keys there are a **follow-up** pass (same helper pattern), not a Sprint 83 regression if newly observed.
 
-**Sprint 84 (process):** **`SPRINT_84_MANUAL_JAVA_ADMIN_PERMISSIONED_RETEST.md`** — admin/permissioned command retest (console/RCON, OP, permissioned non-OP) for all **Pending** rows in the summary below.
+**Sprint 84 (code):** **`SPRINT_84_MANUAL_COMMAND_SMOKE_PATCH.md`** — XP/skilllevel **`FabricGraniteText`**, item/xp root registration, admin **`requires`**; validate on **`2.3.117+`**.
 
 ---
 
@@ -25,7 +25,7 @@
 | **Fabric Loader** | e.g. 0.18.4 (confirm from server) |
 | **Fabric API** | e.g. 0.141.3+1.21.11 (confirm from server) |
 | **Java** | e.g. 21 (confirm from host) |
-| **FabricAuraSkills JAR** | `FabricAuraSkills-2.3.116.jar` (or newer tested artifact) |
+| **FabricAuraSkills JAR** | `FabricAuraSkills-2.3.117.jar` (Sprint **84** command patch; or newer) |
 | **GraniteLib** | External JAR + version in `mods/` **or** JiJ-only (release bundle) — describe |
 | **Server OS / host** | (optional) |
 | **Java player name(s)** | |
@@ -110,8 +110,8 @@ Substitute **`<skill>`** / **`<stat>`** with IDs **enabled** on your `config` (e
 | `/mana` | Pass | Works after granting `auraskills.command.mana` to default group. |
 | `/mana view` (self; same as `/mana` for players) | Pass | Self mana view works after granting `auraskills.command.mana` to default group. |
 | `/mana view <player>` (requires `auraskills.command.mana.other`) | Pass as staff/tester | Requires `auraskills.command.mana.other`; do not grant to default group unless intentionally allowing players to inspect others’ mana. |
-| `/xp view <player> <skill>` | Pending retest | Retest with OP/staff permissions or verify required permission/syntax. Current failure may be permission-gated Brigadier behavior. |
-| `/skilllevel view <player> <skill>` | Pending retest | Output appeared as plain text; verify expected value and permissions. |
+| `/auraskills xp view <player> <skill>` | Pending retest | **Sprint 84:** use Granite path only — **no** top-level **`/xp`** (vanilla). Same tree: **`/skills|/sk|/skill xp view …`**. Expect readable line (**`FabricGraniteText`**). Perm: **`auraskills.command.xp.view`**. |
+| `/skilllevel view <player> <skill>` | Pending retest | **Sprint 84:** **`FabricGraniteText`** for **`view_line`**. Aliases: **`/auraskills skilllevel view …`**, **`/skills|/sk|/skill skilllevel view …`**. |
 | `/top` | Pass | |
 | `/top average` | Pass | |
 | `/skilltop <skill>` | Pass | |
@@ -154,11 +154,11 @@ Substitute **`<skill>`** / **`<stat>`** with IDs **enabled** on your `config` (e
 
 | Command | Result | Notes |
 |---------|--------|--------|
-| `/storage info` | Pending retest | Retest as OP/console or with `auraskills.command.storage`; normal players may not see this branch. |
-| `/backup info` | Pending retest | Retest as OP/console or with `auraskills.command.backup`; normal players may not see this branch. |
-| `/backup list` | Pending retest | Retest as OP/console or with `auraskills.command.backup`; normal players may not see this branch. |
-| `/preset list` | Pending retest | Retest as OP/console or with `auraskills.command.preset`; normal players may not see this branch. |
-| `/backup create` (optional, disposable) | Pending retest | Disposable data only; retest as OP/console or with `auraskills.command.backup`. |
+| `/storage info` | Pending retest | **Sprint 84:** **`permissionOrNonPlayerSource`** (console without LP) + **`mergeskills`** literal **`requires`** — retest console + permissioned player. |
+| `/backup info` | Pending retest | **Sprint 84:** console/RCON should pass **`requires`** without LP console meta. |
+| `/backup list` | Pending retest | Same. |
+| `/preset list` | Pending retest | Same. |
+| `/backup create` (optional, disposable) | Pending retest | Same. |
 
 **Do not** run **restore** / **preset load** on production. Disposable-only for destructive confirms.
 
@@ -177,8 +177,8 @@ Substitute **`<skill>`** / **`<stat>`** with IDs **enabled** on your `config` (e
 
 | Test | Result | Notes |
 |------|--------|--------|
-| `/item register <key>` | Pending retest | Likely staff/admin permission-gated; retest as OP/console or with item command permission. |
-| `/item give <player> <key>` | Pending retest | Likely staff/admin permission-gated; retest as OP/console or with item command permission. |
+| `/auraskills item register <key>` | Pending retest | **No** top-level **`/item`** (vanilla). Use **`/auraskills|/skills|/sk|/skill item register …`**; perms **`auraskills.command.item.register`** / **`item.give`**. |
+| `/auraskills item give <player> <key>` | Pending retest | Same. |
 | `/claimitems` | Pass | |
 | `/claimitems all` | Pass | |
 | `/openmenu unclaimed_items` | Pass | |
@@ -206,6 +206,7 @@ Watch for **literal** `raw` tags: `<green>`, `<red>`, `<aqua>`, `<bold>`, `<rese
 | Observation | Y / N | Where |
 |-------------|--------|--------|
 | Sprint 83 fixed core raw `auraskills.granite.*` keys for `/auraskills`, `/auraskills help`, Skills/Stats menu titles, and opened feedback. | Y | Core root retest on FabricAuraSkills-2.3.116+. |
+| Sprint 84 fixed raw keys for **`xp.view_line`** and **`skilllevel.view_line`** (`FabricGraniteText`); Granite **`xp`**/**`item`** only under prefixed roots on **2.3.117+**. | Y | See **`SPRINT_84_MANUAL_COMMAND_SMOKE_PATCH.md`**. |
 | Deeper menu item names/lore not fully validated. | N/A | Follow-up only if raw keys are observed inside item names/lore. |
 
 ---
@@ -255,24 +256,24 @@ Console watch not fully captured in this pass.
 
 ### Failures / Pending Retest
 
-- `/xp view <player> <skill>` — Pending retest with correct permission/syntax.
-- `/skilllevel view <player> <skill>` — Pending retest; verify plain-text output and permissions.
-- `/storage info`, `/backup info`, `/backup list`, `/preset list`, `/backup create` — Pending OP/console or permissioned retest; likely permission-gated.
-- `/item register <key>`, `/item give <player> <key>` — Pending OP/console or permissioned retest; likely permission-gated.
+- **`/auraskills xp view`** (and alias roots) — Pending operator on **`2.3.117+`** after **`FabricGraniteText`** fix.
+- **`/skilllevel view`** — Pending operator on **`2.3.117+`**.
+- **`/storage`**, **`/backup`**, **`/preset`** safe rows — Pending after **`permissionOrNonPlayerSource`** + **`mergeskills`** **`requires`**.
+- **`/auraskills item register|give`** — Pending; use prefixed paths only.
 - Confirmation helper rows — Pending disposable-data/permissioned retest.
 
 **Bugs fixed during Sprint 82 (small scope only):**
 
-No code changes during Sprint 82 matrix editing. Sprint **83** previously fixed raw Granite translation keys for core surfaces and `/mana view` self permission-gating.
+No code changes during Sprint 82 matrix editing. Sprint **83** — core **`FabricGraniteText`** + **`/mana view`**. Sprint **84** ( **`2.3.117`** ) — **`/xp`**, **`/skilllevel`**, **`/item`**/**`/xp`** roots, admin **`requires`** — see **`SPRINT_84_MANUAL_COMMAND_SMOKE_PATCH.md`**.
 
 **Known issues left open:**
 
 - Deeper Fabric menu item names/lore may still show raw translation keys if they use `Text.translatable`; fix with `FabricGraniteText` pattern when observed.
-- Admin/data and item command rows still need OP/console or permissioned retest.
+- Operator must re-fill matrix rows on **`2.3.117+`** after Sprint **84** code.
 - Bedrock/Geyser player validation remains not tested.
 
 **Recommended next sprint:**
 
-Sprint **84** — **`SPRINT_84_MANUAL_JAVA_ADMIN_PERMISSIONED_RETEST.md`**: admin/permissioned command retest and **targeted fixes only where a real bug is confirmed** after console/RCON, OP, and permissioned non-OP runs. Scope: **`/storage info`**, **`/backup info`**, **`/backup list`**, **`/preset list`**, **`/backup create`**, **`/backup load fake.yml confirm`**, **`/item register`**, **`/item give`**, **`/xp view`**, **`/skilllevel view`**.
+Operator: complete **Pending** rows on **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`** with **`FabricAuraSkills-2.3.117.jar`**. Code follow-up only if operator confirms a **Fail** with correct syntax and permissions.
 
 **Screenshots / logs (optional):** (paths or PR)

@@ -52,9 +52,9 @@
 
 **Doc:** `fabric/SPRINT_83_MANUAL_JAVA_SMOKE_PATCH_TRANSLATIONS_MANA.md` — deploy **`2.3.116+`** to fix **raw** `auraskills.granite.*` on **vanilla** clients (hit-list surfaces) and **`/mana view`** (self) without **`mana.other`**. Re-run affected **Sprint 78** / **82** rows, then continue the **82** matrix. **Bedrock** not tested.
 
-## Sprint 84 — admin / permissioned command retest
+## Sprint 84 — command smoke patch (XP/skilllevel/item roots/admin)
 
-**Doc:** `fabric/SPRINT_84_MANUAL_JAVA_ADMIN_PERMISSIONED_RETEST.md` — after **Sprint 82** **Partial** matrix (core **Pass**, admin/item/xp **Pending**), retest **`/storage`**, **`/backup`**, **`/preset`**, **`/item`**, confirmation helper, **`/xp view`**, **`/skilllevel view`** as **console/RCON**, **OP**, and **permissioned non-OP** to separate **Brigadier permission hiding** from real bugs. Update **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`** after the pass. **Bedrock** not in scope.
+**Doc:** `fabric/SPRINT_84_MANUAL_COMMAND_SMOKE_PATCH.md` — **`2.3.117+`**: **`FabricGraniteText`** for **`/xp view`** and **`/skilllevel view`**; Granite **`item`** / **`xp`** only under **`/auraskills`** and **`/skills|/sk|/skill`**; admin **`permissionOrNonPlayerSource`** + **`/storage mergeskills`** **`requires`** fix. Update **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`** after operator pass. **Bedrock** not in scope.
 
 ---
 

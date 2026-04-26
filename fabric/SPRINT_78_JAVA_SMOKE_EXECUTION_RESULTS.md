@@ -55,6 +55,7 @@
 | `/openmenu abilities farming` | **Pending (operator)** | | |
 | `/mana` | **Pending (operator)** | | |
 | `/mana view` | **Pending (operator)** | | self: same as `/mana` (**2.3.116+**); see **SPRINT_83** |
+| `/auraskills xp view <player> <skill>` | **Pending (operator)** | | **Sprint 84:** Granite path only (**no** top-level **`/xp`**); **`2.3.117+`**; readable line (**`FabricGraniteText`**) |
 | `/top` | **Pending (operator)** | | |
 | `/top average` | **Pending (operator)** | | |
 | `/skilltop farming` | **Pending (operator)** | | |

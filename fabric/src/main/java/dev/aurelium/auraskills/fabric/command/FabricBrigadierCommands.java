@@ -27,7 +27,7 @@ public final class FabricBrigadierCommands {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         FabricAuraSkillsMod.LOGGER.info(
-                "Registering Brigadier (Sprint 65–71): /auraskills (…), /skills|/sk|/skill share mirror subtrees, /stats, /openmenu (Sprint 70: sources; Sprint 71: unclaimed_items), /claimitems (Sprint 71: menu + all), /sources, /resethealth, /transfer, /profile, /backup, /preset, /storage, leaderboard, /multiplier|/toggle|/abtoggle|/lang, /modifier, /trait, /item (…), /armor (…), /mana, /skilllevel, /manaability, /antiafk, /xp, + per-skill shortcuts (Sprint 68) — see fabric/COMMAND_PARITY_AUDIT.md");
+                "Registering Brigadier: /auraskills (…), /skills|/sk|/skill (mirrored subtrees; **item**/**xp** only under these + /auraskills, not top-level — Sprint 84), /stats, /openmenu, /claimitems, /sources, /resethealth, /transfer, /profile, /backup, /preset, /storage, leaderboards, /multiplier|/toggle|/abtoggle|/lang, /modifier, /trait, /armor, /mana, /skilllevel, /manaability, /antiafk, per-skill shortcuts — see fabric/COMMAND_PARITY_AUDIT.md");
 
         registerAuraskillsAndAliases(dispatcher);
         FabricSkillShortcutCommands.register(dispatcher);
@@ -43,13 +43,13 @@ public final class FabricBrigadierCommands {
         dispatcher.register(FabricPlayerUtilityCommands.langRoot());
         dispatcher.register(FabricPlayerModifierCommands.modifierCommandRoot());
         dispatcher.register(FabricPlayerModifierCommands.traitCommandRoot());
-        dispatcher.register(FabricItemArmorModifierCommands.itemCommandRoot());
+        // Top-level /item and /xp are vanilla MC commands — register Granite trees only under
+        // /auraskills, /skills, /sk, /skill (see Sprint 84).
         dispatcher.register(FabricItemArmorModifierCommands.armorCommandRoot());
         dispatcher.register(aliasSkillsRoot("sk"));
         dispatcher.register(aliasSkillsRoot("skill"));
         dispatcher.register(FabricManaCommands.manaCommandRoot());
         dispatcher.register(FabricSkillLevelCommands.skillLevelRoot());
-        dispatcher.register(FabricXpCommands.xpRoot());
         dispatcher.register(FabricClaimItemsCommands.claimItemsLiteral());
         dispatcher.register(FabricSourcesCommands.sourcesLiteral());
         dispatcher.register(FabricResetHealthCommands.resetHealthLiteral());
@@ -117,7 +117,8 @@ public final class FabricBrigadierCommands {
     private static int skillsAliasDefault(CommandContext<ServerCommandSource> ctx) {
         ServerCommandSource source = ctx.getSource();
         if (!Permissions.check(source, FabricCommandPermissions.SKILLS, true)) {
-            source.sendError(Text.translatable("auraskills.granite.command.permission_denied"));
+            source.sendError(
+                    FabricGraniteText.key("auraskills.granite.command.permission_denied"));
             return 0;
         }
         return skills(ctx);

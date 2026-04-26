@@ -24,7 +24,9 @@ class FabricGraniteEnUsKeysTest {
                     "auraskills.granite.menu.skills_title",
                     "auraskills.granite.menu.stats_title",
                     "auraskills.granite.menu.skills_opened",
-                    "auraskills.granite.menu.stats_opened"
+                    "auraskills.granite.menu.stats_opened",
+                    "auraskills.granite.command.xp.view_line",
+                    "auraskills.granite.command.skilllevel.view_line"
                 }) {
             assertTrue(json.contains("\"" + key + "\""), "missing " + key);
         }

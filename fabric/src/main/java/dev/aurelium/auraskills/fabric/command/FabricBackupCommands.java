@@ -45,25 +45,25 @@ public final class FabricBackupCommands {
                 .then(
                         literal("create")
                                 .requires(
-                                        FabricCommandRequirements.permission(
+                                        FabricCommandRequirements.permissionOrNonPlayerSource(
                                                 FabricCommandPermissions.BACKUP, false))
                                 .executes(FabricBackupCommands::executeCreate))
                 .then(
                         literal("save")
                                 .requires(
-                                        FabricCommandRequirements.permission(
+                                        FabricCommandRequirements.permissionOrNonPlayerSource(
                                                 FabricCommandPermissions.BACKUP, false))
                                 .executes(FabricBackupCommands::executeCreate))
                 .then(
                         literal("list")
                                 .requires(
-                                        FabricCommandRequirements.permission(
+                                        FabricCommandRequirements.permissionOrNonPlayerSource(
                                                 FabricCommandPermissions.BACKUP, false))
                                 .executes(FabricBackupCommands::executeList))
                 .then(
                         literal("info")
                                 .requires(
-                                        FabricCommandRequirements.permission(
+                                        FabricCommandRequirements.permissionOrNonPlayerSource(
                                                 FabricCommandPermissions.BACKUP, false))
                                 .executes(FabricBackupCommands::executeInfo))
                 .then(backupLoadSubtree("load"))
@@ -74,7 +74,7 @@ public final class FabricBackupCommands {
         SuggestionProvider<ServerCommandSource> yml = FabricCommandSuggestionProviders.backupYmlInBackupsFolder();
         return literal(name)
                 .requires(
-                        FabricCommandRequirements.permission(
+                        FabricCommandRequirements.permissionOrNonPlayerSource(
                                 FabricCommandPermissions.BACKUP_LOAD, false))
                 .then(
                         CommandManager.argument(ARG_FILE, StringArgumentType.word())

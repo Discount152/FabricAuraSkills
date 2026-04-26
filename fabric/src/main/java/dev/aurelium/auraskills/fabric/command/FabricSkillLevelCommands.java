@@ -10,6 +10,7 @@ import dev.aurelium.auraskills.api.util.NumberUtil;
 import dev.aurelium.auraskills.common.message.type.CommandMessage;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
+import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -145,7 +146,7 @@ public final class FabricSkillLevelCommands {
                                             .orElse(null);
                             if (target == null) {
                                 source.sendError(
-                                        Text.translatable(
+                                        FabricGraniteText.key(
                                                 "auraskills.granite.command.xp.player_not_found",
                                                 name));
                                 return 0;
@@ -170,12 +171,14 @@ public final class FabricSkillLevelCommands {
                             int level = user.getSkillLevel(skill);
                             double xp = user.getSkillXp(skill);
                             source.sendFeedback(
-                                    () -> Text.translatable(
-                                            "auraskills.granite.command.skilllevel.view_line",
-                                            display,
-                                            skill.getDisplayName(lo),
-                                            level,
-                                            NumberUtil.format2(xp)),
+                                    () ->
+                                            FabricGraniteText.key(
+                                                    "auraskills.granite.command.skilllevel"
+                                                            + ".view_line",
+                                                    display,
+                                                    skill.getDisplayName(lo),
+                                                    level,
+                                                    NumberUtil.format2(xp)),
                                     false);
                             return 1;
                         })
@@ -343,7 +346,7 @@ public final class FabricSkillLevelCommands {
                             if (target == null) {
                                 ctx.getSource()
                                         .sendError(
-                                                Text.translatable(
+                                                FabricGraniteText.key(
                                                         "auraskills.granite.command.xp.player_not_found",
                                                         name));
                                 return 0;
@@ -392,7 +395,7 @@ public final class FabricSkillLevelCommands {
                                             .orElse(null);
                             if (target == null) {
                                 source.sendError(
-                                        Text.translatable(
+                                        FabricGraniteText.key(
                                                 "auraskills.granite.command.xp.player_not_found",
                                                 name));
                                 return 0;
@@ -444,7 +447,8 @@ public final class FabricSkillLevelCommands {
                 FabricCommandPlayerTarget.findOnline(source.getServer(), name).orElse(null);
         if (target == null) {
             source.sendError(
-                    Text.translatable("auraskills.granite.command.xp.player_not_found", name));
+                    FabricGraniteText.key(
+                            "auraskills.granite.command.xp.player_not_found", name));
             return 0;
         }
         User user = p.getUserManager().getUser(target.getUuid());
@@ -471,7 +475,8 @@ public final class FabricSkillLevelCommands {
                 FabricCommandPlayerTarget.findOnline(source.getServer(), name).orElse(null);
         if (target == null) {
             source.sendError(
-                    Text.translatable("auraskills.granite.command.xp.player_not_found", name));
+                    FabricGraniteText.key(
+                            "auraskills.granite.command.xp.player_not_found", name));
             return 0;
         }
         Skill skill = FabricCommandSkillParser.parse(p, rawSkill);
