@@ -4,12 +4,12 @@
 |--------|--------|
 | **Sprint** | **82** — **runtime validation only** (no default feature work) |
 | **Status** | **NRP (operator)** — in-repo / CI **cannot** join a world or run commands. Fill tables below and commit, or link PR + `latest.log`. |
-| **Minimum artifact** | **`FabricAuraSkills-2.3.114.jar`** (includes Sprints **79** text, **81–81C** action bar). Repo doc milestone **`2.3.115`**: if you built from head, the output JAR may be **`FabricAuraSkills-2.3.115.jar`** — always record the **exact** name below. |
+| **Minimum artifact** | **`FabricAuraSkills-2.3.114.jar`** (includes Sprints **79** text, **81–81C** action bar). Repo doc milestone **`2.3.115`**: matrix protocol. **Sprint 83 re-test target:** **`FabricAuraSkills-2.3.116.jar`** — run **at least** the Sprint 83 operator minimum (see **`SPRINT_83_MANUAL_JAVA_SMOKE_PATCH_TRANSLATIONS_MANA.md`**), then continue the rest of this matrix. Always record the **exact** JAR name in **Environment**. |
 | **Bedrock / Geyser** | **Explicitly not tested** this sprint; see [PARITY_BACKLOG.md](PARITY_BACKLOG.md) *Bedrock / Geyser validation follow-up*. |
 
 **Related:** Canonical minimum set lives in **`SPRINT_78_JAVA_SMOKE_EXECUTION_RESULTS.md`**. **Sprint 80** = text re-verify on 2.3.109+. This doc (**82**) = **full matrix** re-execution on **2.3.114+** after **81C** closed the **Java** smart action bar lane.
 
-**Sprint 83 (code):** first smoke run had **raw** `auraskills.granite.*` in chat/GUI and `/mana view` **Brigadier** issues — see **`SPRINT_83_MANUAL_JAVA_SMOKE_PATCH_TRANSLATIONS_MANA.md`**, **`2.3.116+`**. Re-test matrix rows: **`/auraskills`**, **`/auraskills help`**, **Skills/Stats** titles, **“opened”** lines, **`/mana`**, **`/mana view`**, **`/mana view <player>`**.
+**Sprint 83 (code):** **Accepted** in-repo (**2026-04-26**); **`FabricGraniteText`** + **`/mana view`** self vs **other** fix — see **`SPRINT_83_MANUAL_JAVA_SMOKE_PATCH_TRANSLATIONS_MANA.md`**, artifact **`FabricAuraSkills-2.3.116.jar`**. **Operator:** re-test matrix rows first: **`/auraskills`**, **`/auraskills help`**, **`/skills`**, **`/stats`**, **`/mana`**, **`/mana view`**, **`/mana view <player>`** — then continue down the matrix. **Known gap:** deeper **menu item** names/lore may still use **`Text.translatable`**; raw keys there are a **follow-up** pass (same helper pattern), not a Sprint 83 regression if newly observed.
 
 ---
 
@@ -197,6 +197,8 @@ Substitute **`<skill>`** / **`<stat>`** with IDs **enabled** on your `config` (e
 ## Text rendering (while testing)
 
 Watch for **literal** `raw` tags: `<green>`, `<red>`, `<aqua>`, `<bold>`, `<reset>`, broken separators, unformatted level-up / action bar / title.
+
+**Sprint 83 (2.3.116):** On a **vanilla** Java client, also watch for **literal** `auraskills.granite.*` **translation keys** in chat and **built-in** menu **titles** / **opened** lines — those paths should be **fixed**. If you still see raw keys, note whether they are **menu item titles/lore** (documented **follow-up**, not necessarily blockers for the Sprint 83 row pass).
 
 | Observation | Y / N | Where |
 |-------------|--------|--------|

@@ -14,7 +14,7 @@
 
 **Sprint 82:** Full **Java dedicated** smoke matrix execution on **`2.3.114+`** (post–**81C** action bar) — use **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`** as the **primary** results record; keep this file’s **minimum** rows in sync or reference the 82 summary when 82 is **Pass**-complete.
 
-**Sprint 83:** **Raw** `auraskills.granite.*` on **vanilla** Java clients + **`/mana view`** Brigadier issue — fixed in **`2.3.116+`** — see **`SPRINT_83_MANUAL_JAVA_SMOKE_PATCH_TRANSLATIONS_MANA.md`**. Re-test the listed rows on the new JAR.
+**Sprint 83:** **Code accepted** (**2026-04-26**); **raw** `auraskills.granite.*` on **vanilla** Java clients + **`/mana view`** Brigadier — fixed in **`FabricAuraSkills-2.3.116.jar`** — see **`SPRINT_83_MANUAL_JAVA_SMOKE_PATCH_TRANSLATIONS_MANA.md`**. **Operator:** re-test the listed rows, then continue the minimum table / **Sprint 82** matrix.
 
 ---
 
@@ -102,17 +102,17 @@
 
 **Retest:** Re-run the minimum smoke on **2.3.109+** JARs and re-mark any row that was **Fail (raw tags)** as **Pass** or file a follow-up.
 
-### 2) Raw `auraskills.granite.*` translation keys (vanilla client) — **addressed in Sprint 83 (code)**
+### 2) Raw `auraskills.granite.*` translation keys (vanilla client) — **addressed in Sprint 83 (code accepted 2026-04-26)**
 
 **Observed (Sprint 82):** Chat and **built-in** menu titles/feedback showed **literal** keys such as **`auraskills.granite.command.auraskills_usage`**, **`…help`**, **`…menu.skills_title`**, **`…stats_title`**, **`…skills_opened`**, **`…stats_opened`**.
 
 **Cause:** `Text.translatable` is resolved on the **client**; vanilla clients lack mod `lang` assets.
 
-**Sprint 83 fix:** **`FabricGraniteText`** + server **literal** text for the hot paths; **`2.3.116+`**. See **`SPRINT_83_MANUAL_JAVA_SMOKE_PATCH_TRANSLATIONS_MANA.md`**.
+**Sprint 83 fix:** **`FabricGraniteText`** + server **literal** text for the hot paths; **`FabricAuraSkills-2.3.116.jar`**. See **`SPRINT_83_MANUAL_JAVA_SMOKE_PATCH_TRANSLATIONS_MANA.md`**. **Follow-up:** deeper **menu item** lore may still show keys.
 
 **Retest:** Minimum smoke on **`2.3.116+`** with a **vanilla** Java client (no client mod).
 
-### 3) `/mana view` Brigadier failure (Sprint 82) — **addressed in Sprint 83 (code)**
+### 3) `/mana view` Brigadier failure (Sprint 82) — **addressed in Sprint 83 (code accepted 2026-04-26)**
 
 **Cause:** **`MANA_OTHER`** on the entire **`view`** subcommand hid **`view`** from players who only had **`auraskills.command.mana`**. **`/mana view <player>`** still requires **`mana.other`**; **`/mana view`** with **no** target reuses **self** mana (same as **`/mana`**).
 

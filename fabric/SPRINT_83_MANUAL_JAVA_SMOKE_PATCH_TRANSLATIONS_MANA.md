@@ -1,75 +1,61 @@
-# Sprint 83 — manual validation: Granite translatable + `/mana view` (Java dedicated)
+# Sprint 83 — Vanilla Java client text + `/mana view` (manual / acceptance)
 
 | Field | Value |
 |--------|--------|
-| **Sprint** | **83** — **code + operator re-check** (no new features) |
-| **JAR** | **`FabricAuraSkills-2.3.116+`** |
-| **Bedrock / Geyser** | **Not tested** this sprint (unchanged) |
+| **Sprint 83 status** | **Code accepted** (in-repo). **Operator validation** on **`FabricAuraSkills-2.3.116.jar`** — **pending** (fill **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`** / **`SPRINT_78_JAVA_SMOKE_EXECUTION_RESULTS.md`** as you run). |
+| **Code acceptance (in-repo)** | **2026-04-26** — root cause and fix reviewed; **`:fabric:test`** / **`:fabric:build`** **PASS**; artifact **`FabricAuraSkills-2.3.116.jar`**. |
+| **Tested artifact (operator target)** | **`FabricAuraSkills-2.3.116.jar`** (`projectVersion` **2.3.116**). |
+| **Depends on** | **Sprint 82** smoke findings (raw `auraskills.granite.*` on vanilla clients; `/mana view` Brigadier). |
 
-## Screenshots / symptoms (Sprint 82 operator run)
+## Root cause (vanilla Java client)
 
-- **`/auraskills`**, **`/auraskills help`:** chat showed **raw** keys `auraskills.granite.command.auraskills_usage`, `auraskills.granite.command.help`.
-- **`/skills` / `/stats` (and related open menu):** inventory **title** showed `auraskills.granite.menu.skills_title` / `stats_title`; **“opened”** feedback showed `skills_opened` / `stats_opened`.
-- **`/mana view`:** Brigadier: **Incorrect argument** — parser did not accept `view` as a child of `mana` in the test setup (root cause: **`MANA_OTHER`** on the **whole** `view` subcommand, so the node was **hidden** for senders who had **`mana` but not** `aura…mana.other`).
+The server sent **`Text.translatable("auraskills.granite.…")`** for Granite copy. **Vanilla** Java clients do **not** load **`assets/auraskills/lang/en_us.json`** from the mod, so the **wire format** still contained the **translation key**, not English text. The server’s JSON was fine; **`translatable`** was the wrong tool for **server-only** strings when the client has no mod lang table.
 
-## Root cause (translatable)
+## Fix (bounded patch)
 
-Minecraft **client** chat / inventory titles resolve `Text.translatable` using **the client’s** language resources. A **vanilla** Java client (or one **without** `assets/auraskills/lang/…` on the **client** side) has **no** `auraskills.granite.*` keys → the **untranslated key string** is shown.
+- **`FabricGraniteText`:** Resolve the key with **`Language.getInstance().get(key)`** on the **server** and send **`Text.literal(...)`** (with **`String.format`** when args are used). Same `en_us.json` on the server drives the strings.
+- **Wired surfaces (Sprint 82 hit list):** **`FabricBrigadierCommands`** (usage, help, skills/stats “opened” feedback), **`FabricMenuRegistry`** (built-in **Skills/Stats** window titles from YAML), **`FabricOpenMenuCommands#sendListMenuFeedback`**, **`FabricManaCommands`** (mana-related feedback as touched in this sprint).
+- **`/mana view`:** **`literal("view").executes(executeSelf)`** so **self** view requires only **`auraskills.command.mana`**. **`auraskills.command.mana.other`** applies **only** to **`/mana view <player>`** — previously **`MANA_OTHER`** gated the whole `view` subtree, so Brigadier hid **`view`** for players without **other**, producing “wrong syntax” for **`/mana view`**.
 
-`en_us.json` on the **server** was already correct; the bug was the **translatable wire format**, not a missing file on disk.
+## Code acceptance checklist (complete)
 
-## Fix (in-repo, 2.3.116)
+- Raw keys fixed for: **`/auraskills`**, **`/auraskills help`**, skills/stats **opened** feedback, **Skills/Stats** window titles, **`openmenu` list** feedback.
+- **`FabricGraniteText`** added and used on the above paths.
+- **`/mana view`** works as **self** view with normal mana permission; **`/mana view <player>`** still requires **`mana.other`**.
+- Smoke docs / matrix cross-links updated; **`:fabric:test`** and **`:fabric:build`** **PASS**.
+- **Bedrock / Geyser:** **not** claimed for this sprint.
 
-- **`FabricGraniteText#key`:** uses **`net.minecraft.util.Language` on the server** (same `en_us.json` loaded in the mod) and builds **`Text.literal(…)`** for player-facing **chat** and **server-built menu titles** on the **fixed paths** in Sprint 83 (root usage/help, **Skills/Stats** built-in **titles** in `FabricMenuRegistry`, “opened” feedback in `FabricBrigadierCommands` + `FabricOpenMenuCommands#sendListMenuFeedback`). Other menus still use `Text.translatable` in deeper GUI slices — future passes can expand **literal** resolution where operators report raw keys.
-- **`/mana view` (no `player` argument):** the **`view`** literal is registered with **`.executes(…executeSelf…)`** so **`/mana view`** = **`/mana`** for **in-game** self display (**`auraskills.command.mana`**). **`/mana view <player>`** still requires **`auraskills.command.mana.other`**.
+## Operator validation — minimum (vanilla Java client, no client mod)
 
-## Keys verified in `en_us.json` (tests)
+Use **`FabricAuraSkills-2.3.116.jar`**. Full restart recommended after JAR swap.
 
-- `auraskills.granite.command.auraskills_usage`
-- `auraskills.granite.command.help`
-- `auraskills.granite.menu.skills_title`
-- `auraskills.granite.menu.stats_title`
-- `auraskills.granite.menu.skills_opened`
-- `auraskills.granite.menu.stats_opened`
+| Check | Expected |
+|--------|----------|
+| **`/auraskills`** | No raw **`auraskills.granite.command.*`** keys in chat. |
+| **`/auraskills help`** | Same — readable English (or configured server lang), not raw keys. |
+| **`/skills`** | Opens menu; window title **not** raw **`auraskills.granite.menu.skills_title`**. |
+| **`/stats`** | Opens menu; title **not** raw **`auraskills.granite.menu.stats_title`**. |
+| **`/mana`** | Works; readable output. |
+| **`/mana view`** | Same as self **`/mana`** with **`auraskills.command.mana`** only (no **`mana.other`** required). |
+| **`/mana view <player>`** | Works **only** with proper **other-player** permission; without it, clean permission failure (not wrong syntax for **`view`**). |
 
-## Final `/mana` syntax (Fabric, Sprint 83)
+After this minimum pass, **continue** the **Sprint 82** matrix on **2.3.116** (remaining rows).
 
-| Command | Permission (typical) | Behavior |
-|---------|------------------------|----------|
-| `/mana` | `auraskills.command.mana` | **Self** current/max (MessageBuilder `MANA_DISPLAY`) |
-| `/mana view` | `auraskills.command.mana` | **Same** as `/mana` for a **player**; **console** must use a **player** argument or join |
-| `/mana view <onlinePlayer>` | `auraskills.command.mana` + `auraskills.command.mana.other` | **Other** user’s mana (target locale) |
-| `/mana add\|set\|remove <player> <amount>` | admin nodes per Sprint 41 | unchanged |
+## Known limitation (documented follow-up)
 
-Also available under **`/auraskills mana …`** and **`/skills|/sk|/skill mana …`** (Sprint 46 tree).
+**Deeper menu paths** — item **names**, **lore**, and other **`Text.translatable`** call sites in **`Fabric*MenuGui`** (and similar) were **not** fully converted in Sprint 83. Operators may still see raw **`auraskills.granite.*`** there on vanilla clients. **Follow-up:** extend the same **`FabricGraniteText`** pattern (or equivalent) per path as issues are filed.
 
-## Operator re-validation steps
+## Build (reference)
 
-1. **Deploy** `2.3.116+` on the **disposable** dedicated server; **full restart** after JAR swap.
-2. As a **vanilla** Java client (or any client **without** a FabricAuraSkills client mod/resource pack with `auraskills` lang):
-   - `/auraskills` and `/auraskills help` → **readable** English, **not** `auraskills.granite.…` strings.
-   - `/skills` / `/stats` (or `openmenu` variants) → **“Skills” / “Stats”** (or custom title from your built-in `menus` YAML) on the **window**, **not** a raw key; **“Opened …”** line readable.
-3. **Permissions:** with **only** `auraskills.command.mana` (and **not** `…mana.other`), run:
-   - `/mana` **Pass**
-   - `/mana view` **Pass** (same as `/mana`)
-   - `/mana view <otherPlayer>` **denied** or **invisible** as designed without **other** (permission / parse).
-4. **Grant** `…mana.other` and confirm **`/mana view <name>`** works with **no** Brigadier “incorrect argument on `view`” when the **player name** is present.
+```powershell
+Set-Location "F:\FabricAuraSkills"
+.\gradlew -PfabricOnly=true :fabric:test
+.\gradlew -PfabricOnly=true :fabric:build
+```
 
-**Console watch:** no new stack traces from menu open or mana commands; **translation** and **text adapter** should stay quiet for these paths.
+## Related docs
 
-## Build evidence (in-repo)
-
-- `.\gradlew -PfabricOnly=true :fabric:test` — **PASS**
-- `.\gradlew -PfabricOnly=true :fabric:build` — **PASS**
-
-**Bukkit** module: **not** required for this sprint (no `common` API change to shared command layer).
-
-## Remaining limitations
-
-- **Item lore / deep menu rows** may still use `Text.translatable` in some `Fabric*MenuGui` code paths; only the **Sprint 82**-reported **surfaces** were converted in **83**. File follow-ups with screenshots if raw keys reappear in **lore** or sub-menus.
-- **Per-player client locale** for **Granite**-prefixed `en_us` is **not** reimplemented here — the server’s loaded language (typically **en_us** for the dedicated server) is the source. YAML **`messages_*.yml`**-driven `MessageBuilder` output is **unchanged** and still per-user locale where the common layer supports it.
-- **Bedrock / Geyser:** **not** run-time tested for these fixes.
-
-## Recommended next sprint (process)
-
-- Re-run the **Sprint 82** matrix (or the **Sprint 78** minimum) on **`2.3.116+`** and re-mark any row that was **Fail (raw key)** as **Pass** or open a **targeted** follow-up. Optionally schedule **Geyser** action bar + menu validation when the **Java** matrix is **green**.
+- **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`** — full Java smoke matrix; re-run rows touched above first, then the rest.
+- **`SPRINT_78_JAVA_SMOKE_EXECUTION_RESULTS.md`** — minimum set; sync Pass/Fail when you run.
+- **`COMMAND_PARITY_AUDIT.md`** — command surface (Mana row).
+- **`Changelog.md`** — **2.3.116** user-visible notes.

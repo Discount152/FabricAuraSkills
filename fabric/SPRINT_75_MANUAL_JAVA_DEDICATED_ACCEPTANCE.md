@@ -48,7 +48,9 @@
 
 ## Sprint 83 — smoke patch (translation wire + `/mana view`)
 
-**Doc:** `fabric/SPRINT_83_MANUAL_JAVA_SMOKE_PATCH_TRANSLATIONS_MANA.md` — deploy **`2.3.116+`** to fix **raw** `auraskills.granite.*` on **vanilla** clients and **`/mana view`** (self) without **`mana.other`**. Re-run affected **Sprint 78** / **82** rows. **Bedrock** not tested.
+**Status:** **Code accepted** (**2026-04-26**); **operator** validation **NRP** on **`FabricAuraSkills-2.3.116.jar`**.
+
+**Doc:** `fabric/SPRINT_83_MANUAL_JAVA_SMOKE_PATCH_TRANSLATIONS_MANA.md` — deploy **`2.3.116+`** to fix **raw** `auraskills.granite.*` on **vanilla** clients (hit-list surfaces) and **`/mana view`** (self) without **`mana.other`**. Re-run affected **Sprint 78** / **82** rows, then continue the **82** matrix. **Bedrock** not tested.
 
 ---
 
