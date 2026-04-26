@@ -8,6 +8,8 @@
 
 **Artifact (build):** `fabric/build/libs/FabricAuraSkills-2.3.109.jar` (built at **`projectVersion` 2.3.109**; this sprint’s **doc** revision is **`2.3.110`** in `gradle.properties` / `Changelog`).
 
+**Nuance (version skew):** **`projectVersion` 2.3.110** in the repo is **docs-only** (Sprint 80 protocol commit). The **intended** runtime mod for this checklist is still **`FabricAuraSkills-2.3.109.jar`**, which contains the **Sprint 79** text fix. **Do not** require a **2.3.110** JAR for Sprint 80 unless you **deliberately** build a new artifact from a tree where **`projectVersion` is 2.3.110** and intend that as the test binary.
+
 ---
 
 ## Required environment (target)
