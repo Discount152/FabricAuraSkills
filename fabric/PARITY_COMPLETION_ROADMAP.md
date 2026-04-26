@@ -64,7 +64,7 @@ GraniteLib (`:granitelib-fabric`, on-disk **`slate-fabric/`) is a **real library
 | Track | Status |
 |-------|--------|
 | **Container / click plumbing** (e.g. `GraniteContainerMenus`) | **Partial** — enough for current built-ins. |
-| **Template loading, YAML layouts, `MenuFileManager`** | **In progress** — v0 YAML + loader in GraniteLib (**95**); **`stat_info`** **prototype** loads bundled template with **built-in fallback** (**`SPRINT_96_MANUAL_STAT_INFO_TEMPLATE_PROTOTYPE.md`**); **not** full Slate / disk reload / `MenuFileManager` |
+| **Template loading, YAML layouts, `MenuFileManager`** | **In progress** — v0 YAML + loader (**95**); **`stat_info`** template path (**96–97**) with **trait lore append** + **`custom_model_data`** on stacks (**`SPRINT_97_MANUAL_STAT_INFO_TEMPLATE_PARITY.md`**), **built-in fallback**; **not** full Slate / disk reload / `MenuFileManager` |
 | **Contexts, paging, global items, rich click actions** | **Not complete** |
 | **Public API + docs for external mods** | **Partial / evolving** |
 
@@ -73,6 +73,8 @@ GraniteLib (`:granitelib-fabric`, on-disk **`slate-fabric/`) is a **real library
 **Sprint 95 (Spike 0 — GraniteLib code):** **`SPRINT_95_GRANITELIB_TEMPLATE_SPIKE0.md`** — `dev.granitelib.fabric.template.{model,load}`: immutable **`GraniteMenuTemplate`** / items, **SnakeYAML** read-only loader + validation, unit tests; **JiJ** SnakeYAML in **`granitelib-fabric`**. **No** production menu behavior change; **Slate parity** still **not** complete.
 
 **Sprint 96 (`stat_info` prototype):** **`SPRINT_96_MANUAL_STAT_INFO_TEMPLATE_PROTOTYPE.md`** — bundled **`assets/auraskills/granite/templates/stat_info.yml`**; **`FabricStatInfoTemplateSupport`** + minimal placeholders; **safe fallback** to built-in **`FabricStatInfoMenuGui`**. **Not** full Slate parity; **Bedrock** still deferred.
+
+**Sprint 97 (`stat_info` template parity):** **`SPRINT_97_MANUAL_STAT_INFO_TEMPLATE_PARITY.md`** — **Option 2** trait lore appended after static YAML; **`FabricStatInfoItemComponents`** applies **`custom_model_data`** via **`CustomModelDataComponent`**; trait failure → **built-in fallback**. **Slate** still **not** complete.
 
 ---
 
@@ -98,5 +100,5 @@ GraniteLib (`:granitelib-fabric`, on-disk **`slate-fabric/`) is a **real library
 
 1. **Hold** “final release” until **two-JAR** policy is what operators run in production and docs match.
 2. **Execute** Bedrock validation when a tester exists.
-3. **Drive** Slate/GraniteLib framework work as its own program (Path A) using **`SPRINT_94`**–**`SPRINT_96`** docs, not as a side effect of smoke fixes. **Next:** Sprint **97** — e.g. **`sources`** template path or **`stat_info`** parity polish (traits / CMD).
+3. **Drive** Slate/GraniteLib framework work as its own program (Path A) using **`SPRINT_94`**–**`SPRINT_97`** docs, not as a side effect of smoke fixes. **Next:** Sprint **98** — **`sources`** template stress test or further **`stat_info`** polish.
 4. **Revisit** Jobs / economy bridges only if the owner reopens scope.

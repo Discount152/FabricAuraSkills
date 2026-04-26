@@ -1,8 +1,11 @@
 package dev.aurelium.auraskills.fabric.menu;
 
 import dev.aurelium.auraskills.api.stat.Stat;
+import dev.aurelium.auraskills.api.trait.Trait;
+import dev.aurelium.auraskills.common.menu.MenuHelper;
 import dev.aurelium.auraskills.common.message.MessageProvider;
 import dev.aurelium.auraskills.common.user.User;
+import dev.aurelium.auraskills.common.util.PlatformUtil;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.granitelib.fabric.menu.GraniteContainerMenus;
 import dev.granitelib.fabric.template.load.GraniteMenuTemplateYamlLoader;
@@ -24,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -31,8 +35,9 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Sprint 96: optional template-backed {@code stat_info} using GraniteLib v0 YAML. On any failure, returns
- * {@code false} so {@link FabricStatInfoMenuGui} uses the built-in path.
+ * Sprint 96–97: optional template-backed {@code stat_info} using GraniteLib v0 YAML. On any failure, returns
+ * {@code false} so {@link FabricStatInfoMenuGui} uses the built-in path. **Sprint 97:** trait lore appended to the
+ * stat panel item; {@code custom_model_data} applied via {@link FabricStatInfoItemComponents}.
  */
 public final class FabricStatInfoTemplateSupport {
 
@@ -120,12 +125,26 @@ public final class FabricStatInfoTemplateSupport {
         }
 
         Map<String, ItemStack> stacksByKey = new HashMap<>();
+        MenuHelper menus = plugin.getMenuHelper();
+        PlatformUtil util = plugin.getPlatformUtil();
         for (Map.Entry<String, GraniteTemplateItem> e : template.items().entrySet()) {
-            Optional<ItemStack> stack = buildItemStack(e.getValue(), ph, plugin, "items." + e.getKey());
+            String itemKey = e.getKey();
+            Optional<ItemStack> stack = buildItemStack(e.getValue(), ph, plugin, "items." + itemKey);
             if (stack.isEmpty()) {
                 return false;
             }
-            stacksByKey.put(e.getKey(), stack.get());
+            ItemStack built = stack.get();
+            FabricStatInfoItemComponents.applyCustomModelData(built, e.getValue().customModelData());
+            if (isStatPanelItem(itemKey, e.getValue())) {
+                try {
+                    appendStatPanelTraitLore(built, stat, user, plugin, msg, locale, menus, util);
+                } catch (RuntimeException ex) {
+                    plugin.logger().warn(
+                            "stat_info template trait lore generation failed; using built-in menu", ex);
+                    return false;
+                }
+            }
+            stacksByKey.put(itemKey, built);
         }
 
         GraniteContainerMenus.openClickable9x6(
@@ -265,8 +284,42 @@ public final class FabricStatInfoTemplateSupport {
             stack.set(DataComponentTypes.LORE, new LoreComponent(loreLines));
         }
 
-        // custom_model_data: parsed in v0 YAML but not applied here until a stable 1.21.11 component ctor is wired.
         return Optional.of(stack);
+    }
+
+    /** Stat panel = YAML key {@code stat} or {@code action: stat_panel} (Sprint 97 trait lore). */
+    static boolean isStatPanelItem(String itemKey, GraniteTemplateItem def) {
+        if ("stat".equalsIgnoreCase(itemKey)) {
+            return true;
+        }
+        return def.action().filter(a -> "stat_panel".equalsIgnoreCase(a)).isPresent();
+    }
+
+    /**
+     * Option 2 (Sprint 97): static template lore first, then same trait lines as {@link FabricStatInfoMenuGui}
+     * built-in (bounded).
+     */
+    static void appendStatPanelTraitLore(
+            ItemStack stack,
+            Stat stat,
+            User user,
+            FabricAuraSkills plugin,
+            MessageProvider msg,
+            Locale locale,
+            MenuHelper menus,
+            PlatformUtil util) {
+        List<Text> lore = new ArrayList<>();
+        LoreComponent existing = stack.get(DataComponentTypes.LORE);
+        if (existing != null) {
+            lore.addAll(existing.lines());
+        }
+        for (Trait trait : stat.getTraits()) {
+            if (lore.size() >= 16) {
+                break;
+            }
+            FabricStatsMenuGui.addTraitLoreIfPresent(stat, user, trait, msg, plugin, locale, menus, util, lore);
+        }
+        stack.set(DataComponentTypes.LORE, new LoreComponent(lore));
     }
 
     /**

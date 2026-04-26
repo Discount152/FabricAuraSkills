@@ -6,6 +6,8 @@
 | **JAR** | **`FabricAuraSkills-2.3.124.jar`** (+ separate **`granitelib-fabric-2.3.124.jar`** per two-JAR policy) |
 | **Bedrock / Geyser** | **Deferred / not tested** |
 
+**Follow-up:** **Sprint 97** — trait lore append + **`custom_model_data`** on stacks; see **`SPRINT_97_MANUAL_STAT_INFO_TEMPLATE_PARITY.md`**.
+
 ## Purpose
 
 Prove **Path A**: Granite Skills can open **`stat_info`** from a **bundled GraniteLib v0 YAML** template, using **`GraniteMenuTemplateYamlLoader`** + **`GraniteContainerMenus`**, while **preserving** the historical **`FabricStatInfoMenuGui` built-in** path whenever anything fails.

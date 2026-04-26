@@ -32,9 +32,9 @@ import java.util.Locale;
  * same {@link FabricMenuContext#listPage()} the player had when opening this menu (clamped in the list GUI);
  * early exits when {@code stat_info} is disabled also preserve that page.
  *
- * <p><strong>Sprint 96:</strong> tries bundled GraniteLib v0 YAML at
- * {@link FabricStatInfoTemplateSupport#TEMPLATE_RESOURCE_PATH}; on any failure, uses this built-in path (safe
- * fallback).
+ * <p><strong>Sprint 96–97:</strong> tries bundled GraniteLib v0 YAML at
+ * {@link FabricStatInfoTemplateSupport#TEMPLATE_RESOURCE_PATH} (trait lore + {@code custom_model_data} on template
+ * path per Sprint 97); on any failure, uses this built-in path (safe fallback).
  */
 final class FabricStatInfoMenuGui {
 

@@ -30,6 +30,9 @@ class FabricStatInfoBundledTemplateParseTest {
             assertTrue(t.fill().isPresent());
             assertTrue(t.items().containsKey("stat"));
             assertTrue(t.items().containsKey("back"));
+            assertTrue(
+                    t.items().get("stat").lore().stream().anyMatch(line -> line.contains("Related traits")),
+                    "bundled stat_info should include Related traits header before Sprint 97 append");
         }
     }
 }

@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.125
+
+### Changes
+
+- **Fabric: Sprint 97 — template `stat_info` parity (`FabricAuraSkills-2.3.125.jar`):** **Trait lore** — after static YAML lore on the stat panel item (`stat` key or `action: stat_panel`), appends the same **trait lines** as built-in **`FabricStatInfoMenuGui`** via **`FabricStatsMenuGui.addTraitLoreIfPresent`** (cap ~16 lines); failure → **built-in fallback**. **`custom_model_data`** — applied on template items via **`FabricStatInfoItemComponents`** using **`CustomModelDataComponent`** integer color list (1.21.11-safe, aligned with **`FabricLootItemMatcher`**). Bundled **`stat_info.yml`** adds **“Related traits:”** static line before appended rows. **Tests:** **`FabricStatInfoTemplateSupportStatPanelTest`**, **`FabricStatInfoYamlCustomModelDataParseTest`**. **Plain JUnit** cannot construct **`ItemStack`** without game bootstrap — CMD on stacks documented for **manual / in-game** check. **Docs:** **`fabric/SPRINT_97_MANUAL_STAT_INFO_TEMPLATE_PARITY.md`**, **`SPRINT_96`** cross-link, parity pointers. **Slate** still **not** complete; **Bedrock** not tested. **`projectVersion` 2.3.124 → 2.3.125**. **Build:** `.\gradlew -PfabricOnly=true :granitelib-fabric:test :fabric:test :fabric:build` — **PASS**.
+
 ## 2.3.124
 
 ### Changes
