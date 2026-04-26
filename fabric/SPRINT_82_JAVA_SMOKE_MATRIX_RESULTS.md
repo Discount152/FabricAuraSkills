@@ -28,6 +28,8 @@
 
 **Sprint 91 (code + docs — release readiness):** **`SPRINT_91_MANUAL_FABRIC_RELEASE_READINESS.md`** — **76A** anvil mixin + GraniteLib **`fabric.mod.json`** version expansion, **`README`** install, **`.gitignore`** hygiene; **`FabricAuraSkills-2.3.122.jar`**.
 
+**Sprint 92 (docs — RC checkpoint):** **`RELEASE_NOTES_2.3.122.md`**, **`SPRINT_92_RELEASE_CANDIDATE_PREP.md`** — same **`2.3.122`** artifact; **`verifyFabricReleaseBundle`**; optional **`v2.3.122-fabric-rc1`**.
+
 ### Matrix classification (Sprint 86)
 
 | Runtime result | Matrix classification |

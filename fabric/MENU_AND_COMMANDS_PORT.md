@@ -24,7 +24,9 @@
 
 **Sprint 91 (code + docs):** **`SPRINT_91_MANUAL_FABRIC_RELEASE_READINESS.md`** — release artifact map, **`README`** server install, committed **76A** anvil mixin + **`slate-fabric`** version expansion, tree hygiene. **`2.3.122+`**.
 
-**Recommended next (Java-side):** **Sprint 87** when a **Bedrock** tester is available; or release tagging using **`2.3.122+`** artifacts.
+**Sprint 92 (docs):** **`RELEASE_NOTES_2.3.122.md`**, **`SPRINT_92_RELEASE_CANDIDATE_PREP.md`** — **2.3.122** release-candidate checkpoint (Java); optional **`v2.3.122-fabric-rc1`**. **Bedrock** not tested.
+
+**Recommended next (Java-side):** Share **`FabricAuraSkills-2.3.122.jar`** + release notes for broader Java RC testing; **Sprint 87** when a **Bedrock** tester is available; or a **docs triage** sprint for deferred untracked files.
 
 This document is the **engineering plan** for shipping **menus and the full command tree together** (one release goal), by **porting Slate** to Fabric instead of writing a second menu engine.
 

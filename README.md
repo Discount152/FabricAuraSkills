@@ -49,6 +49,7 @@ A full multi-loader build may use `./gradlew clean build` depending on your envi
 3. **GraniteLib** is **Jar-in-Jar** inside the main mod — do **not** add a separate `granitelib` mod JAR unless you are deliberately testing a standalone GraniteLib build.
 4. Optional: `:fabric:archiveFabricModJar` (or a full `:fabric:build`) can also copy timestamped JARs under **`fabric-mod-jar-history/`** for rollback notes — see `fabric/build.gradle.kts`.
 5. Operator smoke and text-rendering checklists: **`fabric/SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`**, **`fabric/SPRINT_90_MANUAL_GLOBAL_GRANITE_TEXT_AUDIT.md`**, **`fabric/SPRINT_91_MANUAL_FABRIC_RELEASE_READINESS.md`**.
+6. **Release candidate (2.3.122):** operator-facing summary in **`fabric/RELEASE_NOTES_2.3.122.md`**; prep record **`fabric/SPRINT_92_RELEASE_CANDIDATE_PREP.md`**. Optional Git tag **`v2.3.122-fabric-rc1`** for Java-wide testing (push only when you intend to publish the RC pointer).
 
 ## Upstream Bukkit/Spigot API (reference)
 
