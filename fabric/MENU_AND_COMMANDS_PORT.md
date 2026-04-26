@@ -601,6 +601,16 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 
 | **Not in Sprint 70** | Full **`sources.yml`** load; **Slate** `sources` template items; **leaderboard** / **abilities**; **unclaimed** — see **Sprint 71**; **MenuFileManager** merge. |
 
+## Sprint 99 — template runtime consolidation (shipped, no new menu)
+
+| Area | Shipped |
+|------|---------|
+| **GraniteLib** | **`GraniteTemplatePlaceholders`**, **`GraniteTemplateActionNames`**, **`GraniteTemplateItems`**, **`GraniteTemplateResources`** — gameplay-agnostic v0 helpers + documented **action** strings. |
+| **Fabric** | **`FabricGraniteTemplateStacks`** — strict **`Item`** resolution + template **`ItemStack`** (fill + items) + **`custom_model_data`**. **`FabricStatInfoTemplateSupport`** / **`FabricSourcesTemplateSupport`** refactored; menu **fallback** semantics unchanged in intent. |
+| **Manual** | **`SPRINT_99_TEMPLATE_RUNTIME_CONSOLIDATION.md`** |
+
+| **Not in Sprint 99** | New menu migration; disk YAML; full action engine; Slate-complete. |
+
 ## Sprint 98 — **sources** GraniteLib template prototype (dynamic grid) (shipped, bounded)
 
 | Area | Shipped on Fabric (bounded) |

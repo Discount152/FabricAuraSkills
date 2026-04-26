@@ -8,14 +8,13 @@ import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.command.FabricSourceSortType;
 import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import dev.granitelib.fabric.menu.GraniteContainerMenus;
+import dev.granitelib.fabric.template.GraniteTemplateActionNames;
+import dev.granitelib.fabric.template.GraniteTemplateItems;
+import dev.granitelib.fabric.template.GraniteTemplateResources;
 import dev.granitelib.fabric.template.load.GraniteMenuTemplateYamlLoader;
 import dev.granitelib.fabric.template.load.GraniteTemplateValidationException;
 import dev.granitelib.fabric.template.model.GraniteMenuTemplate;
-import dev.granitelib.fabric.template.model.GraniteTemplateFill;
 import dev.granitelib.fabric.template.model.GraniteTemplateItem;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.LoreComponent;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -32,14 +31,16 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Sprint 98: template-backed {@code sources} (dynamic grid + sort/paging). On failure returns {@code false} so
- * {@link FabricSourcesMenuGui} uses the built-in path.
+ * Sprint 98: template-backed {@code sources} (dynamic grid + sort/paging). **Sprint 99:** shared GraniteLib
+ * helpers + {@link FabricGraniteTemplateStacks}.
  */
 public final class FabricSourcesTemplateSupport {
 
     public static final String TEMPLATE_RESOURCE_PATH = "assets/auraskills/granite/templates/sources.yml";
 
     private static final int BUILTIN_PAGE_SIZE = 28;
+
+    private static final String MENU_LOG = "sources template";
 
     private FabricSourcesTemplateSupport() {
     }
@@ -72,7 +73,7 @@ public final class FabricSourcesTemplateSupport {
             List<XpSource> allSources,
             Locale locale) {
         GraniteMenuTemplate template;
-        try (InputStream in = openBundledTemplate()) {
+        try (InputStream in = GraniteTemplateResources.openClasspath(FabricSourcesTemplateSupport.class, TEMPLATE_RESOURCE_PATH)) {
             if (in == null) {
                 plugin.logger().warn(
                         "sources template missing from classpath (" + TEMPLATE_RESOURCE_PATH + "); using built-in menu");
@@ -102,7 +103,7 @@ public final class FabricSourcesTemplateSupport {
             return false;
         }
 
-        GraniteTemplateItem sourceDef = findSourceRowDef(template);
+        GraniteTemplateItem sourceDef = GraniteTemplateItems.findSourceGridDefinition(template);
         if (sourceDef == null) {
             plugin.logger().warn(
                     "sources template: no source row (key 'source' or action source_row); using built-in menu");
@@ -123,10 +124,18 @@ public final class FabricSourcesTemplateSupport {
             return false;
         }
 
-        Optional<Integer> backSlot = resolveNavSlot(template, "back", List.of("back"));
-        Optional<Integer> prevSlot = resolveNavSlot(template, "previous", List.of("previous_page"));
-        Optional<Integer> nextSlot = resolveNavSlot(template, "next", List.of("next_page"));
-        Optional<Integer> sortSlot = resolveNavSlot(template, "sort", List.of("cycle_sort"));
+        Optional<Integer> backSlot =
+                GraniteTemplateItems.firstSlotByPreferredKeyOrActions(
+                        template, "back", List.of(GraniteTemplateActionNames.BACK));
+        Optional<Integer> prevSlot =
+                GraniteTemplateItems.firstSlotByPreferredKeyOrActions(
+                        template, "previous", List.of(GraniteTemplateActionNames.PREVIOUS_PAGE));
+        Optional<Integer> nextSlot =
+                GraniteTemplateItems.firstSlotByPreferredKeyOrActions(
+                        template, "next", List.of(GraniteTemplateActionNames.NEXT_PAGE));
+        Optional<Integer> sortSlot =
+                GraniteTemplateItems.firstSlotByPreferredKeyOrActions(
+                        template, "sort", List.of(GraniteTemplateActionNames.CYCLE_SORT));
         if (backSlot.isEmpty() || prevSlot.isEmpty() || nextSlot.isEmpty() || sortSlot.isEmpty()) {
             plugin.logger().warn(
                     "sources template: missing navigation item (back/previous/next/sort); using built-in menu");
@@ -147,18 +156,17 @@ public final class FabricSourcesTemplateSupport {
             return false;
         }
 
-        if (!navActionMatches(backItem, "back")
-                || !navActionMatches(prevItem, "previous_page")
-                || !navActionMatches(nextItem, "next_page")
-                || !navActionMatches(sortItem, "cycle_sort")) {
+        if (!GraniteTemplateItems.actionEquals(backItem, GraniteTemplateActionNames.BACK)
+                || !GraniteTemplateItems.actionEquals(prevItem, GraniteTemplateActionNames.PREVIOUS_PAGE)
+                || !GraniteTemplateItems.actionEquals(nextItem, GraniteTemplateActionNames.NEXT_PAGE)
+                || !GraniteTemplateItems.actionEquals(sortItem, GraniteTemplateActionNames.CYCLE_SORT)) {
             plugin.logger().warn(
                     "sources template: navigation actions must be back, previous_page, next_page, cycle_sort; using built-in menu");
             return false;
         }
 
         boolean sourceKeyed = sourceDef == template.items().get("source");
-        boolean sourceRowAction =
-                sourceDef.action().filter(a -> "source_row".equalsIgnoreCase(a)).isPresent();
+        boolean sourceRowAction = GraniteTemplateItems.actionEquals(sourceDef, GraniteTemplateActionNames.SOURCE_ROW);
         if (!sourceKeyed && !sourceRowAction) {
             plugin.logger().warn(
                     "sources template: source grid must use YAML key 'source' or action source_row; using built-in menu");
@@ -174,13 +182,15 @@ public final class FabricSourcesTemplateSupport {
 
         Map<String, String> globalPh = buildGlobalPlaceholders(skill, sort, p, maxPage, locale, msg);
 
-        Text titleBase = parseTitleText(expandTemplate(template.title(), globalPh), plugin);
-        if (titleBase == null) {
+        String titleExpanded = FabricSourcesPlaceholders.expand(template.title(), globalPh);
+        Optional<Text> titleBaseOpt =
+                FabricGraniteTemplateStacks.toLiteralNoUnresolved(titleExpanded, plugin, MENU_LOG, "title");
+        if (titleBaseOpt.isEmpty()) {
             return false;
         }
-        Text pageTitle = FabricListMenuPaging.appendPageToTitleIfNeeded(titleBase, p, maxPage);
+        Text pageTitle = FabricListMenuPaging.appendPageToTitleIfNeeded(titleBaseOpt.get(), p, maxPage);
 
-        Optional<ItemStack> fillBase = buildFillStack(template, globalPh, plugin);
+        Optional<ItemStack> fillBase = FabricGraniteTemplateStacks.buildFillStack(template.fill(), globalPh, plugin, MENU_LOG);
         if (template.fill().isPresent() && fillBase.isEmpty()) {
             return false;
         }
@@ -190,15 +200,19 @@ public final class FabricSourcesTemplateSupport {
             Map<String, String> rowPh = new HashMap<>(globalPh);
             addSourcePlaceholders(rowPh, src, locale);
             Optional<ItemStack> rowStack =
-                    buildNavItemStack(sourceDef, rowPh, plugin, "items.source.row");
+                    FabricGraniteTemplateStacks.buildTemplateItemStack(
+                            sourceDef, rowPh, plugin, MENU_LOG, "items.source.row");
             if (rowStack.isEmpty()) {
                 return false;
             }
             rowStacks.add(rowStack.get());
         }
 
-        Optional<ItemStack> backStack = buildNavItemStack(backItem, globalPh, plugin, "items.back");
-        Optional<ItemStack> sortStack = buildNavItemStack(sortItem, globalPh, plugin, "items.sort");
+        Optional<ItemStack> backStack =
+                FabricGraniteTemplateStacks.buildTemplateItemStack(backItem, globalPh, plugin, MENU_LOG, "items.back");
+        Optional<ItemStack> sortStack =
+                FabricGraniteTemplateStacks.buildTemplateItemStack(
+                        sortItem, globalPh, plugin, MENU_LOG, "items.sort");
         if (backStack.isEmpty() || sortStack.isEmpty()) {
             return false;
         }
@@ -207,14 +221,18 @@ public final class FabricSourcesTemplateSupport {
         Optional<ItemStack> nextOpt = Optional.empty();
         if (maxPage > 0) {
             if (p > 0) {
-                Optional<ItemStack> ps = buildNavItemStack(prevItem, globalPh, plugin, "items.previous");
+                Optional<ItemStack> ps =
+                        FabricGraniteTemplateStacks.buildTemplateItemStack(
+                                prevItem, globalPh, plugin, MENU_LOG, "items.previous");
                 if (ps.isEmpty()) {
                     return false;
                 }
                 prevOpt = ps;
             }
             if (p < maxPage) {
-                Optional<ItemStack> ns = buildNavItemStack(nextItem, globalPh, plugin, "items.next");
+                Optional<ItemStack> ns =
+                        FabricGraniteTemplateStacks.buildTemplateItemStack(
+                                nextItem, globalPh, plugin, MENU_LOG, "items.next");
                 if (ns.isEmpty()) {
                     return false;
                 }
@@ -305,41 +323,14 @@ public final class FabricSourcesTemplateSupport {
         return true;
     }
 
-    private static boolean navActionMatches(GraniteTemplateItem item, String expected) {
-        return item.action().map(a -> expected.equalsIgnoreCase(a.trim())).orElse(false);
-    }
-
-    private static @Nullable InputStream openBundledTemplate() {
-        return FabricSourcesTemplateSupport.class.getClassLoader().getResourceAsStream(TEMPLATE_RESOURCE_PATH);
-    }
-
+    /** For tests and callers that need the Sprint 98 discovery rule. */
     static @Nullable GraniteTemplateItem findSourceRowDef(GraniteMenuTemplate template) {
-        GraniteTemplateItem s = template.items().get("source");
-        if (s != null) {
-            return s;
-        }
-        for (Map.Entry<String, GraniteTemplateItem> e : template.items().entrySet()) {
-            if (e.getValue().action().filter(a -> "source_row".equalsIgnoreCase(a)).isPresent()) {
-                return e.getValue();
-            }
-        }
-        return null;
+        return GraniteTemplateItems.findSourceGridDefinition(template);
     }
 
     static Optional<Integer> resolveNavSlot(
             GraniteMenuTemplate template, String preferredKey, List<String> actionNames) {
-        GraniteTemplateItem byKey = template.items().get(preferredKey);
-        if (byKey != null && !byKey.slots().isEmpty()) {
-            return Optional.of(byKey.slots().getFirst());
-        }
-        for (GraniteTemplateItem item : template.items().values()) {
-            for (String a : actionNames) {
-                if (item.action().filter(x -> a.equalsIgnoreCase(x)).isPresent() && !item.slots().isEmpty()) {
-                    return Optional.of(item.slots().getFirst());
-                }
-            }
-        }
-        return Optional.empty();
+        return GraniteTemplateItems.firstSlotByPreferredKeyOrActions(template, preferredKey, actionNames);
     }
 
     private static Map<String, String> buildGlobalPlaceholders(
@@ -371,79 +362,5 @@ public final class FabricSourcesTemplateSupport {
         } else {
             m.put("source_xp", NumberUtil.format2(s.getXp()) + " / " + unit);
         }
-    }
-
-    private static String expandTemplate(String raw, Map<String, String> ph) {
-        return FabricSourcesPlaceholders.expand(raw, ph);
-    }
-
-    private static @Nullable Text parseTitleText(String expanded, FabricAuraSkills plugin) {
-        if (FabricSourcesPlaceholders.hasUnresolvedBraceSyntax(expanded)) {
-            plugin.logger().warn(
-                    "sources template title still contains unresolved placeholders; using built-in menu");
-            return null;
-        }
-        return Text.literal(expanded);
-    }
-
-    private static Optional<ItemStack> buildFillStack(
-            GraniteMenuTemplate template, Map<String, String> ph, FabricAuraSkills plugin) {
-        if (template.fill().isEmpty()) {
-            return Optional.empty();
-        }
-        GraniteTemplateFill fill = template.fill().get();
-        Optional<Item> item = FabricStatInfoTemplateSupport.resolveStrict(fill.material(), plugin, "fill.material");
-        if (item.isEmpty()) {
-            return Optional.empty();
-        }
-        ItemStack stack = new ItemStack(item.get(), 1);
-        if (fill.displayName().isPresent()) {
-            String name = expandTemplate(fill.displayName().get(), ph);
-            if (FabricSourcesPlaceholders.hasUnresolvedBraceSyntax(name)) {
-                plugin.logger().warn("sources template fill.name unresolved; using built-in menu");
-                return Optional.empty();
-            }
-            stack.set(DataComponentTypes.ITEM_NAME, Text.literal(name));
-        }
-        return Optional.of(stack);
-    }
-
-    static Optional<ItemStack> buildNavItemStack(
-            GraniteTemplateItem item, Map<String, String> ph, FabricAuraSkills plugin, String logCtx) {
-        Optional<Item> resolved =
-                FabricStatInfoTemplateSupport.resolveStrict(item.material(), plugin, logCtx + ".material");
-        if (resolved.isEmpty()) {
-            return Optional.empty();
-        }
-        int count = item.amount().orElse(1);
-        ItemStack stack = new ItemStack(resolved.get(), Math.max(1, count));
-        if (item.displayName().isPresent()) {
-            String name = expandTemplate(item.displayName().get(), ph);
-            if (FabricSourcesPlaceholders.hasUnresolvedBraceSyntax(name)) {
-                plugin.logger().warn(
-                        "sources template " + logCtx + ".name unresolved; using built-in menu");
-                return Optional.empty();
-            }
-            stack.set(DataComponentTypes.ITEM_NAME, Text.literal(name));
-        }
-        List<Text> loreLines = new ArrayList<>();
-        for (String loreRaw : item.lore()) {
-            if (loreRaw.isEmpty()) {
-                loreLines.add(Text.empty());
-                continue;
-            }
-            String line = expandTemplate(loreRaw, ph);
-            if (FabricSourcesPlaceholders.hasUnresolvedBraceSyntax(line)) {
-                plugin.logger().warn(
-                        "sources template " + logCtx + ".lore unresolved; using built-in menu");
-                return Optional.empty();
-            }
-            loreLines.add(Text.literal(line));
-        }
-        if (!loreLines.isEmpty()) {
-            stack.set(DataComponentTypes.LORE, new LoreComponent(loreLines));
-        }
-        FabricStatInfoItemComponents.applyCustomModelData(stack, item.customModelData());
-        return Optional.of(stack);
     }
 }

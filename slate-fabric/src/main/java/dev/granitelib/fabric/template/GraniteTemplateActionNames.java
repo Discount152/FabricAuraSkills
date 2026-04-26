@@ -1,0 +1,28 @@
+package dev.granitelib.fabric.template;
+
+/**
+ * Documented v0 action string contract for bundled GraniteLib YAML templates (Sprint 99). Values are wired in
+ * Fabric gameplay code — this is not a dynamic action engine, only stable identifiers for authors and reviewers.
+ *
+ * <p>Bundled templates today: {@code stat_info.yml}, {@code sources.yml}.
+ */
+public final class GraniteTemplateActionNames {
+
+    private GraniteTemplateActionNames() {
+    }
+
+    /** Return to the previous menu (e.g. stats or level progression). */
+    public static final String BACK = "back";
+
+    /** Stat detail panel item; may receive generated append lore (Fabric stat_info). */
+    public static final String STAT_PANEL = "stat_panel";
+
+    /** One row in the sources XP grid (Fabric sources). */
+    public static final String SOURCE_ROW = "source_row";
+
+    public static final String PREVIOUS_PAGE = "previous_page";
+
+    public static final String NEXT_PAGE = "next_page";
+
+    public static final String CYCLE_SORT = "cycle_sort";
+}

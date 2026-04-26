@@ -1,46 +1,34 @@
 package dev.aurelium.auraskills.fabric.menu;
 
+import dev.granitelib.fabric.template.GraniteTemplatePlaceholders;
+
+import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
- * Minimal local placeholder expansion for template-backed {@code sources} (Sprint 98). Not a global engine.
+ * Minimal placeholders for template-backed {@code sources}. Keys are ordered longest-first for safe substitution.
  */
 public final class FabricSourcesPlaceholders {
 
-    private static final Pattern PLACEHOLDER = Pattern.compile("\\{[^}]+\\}");
+    private static final List<String> KEY_ORDER =
+            List.of(
+                    "skill_display",
+                    "total_pages",
+                    "source_name",
+                    "source_type",
+                    "source_xp",
+                    "skill",
+                    "sort",
+                    "page");
 
     private FabricSourcesPlaceholders() {
     }
 
-    /**
-     * Expands {@code {skill_display}}, {@code {skill}}, source row keys, {@code {sort}}, {@code {page}},
-     * {@code {total_pages}} using {@code values} (keys without braces). Longer keys first to avoid partial
-     * replacement.
-     */
     public static String expand(String raw, Map<String, String> values) {
-        if (raw == null) {
-            return "";
-        }
-        String s = raw;
-        s = s.replace("{total_pages}", nz(values, "total_pages"));
-        s = s.replace("{skill_display}", nz(values, "skill_display"));
-        s = s.replace("{source_name}", nz(values, "source_name"));
-        s = s.replace("{source_type}", nz(values, "source_type"));
-        s = s.replace("{source_xp}", nz(values, "source_xp"));
-        s = s.replace("{skill}", nz(values, "skill"));
-        s = s.replace("{sort}", nz(values, "sort"));
-        s = s.replace("{page}", nz(values, "page"));
-        return s;
+        return GraniteTemplatePlaceholders.expandKeys(raw, values, KEY_ORDER);
     }
 
-    /** True if any {@code {...}} remains after expansion (unknown or empty keys). */
     public static boolean hasUnresolvedBraceSyntax(String str) {
-        return str != null && PLACEHOLDER.matcher(str).find();
-    }
-
-    private static String nz(Map<String, String> values, String key) {
-        String v = values.get(key);
-        return v != null ? v : "";
+        return GraniteTemplatePlaceholders.hasUnresolvedBraceSyntax(str);
     }
 }

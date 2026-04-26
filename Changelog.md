@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.127
+
+### Changes
+
+- **Fabric + GraniteLib: Sprint 99 — template runtime consolidation (`FabricAuraSkills-2.3.127.jar`):** Shared **gameplay-agnostic** helpers in **`dev.granitelib.fabric.template`**: **`GraniteTemplatePlaceholders`** (`expandKeys`, `expandAllKeysLongestFirst`, `hasUnresolvedBraceSyntax`), **`GraniteTemplateActionNames`** (documented v0 action strings: **`back`**, **`stat_panel`**, **`source_row`**, **`previous_page`**, **`next_page`**, **`cycle_sort`**), **`GraniteTemplateItems`** (slot lookup by key/action, source grid discovery, action equality), **`GraniteTemplateResources`** (classpath open). Fabric: **`FabricGraniteTemplateStacks`** centralizes strict **`Registries.ITEM`** resolution + fill/template **`ItemStack`** build + **`custom_model_data`**. **`FabricStatInfoTemplateSupport`** / **`FabricSourcesTemplateSupport`** refactored to use helpers; **`FabricStatInfoPlaceholders`** / **`FabricSourcesPlaceholders`** delegate expansion key order to GraniteLib. **No** menu behavior or fallback semantics change intended. **Tests:** **`GraniteTemplatePlaceholdersTest`**, **`GraniteTemplateItemsTest`**, **`GraniteTemplateActionNamesTest`** (granitelib); bundled **`stat_info`** / **`sources`** parse tests assert action contract. **Docs:** **`fabric/SPRINT_99_TEMPLATE_RUNTIME_CONSOLIDATION.md`**, parity pointers. **Slate / `MenuFileManager`** still **not** complete. **Bedrock / Geyser** not tested. **`projectVersion` 2.3.126 → 2.3.127**. **Build:** `.\gradlew -PfabricOnly=true :granitelib-fabric:test :fabric:test :fabric:build` — **PASS**.
+
 ## 2.3.126
 
 ### Changes

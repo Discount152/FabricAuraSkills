@@ -1,5 +1,7 @@
 package dev.aurelium.auraskills.fabric.menu;
 
+import dev.granitelib.fabric.template.GraniteTemplateActionNames;
+import dev.granitelib.fabric.template.GraniteTemplateItems;
 import dev.granitelib.fabric.template.load.GraniteMenuTemplateYamlLoader;
 import dev.granitelib.fabric.template.model.GraniteMenuTemplate;
 import org.junit.jupiter.api.Test;
@@ -33,6 +35,12 @@ class FabricStatInfoBundledTemplateParseTest {
             assertTrue(
                     t.items().get("stat").lore().stream().anyMatch(line -> line.contains("Related traits")),
                     "bundled stat_info should include Related traits header before Sprint 97 append");
+            assertTrue(
+                    GraniteTemplateItems.actionEquals(
+                            t.items().get("back"), GraniteTemplateActionNames.BACK));
+            assertTrue(
+                    GraniteTemplateItems.actionEquals(
+                            t.items().get("stat"), GraniteTemplateActionNames.STAT_PANEL));
         }
     }
 }

@@ -64,7 +64,7 @@ GraniteLib (`:granitelib-fabric`, on-disk **`slate-fabric/`) is a **real library
 | Track | Status |
 |-------|--------|
 | **Container / click plumbing** (e.g. `GraniteContainerMenus`) | **Partial** — enough for current built-ins. |
-| **Template loading, YAML layouts, `MenuFileManager`** | **In progress** — v0 YAML + loader (**95**); **`stat_info`** template path (**96–97**) with **trait lore append** + **`custom_model_data`** on stacks (**`SPRINT_97_MANUAL_STAT_INFO_TEMPLATE_PARITY.md`**); **`sources`** template path (**98**) — **dynamic** 28-slot grid + sort/paging (**`SPRINT_98_MANUAL_SOURCES_TEMPLATE_PROTOTYPE.md`**); **built-in fallback** on both; **not** full Slate / disk reload / `MenuFileManager` |
+| **Template loading, YAML layouts, `MenuFileManager`** | **In progress** — v0 YAML + loader (**95**); **`stat_info`** / **`sources`** template paths (**96–98**); **Sprint 99** — shared **GraniteLib** helpers + **`FabricGraniteTemplateStacks`** (**`SPRINT_99_TEMPLATE_RUNTIME_CONSOLIDATION.md`**), **action** contract (**`GraniteTemplateActionNames`**); **not** full Slate / disk reload / `MenuFileManager` |
 | **Contexts, paging, global items, rich click actions** | **Not complete** |
 | **Public API + docs for external mods** | **Partial / evolving** |
 
@@ -77,6 +77,8 @@ GraniteLib (`:granitelib-fabric`, on-disk **`slate-fabric/`) is a **real library
 **Sprint 97 (`stat_info` template parity):** **`SPRINT_97_MANUAL_STAT_INFO_TEMPLATE_PARITY.md`** — **Option 2** trait lore appended after static YAML; **`FabricStatInfoItemComponents`** applies **`custom_model_data`** via **`CustomModelDataComponent`**; trait failure → **built-in fallback**. **Slate** still **not** complete.
 
 **Sprint 98 (`sources` template prototype — dynamic rows):** **`SPRINT_98_MANUAL_SOURCES_TEMPLATE_PROTOTYPE.md`** — bundled **`sources.yml`**; **`FabricSourcesTemplateSupport`** + **`FabricSourcesPlaceholders`**; template **first**, then **`FabricSourcesMenuGui` built-in**; chat **`FabricSourcesOpenSupport`** unchanged. First **dynamic** GraniteLib menu stress test. **Slate** still **not** complete.
+
+**Sprint 99 (template runtime consolidation):** **`SPRINT_99_TEMPLATE_RUNTIME_CONSOLIDATION.md`** — **`GraniteTemplatePlaceholders`**, **`GraniteTemplateActionNames`**, **`GraniteTemplateItems`**, **`GraniteTemplateResources`** (GraniteLib); **`FabricGraniteTemplateStacks`** (strict items + stacks); refactors **`stat_info`** / **`sources`** support only (**no** new menu). **Slate** still **not** complete.
 
 ---
 
@@ -102,5 +104,5 @@ GraniteLib (`:granitelib-fabric`, on-disk **`slate-fabric/`) is a **real library
 
 1. **Hold** “final release” until **two-JAR** policy is what operators run in production and docs match.
 2. **Execute** Bedrock validation when a tester exists.
-3. **Drive** Slate/GraniteLib framework work as its own program (Path A) using **`SPRINT_94`**+ docs, not as a side effect of smoke fixes. **Sprint 98** (**`sources`** dynamic template prototype, **`SPRINT_98_MANUAL_SOURCES_TEMPLATE_PROTOTYPE.md`**, **2.3.126**) exercises sort/paging + YAML grid. **Next:** another bounded template menu (e.g. **`level_progression`** list surface) or incremental placeholder/action depth — still **not** full **`MenuFileManager`** / Slate-complete.
+3. **Drive** Slate/GraniteLib framework work as its own program (Path A) using **`SPRINT_94`**+ docs, not as a side effect of smoke fixes. **Sprint 99** (**`SPRINT_99_TEMPLATE_RUNTIME_CONSOLIDATION.md`**, **2.3.127**) deduplicates template helpers before the next menu. **Next:** another bounded template menu (e.g. **`level_progression`** list surface) or incremental placeholder/action depth — still **not** full **`MenuFileManager`** / Slate-complete.
 4. **Revisit** Jobs / economy bridges only if the owner reopens scope.

@@ -1,5 +1,6 @@
 package dev.aurelium.auraskills.fabric.menu;
 
+import dev.granitelib.fabric.template.GraniteTemplateActionNames;
 import dev.granitelib.fabric.template.load.GraniteMenuTemplateYamlLoader;
 import dev.granitelib.fabric.template.model.GraniteMenuTemplate;
 import dev.granitelib.fabric.template.model.GraniteTemplateItem;
@@ -38,12 +39,16 @@ class FabricSourcesBundledTemplateParseTest {
             assertEquals(28, source.slots().size());
             assertEquals(FabricSourcesMenuGui.builtinSourceGridSlots(), source.slots());
 
-            assertNav(t, "back", "back");
-            assertNav(t, "previous", "previous_page");
-            assertNav(t, "next", "next_page");
-            assertNav(t, "sort", "cycle_sort");
+            assertNav(t, "back", GraniteTemplateActionNames.BACK);
+            assertNav(t, "previous", GraniteTemplateActionNames.PREVIOUS_PAGE);
+            assertNav(t, "next", GraniteTemplateActionNames.NEXT_PAGE);
+            assertNav(t, "sort", GraniteTemplateActionNames.CYCLE_SORT);
 
             assertSame(source, FabricSourcesTemplateSupport.findSourceRowDef(t));
+            assertTrue(
+                    source.action()
+                            .filter(a -> GraniteTemplateActionNames.SOURCE_ROW.equalsIgnoreCase(a))
+                            .isPresent());
 
             Map<String, String> ph =
                     Map.of(
