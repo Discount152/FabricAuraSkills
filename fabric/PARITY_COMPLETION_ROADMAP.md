@@ -68,6 +68,8 @@ GraniteLib (`:granitelib-fabric`, on-disk **`slate-fabric/`) is a **real library
 | **Contexts, paging, global items, rich click actions** | **Not complete** |
 | **Public API + docs for external mods** | **Partial / evolving** |
 
+**Sprint 94 (planning only):** **`SPRINT_94_GRANITELIB_SLATE_PARITY_PLAN.md`** — dedicated **Path A** roadmap: Slate vs GraniteLib capability inventories, gap table, menu-by-menu classification, phased implementation (**A–H**), risks, future acceptance criteria, and **Sprint 95** (Spike 0) recommendation. **No code** in Sprint 94; **Bedrock/Geyser** remains deferred.
+
 ---
 
 ## 5. Packaging / release architecture
@@ -92,5 +94,5 @@ GraniteLib (`:granitelib-fabric`, on-disk **`slate-fabric/`) is a **real library
 
 1. **Hold** “final release” until **two-JAR** policy is what operators run in production and docs match.
 2. **Execute** Bedrock validation when a tester exists.
-3. **Drive** Slate/GraniteLib framework work as its own program (Path A), not as a side effect of smoke fixes.
+3. **Drive** Slate/GraniteLib framework work as its own program (Path A) using **`SPRINT_94_GRANITELIB_SLATE_PARITY_PLAN.md`** as the implementation spine, not as a side effect of smoke fixes.
 4. **Revisit** Jobs / economy bridges only if the owner reopens scope.

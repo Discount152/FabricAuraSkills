@@ -30,7 +30,9 @@
 
 **Sprint 93 (packaging + parity reset):** **`SPRINT_93_TWO_JAR_RELEASE_AND_PARITY_RESET.md`**, **`PARITY_COMPLETION_ROADMAP.md`**, **`RELEASE_NOTES_2.3.123.md`** — **two JARs** canonical; built-in menus explicitly **partial** vs Slate. **`2.3.123+`**, **`v2.3.123-fabric-rc2`**.
 
-**Recommended next (Java-side):** Deploy **two-JAR** **`2.3.123`** RC; **Sprint 87** when a **Bedrock** tester exists; **Path A** Slate work as its own program; optional **docs triage**.
+**Sprint 94 (planning only — Path A spine):** **`SPRINT_94_GRANITELIB_SLATE_PARITY_PLAN.md`** — Slate capability inventory, GraniteLib/Fabric reality, gap + menu-by-menu tables, implementation phases **A–H**, risks, future acceptance criteria, **Sprint 95** (Spike 0: template model + YAML schema v0 + first migration target). **Does not** implement menus or change commands; **Bedrock/Geyser** still deferred.
+
+**Recommended next (Java-side):** Deploy **two-JAR** **`2.3.123`** RC; **Sprint 95** Spike 0 per **`SPRINT_94`**; **Sprint 87** when a **Bedrock** tester exists; optional **docs triage**.
 
 This document is the **engineering plan** for shipping **menus and the full command tree together** (one release goal), by **porting Slate** to Fabric instead of writing a second menu engine.
 
