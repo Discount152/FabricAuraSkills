@@ -3,7 +3,7 @@
 | Field | Value |
 |--------|--------|
 | **Sprint** | **82** — **runtime validation only** (no default feature work) |
-| **Status** | **Partial (operator).** **Pass:** core roots, menu smoke, action bar, mana, two-player menus/profiles, claimitems/unclaimed. **Sprint 84 (`2.3.117`):** **`/xp view`** / **`/skilllevel view`** readable lines (**`FabricGraniteText`**); Granite **`xp`**/**`item`** only under prefixed roots. **Operator-confirmed Pass (2026-04-26 retest):** prefixed **`xp view`** + **`skilllevel view`** — no raw Granite keys. **Sprint 85 (`2.3.118`):** root **`.executes`** + **`requires`** for bare **`item`**, **`storage`**, **`backup`**, **`preset`** (Brigadier “incorrect argument” on bare roots) — see **`SPRINT_85_MANUAL_COMMAND_TREE_PATCH.md`**. **Operator:** re-mark admin/item/root rows on **`2.3.118+`**. **Bedrock/Geyser:** not tested. |
+| **Status** | **Partial (operator).** **Pass:** core/menu/action-bar rows, **`/auraskills`** usage root, **`/storage info`** as permissioned staff, XP/skilllevel **view** (readable lines, no raw keys), console/RCON admin roots (**`storage info`**, **`backup info`**, **`preset list`**, **`auraskills item`**). **Sprint 86 (docs):** clarified that **readable plain English** (including admin diagnostics) is **Pass**, not a failure; earlier smoke confusion was largely **LuckPerms** — tester **Deskount** now has **`auraskills.*`** globally. **Remaining:** final in-game permissioned-staff confirmation for bare **`/storage`**, **`/backup`**, **`/preset`**, prefixed **`item`**, backup list/create, item subcommands — see **Failures / Pending Retest**. **Bedrock/Geyser:** not tested. |
 | **Minimum artifact** | **`FabricAuraSkills-2.3.114.jar`** (includes Sprints **79** text, **81–81C** action bar). Repo doc milestone **`2.3.115`**: matrix protocol. **Sprint 83 re-test target:** **`FabricAuraSkills-2.3.116.jar`** — run **at least** the Sprint 83 operator minimum (see **`SPRINT_83_MANUAL_JAVA_SMOKE_PATCH_TRANSLATIONS_MANA.md`**), then continue the rest of this matrix. Always record the **exact** JAR name in **Environment**. |
 | **Bedrock / Geyser** | **Explicitly not tested** this sprint; see [PARITY_BACKLOG.md](PARITY_BACKLOG.md) *Bedrock / Geyser validation follow-up*. |
 
@@ -16,23 +16,37 @@
 
 **Sprint 85 (code):** **`SPRINT_85_MANUAL_COMMAND_TREE_PATCH.md`** — **`item`** / **`storage`** / **`backup`** / **`preset`** root executors + permission gates (**`2.3.118+`**).
 
+**Sprint 86 (docs / matrix):** Permission context documented (**`auraskills.*`** for **Deskount**); matrix rows reclassified — readable plain text = **Pass**; **Pending** = not yet re-run in-game after permission fix, not assumed **Fail**.
+
+### Matrix classification (Sprint 86)
+
+| Runtime result | Matrix classification |
+|----------------|------------------------|
+| Readable plain English text | **Pass** |
+| Menu opens with readable title | **Pass** |
+| Raw `auraskills.granite.*` key | **Fail** — translation issue |
+| Raw MiniMessage tags (`<green>`, …) | **Fail** — formatting issue |
+| Unknown/incomplete command for permissioned staff | **Fail** — command/root issue |
+| Hidden/denied for normal non-staff player | **Denied/hidden as expected** |
+
 ---
 
 ## Environment (fill when you run)
 
 | Item | Your value |
 |------|------------|
-| **Test date** | |
-| **Minecraft** | e.g. 1.21.11 (confirm from server) |
-| **Fabric Loader** | e.g. 0.18.4 (confirm from server) |
-| **Fabric API** | e.g. 0.141.3+1.21.11 (confirm from server) |
-| **Java** | e.g. 21 (confirm from host) |
-| **FabricAuraSkills JAR** | `FabricAuraSkills-2.3.118.jar` (Sprint **85** command-tree patch; or newer) |
+| **Test date** | (not re-confirmed in Sprint 86 doc pass) |
+| **Minecraft** | (not re-confirmed in this pass — use server `version` or fill when you run) |
+| **Fabric Loader** | (not re-confirmed in this pass) |
+| **Fabric API** | (not re-confirmed in this pass) |
+| **Java** | (not re-confirmed in this pass) |
+| **FabricAuraSkills JAR** | **`FabricAuraSkills-2.3.118.jar`** (Sprint **85**; confirmed operator target) |
+| **Tester permission context** | **Deskount:** **`auraskills.*`** = **true** globally via **LuckPerms** (`lp user … permission info` shows **`auraskills.*`** plus explicit **`auraskills.command.mana`** / **`mana.other`**). Use this account for permissioned-staff command rows. |
 | **GraniteLib** | External JAR + version in `mods/` **or** JiJ-only (release bundle) — describe |
 | **Server OS / host** | (optional) |
-| **Java player name(s)** | |
+| **Java player name(s)** | e.g. Deskount (staff tester) |
 | **Second Java player** (two-player tests) | or **Skip (single player)** |
-| **Console / RCON** | Y / N |
+| **Console / RCON** | **Y** — **`storage info`**, **`backup info`**, **`preset list`**, **`auraskills item`** confirmed from console |
 | **Full restart** before pass | Y / N (recommended after JAR change) |
 
 ---
@@ -67,7 +81,7 @@
 
 | Command / action | Result | Player-facing | Console |
 |-------------------|--------|---------------|--------|
-| `/auraskills` | Pass | Readable usage text shown; no raw `auraskills.granite.command.auraskills_usage` key. | No console issue recorded. |
+| `/auraskills` | Pass | **Usage root:** readable usage text (starts with **Use: /auraskills** and lists mirror roots) is **expected**; this command does **not** open a menu. No raw `auraskills.granite.command.auraskills_usage` key. | No console issue recorded. |
 | `/auraskills help` | Pass | Readable help text shown; no raw `auraskills.granite.command.help` key. | No console issue recorded. |
 | `/skills` | Pass | Skills menu opens; title is readable as **Skills**; opened feedback is readable. | No console issue recorded. |
 | `/sk` | Pass | Skills menu opens through alias; title is readable as **Skills**; opened feedback is readable. | No console issue recorded. |
@@ -111,12 +125,12 @@ Substitute **`<skill>`** / **`<stat>`** with IDs **enabled** on your `config` (e
 |---------|--------|--------|
 | `/mana` | Pass | Works after granting `auraskills.command.mana` to default group. |
 | `/mana view` (self; same as `/mana` for players) | Pass | Self mana view works after granting `auraskills.command.mana` to default group. |
-| `/mana view <player>` (requires `auraskills.command.mana.other`) | Pass as staff/tester | Requires `auraskills.command.mana.other`; do not grant to default group unless intentionally allowing players to inspect others’ mana. |
-| `/auraskills xp view <player> <skill>` | Pass | **Sprint 84+:** Granite path only — **no** top-level **`/xp`** (vanilla). Readable line; **no** raw **`auraskills.granite.command.xp.view_line`**. Perm: **`auraskills.command.xp.view`**. |
-| `/skills xp view <player> <skill>` | Pass | Same tree as **`/auraskills`**; readable output observed. |
+| `/mana view <player>` (requires `auraskills.command.mana.other`) | Pass as staff/tester | Requires **`auraskills.command.mana.other`**; staff tester has it via **`auraskills.*`**. Do not grant to default group unless intentionally allowing players to inspect others’ mana. |
+| `/auraskills xp view <player> <skill>` | Pass | **Granite path only** — **no** top-level **`/xp`** (vanilla owns **`/xp`**). Example readable line: **`Deskount — Agility: level 0, XP 32.2`**. **No** raw **`auraskills.granite.command.xp.view_line`**. |
+| `/skills xp view <player> <skill>` | Pass | Same tree; same expectations as **`/auraskills xp view`**. |
 | `/sk xp view <player> <skill>` | Pass | Same. |
 | `/skill xp view <player> <skill>` | Pass | Same. |
-| `/skilllevel view <player> <skill>` | Pass | **`FabricGraniteText`** for **`view_line`**; **no** raw key. Aliases: **`/auraskills skilllevel view …`**, **`/skills|/sk|/skill skilllevel view …`**. |
+| `/skilllevel view <player> <skill>` | Pass | Example: **`Deskount — Agility: level 0, XP in level 32.2`**. **No** raw **`auraskills.granite.command.skilllevel.view_line`**. Aliases: **`/auraskills skilllevel view …`**, **`/skills|/sk|/skill skilllevel view …`**. |
 | `/top` | Pass | |
 | `/top average` | Pass | |
 | `/skilltop <skill>` | Pass | |
@@ -149,7 +163,7 @@ Substitute **`<skill>`** / **`<stat>`** with IDs **enabled** on your `config` (e
 | `/openmenu abilities <other> <skill>` | Pass | |
 | `/profile skills <other>` | Pass | |
 | `/profile stats <other>` | Pass | |
-| `/mana view <other>` | Pass as staff/tester | Works after granting tester `auraskills.command.mana.other`; permission should remain staff/tester-only. |
+| `/mana view <other>` | Pass as staff/tester | Requires **`auraskills.command.mana.other`**; tester has it through **`auraskills.*`**. Keep **`mana.other`** staff-only for production defaults. |
 
 **Or:** **Skip (single player)** — note here:
 
@@ -159,14 +173,14 @@ Substitute **`<skill>`** / **`<stat>`** with IDs **enabled** on your `config` (e
 
 | Command | Result | Notes |
 |---------|--------|--------|
-| `/storage` (bare root) | Fixed in Sprint 85 — pending operator retest | Expect **usage** line (**`storage.usage_root`**) for **console** or player with **`auraskills.command.storage`**. Then **`/storage info`**, etc. |
-| `/storage info` | Fixed in Sprint 85 — pending operator retest | **Sprint 84:** console LP fix. **Sprint 85:** root executor so **`/storage`** alone parses. Also **`/auraskills|/skills|/sk|/skill storage info`**. |
-| `/backup` (bare root) | Fixed in Sprint 85 — pending operator retest | Usage for **`backup`** or **`backup.load`** perm (or non-player). |
-| `/backup info` | Fixed in Sprint 85 — pending operator retest | Console/RCON + permissioned staff. |
-| `/backup list` | Fixed in Sprint 85 — pending operator retest | Same. |
-| `/preset` (bare root) | Fixed in Sprint 85 — pending operator retest | Usage for **`auraskills.command.preset`** (or non-player). |
-| `/preset list` | Fixed in Sprint 85 — pending operator retest | Same family as **`/preset`**. |
-| `/backup create` (optional, disposable) | Fixed in Sprint 85 — pending operator retest | Same. |
+| `/storage` (bare root) | Pending final in-game retest as permissioned staff | **Sprint 85** added root usage executor. **Console/RCON** can run admin roots without LP. In-game: retest with **`auraskills.*`**; readable **usage** line = **Pass**. |
+| `/storage info` | Pass as permissioned staff | Readable storage diagnostics in-game (e.g. loaded profiles count, **`sql.enabled`**, Sprint 63–64 explainer). **Plain English diagnostics are expected**, not a failure. **`auraskills.*`** granted for tester. Also **`/auraskills|/skills|/sk|/skill storage info`**. **Console/RCON:** **Pass** observed. |
+| `/backup` (bare root) | Pending final in-game retest as permissioned staff | **Sprint 85** root usage. Retest in-game after **`auraskills.*`**. |
+| `/backup info` | Pass (console/RCON); Pending final in-game confirmation as permissioned staff | **Console/RCON:** **Pass** observed. In-game: record separately when run. |
+| `/backup list` | Pending final in-game retest as permissioned staff | **Disposable data** only for any destructive follow-ups. |
+| `/preset` (bare root) | Pending final in-game retest as permissioned staff | **Sprint 85** root usage. |
+| `/preset list` | Pass (console/RCON); Pending final in-game confirmation as permissioned staff | **Console/RCON:** **Pass** observed. In-game: record separately when run. |
+| `/backup create` (optional, disposable) | Pending final in-game retest as permissioned staff | **Disposable data only.** |
 
 **Do not** run **restore** / **preset load** on production. Disposable-only for destructive confirms.
 
@@ -176,7 +190,7 @@ Substitute **`<skill>`** / **`<stat>`** with IDs **enabled** on your `config` (e
 
 | Test | Result | Notes |
 |------|--------|--------|
-| `/backup load fake.yml confirm` (no pending) | Pending retest | Retest as OP/console or with backup permissions. Expected: no mutation and clear no-pending/invalid-file style error. |
+| `/backup load fake.yml confirm` (no pending) | Pending disposable-data / permissioned-staff retest | Retest as OP/console or with backup permissions. Expected: no mutation and clear no-pending/invalid-file style error. |
 | If disposable backups: preview → **confirm** with **mismatch** | Skip | Requires disposable backup data; not run in this pass. |
 
 ---
@@ -185,9 +199,10 @@ Substitute **`<skill>`** / **`<stat>`** with IDs **enabled** on your `config` (e
 
 | Test | Result | Notes |
 |------|--------|--------|
-| `/auraskills item` (bare; suggestions) | Fixed in Sprint 85 — pending operator retest | **Root cause:** literal had **no** **`.executes`** → Brigadier “incorrect argument” at end of **`item`**. **Fix:** **`anyItemSubcommandPermission`** + usage (**`item.usage_root`**). Same under **`/skills|/sk|/skill item`**. |
-| `/auraskills item register <key>` | Fixed in Sprint 85 — pending operator retest | **No** top-level **`/item`** (vanilla). Perms **`auraskills.command.item.register`**. |
-| `/auraskills item give <player> <key>` | Fixed in Sprint 85 — pending operator retest | Perm **`auraskills.command.item.give`**. |
+| `/auraskills item` (bare; usage / suggestions) | Pass (console/RCON); Pending final in-game retest as permissioned staff | **Console/RCON:** **Pass** observed for **`auraskills item`**. **In-game:** retest with **`auraskills.*`**; readable **usage** = **Pass**. **Top-level `/item`** is **vanilla** (shows **`modify`** / **`replace`**); **Granite** item is **only** under **`/auraskills|/skills|/sk|/skill item`**. **Sprint 85** fixed bare-root parse (**`item.usage_root`**). |
+| `/skills item`, `/sk item`, `/skill item` | Pending final in-game retest as permissioned staff | Same subtree as **`/auraskills item`**; confirm after **`auraskills.*`**. |
+| `/auraskills item register <key>` | Pending final in-game retest as permissioned staff | Do **not** mark **Fail** until retested with **`auraskills.*`**. Subtree includes **`modifier`**, **`trait`**, **`ignore`**, **`requirement`**, **`multiplier`**, **`register`**, **`unregister`**, **`give`**. |
+| `/auraskills item give <player> <key>` | Pending final in-game retest as permissioned staff | Disposable item / safe target only. |
 | `/claimitems` | Pass | |
 | `/claimitems all` | Pass | |
 | `/openmenu unclaimed_items` | Pass | |
@@ -215,7 +230,7 @@ Watch for **literal** `raw` tags: `<green>`, `<red>`, `<aqua>`, `<bold>`, `<rese
 | Observation | Y / N | Where |
 |-------------|--------|--------|
 | Sprint 83 fixed core raw `auraskills.granite.*` keys for `/auraskills`, `/auraskills help`, Skills/Stats menu titles, and opened feedback. | Y | Core root retest on FabricAuraSkills-2.3.116+. |
-| Sprint 84 fixed raw keys for **`xp.view_line`** and **`skilllevel.view_line`** (`FabricGraniteText`); Granite **`xp`**/**`item`** only under prefixed roots on **2.3.117+**. | Y | See **`SPRINT_84_MANUAL_COMMAND_SMOKE_PATCH.md`**. |
+| Sprint 84 fixed raw keys for **`xp.view_line`** and **`skilllevel.view_line`** (`FabricGraniteText`); operator observed **readable** view lines (e.g. XP and “XP in level” variants). Granite **`xp`**/**`item`** only under prefixed roots on **2.3.117+**. | Y | See **`SPRINT_84_MANUAL_COMMAND_SMOKE_PATCH.md`**. |
 | Deeper menu item names/lore not fully validated. | N/A | Follow-up only if raw keys are observed inside item names/lore. |
 
 ---
@@ -236,6 +251,8 @@ Watch for **literal** `raw` tags: `<green>`, `<red>`, `<aqua>`, `<bold>`, `<rese
 ## Console watch (aggregate)
 
 Console watch not fully captured in this pass.
+
+**Console / RCON (Sprint 86):** **`storage info`**, **`backup info`**, **`preset list`**, and **`auraskills item`** roots were **confirmed working** from console/RCON. In-game permissioned-staff results for the same commands should still be recorded in the rows above when run.
 
 | Issue | Seen Y/N | Log snippet / line |
 |-------|----------|---------------------|
@@ -261,27 +278,31 @@ Console watch not fully captured in this pass.
 | Item / unclaimed | | | |
 | Text / action bar | | | |
 
-**Summary:** XP/skilllevel **view** rows marked **Pass** after operator proof on **`2.3.117+`**. Admin **bare roots** + **item** bare root: **Sprint 85** code on **`2.3.118+`** — **pending** operator retest.
+**Summary:** Core/menu/action-bar/XP/skilllevel/**`/storage info`** rows validated for permissioned staff (**`auraskills.*`** on **Deskount**) and key console/RCON admin roots. **Pending** rows are **not** failures — they await final in-game confirmation after the permission setup clarification.
 
 ### Failures / Pending Retest
 
-- **`/skills|/sk|/skill xp view`** — **Pass** (same tree; operator confirmed readable output).
-- **`/storage`**, **`/backup`**, **`/preset`** **bare roots** and **`/auraskills|… item`** bare root — **Fixed in Sprint 85** — validate on **`2.3.118+`** (**`SPRINT_85_MANUAL_COMMAND_TREE_PATCH.md`**).
-- **`/auraskills item register|give`** — **pending** disposable item test after bare **`item`** parse works.
-- Confirmation helper rows — Pending disposable-data/permissioned retest.
+- **`/storage`** bare root — **Pending** final in-game retest as permissioned staff unless already confirmed (readable **usage** = **Pass**).
+- **`/backup`**, **`/backup list`**, **`/backup create`** — **Pending** final in-game retest as permissioned staff; **`create`** is disposable-data only. **`/backup info`:** **Console/RCON Pass** observed; in-game staff confirmation still to record if not yet run.
+- **`/preset`**, **`/preset list`** — **Pending** final in-game retest as permissioned staff unless already confirmed. **`preset list`:** **Console/RCON Pass** observed; in-game staff confirmation still to record if not yet run.
+- **`/auraskills|/skills|/sk|/skill item`** — **`auraskills item`:** **Console/RCON Pass** observed; prefixed in-game **`item`** paths — **Pending** final retest as permissioned staff unless already confirmed.
+- **`item register` / `item give`** — **Pending** disposable-data / permissioned-staff retest (do **not** mark **Fail** until retested with **`auraskills.*`**).
+- Confirmation helper rows — **Pending** disposable-data / permissioned-staff retest.
+- Deeper menu item names/lore — follow-up only if raw Granite keys are observed.
+- **Bedrock/Geyser** player validation remains not tested.
 
 **Bugs fixed during Sprint 82 (small scope only):**
 
-No code changes during Sprint 82 matrix editing. Sprint **83** — core **`FabricGraniteText`** + **`/mana view`**. Sprint **84** ( **`2.3.117`** ) — **`/xp`**, **`/skilllevel`**, **`/item`**/**`/xp`** roots, admin **`requires`** — see **`SPRINT_84_MANUAL_COMMAND_SMOKE_PATCH.md`**. Sprint **85** ( **`2.3.118`** ) — **`item`**/**`storage`**/**`backup`**/**`preset`** root executors — **`SPRINT_85_MANUAL_COMMAND_TREE_PATCH.md`**.
+No code changes during Sprint 82 matrix editing. Sprint **83** — core **`FabricGraniteText`** + **`/mana view`**. Sprint **84** — XP/skilllevel **view-line** translation + command syntax docs; Sprint **85** — root usage for **`item`**/**`storage`**/**`backup`**/**`preset`** + admin **`requires`** (see **`SPRINT_85_MANUAL_COMMAND_TREE_PATCH.md`**).
 
 **Known issues left open:**
 
+- Remaining admin/item rows need **final in-game permissioned-staff confirmation** after tester was granted **`auraskills.*`** globally (LuckPerms).
 - Deeper Fabric menu item names/lore may still show raw translation keys if they use `Text.translatable`; fix with `FabricGraniteText` pattern when observed.
-- Operator: confirm **Sprint 85** admin/item **bare root** rows on **`2.3.118+`**.
 - Bedrock/Geyser player validation remains not tested.
 
-**Recommended next sprint:**
+**Recommended next (operator — completes Sprint 86 validation):**
 
-Operator: complete **Pending** rows on **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`** with **`FabricAuraSkills-2.3.118.jar`**. Top-level **`/item`** and **`/xp`** remain **vanilla**; Granite **`item`** and **`xp`** are **prefixed only**.
+Run the **Pending** rows in-game as **Deskount** (or equivalent staff account with **`auraskills.*`**) on **`FabricAuraSkills-2.3.118.jar`** (or newer): bare **`/storage`**, **`/backup`**, **`/preset`**, prefixed **`item`**, **`backup list`**, **`backup create`** (disposable), **`item register`/`give`** (disposable). Record **Pass** when output is readable plain text. **No code** unless a command still **fails** with correct permissions. Top-level **`/item`** and **`/xp`** remain **vanilla**; Granite **`item`** and **`xp`** are **prefixed only**.
 
 **Screenshots / logs (optional):** (paths or PR)

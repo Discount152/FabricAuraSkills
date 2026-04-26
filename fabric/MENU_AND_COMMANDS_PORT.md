@@ -12,6 +12,8 @@
 
 **Sprint 85 (code):** **`SPRINT_85_MANUAL_COMMAND_TREE_PATCH.md`** — root **`.executes`** + **`requires`** for **`item`**, **`storage`**, **`backup`**, **`preset`** (bare-root parse). Artifact **`2.3.118+`**.
 
+**Sprint 86 (docs):** **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`** — LuckPerms **`auraskills.*`** clarification for staff testing; **readable plain English** command output = **Pass**; **`/auraskills`** = usage root (not a menu); console/RCON vs in-game rows separated. No command code changes in Sprint 86.
+
 This document is the **engineering plan** for shipping **menus and the full command tree together** (one release goal), by **porting Slate** to Fabric instead of writing a second menu engine.
 
 Work still lands in **multiple commits/PRs**; “one big push” means **one coordinated program**, not a single patch.

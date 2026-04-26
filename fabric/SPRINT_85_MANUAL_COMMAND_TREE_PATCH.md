@@ -110,6 +110,15 @@ Normal players without these nodes should see **no** suggestion path / **permiss
 
 - [ ] Without staff **`item`**, **`storage`**, **`backup`**, **`preset`** perms — denied or hidden as expected.
 
+## Sprint 86 — permission context and matrix rules (docs only)
+
+Early smoke runs were often blocked by **LuckPerms** (missing **`auraskills.command.*`** nodes), not by Brigadier bugs. After granting **`auraskills.*`** globally to the tester (**Deskount**), in-game staff commands should be re-evaluated.
+
+- **Readable plain English** (including multi-line admin diagnostics) is **Pass**, not a failure.
+- **`/auraskills`** with a long **usage** line is **expected**; it is **not** a menu command.
+- **Console/RCON** **`storage info`**, **`backup info`**, **`preset list`**, **`auraskills item`** were **confirmed**; in-game rows are updated separately in **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`**.
+- Do **not** treat **Pending** (not yet re-run after **`auraskills.*`**) as **Fail**.
+
 ## Related
 
 - **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`**
