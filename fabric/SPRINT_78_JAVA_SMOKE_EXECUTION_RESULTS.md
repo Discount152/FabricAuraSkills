@@ -55,7 +55,7 @@
 | `/openmenu abilities farming` | **Pending (operator)** | | |
 | `/mana` | **Pending (operator)** | | |
 | `/mana view` | **Pending (operator)** | | self: same as `/mana` (**2.3.116+**); see **SPRINT_83** |
-| `/auraskills xp view <player> <skill>` | **Pending (operator)** | | **Sprint 84:** Granite path only (**no** top-level **`/xp`**); **`2.3.117+`**; readable line (**`FabricGraniteText`**) |
+| `/auraskills xp view <player> <skill>` | **Pass (operator)** | | **Sprint 84+:** Granite path only (**no** top-level **`/xp`**); readable line — see **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`** |
 | `/top` | **Pending (operator)** | | |
 | `/top average` | **Pending (operator)** | | |
 | `/skilltop farming` | **Pending (operator)** | | |
@@ -63,10 +63,10 @@
 | `/skillrank farming` | **Pending (operator)** | | |
 | `/profile skills <player>` | **Pending (operator)** | | self or other (online) per Brigadier rules |
 | `/profile stats <player>` | **Pending (operator)** | | |
-| `/storage info` | **Pending (operator)** | | as **op** / permission |
-| `/backup info` | **Pending (operator)** | | |
-| `/backup list` | **Pending (operator)** | | |
-| `/preset list` | **Pending (operator)** | | |
+| `/storage info` | **Pending (operator)** | | **Sprint 85** (**2.3.118+**): bare **`/storage`** + prefixed roots — **`SPRINT_85_MANUAL_COMMAND_TREE_PATCH.md`** |
+| `/backup info` | **Pending (operator)** | | Same |
+| `/backup list` | **Pending (operator)** | | Same |
+| `/preset list` | **Pending (operator)** | | Same |
 
 ### Two players online (if available, e.g. RedPaint_ / Deskount)
 

@@ -10,6 +10,8 @@
 
 **Sprint 84 (code + operator):** **`SPRINT_84_MANUAL_COMMAND_SMOKE_PATCH.md`** — **`FabricGraniteText`** for **`/xp view`** / **`/skilllevel view`**; no top-level **`/item`** or **`/xp`** (vanilla collision); **`permissionOrNonPlayerSource`** for **`/storage`**, **`/backup`**, **`/preset`**; **`/storage mergeskills`** permission on literal. Re-validate **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`** on **`2.3.117+`**.
 
+**Sprint 85 (code):** **`SPRINT_85_MANUAL_COMMAND_TREE_PATCH.md`** — root **`.executes`** + **`requires`** for **`item`**, **`storage`**, **`backup`**, **`preset`** (bare-root parse). Artifact **`2.3.118+`**.
+
 This document is the **engineering plan** for shipping **menus and the full command tree together** (one release goal), by **porting Slate** to Fabric instead of writing a second menu engine.
 
 Work still lands in **multiple commits/PRs**; “one big push” means **one coordinated program**, not a single patch.

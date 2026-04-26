@@ -64,3 +64,7 @@ Do **not** document top-level **`/item register`** / **`/item give`** as Granite
 - **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`** — update Pass/Fail after your run.
 - **`COMMAND_PARITY_AUDIT.md`** — surface notes for **`/xp`** / **`/item`**.
 - **`Changelog.md`** — **2.3.117**.
+
+## Sprint 85 follow-up (command trees)
+
+Operator screenshots on **`2.3.117`** showed **`item`** / **`storage`** / **`backup`** / **`preset`** still failing when typed **without** a subcommand (Brigadier had **no** root **`.executes`**). Sprint **85** (**`2.3.118`**) adds root usage executors + **`requires`**. See **`SPRINT_85_MANUAL_COMMAND_TREE_PATCH.md`**. XP/skilllevel **view** lines from Sprint **84** are unchanged.

@@ -11,6 +11,7 @@ import dev.aurelium.auraskills.common.storage.file.FileStorageProvider;
 import dev.aurelium.auraskills.common.storage.sql.SqlStorageProvider;
 import dev.aurelium.auraskills.common.user.UserState;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
+import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
@@ -39,6 +40,10 @@ public final class FabricStorageCommands {
         SuggestionProvider<ServerCommandSource> skills =
                 FabricCommandSuggestionProviders.enabledSkillKeys();
         return literal("storage")
+                .requires(
+                        FabricCommandRequirements.permissionOrNonPlayerSource(
+                                FabricCommandPermissions.STORAGE, false))
+                .executes(FabricStorageCommands::executeRootUsage)
                 .then(
                         literal("info")
                                 .requires(
@@ -106,6 +111,14 @@ public final class FabricStorageCommands {
                                                 .executes(
                                                         FabricStorageCommands
                                                                 ::executeRemoveModifiersConfirm)));
+    }
+
+    private static int executeRootUsage(CommandContext<ServerCommandSource> ctx) {
+        ctx.getSource()
+                .sendFeedback(
+                        () -> FabricGraniteText.key("auraskills.granite.command.storage.usage_root"),
+                        false);
+        return 1;
     }
 
     private static int executeInfo(CommandContext<ServerCommandSource> ctx) {

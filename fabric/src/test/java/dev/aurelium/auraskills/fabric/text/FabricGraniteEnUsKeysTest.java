@@ -26,7 +26,11 @@ class FabricGraniteEnUsKeysTest {
                     "auraskills.granite.menu.skills_opened",
                     "auraskills.granite.menu.stats_opened",
                     "auraskills.granite.command.xp.view_line",
-                    "auraskills.granite.command.skilllevel.view_line"
+                    "auraskills.granite.command.skilllevel.view_line",
+                    "auraskills.granite.command.item.usage_root",
+                    "auraskills.granite.command.storage.usage_root",
+                    "auraskills.granite.command.backup.usage_root",
+                    "auraskills.granite.command.preset.usage_root"
                 }) {
             assertTrue(json.contains("\"" + key + "\""), "missing " + key);
         }

@@ -56,6 +56,10 @@
 
 **Doc:** `fabric/SPRINT_84_MANUAL_COMMAND_SMOKE_PATCH.md` — **`2.3.117+`**: **`FabricGraniteText`** for **`/xp view`** and **`/skilllevel view`**; Granite **`item`** / **`xp`** only under **`/auraskills`** and **`/skills|/sk|/skill`**; admin **`permissionOrNonPlayerSource`** + **`/storage mergeskills`** **`requires`** fix. Update **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`** after operator pass. **Bedrock** not in scope.
 
+## Sprint 85 — command tree roots (item / storage / backup / preset)
+
+**Doc:** `fabric/SPRINT_85_MANUAL_COMMAND_TREE_PATCH.md` — **`2.3.118+`**: root **`.executes`** (usage via **`FabricGraniteText`**) and **`requires`** on **`item`**, **`storage`**, **`backup`**, **`preset`** so bare **`/auraskills item`**, **`/storage`**, **`/backup`**, **`/preset`** parse. **`backupFamilyAccess`**, **`anyItemSubcommandPermission`**. Re-validate **`SPRINT_82`** admin/item rows. **Bedrock** not in scope.
+
 ---
 
 ## CI / agent build evidence (in-repo, not a live server)

@@ -22,6 +22,7 @@ import dev.aurelium.auraskills.common.util.text.TextUtil;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.item.FabricItemIgnoreTags;
+import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import dev.aurelium.auraskills.fabric.item.FabricItemModifierLore;
 import dev.aurelium.auraskills.fabric.item.FabricSkillsItemReader;
 import dev.aurelium.auraskills.fabric.item.FabricSkillsItemWriter;
@@ -148,6 +149,8 @@ public final class FabricItemArmorModifierCommands {
 
     public static LiteralArgumentBuilder<ServerCommandSource> itemCommandRoot() {
         return literal("item")
+                .requires(FabricCommandRequirements.anyItemSubcommandPermission())
+                .executes(FabricItemArmorModifierCommands::executeItemRootUsage)
                 .then(
                         literal(LIT_MODIFIER)
                                 .requires(
@@ -397,6 +400,14 @@ public final class FabricItemArmorModifierCommands {
                                                                                                                 .getInteger(
                                                                                                                         ctx,
                                                                                                                         ARG_GIVE_COUNT)))))));
+    }
+
+    private static int executeItemRootUsage(CommandContext<ServerCommandSource> ctx) {
+        ctx.getSource()
+                .sendFeedback(
+                        () -> FabricGraniteText.key("auraskills.granite.command.item.usage_root"),
+                        false);
+        return 1;
     }
 
     public static LiteralArgumentBuilder<ServerCommandSource> armorCommandRoot() {

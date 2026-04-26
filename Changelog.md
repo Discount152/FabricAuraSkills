@@ -2,6 +2,17 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.118
+
+### Changes
+
+- **Fabric: Sprint 85 — command tree roots (`FabricAuraSkills-2.3.118.jar`):**
+  - **`item`:** **`FabricItemArmorModifierCommands#itemCommandRoot`** — root **`.requires(anyItemSubcommandPermission)`** and **`.executes`** sending **`FabricGraniteText`** **`item.usage_root`**, so **`/auraskills|/skills|/sk|/skill item`** parses without a trailing subcommand (fixes Brigadier “incorrect argument” at **`item`** when children existed but the root had no executor).
+  - **`storage`**, **`preset`:** root **`permissionOrNonPlayerSource`** + usage executors (**`storage.usage_root`**, **`preset.usage_root`**); fixes bare **`/storage`** / **`/preset`**.
+  - **`backup`:** root **`backupFamilyAccess()`** (**`BACKUP`** or **`BACKUP_LOAD`** or non-player) + **`backup.usage_root`** usage executor; fixes bare **`/backup`** for load-only or create-only staff.
+  - **`FabricCommandRequirements`:** **`backupFamilyAccess()`**, **`anyItemSubcommandPermission()`**.
+  - **Tests:** **`FabricGraniteEnUsKeysTest`** asserts **`item|storage|backup|preset.usage_root`**. **Brigadier `register()`** is **not** invoked from JUnit (Minecraft bootstrap). **Doc:** **`fabric/SPRINT_85_MANUAL_COMMAND_TREE_PATCH.md`**, **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`**, parity pointers. **Bedrock / Geyser** not run-time tested. **`projectVersion` 2.3.117 → 2.3.118**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test :fabric:build` — **PASS**.
+
 ## 2.3.117
 
 ### Changes

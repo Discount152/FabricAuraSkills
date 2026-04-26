@@ -7,6 +7,7 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import dev.aurelium.auraskills.common.message.type.CommandMessage;
 import dev.aurelium.auraskills.common.util.text.TextUtil;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
+import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -42,6 +43,8 @@ public final class FabricBackupCommands {
 
     public static LiteralArgumentBuilder<ServerCommandSource> backupLiteral() {
         return literal("backup")
+                .requires(FabricCommandRequirements.backupFamilyAccess())
+                .executes(FabricBackupCommands::executeRootUsage)
                 .then(
                         literal("create")
                                 .requires(
@@ -68,6 +71,14 @@ public final class FabricBackupCommands {
                                 .executes(FabricBackupCommands::executeInfo))
                 .then(backupLoadSubtree("load"))
                 .then(backupLoadSubtree("restore"));
+    }
+
+    private static int executeRootUsage(CommandContext<ServerCommandSource> ctx) {
+        ctx.getSource()
+                .sendFeedback(
+                        () -> FabricGraniteText.key("auraskills.granite.command.backup.usage_root"),
+                        false);
+        return 1;
     }
 
     private static LiteralArgumentBuilder<ServerCommandSource> backupLoadSubtree(String name) {
