@@ -183,6 +183,74 @@ class GraniteTemplateItemsTest {
     }
 
     @Test
+    void findAbilityGridDefinition() {
+        GraniteTemplateItem row =
+                new GraniteTemplateItem(
+                        List.of(11),
+                        "minecraft:book",
+                        Optional.empty(),
+                        List.of(),
+                        OptionalInt.empty(),
+                        OptionalInt.empty(),
+                        Optional.of(GraniteTemplateActionNames.ABILITY_ROW));
+        GraniteMenuTemplate t =
+                new GraniteMenuTemplate("abilities", "a", 6, Optional.empty(), Map.of("foo", row), Optional.empty());
+        assertNotNull(GraniteTemplateItems.findAbilityGridDefinition(t));
+        GraniteTemplateItem keyed =
+                new GraniteTemplateItem(
+                        List.of(12),
+                        "minecraft:book",
+                        Optional.empty(),
+                        List.of(),
+                        OptionalInt.empty(),
+                        OptionalInt.empty(),
+                        Optional.of(GraniteTemplateActionNames.ABILITY_ROW));
+        GraniteMenuTemplate t2 =
+                new GraniteMenuTemplate(
+                        "abilities",
+                        "a",
+                        6,
+                        Optional.empty(),
+                        Map.of("ability", keyed, "foo", row),
+                        Optional.empty());
+        assertEquals(keyed, GraniteTemplateItems.findAbilityGridDefinition(t2));
+    }
+
+    @Test
+    void findManaAbilityItemDefinition() {
+        GraniteTemplateItem row =
+                new GraniteTemplateItem(
+                        List.of(31),
+                        "minecraft:nether_star",
+                        Optional.empty(),
+                        List.of(),
+                        OptionalInt.empty(),
+                        OptionalInt.empty(),
+                        Optional.of(GraniteTemplateActionNames.MANA_ABILITY_ROW));
+        GraniteMenuTemplate t =
+                new GraniteMenuTemplate("abilities", "a", 6, Optional.empty(), Map.of("foo", row), Optional.empty());
+        assertNotNull(GraniteTemplateItems.findManaAbilityItemDefinition(t));
+        GraniteTemplateItem keyed =
+                new GraniteTemplateItem(
+                        List.of(32),
+                        "minecraft:nether_star",
+                        Optional.empty(),
+                        List.of(),
+                        OptionalInt.empty(),
+                        OptionalInt.empty(),
+                        Optional.of(GraniteTemplateActionNames.MANA_ABILITY_ROW));
+        GraniteMenuTemplate t2 =
+                new GraniteMenuTemplate(
+                        "abilities",
+                        "a",
+                        6,
+                        Optional.empty(),
+                        Map.of("mana_ability", keyed, "foo", row),
+                        Optional.empty());
+        assertEquals(keyed, GraniteTemplateItems.findManaAbilityItemDefinition(t2));
+    }
+
+    @Test
     void actionEquals() {
         GraniteTemplateItem i =
                 new GraniteTemplateItem(

@@ -64,7 +64,7 @@ GraniteLib (`:granitelib-fabric`, on-disk **`slate-fabric/`) is a **real library
 | Track | Status |
 |-------|--------|
 | **Container / click plumbing** (e.g. `GraniteContainerMenus`) | **Partial** — enough for current built-ins. |
-| **Template loading, YAML layouts, `MenuFileManager`** | **In progress** — v0 YAML + loader (**95**); **`stat_info`** / **`sources`** / **`level_progression`** / **`skills`** / **`stats`** template paths (**96–98**, **100–101**); **Sprint 99** — shared **GraniteLib** helpers + **`FabricGraniteTemplateStacks`** (**`SPRINT_99_TEMPLATE_RUNTIME_CONSOLIDATION.md`**), **action** contract (**`GraniteTemplateActionNames`**); **not** full Slate / disk reload / `MenuFileManager` |
+| **Template loading, YAML layouts, `MenuFileManager`** | **In progress** — v0 YAML + loader (**95**); **`stat_info`** / **`sources`** / **`level_progression`** / **`skills`** / **`stats`** / **`abilities`** template paths (**96–98**, **100–102**); **Sprint 99** — shared **GraniteLib** helpers + **`FabricGraniteTemplateStacks`** (**`SPRINT_99_TEMPLATE_RUNTIME_CONSOLIDATION.md`**), **action** contract (**`GraniteTemplateActionNames`**); **not** full Slate / disk reload / `MenuFileManager` |
 | **Contexts, paging, global items, rich click actions** | **Not complete** |
 | **Public API + docs for external mods** | **Partial / evolving** |
 
@@ -83,6 +83,8 @@ GraniteLib (`:granitelib-fabric`, on-disk **`slate-fabric/`) is a **real library
 **Sprint 100 (`level_progression` template prototype — level grid + paging):** **`SPRINT_100_MANUAL_LEVEL_PROGRESSION_TEMPLATE_PROTOTYPE.md`** — bundled **`assets/auraskills/granite/templates/level_progression.yml`**; **`FabricLevelProgressionTemplateSupport`** + **`FabricLevelProgressionPlaceholders`**; **28** level slots + **previous**/**next** over **1..maxLevel**, **back**/**sources**/**abilities** wired like built-in intent; **`FabricMenuContext#progressionPage`**; strict fallback to **`FabricLevelProgressionMenuGui` built-in**. **Slate** still **not** complete; **Bedrock** deferred.
 
 **Sprint 101 (`skills` / `stats` list template prototypes):** **`SPRINT_101_MANUAL_SKILLS_STATS_TEMPLATE_PROTOTYPE.md`** — bundled **`skills.yml`** / **`stats.yml`**; **`FabricSkillsTemplateSupport`** / **`FabricStatsTemplateSupport`** + local placeholder expanders; **28**-slot grids + **45**/**53** paging; row clicks match built-in (**level progression** / **stat_info** gate); strict fallback to **`FabricSkillsMenuGui`** / **`FabricStatsMenuGui` built-in**. **Slate** still **not** complete; **Bedrock** deferred.
+
+**Sprint 102 (`abilities` template prototype):** **`SPRINT_102_MANUAL_ABILITIES_TEMPLATE_PROTOTYPE.md`** — bundled **`abilities.yml`**; **`FabricAbilitiesTemplateSupport`**; passive grid matches built-in **14** slot order; **mana** + **back** wiring; strict fallback to **`FabricAbilitiesMenuGui` built-in**. **Slate** still **not** complete; **Bedrock** deferred.
 
 ---
 
@@ -108,5 +110,5 @@ GraniteLib (`:granitelib-fabric`, on-disk **`slate-fabric/`) is a **real library
 
 1. **Hold** “final release” until **two-JAR** policy is what operators run in production and docs match.
 2. **Execute** Bedrock validation when a tester exists.
-3. **Drive** Slate/GraniteLib framework work as its own program (Path A) using **`SPRINT_94`**+ docs, not as a side effect of smoke fixes. **Sprint 101** (**`SPRINT_101_MANUAL_SKILLS_STATS_TEMPLATE_PROTOTYPE.md`**, **2.3.129**) templates the **Skills** and **Stats** lobby lists. **Next:** extend template coverage (e.g. **abilities** / **leaderboard**) or incremental placeholder/action depth — still **not** full **`MenuFileManager`** / Slate-complete.
+3. **Drive** Slate/GraniteLib framework work as its own program (Path A) using **`SPRINT_94`**+ docs, not as a side effect of smoke fixes. **Sprint 102** (**`SPRINT_102_MANUAL_ABILITIES_TEMPLATE_PROTOTYPE.md`**, **2.3.130**) templates **abilities** (passive + mana display). **Next:** **leaderboard** template or disk/hot-reload depth — still **not** full **`MenuFileManager`** / Slate-complete.
 4. **Revisit** Jobs / economy bridges only if the owner reopens scope.

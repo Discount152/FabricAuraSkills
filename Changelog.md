@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.130
+
+### Changes
+
+- **Fabric + GraniteLib: Sprint 102 — template-backed `abilities` prototype (`FabricAuraSkills-2.3.130.jar`):** Bundled **`assets/auraskills/granite/templates/abilities.yml`** — **14** passive slots (**same order** as **`FabricAbilitiesMenuGui.builtinAbilityContentSlots()`**), fixed **mana_ability** slot (**31** in bundle; must **not** overlap placed passive slots), **back** at **45**. **`FabricAbilitiesTemplateSupport`** + **`FabricAbilitiesPlaceholders`** (`{skill}`, `{skill_display}`, `{ability}`, `{ability_display}`, `{ability_description}`, `{ability_unlock_level}`, `{ability_status}`, `{mana_ability}`, `{mana_ability_display}`, `{mana_ability_description}`, `{mana_ability_status}`). Status/description strings use **`FabricGraniteText`** server literals (same keys as built-in). **`GraniteTemplateActionNames`:** **`ability_row`**, **`mana_ability_row`**; **`GraniteTemplateItems`:** **`findAbilityGridDefinition`**, **`findManaAbilityItemDefinition`**. **`FabricAbilitiesMenuGui`** tries template first, then **`openBuiltIn`**. Too many passives for grid → built-in. **Tests:** **`FabricAbilitiesBundledTemplateParseTest`**, granitelib template tests, translatable scan. **Docs:** **`fabric/SPRINT_102_MANUAL_ABILITIES_TEMPLATE_PROTOTYPE.md`**, parity pointers. **Slate / `MenuFileManager`** still **not** complete. **Bedrock / Geyser** not tested. **`projectVersion` 2.3.129 → 2.3.130**. **Build:** `.\gradlew -PfabricOnly=true :granitelib-fabric:test :fabric:test :fabric:build` — **PASS**.
+
 ## 2.3.129
 
 ### Changes

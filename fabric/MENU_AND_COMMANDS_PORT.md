@@ -632,6 +632,16 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Gaps (Partial)** | **Not** disk override, **not** hot reload, **not** full action engine, **not** trait lines on template **stats** rows (built-in adds traits; template is placeholder-driven). **Bedrock** not run-time tested. |
 | **Manual** | **`SPRINT_101_MANUAL_SKILLS_STATS_TEMPLATE_PROTOTYPE.md`** |
 
+## Sprint 102 — **abilities** GraniteLib template prototype (passive + mana display) (shipped, bounded)
+
+| Area | Shipped on Fabric (bounded) |
+|------|-----------------------------|
+| **Template** | **`assets/auraskills/granite/templates/abilities.yml`**. Constant **`FabricAbilitiesTemplateSupport.TEMPLATE_RESOURCE_PATH`**. |
+| **Behavior** | **`FabricAbilitiesMenuGui.open`** tries **`FabricAbilitiesTemplateSupport.tryOpen`** first: **fill**, passive **ability** rows (**`ability_row`** / key **`ability`**) in built-in slot order, optional **mana_ability** stack when skill has loaded mana ability (**`mana_ability_row`**), **back** (**45**) → **level progression** with same **`returnToSkillsListPage`**. Row clicks **read-only** (only **Back** wired). On failure → **`openBuiltIn`**. |
+| **Placeholders** | **`FabricAbilitiesPlaceholders`** — see **`SPRINT_102_MANUAL_ABILITIES_TEMPLATE_PROTOTYPE.md`**. Unresolved `{...}` → fallback. |
+| **Gaps (Partial)** | **Not** disk override, **not** hot reload, **not** full action engine; **mana** slot is **YAML-fixed** (built-in uses **next** slot after passives). **Bedrock** not run-time tested. |
+| **Manual** | **`SPRINT_102_MANUAL_ABILITIES_TEMPLATE_PROTOTYPE.md`** |
+
 ## Sprint 98 — **sources** GraniteLib template prototype (dynamic grid) (shipped, bounded)
 
 | Area | Shipped on Fabric (bounded) |

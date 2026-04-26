@@ -105,4 +105,42 @@ public final class GraniteTemplateItems {
         }
         return null;
     }
+
+    /**
+     * Passive abilities grid: YAML key {@code ability}, else first item with
+     * {@link GraniteTemplateActionNames#ABILITY_ROW}.
+     */
+    public static @Nullable GraniteTemplateItem findAbilityGridDefinition(GraniteMenuTemplate template) {
+        GraniteTemplateItem byKey = template.items().get("ability");
+        if (byKey != null) {
+            return byKey;
+        }
+        for (GraniteTemplateItem item : template.items().values()) {
+            if (item.action()
+                    .filter(a -> GraniteTemplateActionNames.ABILITY_ROW.equalsIgnoreCase(a))
+                    .isPresent()) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Mana ability item: YAML key {@code mana_ability}, else first item with
+     * {@link GraniteTemplateActionNames#MANA_ABILITY_ROW}.
+     */
+    public static @Nullable GraniteTemplateItem findManaAbilityItemDefinition(GraniteMenuTemplate template) {
+        GraniteTemplateItem byKey = template.items().get("mana_ability");
+        if (byKey != null) {
+            return byKey;
+        }
+        for (GraniteTemplateItem item : template.items().values()) {
+            if (item.action()
+                    .filter(a -> GraniteTemplateActionNames.MANA_ABILITY_ROW.equalsIgnoreCase(a))
+                    .isPresent()) {
+                return item;
+            }
+        }
+        return null;
+    }
 }

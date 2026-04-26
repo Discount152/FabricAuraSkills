@@ -5,7 +5,7 @@ package dev.granitelib.fabric.template;
  * Fabric gameplay code — this is not a dynamic action engine, only stable identifiers for authors and reviewers.
  *
  * <p>Bundled templates today: {@code stat_info.yml}, {@code sources.yml}, {@code level_progression.yml},
- * {@code skills.yml}, {@code stats.yml}.
+ * {@code skills.yml}, {@code stats.yml}, {@code abilities.yml}.
  */
 public final class GraniteTemplateActionNames {
 
@@ -29,6 +29,12 @@ public final class GraniteTemplateActionNames {
 
     /** One row in the stats list grid (Fabric stats). */
     public static final String STAT_ROW = "stat_row";
+
+    /** One passive ability row (Fabric abilities). */
+    public static final String ABILITY_ROW = "ability_row";
+
+    /** Mana ability display item (Fabric abilities). */
+    public static final String MANA_ABILITY_ROW = "mana_ability_row";
 
     /** Open per-skill sources menu (Fabric level_progression). */
     public static final String OPEN_SOURCES = "open_sources";

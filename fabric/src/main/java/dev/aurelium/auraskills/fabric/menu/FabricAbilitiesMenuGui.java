@@ -31,17 +31,26 @@ import java.util.Locale;
  * One-skill **abilities** view (Bukkit {@code AbilitiesMenu} Slate builder). **Sprint 73:** bounded
  * Granite 6×9 — lists enabled {@link Ability} rows + optional {@link ManaAbility}; **Back** →
  * **level_progression** for the same skill (Bukkit: {@code previous_menu} / global back). Not YAML
- * layout parity.
+ * layout parity. **Sprint 102:** tries bundled GraniteLib template first.
  */
 public final class FabricAbilitiesMenuGui {
 
-    private static final int SLOT_BACK = 45;
+    static final int SLOT_BACK = 45;
     /** Fills row 1 cols 2–8 then row 2 — enough for reference skills (≤3 abilities + mana). */
     private static final int[] CONTENT_SLOTS = {
         11, 12, 13, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26
     };
 
     private FabricAbilitiesMenuGui() {}
+
+    /** Same order as built-in passive ability placement (Sprint 102 template validation). */
+    static List<Integer> builtinAbilityContentSlots() {
+        List<Integer> out = new ArrayList<>(CONTENT_SLOTS.length);
+        for (int s : CONTENT_SLOTS) {
+            out.add(s);
+        }
+        return List.copyOf(out);
+    }
 
     public static void open(
             ServerPlayerEntity menuPlayer, FabricAuraSkills plugin, Skill skill, int returnToSkillsListPage) {
@@ -52,6 +61,18 @@ public final class FabricAbilitiesMenuGui {
         if (user == null) {
             return;
         }
+        if (FabricAbilitiesTemplateSupport.tryOpen(menuPlayer, plugin, skill, returnToSkillsListPage, user)) {
+            return;
+        }
+        openBuiltIn(menuPlayer, plugin, skill, returnToSkillsListPage, user);
+    }
+
+    static void openBuiltIn(
+            ServerPlayerEntity menuPlayer,
+            FabricAuraSkills plugin,
+            Skill skill,
+            int returnToSkillsListPage,
+            User user) {
         Locale lo = user.getLocale();
         AbilityManager am = plugin.getAbilityManager();
         ManaAbilityManager mm = plugin.getManaAbilityManager();
@@ -113,6 +134,10 @@ public final class FabricAbilitiesMenuGui {
                                                         fSkill, pl, plugin, fBackPage));
                     }
                 });
+    }
+
+    static boolean isAbilityNotMaxed(User user, AbstractAbility ability) {
+        return isNotMaxed(user, ability);
     }
 
     private record Placed(int slot, ItemStack stack) {}
