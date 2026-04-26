@@ -16,7 +16,9 @@
 
 **Sprint 87:** **`SPRINT_87_MANUAL_BEDROCK_GEYSER_VALIDATION.md`** — **Bedrock/Geyser** validation is **planned and documented**; **runtime pass deferred** until a **Bedrock** tester is available. **Does not block** Java/Fabric menu polish.
 
-**Recommended next (Java-side):** **Menu item / lore translation sweep** (`FabricGraniteText` / watch-list from **`SPRINT_82`**) unless another Java runtime issue is prioritized.
+**Sprint 88 (code):** **`SPRINT_88_MANUAL_MENU_ITEM_LORE_TRANSLATION_SWEEP.md`** — built-in menu **item names/lore**, **titles** (incl. paging subtitle), **navigation** controls, **leaderboard**/**abilities**/**sources** rows, and **`openmenu`** menu-open feedback use **`FabricGraniteText`** so **vanilla Java** clients do not see raw **`auraskills.granite.*`** in inventory packets. **`2.3.119+`**. **`/sources`** chat listing path still uses **`translatable`** (non-menu).
+
+**Recommended next (Java-side):** Operator validation per **`SPRINT_88`**; optional **`/sources`** chat literal sweep; or **Sprint 87** when a **Bedrock** tester is available.
 
 This document is the **engineering plan** for shipping **menus and the full command tree together** (one release goal), by **porting Slate** to Fabric instead of writing a second menu engine.
 

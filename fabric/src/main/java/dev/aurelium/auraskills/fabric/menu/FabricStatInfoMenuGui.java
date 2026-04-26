@@ -8,6 +8,7 @@ import dev.aurelium.auraskills.common.message.MessageProvider;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.common.util.PlatformUtil;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
+import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import dev.granitelib.fabric.menu.GraniteContainerMenus;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LoreComponent;
@@ -57,7 +58,9 @@ final class FabricStatInfoMenuGui {
         FabricMenuYamlSlice cfg = plugin.getBuiltInMenuConfig().getSlice(FabricMenuKeys.STAT_INFO, def);
         if (!cfg.enabled()) {
             player.sendMessage(
-                    Text.translatable("auraskills.granite.menu.built_in_disabled", FabricMenuKeys.STAT_INFO), false);
+                    FabricGraniteText.key(
+                            "auraskills.granite.menu.built_in_disabled", FabricMenuKeys.STAT_INFO),
+                    false);
             plugin.getScheduler()
                     .executeSync(() -> FabricAuraSkillsMenus.open(FabricAuraSkillsMenus.Id.STATS, player, plugin));
             return;
@@ -68,7 +71,7 @@ final class FabricStatInfoMenuGui {
         MenuHelper menus = plugin.getMenuHelper();
         var util = plugin.getPlatformUtil();
         String displayName = msg.getStatDisplayName(stat, locale, true);
-        Text title = Text.translatable(cfg.titleTranslationKey(), displayName);
+        Text title = FabricGraniteText.key(cfg.titleTranslationKey(), displayName);
         int mainSlot = cfg.mainSlot();
         int backSlot = cfg.backSlot();
         Item mainItem = FabricMenuItemDefinitions.resolveItem(
@@ -83,7 +86,7 @@ final class FabricStatInfoMenuGui {
                     ItemStack main = new ItemStack(mainItem);
                     main.set(
                             DataComponentTypes.ITEM_NAME,
-                            Text.translatable(
+                            FabricGraniteText.key(
                                     cfg.resolveFormatKey(
                                             "main_title",
                                             def,
@@ -91,10 +94,11 @@ final class FabricStatInfoMenuGui {
                                     displayName));
                     List<Text> lore = new ArrayList<>();
                     String levelText = FabricStatsMenuGui.formatStatLevel(stat, user, plugin, locale);
-                    lore.add(Text.translatable(
-                            cfg.resolveFormatKey(
-                                    "lore_value", def, "auraskills.granite.menu.stat_info_lore_value"),
-                            levelText));
+                    lore.add(
+                            FabricGraniteText.key(
+                                    cfg.resolveFormatKey(
+                                            "lore_value", def, "auraskills.granite.menu.stat_info_lore_value"),
+                                    levelText));
                     addDescriptionLore(msg, util, stat, locale, lore);
                     for (Trait trait : stat.getTraits()) {
                         if (lore.size() >= 16) {
@@ -108,15 +112,17 @@ final class FabricStatInfoMenuGui {
                     ItemStack back = new ItemStack(backItem);
                     back.set(
                             DataComponentTypes.ITEM_NAME,
-                            Text.translatable(
+                            FabricGraniteText.key(
                                     cfg.resolveFormatKey("back", def, "auraskills.granite.menu.stat_info_back")));
                     back.set(
                             DataComponentTypes.LORE,
-                            new LoreComponent(List.of(Text.translatable(
-                                    cfg.resolveFormatKey(
-                                            "back_lore",
-                                            def,
-                                            "auraskills.granite.menu.stat_info_back_lore")))));
+                            new LoreComponent(
+                                    List.of(
+                                            FabricGraniteText.key(
+                                                    cfg.resolveFormatKey(
+                                                            "back_lore",
+                                                            def,
+                                                            "auraskills.granite.menu.stat_info_back_lore")))));
                     inv.setStack(backSlot, back);
                 },
                 (topSlot, p, b, t) -> {

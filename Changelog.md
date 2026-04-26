@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.119
+
+### Changes
+
+- **Fabric: Sprint 88 — menu item/lore translation sweep (`FabricAuraSkills-2.3.119.jar`):** Built-in **6×9 Granite menus** no longer send **`Text.translatable("auraskills.granite…")`** for visible **inventory** titles, **item names**, **lore**, **paging** subtitle, or **`openmenu`** menu-open feedback — **`FabricGraniteText.key`** resolves strings on the **server** so **vanilla Java** clients (no mod lang assets) see readable text. Touches **`FabricSkillsMenuGui`**, **`FabricStatsMenuGui`**, **`FabricListMenuPaging`**, **`FabricLevelProgressionMenuGui`**, **`FabricStatInfoMenuGui`**, **`FabricSourcesMenuGui`**, **`FabricUnclaimedItemsMenuGui`**, **`FabricLeaderboardMenuGui`**, **`FabricAbilitiesMenuGui`**, **`FabricMenuRegistry`**; **`FabricOpenMenuCommands`**, **`FabricOpenMenuAbilities`**, **`FabricOpenMenuLeaderboard`**; **`FabricSourcesOpenSupport`** (**`sources.menu_fallback`** only). **`/sources`** paged **chat** listing (**`sendChatListing`**) still uses **`translatable`** (optional follow-up). **Tests:** **`FabricGraniteEnUsKeysTest`** extended; **`FabricMenuGuiTranslatableScanTest`** guards against regressions. **Doc:** **`fabric/SPRINT_88_MANUAL_MENU_ITEM_LORE_TRANSLATION_SWEEP.md`**, **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`**, parity pointers. **Bedrock / Geyser** not run-time tested. **`projectVersion` 2.3.118 → 2.3.119**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test :fabric:build` — **PASS**.
+
 ## 2.3.118
 
 ### Changes

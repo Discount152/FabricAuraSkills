@@ -13,6 +13,7 @@ import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.common.util.math.RomanNumber;
 import dev.aurelium.auraskills.common.util.text.TextUtil;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
+import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import dev.granitelib.fabric.menu.GraniteContainerMenus;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LoreComponent;
@@ -55,7 +56,7 @@ public final class FabricAbilitiesMenuGui {
         AbilityManager am = plugin.getAbilityManager();
         ManaAbilityManager mm = plugin.getManaAbilityManager();
         String skillName = plugin.getMessageProvider().getSkillDisplayName(skill, lo, true);
-        Text title = Text.translatable("auraskills.granite.menu.abilities_title", skillName);
+        Text title = FabricGraniteText.key("auraskills.granite.menu.abilities_title", skillName);
         List<Ability> regular = new ArrayList<>();
         for (Ability a : skill.getAbilities()) {
             if (a.isEnabled()) {
@@ -130,7 +131,7 @@ public final class FabricAbilitiesMenuGui {
         stack.set(DataComponentTypes.ITEM_NAME, Text.literal(name));
         List<Text> lore = new ArrayList<>();
         if (!unlocked) {
-            lore.add(Text.translatable("auraskills.granite.menu.abilities_state_locked"));
+            lore.add(FabricGraniteText.key("auraskills.granite.menu.abilities_state_locked"));
             String desc =
                     TextUtil.replace(
                             am.getBaseDescription(ability, user, false),
@@ -144,13 +145,13 @@ public final class FabricAbilitiesMenuGui {
                             am.getGuaranteedValue(ability, 1));
             lore.addAll(splitDesc(desc, 6));
             lore.add(
-                    Text.translatable(
+                    FabricGraniteText.key(
                             "auraskills.granite.menu.abilities_unlocks_at",
                             RomanNumber.toRoman(ability.getUnlock(), plugin),
                             plugin.getMessageProvider().getSkillDisplayName(skill, lo, true)));
         } else {
             lore.add(
-                    Text.translatable(
+                    FabricGraniteText.key(
                             "auraskills.granite.menu.abilities_state_level",
                             RomanNumber.toRoman(lvl, plugin)));
             if (isNotMaxed(user, ability)) {
@@ -176,7 +177,7 @@ public final class FabricAbilitiesMenuGui {
                                 "{value_2}",
                                 NumberUtil.format1(ability.getSecondaryValue(lvl)));
                 lore.addAll(splitDesc(desc, 5));
-                lore.add(Text.translatable("auraskills.granite.menu.abilities_maxed"));
+                lore.add(FabricGraniteText.key("auraskills.granite.menu.abilities_maxed"));
             }
         }
         stack.set(
@@ -198,11 +199,11 @@ public final class FabricAbilitiesMenuGui {
         stack.set(DataComponentTypes.ITEM_NAME, Text.literal(name));
         List<Text> lore = new ArrayList<>();
         lore.add(
-                Text.translatable(
+                FabricGraniteText.key(
                         "auraskills.granite.menu.abilities_mana_ability",
                         plugin.getMessageProvider().getSkillDisplayName(skill, lo, true)));
         if (!unlocked) {
-            lore.add(Text.translatable("auraskills.granite.menu.abilities_state_locked"));
+            lore.add(FabricGraniteText.key("auraskills.granite.menu.abilities_state_locked"));
             String desc =
                     TextUtil.replace(
                             mm.getBaseDescription(mana, user, false),
@@ -212,13 +213,13 @@ public final class FabricAbilitiesMenuGui {
                             NumberUtil.format1(manaBaseDuration(mana)));
             lore.addAll(splitDesc(desc, 5));
             lore.add(
-                    Text.translatable(
+                    FabricGraniteText.key(
                             "auraskills.granite.menu.abilities_unlocks_at",
                             RomanNumber.toRoman(mana.getUnlock(), plugin),
                             plugin.getMessageProvider().getSkillDisplayName(skill, lo, true)));
         } else {
             lore.add(
-                    Text.translatable(
+                    FabricGraniteText.key(
                             "auraskills.granite.menu.abilities_state_level",
                             RomanNumber.toRoman(lvl, plugin)));
             if (isNotMaxed(user, mana)) {
@@ -240,7 +241,7 @@ public final class FabricAbilitiesMenuGui {
                                 "{duration}",
                                 NumberUtil.format1(AbilityUtil.getDuration(mana, lvl)));
                 lore.addAll(splitDesc(desc, 5));
-                lore.add(Text.translatable("auraskills.granite.menu.abilities_maxed"));
+                lore.add(FabricGraniteText.key("auraskills.granite.menu.abilities_maxed"));
             }
         }
         stack.set(
@@ -268,7 +269,7 @@ public final class FabricAbilitiesMenuGui {
             }
         }
         if (parts.length > maxLines) {
-            out.add(Text.translatable("auraskills.granite.menu.abilities_lore_truncated"));
+            out.add(FabricGraniteText.key("auraskills.granite.menu.abilities_lore_truncated"));
         }
         return out;
     }
@@ -295,10 +296,10 @@ public final class FabricAbilitiesMenuGui {
             return;
         }
         ItemStack s = new ItemStack(item);
-        s.set(DataComponentTypes.ITEM_NAME, Text.translatable(nameKey));
+        s.set(DataComponentTypes.ITEM_NAME, FabricGraniteText.key(nameKey));
         s.set(
                 DataComponentTypes.LORE,
-                new LoreComponent(List.of(Text.translatable(loreKey))));
+                new LoreComponent(List.of(FabricGraniteText.key(loreKey))));
         inv.setStack(slot, s);
     }
 }

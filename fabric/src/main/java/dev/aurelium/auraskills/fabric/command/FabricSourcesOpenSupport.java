@@ -6,6 +6,7 @@ import dev.aurelium.auraskills.api.util.NumberUtil;
 import dev.aurelium.auraskills.common.skill.LoadedSkill;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.menu.FabricAuraSkillsMenus;
+import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
@@ -105,7 +106,7 @@ public final class FabricSourcesOpenSupport {
         } catch (Throwable t) {
             p.logger().warn("Failed to open sources menu", t);
             feedbackSource.sendFeedback(
-                    () -> Text.translatable("auraskills.granite.command.sources.menu_fallback"),
+                    () -> FabricGraniteText.key("auraskills.granite.command.sources.menu_fallback"),
                     false);
             sendChatListing(feedbackSource, lo, skill, list, sort);
         }
@@ -134,7 +135,7 @@ public final class FabricSourcesOpenSupport {
         } catch (Throwable t) {
             p.logger().warn("Failed to open sources menu", t);
             feedbackSource.sendFeedback(
-                    () -> Text.translatable("auraskills.granite.command.sources.menu_fallback"),
+                    () -> FabricGraniteText.key("auraskills.granite.command.sources.menu_fallback"),
                     false);
             sendChatListing(feedbackSource, lo, skill, list, sort);
             return false;

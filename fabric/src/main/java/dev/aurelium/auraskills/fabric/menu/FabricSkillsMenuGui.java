@@ -4,6 +4,7 @@ import dev.aurelium.auraskills.api.skill.Skill;
 import dev.aurelium.auraskills.api.util.NumberUtil;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
+import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import dev.granitelib.fabric.menu.GraniteContainerMenus;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.component.DataComponentTypes;
@@ -83,19 +84,23 @@ final class FabricSkillsMenuGui {
                             int level = user.getSkillLevel(skill);
                             double xp = user.getSkillXp(skill);
                             List<Text> lore = new ArrayList<>();
-                            lore.add(Text.translatable("auraskills.granite.menu.skills_lore_level", level));
                             lore.add(
-                                    Text.translatable("auraskills.granite.menu.skills_lore_xp", NumberUtil.format2(xp)));
+                                    FabricGraniteText.key("auraskills.granite.menu.skills_lore_level", level));
+                            lore.add(
+                                    FabricGraniteText.key(
+                                            "auraskills.granite.menu.skills_lore_xp",
+                                            NumberUtil.format2(xp)));
                             String openDetail = plugin
                                     .getBuiltInMenuConfig()
                                     .resolveListOpenDetailKey(
                                             FabricMenuKeys.SKILLS,
                                             FabricMenuYamlSlice.defaultSkills(),
                                             "auraskills.granite.menu.skills_lore_open_detail");
-                            lore.add(Text.translatable(openDetail));
+                            lore.add(FabricGraniteText.key(openDetail));
                             if (!user.hasSkillPermission(skill)) {
                                 lore.add(
-                                        Text.translatable("auraskills.granite.menu.skills_lore_no_permission"));
+                                        FabricGraniteText.key(
+                                                "auraskills.granite.menu.skills_lore_no_permission"));
                             }
                             stack.set(DataComponentTypes.LORE, new LoreComponent(lore));
                             inv.setStack(slot, stack);
@@ -188,8 +193,8 @@ final class FabricSkillsMenuGui {
             return;
         }
         ItemStack s = new ItemStack(Items.ARROW);
-        s.set(DataComponentTypes.ITEM_NAME, Text.translatable(nameKey));
-        s.set(DataComponentTypes.LORE, new LoreComponent(List.of(Text.translatable(loreKey))));
+        s.set(DataComponentTypes.ITEM_NAME, FabricGraniteText.key(nameKey));
+        s.set(DataComponentTypes.LORE, new LoreComponent(List.of(FabricGraniteText.key(loreKey))));
         inv.setStack(slot, s);
     }
 }

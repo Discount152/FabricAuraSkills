@@ -6,6 +6,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import dev.aurelium.auraskills.api.skill.Skill;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
+import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import dev.aurelium.auraskills.fabric.menu.FabricLeaderboardMenuGui;
 import dev.aurelium.auraskills.fabric.menu.FabricMenuKeys;
 import net.minecraft.server.command.CommandManager;
@@ -155,7 +156,7 @@ public final class FabricOpenMenuLeaderboard {
                             if (sk == null) {
                                 ctx.getSource()
                                         .sendError(
-                                                Text.translatable(
+                                                FabricGraniteText.key(
                                                         "auraskills.granite.command.openmenu"
                                                                 + ".leaderboard_bad_token",
                                                         token));
@@ -164,7 +165,7 @@ public final class FabricOpenMenuLeaderboard {
                             ServerCommandSource s = ctx.getSource();
                             if (!(s.getEntity() instanceof ServerPlayerEntity pl)) {
                                 s.sendError(
-                                        Text.translatable(
+                                        FabricGraniteText.key(
                                                 "auraskills.granite.command.openmenu"
                                                         + ".leaderboard_console"));
                                 return 0;
@@ -172,7 +173,7 @@ public final class FabricOpenMenuLeaderboard {
                             FabricLeaderboardMenuGui.open(
                                     pl, p, FabricLeaderboardMenuGui.Mode.SKILL, sk, 1);
                             s.sendFeedback(
-                                    () -> Text.translatable("auraskills.granite.menu.leaderboard_opened"),
+                                    () -> FabricGraniteText.key("auraskills.granite.menu.leaderboard_opened"),
                                     true);
                             return 1;
                         })
@@ -206,7 +207,7 @@ public final class FabricOpenMenuLeaderboard {
                             if (sk == null) {
                                 ctx.getSource()
                                         .sendError(
-                                                Text.translatable(
+                                                FabricGraniteText.key(
                                                         "auraskills.granite.command.openmenu"
                                                                 + ".leaderboard_bad_token",
                                                         token));
@@ -215,7 +216,7 @@ public final class FabricOpenMenuLeaderboard {
                             ServerCommandSource s = ctx.getSource();
                             if (!(s.getEntity() instanceof ServerPlayerEntity pl)) {
                                 s.sendError(
-                                        Text.translatable(
+                                        FabricGraniteText.key(
                                                 "auraskills.granite.command.openmenu"
                                                         + ".leaderboard_console"));
                                 return 0;
@@ -223,7 +224,7 @@ public final class FabricOpenMenuLeaderboard {
                             FabricLeaderboardMenuGui.open(
                                     pl, p, FabricLeaderboardMenuGui.Mode.SKILL, sk, n);
                             s.sendFeedback(
-                                    () -> Text.translatable("auraskills.granite.menu.leaderboard_opened"),
+                                    () -> FabricGraniteText.key("auraskills.granite.menu.leaderboard_opened"),
                                     true);
                             return 1;
                         })
@@ -253,7 +254,7 @@ public final class FabricOpenMenuLeaderboard {
                             if (o.isEmpty()) {
                                 ctx.getSource()
                                         .sendError(
-                                                Text.translatable(
+                                                FabricGraniteText.key(
                                                         "auraskills.granite.command.xp.player_not_found",
                                                         tName));
                                 return 0;
@@ -289,7 +290,7 @@ public final class FabricOpenMenuLeaderboard {
                             if (o.isEmpty()) {
                                 ctx.getSource()
                                         .sendError(
-                                                Text.translatable(
+                                                FabricGraniteText.key(
                                                         "auraskills.granite.command.xp.player_not_found",
                                                         tName));
                                 return 0;
@@ -298,7 +299,7 @@ public final class FabricOpenMenuLeaderboard {
                             if (sk == null) {
                                 ctx.getSource()
                                         .sendError(
-                                                Text.translatable(
+                                                FabricGraniteText.key(
                                                         "auraskills.granite.command.openmenu.unknown_skill",
                                                         raw));
                                 return 0;
@@ -327,7 +328,7 @@ public final class FabricOpenMenuLeaderboard {
                             ServerCommandSource s = ctx.getSource();
                             if (!(s.getEntity() instanceof ServerPlayerEntity pl)) {
                                 s.sendError(
-                                        Text.translatable(
+                                        FabricGraniteText.key(
                                                 "auraskills.granite.command.openmenu"
                                                         + ".leaderboard_console"));
                                 return 0;
@@ -335,7 +336,7 @@ public final class FabricOpenMenuLeaderboard {
                             int r = act.act(p, s, pl);
                             if (r == 1) {
                                 s.sendFeedback(
-                                        () -> Text.translatable("auraskills.granite.menu.leaderboard_opened"),
+                                        () -> FabricGraniteText.key("auraskills.granite.menu.leaderboard_opened"),
                                         true);
                             }
                             return r;
@@ -360,10 +361,10 @@ public final class FabricOpenMenuLeaderboard {
         if (s.getEntity() instanceof ServerPlayerEntity ex
                 && ex.getUuid().equals(menuRecipient.getUuid())) {
             s.sendFeedback(
-                    () -> Text.translatable("auraskills.granite.menu.leaderboard_opened"), true);
+                    () -> FabricGraniteText.key("auraskills.granite.menu.leaderboard_opened"), true);
         } else {
             s.sendFeedback(
-                    () -> Text.translatable(
+                    () -> FabricGraniteText.key(
                             "auraskills.granite.command.openmenu.opened_for",
                             FabricMenuKeys.LEADERBOARD,
                             menuRecipient.getName().getString()),

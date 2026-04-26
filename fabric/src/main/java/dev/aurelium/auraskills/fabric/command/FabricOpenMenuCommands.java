@@ -211,7 +211,7 @@ public final class FabricOpenMenuCommands {
                     ServerCommandSource s = ctx.getSource();
                     if (!(s.getEntity() instanceof ServerPlayerEntity self)) {
                         s.sendError(
-                                Text.translatable(
+                                FabricGraniteText.key(
                                         "auraskills.granite.command.openmenu.console_specify"));
                         return 0;
                     }
@@ -233,7 +233,7 @@ public final class FabricOpenMenuCommands {
                                     .orElse(null);
                     if (target == null) {
                         s.sendError(
-                                Text.translatable(
+                                FabricGraniteText.key(
                                         "auraskills.granite.command.xp.player_not_found", name));
                         return 0;
                     }
@@ -251,7 +251,7 @@ public final class FabricOpenMenuCommands {
                     ServerCommandSource s = ctx.getSource();
                     if (!(s.getEntity() instanceof ServerPlayerEntity self)) {
                         s.sendError(
-                                Text.translatable(
+                                FabricGraniteText.key(
                                         "auraskills.granite.command.openmenu.console_specify"));
                         return 0;
                     }
@@ -273,7 +273,7 @@ public final class FabricOpenMenuCommands {
                                     .orElse(null);
                     if (target == null) {
                         s.sendError(
-                                Text.translatable(
+                                FabricGraniteText.key(
                                         "auraskills.granite.command.xp.player_not_found", name));
                         return 0;
                     }
@@ -291,7 +291,7 @@ public final class FabricOpenMenuCommands {
                     ServerCommandSource s = ctx.getSource();
                     if (!(s.getEntity() instanceof ServerPlayerEntity self)) {
                         s.sendError(
-                                Text.translatable(
+                                FabricGraniteText.key(
                                         "auraskills.granite.command.openmenu.context.console_specify"));
                         return 0;
                     }
@@ -299,13 +299,13 @@ public final class FabricOpenMenuCommands {
                     Skill skill = FabricCommandSkillParser.parse(p, raw);
                     if (skill == null) {
                         s.sendError(
-                                Text.translatable(
+                                FabricGraniteText.key(
                                         "auraskills.granite.command.openmenu.unknown_skill", raw));
                         return 0;
                     }
                     FabricAuraSkillsMenus.openLevelProgression(skill, self, p);
                     s.sendFeedback(
-                            () -> Text.translatable("auraskills.granite.menu.level_progression_opened"),
+                            () -> FabricGraniteText.key("auraskills.granite.menu.level_progression_opened"),
                             true);
                     return 1;
                 });
@@ -323,14 +323,14 @@ public final class FabricOpenMenuCommands {
                                     .orElse(null);
                     if (target == null) {
                         s.sendError(
-                                Text.translatable(
+                                FabricGraniteText.key(
                                         "auraskills.granite.command.xp.player_not_found", name));
                         return 0;
                     }
                     Skill skill = FabricCommandSkillParser.parse(p, raw);
                     if (skill == null) {
                         s.sendError(
-                                Text.translatable(
+                                FabricGraniteText.key(
                                         "auraskills.granite.command.openmenu.unknown_skill", raw));
                         return 0;
                     }
@@ -347,7 +347,7 @@ public final class FabricOpenMenuCommands {
                     ServerCommandSource s = ctx.getSource();
                     if (!(s.getEntity() instanceof ServerPlayerEntity self)) {
                         s.sendError(
-                                Text.translatable(
+                                FabricGraniteText.key(
                                         "auraskills.granite.command.openmenu.context.console_specify"));
                         return 0;
                     }
@@ -355,13 +355,13 @@ public final class FabricOpenMenuCommands {
                     Stat stat = FabricCommandStatParser.parse(p, raw);
                     if (stat == null) {
                         s.sendError(
-                                Text.translatable(
+                                FabricGraniteText.key(
                                         "auraskills.granite.command.openmenu.unknown_stat", raw));
                         return 0;
                     }
                     FabricAuraSkillsMenus.openStatInfo(stat, self, p);
                     s.sendFeedback(
-                            () -> Text.translatable("auraskills.granite.menu.stat_info_opened"), true);
+                            () -> FabricGraniteText.key("auraskills.granite.menu.stat_info_opened"), true);
                     return 1;
                 });
     }
@@ -378,14 +378,14 @@ public final class FabricOpenMenuCommands {
                                     .orElse(null);
                     if (target == null) {
                         s.sendError(
-                                Text.translatable(
+                                FabricGraniteText.key(
                                         "auraskills.granite.command.xp.player_not_found", name));
                         return 0;
                     }
                     Stat stat = FabricCommandStatParser.parse(p, raw);
                     if (stat == null) {
                         s.sendError(
-                                Text.translatable(
+                                FabricGraniteText.key(
                                         "auraskills.granite.command.openmenu.unknown_stat", raw));
                         return 0;
                     }
@@ -402,7 +402,7 @@ public final class FabricOpenMenuCommands {
                     ServerCommandSource s = ctx.getSource();
                     if (!(s.getEntity() instanceof ServerPlayerEntity self)) {
                         s.sendError(
-                                Text.translatable(
+                                FabricGraniteText.key(
                                         "auraskills.granite.command.openmenu.context.console_specify"));
                         return 0;
                     }
@@ -428,7 +428,7 @@ public final class FabricOpenMenuCommands {
                                     ServerCommandSource s = ctx.getSource();
                                     if (!(s.getEntity() instanceof ServerPlayerEntity self)) {
                                         s.sendError(
-                                                Text.translatable(
+                                                FabricGraniteText.key(
                                                         "auraskills.granite.command.openmenu.context.console_specify"));
                                         return 0;
                                     }
@@ -447,7 +447,7 @@ public final class FabricOpenMenuCommands {
                             String bad = StringArgumentType.getString(ctx, ARG_SORT);
                             ctx.getSource()
                                     .sendError(
-                                            Text.translatable(
+                                            FabricGraniteText.key(
                                                     "auraskills.granite.command.sources.bad_sort",
                                                     bad));
                             return 0;
@@ -466,7 +466,7 @@ public final class FabricOpenMenuCommands {
                                     .orElse(null);
                     if (target == null) {
                         s.sendError(
-                                Text.translatable(
+                                FabricGraniteText.key(
                                         "auraskills.granite.command.xp.player_not_found", name));
                         return 0;
                     }
@@ -490,7 +490,7 @@ public final class FabricOpenMenuCommands {
                                                     .orElse(null);
                                     if (target == null) {
                                         s.sendError(
-                                                Text.translatable(
+                                                FabricGraniteText.key(
                                                         "auraskills.granite.command.xp.player_not_found",
                                                         name));
                                         return 0;
@@ -503,7 +503,7 @@ public final class FabricOpenMenuCommands {
                             String bad = StringArgumentType.getString(ctx, ARG_SORT);
                             ctx.getSource()
                                     .sendError(
-                                            Text.translatable(
+                                            FabricGraniteText.key(
                                                     "auraskills.granite.command.sources.bad_sort",
                                                     bad));
                             return 0;
@@ -521,7 +521,7 @@ public final class FabricOpenMenuCommands {
                     ServerCommandSource s = ctx.getSource();
                     if (!(s.getEntity() instanceof ServerPlayerEntity self)) {
                         s.sendError(
-                                Text.translatable(
+                                FabricGraniteText.key(
                                         "auraskills.granite.command.openmenu.unclaimed_console"));
                         return 0;
                     }
@@ -540,7 +540,7 @@ public final class FabricOpenMenuCommands {
                                     .orElse(null);
                     if (target == null) {
                         s.sendError(
-                                Text.translatable(
+                                FabricGraniteText.key(
                                         "auraskills.granite.command.xp.player_not_found", name));
                         return 0;
                     }
@@ -593,13 +593,13 @@ public final class FabricOpenMenuCommands {
         int sizeAfter = user.getUnclaimedItems().size();
         if (sizeAfter == 0) {
             source.sendFeedback(
-                    () -> Text.translatable("auraskills.granite.command.claimitems.all_claimed"),
+                    () -> FabricGraniteText.key("auraskills.granite.command.claimitems.all_claimed"),
                     false);
             return 1;
         }
         if (touch > 0) {
             source.sendFeedback(
-                    () -> Text.translatable(
+                    () -> FabricGraniteText.key(
                             "auraskills.granite.command.claimitems.partial", sizeAfter, touch),
                     false);
             return 1;
@@ -626,7 +626,7 @@ public final class FabricOpenMenuCommands {
         Skill skill = FabricCommandSkillParser.parse(p, skillRaw);
         if (skill == null) {
             feedbackSource.sendError(
-                    Text.translatable(
+                    FabricGraniteText.key(
                             "auraskills.granite.command.openmenu.unknown_skill", skillRaw));
             return 0;
         }
@@ -636,7 +636,7 @@ public final class FabricOpenMenuCommands {
         List<XpSource> list = FabricSourcesListSupport.buildSorted(loaded, sort, lo);
         if (list.isEmpty()) {
             feedbackSource.sendFeedback(
-                    () -> Text.translatable(
+                    () -> FabricGraniteText.key(
                             "auraskills.granite.command.sources.empty",
                             skill.getDisplayName(lo, false)),
                     false);
@@ -647,7 +647,7 @@ public final class FabricOpenMenuCommands {
                         p, feedbackSource, menuRecipient, lo, skill, list, sort, returnToSkillsListPage);
         if (isSelfPath && sendSelfLineOnOpen && opened) {
             feedbackSource.sendFeedback(
-                    () -> Text.translatable("auraskills.granite.menu.sources_opened"), true);
+                    () -> FabricGraniteText.key("auraskills.granite.menu.sources_opened"), true);
         } else if (!isSelfPath && opened) {
             sendContextMenuForTarget(feedbackSource, menuRecipient, FabricMenuKeys.SOURCES, skillRaw);
         }
@@ -698,19 +698,18 @@ public final class FabricOpenMenuCommands {
                 && srcPlayer.getUuid().equals(target.getUuid())) {
             if (FabricMenuKeys.LEVEL_PROGRESSION.equals(menuId)) {
                 source.sendFeedback(
-                        () -> Text.translatable(
-                                "auraskills.granite.menu.level_progression_opened"),
+                        () -> FabricGraniteText.key("auraskills.granite.menu.level_progression_opened"),
                         true);
             } else if (FabricMenuKeys.STAT_INFO.equals(menuId)) {
                 source.sendFeedback(
-                        () -> Text.translatable("auraskills.granite.menu.stat_info_opened"), true);
+                        () -> FabricGraniteText.key("auraskills.granite.menu.stat_info_opened"), true);
             } else if (FabricMenuKeys.SOURCES.equals(menuId)) {
                 source.sendFeedback(
-                        () -> Text.translatable("auraskills.granite.menu.sources_opened"), true);
+                        () -> FabricGraniteText.key("auraskills.granite.menu.sources_opened"), true);
             }
         } else {
             source.sendFeedback(
-                    () -> Text.translatable(
+                    () -> FabricGraniteText.key(
                             "auraskills.granite.command.openmenu.opened_for_context",
                             menuId,
                             contextKeyRaw,

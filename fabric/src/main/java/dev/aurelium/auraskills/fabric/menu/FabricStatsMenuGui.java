@@ -11,6 +11,7 @@ import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.common.util.PlatformUtil;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.FabricTraitManager;
+import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import dev.granitelib.fabric.menu.GraniteContainerMenus;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LoreComponent;
@@ -194,8 +195,8 @@ final class FabricStatsMenuGui {
             return;
         }
         ItemStack s = new ItemStack(Items.ARROW);
-        s.set(DataComponentTypes.ITEM_NAME, Text.translatable(nameKey));
-        s.set(DataComponentTypes.LORE, new LoreComponent(List.of(Text.translatable(loreKey))));
+        s.set(DataComponentTypes.ITEM_NAME, FabricGraniteText.key(nameKey));
+        s.set(DataComponentTypes.LORE, new LoreComponent(List.of(FabricGraniteText.key(loreKey))));
         inv.setStack(slot, s);
     }
 
@@ -244,7 +245,7 @@ final class FabricStatsMenuGui {
                             FabricMenuKeys.STATS,
                             FabricMenuYamlSlice.defaultStats(),
                             "auraskills.granite.menu.stats_lore_open_detail");
-            lore.add(Text.translatable(openDetail));
+            lore.add(FabricGraniteText.key(openDetail));
         }
         stack.set(DataComponentTypes.LORE, new LoreComponent(lore));
         inv.setStack(slot, stack);

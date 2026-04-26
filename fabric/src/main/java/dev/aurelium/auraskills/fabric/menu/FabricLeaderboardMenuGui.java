@@ -6,6 +6,7 @@ import dev.aurelium.auraskills.common.leaderboard.LeaderboardManager;
 import dev.aurelium.auraskills.common.leaderboard.SkillValue;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.command.FabricCommandLeaderboardText;
+import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import dev.granitelib.fabric.menu.GraniteContainerMenus;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LoreComponent;
@@ -187,12 +188,12 @@ public final class FabricLeaderboardMenuGui {
         return switch (mode) {
             case POWER -> {
                 Text base =
-                        Text.translatable("auraskills.granite.menu.leaderboard_title_power");
+                        FabricGraniteText.key("auraskills.granite.menu.leaderboard_title_power");
                 yield FabricListMenuPaging.appendPageToTitleIfNeeded(base, page0, maxPage0);
             }
             case AVERAGE -> {
                 Text base =
-                        Text.translatable("auraskills.granite.menu.leaderboard_title_average");
+                        FabricGraniteText.key("auraskills.granite.menu.leaderboard_title_average");
                 yield FabricListMenuPaging.appendPageToTitleIfNeeded(base, page0, maxPage0);
             }
             case SKILL -> {
@@ -202,7 +203,7 @@ public final class FabricLeaderboardMenuGui {
                                 : plugin.getMessageProvider()
                                         .getSkillDisplayName(skill, lo, true);
                 Text base =
-                        Text.translatable("auraskills.granite.menu.leaderboard_title_skill", sname);
+                        FabricGraniteText.key("auraskills.granite.menu.leaderboard_title_skill", sname);
                 yield FabricListMenuPaging.appendPageToTitleIfNeeded(base, page0, maxPage0);
             }
         };
@@ -220,12 +221,12 @@ public final class FabricLeaderboardMenuGui {
         ItemStack s = new ItemStack(Items.PAPER);
         s.set(
                 DataComponentTypes.ITEM_NAME,
-                Text.translatable("auraskills.granite.menu.leaderboard_entry_name", rank, name));
+                FabricGraniteText.key("auraskills.granite.menu.leaderboard_entry_name", rank, name));
         s.set(
                 DataComponentTypes.LORE,
                 new LoreComponent(
                         List.of(
-                                Text.translatable(
+                                FabricGraniteText.key(
                                         "auraskills.granite.menu.leaderboard_entry_value", value))));
         return s;
     }
@@ -241,10 +242,10 @@ public final class FabricLeaderboardMenuGui {
             return;
         }
         ItemStack s = new ItemStack(item);
-        s.set(DataComponentTypes.ITEM_NAME, Text.translatable(nameKey));
+        s.set(DataComponentTypes.ITEM_NAME, FabricGraniteText.key(nameKey));
         s.set(
                 DataComponentTypes.LORE,
-                new LoreComponent(List.of(Text.translatable(loreKey))));
+                new LoreComponent(List.of(FabricGraniteText.key(loreKey))));
         inv.setStack(slot, s);
     }
 }

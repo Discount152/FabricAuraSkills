@@ -6,6 +6,7 @@ import dev.aurelium.auraskills.api.util.NumberUtil;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.command.FabricSourceSortType;
+import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import dev.aurelium.auraskills.fabric.command.FabricSourcesListSupport;
 import dev.granitelib.fabric.menu.GraniteContainerMenus;
 import net.minecraft.component.DataComponentTypes;
@@ -68,8 +69,9 @@ final class FabricSourcesMenuGui {
         int from = p * ITEMS_PER_PAGE;
         int to = Math.min(from + ITEMS_PER_PAGE, all.size());
         String skillName = msg.getSkillDisplayName(skill, lo, true);
+        String sortLabel = sortTitle(sort).getString();
         Text baseTitle =
-                Text.translatable("auraskills.granite.menu.sources_title", skillName, sortTitle(sort));
+                FabricGraniteText.key("auraskills.granite.menu.sources_title", skillName, sortLabel);
         Text pageTitle = FabricListMenuPaging.appendPageToTitleIfNeeded(baseTitle, p, maxPage);
         var sub = all.subList(from, to);
         final int fPage = p;
@@ -168,7 +170,7 @@ final class FabricSourcesMenuGui {
     }
 
     private static Text sortTitle(FabricSourceSortType s) {
-        return Text.translatable(
+        return FabricGraniteText.key(
                 "auraskills.granite.sort." + s.name().toLowerCase(Locale.ROOT));
     }
 
@@ -178,10 +180,10 @@ final class FabricSourcesMenuGui {
             return;
         }
         ItemStack s = new ItemStack(item);
-        s.set(DataComponentTypes.ITEM_NAME, Text.translatable(nameKey));
+        s.set(DataComponentTypes.ITEM_NAME, FabricGraniteText.key(nameKey));
         s.set(
                 DataComponentTypes.LORE,
-                new LoreComponent(List.of(Text.translatable(loreKey))));
+                new LoreComponent(List.of(FabricGraniteText.key(loreKey))));
         inv.setStack(slot, s);
     }
 
@@ -194,19 +196,20 @@ final class FabricSourcesMenuGui {
         String unit = s.getUnitName(lo);
         if (unit == null) {
             lore.add(
-                    Text.translatable("auraskills.granite.menu.sources_lore_xp", NumberUtil.format2(s.getXp())));
+                    FabricGraniteText.key(
+                            "auraskills.granite.menu.sources_lore_xp", NumberUtil.format2(s.getXp())));
         } else {
             lore.add(
-                    Text.translatable(
+                    FabricGraniteText.key(
                             "auraskills.granite.menu.sources_lore_xp_per",
                             NumberUtil.format2(s.getXp()),
                             unit));
         }
         lore.add(
-                Text.translatable(
+                FabricGraniteText.key(
                         "auraskills.granite.menu.sources_lore_id", s.getId().toString()));
         lore.add(
-                Text.translatable(
+                FabricGraniteText.key(
                         "auraskills.granite.menu.sources_lore_type", s.getType().getId().toString()));
         st.set(DataComponentTypes.LORE, new LoreComponent(lore));
         return st;

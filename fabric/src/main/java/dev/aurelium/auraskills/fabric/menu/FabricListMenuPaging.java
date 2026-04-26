@@ -1,5 +1,6 @@
 package dev.aurelium.auraskills.fabric.menu;
 
+import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
@@ -64,7 +65,8 @@ public final class FabricListMenuPaging {
         MutableText t = Text.empty();
         t.append(baseTitle);
         t.append(
-                Text.translatable("auraskills.granite.menu.list_paging_subtitle", page + 1, maxPage + 1));
+                FabricGraniteText.key(
+                        "auraskills.granite.menu.list_paging_subtitle", page + 1, maxPage + 1));
         return t;
     }
 }

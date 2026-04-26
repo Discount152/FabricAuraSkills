@@ -83,7 +83,7 @@ public final class FabricMenuRegistry {
             if (!slice.enabled()) {
                 if (player != null) {
                     player.sendMessage(
-                            Text.translatable("auraskills.granite.menu.built_in_disabled", id), false);
+                            FabricGraniteText.key("auraskills.granite.menu.built_in_disabled", id), false);
                 }
                 return;
             }
@@ -94,7 +94,7 @@ public final class FabricMenuRegistry {
             if (!slice.enabled()) {
                 if (player != null) {
                     player.sendMessage(
-                            Text.translatable("auraskills.granite.menu.built_in_disabled", id), false);
+                            FabricGraniteText.key("auraskills.granite.menu.built_in_disabled", id), false);
                 }
                 return;
             }

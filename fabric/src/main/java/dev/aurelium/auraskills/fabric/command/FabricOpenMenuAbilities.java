@@ -5,6 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import dev.aurelium.auraskills.api.skill.Skill;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
+import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import dev.aurelium.auraskills.fabric.menu.FabricAuraSkillsMenus;
 import dev.aurelium.auraskills.fabric.menu.FabricMenuKeys;
 import net.minecraft.server.command.CommandManager;
@@ -60,7 +61,7 @@ public final class FabricOpenMenuAbilities {
                             ServerCommandSource s = ctx.getSource();
                             if (!(s.getEntity() instanceof ServerPlayerEntity self)) {
                                 s.sendError(
-                                        Text.translatable(
+                                        FabricGraniteText.key(
                                                 "auraskills.granite.command.openmenu"
                                                         + ".abilities_console"));
                                 return 0;
@@ -68,14 +69,14 @@ public final class FabricOpenMenuAbilities {
                             Skill def = firstEnabledSkill(p);
                             if (def == null) {
                                 s.sendError(
-                                        Text.translatable(
+                                        FabricGraniteText.key(
                                                 "auraskills.granite.command.openmenu"
                                                         + ".abilities_no_enabled_skill"));
                                 return 0;
                             }
                             FabricAuraSkillsMenus.openAbilities(def, self, p, 0);
                             s.sendFeedback(
-                                    () -> Text.translatable("auraskills.granite.menu.abilities_opened"),
+                                    () -> FabricGraniteText.key("auraskills.granite.menu.abilities_opened"),
                                     true);
                             return 1;
                         })
@@ -97,21 +98,21 @@ public final class FabricOpenMenuAbilities {
                             if (sk != null) {
                                 if (!(s.getEntity() instanceof ServerPlayerEntity self)) {
                                     s.sendError(
-                                            Text.translatable(
+                                            FabricGraniteText.key(
                                                     "auraskills.granite.command.openmenu"
                                                             + ".abilities_console"));
                                     return 0;
                                 }
                                 if (!sk.isEnabled()) {
                                     s.sendError(
-                                            Text.translatable(
+                                            FabricGraniteText.key(
                                                     "auraskills.granite.command"
                                                             + ".skill_root.not_enabled"));
                                     return 0;
                                 }
                                 FabricAuraSkillsMenus.openAbilities(sk, self, p, 0);
                                 s.sendFeedback(
-                                        () -> Text.translatable(
+                                        () -> FabricGraniteText.key(
                                                 "auraskills.granite.menu.abilities_opened"),
                                         true);
                                 return 1;
@@ -121,7 +122,7 @@ public final class FabricOpenMenuAbilities {
                                             s.getServer(), token);
                             if (online.isEmpty()) {
                                 s.sendError(
-                                        Text.translatable(
+                                        FabricGraniteText.key(
                                                 "auraskills.granite.command.openmenu"
                                                         + ".abilities_bad_token",
                                                 token));
@@ -131,7 +132,7 @@ public final class FabricOpenMenuAbilities {
                             Skill def = firstEnabledSkill(p);
                             if (def == null) {
                                 s.sendError(
-                                        Text.translatable(
+                                        FabricGraniteText.key(
                                                 "auraskills.granite.command.openmenu"
                                                         + ".abilities_no_enabled_skill"));
                                 return 0;
@@ -158,7 +159,7 @@ public final class FabricOpenMenuAbilities {
                             var target = FabricCommandPlayerTarget.findOnline(s.getServer(), tname);
                             if (target.isEmpty()) {
                                 s.sendError(
-                                        Text.translatable(
+                                        FabricGraniteText.key(
                                                 "auraskills.granite.command.xp.player_not_found",
                                                 tname));
                                 return 0;
@@ -166,14 +167,14 @@ public final class FabricOpenMenuAbilities {
                             Skill sk = FabricCommandSkillParser.parse(p, raw);
                             if (sk == null) {
                                 s.sendError(
-                                        Text.translatable(
+                                        FabricGraniteText.key(
                                                 "auraskills.granite.command.openmenu.unknown_skill",
                                                 raw));
                                 return 0;
                             }
                             if (!sk.isEnabled()) {
                                 s.sendError(
-                                        Text.translatable(
+                                        FabricGraniteText.key(
                                                 "auraskills.granite.command.skill_root.not_enabled"));
                                 return 0;
                             }
@@ -181,12 +182,12 @@ public final class FabricOpenMenuAbilities {
                             if (s.getEntity() instanceof ServerPlayerEntity ex
                                     && ex.getUuid().equals(target.get().getUuid())) {
                                 s.sendFeedback(
-                                        () -> Text.translatable(
+                                        () -> FabricGraniteText.key(
                                                 "auraskills.granite.menu.abilities_opened"),
                                         true);
                             } else {
                                 s.sendFeedback(
-                                        () -> Text.translatable(
+                                        () -> FabricGraniteText.key(
                                                 "auraskills.granite.command.openmenu.opened_for_context",
                                                 FabricMenuKeys.ABILITIES,
                                                 sk.getId().getKey(),
@@ -207,10 +208,10 @@ public final class FabricOpenMenuAbilities {
         if (source.getEntity() instanceof ServerPlayerEntity sp
                 && sp.getUuid().equals(target.getUuid())) {
             source.sendFeedback(
-                    () -> Text.translatable("auraskills.granite.menu.abilities_opened"), true);
+                    () -> FabricGraniteText.key("auraskills.granite.menu.abilities_opened"), true);
         } else {
             source.sendFeedback(
-                    () -> Text.translatable(
+                    () -> FabricGraniteText.key(
                             "auraskills.granite.command.openmenu.opened_for",
                             FabricMenuKeys.ABILITIES,
                             target.getName().getString()),

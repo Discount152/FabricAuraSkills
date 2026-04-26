@@ -5,6 +5,7 @@ import dev.aurelium.auraskills.api.util.NumberUtil;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.command.FabricSourceSortType;
+import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import dev.aurelium.auraskills.fabric.command.FabricSourcesListSupport;
 import dev.granitelib.fabric.menu.GraniteContainerMenus;
 import net.minecraft.component.DataComponentTypes;
@@ -55,7 +56,8 @@ final class FabricLevelProgressionMenuGui {
                 .getSlice(FabricMenuKeys.LEVEL_PROGRESSION, def);
         if (!cfg.enabled()) {
             player.sendMessage(
-                    Text.translatable("auraskills.granite.menu.built_in_disabled", FabricMenuKeys.LEVEL_PROGRESSION),
+                    FabricGraniteText.key(
+                            "auraskills.granite.menu.built_in_disabled", FabricMenuKeys.LEVEL_PROGRESSION),
                     false);
             plugin.getScheduler()
                     .executeSync(() -> FabricAuraSkillsMenus.open(
@@ -69,7 +71,7 @@ final class FabricLevelProgressionMenuGui {
         Locale locale = user.getLocale();
         var msg = plugin.getMessageProvider();
         String skillName = msg.getSkillDisplayName(skill, locale, true);
-        Text title = Text.translatable(cfg.titleTranslationKey(), skillName);
+        Text title = FabricGraniteText.key(cfg.titleTranslationKey(), skillName);
         int level = user.getSkillLevel(skill);
         double currentXp = user.getSkillXp(skill);
         var xpReqs = plugin.getXpRequirements();
@@ -90,44 +92,49 @@ final class FabricLevelProgressionMenuGui {
                     ItemStack main = new ItemStack(mainItem);
                     main.set(
                             DataComponentTypes.ITEM_NAME,
-                            Text.translatable(
+                            FabricGraniteText.key(
                                     cfg.resolveFormatKey(
                                             "main_title",
                                             def,
                                             "auraskills.granite.menu.level_progression_main_title"),
                                     skillName));
                     List<Text> lore = new ArrayList<>();
-                    lore.add(Text.translatable(
-                            cfg.resolveFormatKey(
-                                    "lore_level",
-                                    def,
-                                    "auraskills.granite.menu.level_progression_lore_level"),
-                            level));
-                    lore.add(Text.translatable(
-                            cfg.resolveFormatKey(
-                                    "lore_xp", def, "auraskills.granite.menu.level_progression_lore_xp"),
-                            NumberUtil.format2(currentXp)));
+                    lore.add(
+                            FabricGraniteText.key(
+                                    cfg.resolveFormatKey(
+                                            "lore_level",
+                                            def,
+                                            "auraskills.granite.menu.level_progression_lore_level"),
+                                    level));
+                    lore.add(
+                            FabricGraniteText.key(
+                                    cfg.resolveFormatKey(
+                                            "lore_xp", def, "auraskills.granite.menu.level_progression_lore_xp"),
+                                    NumberUtil.format2(currentXp)));
                     if (maxed) {
-                        lore.add(Text.translatable(
-                                cfg.resolveFormatKey(
-                                        "lore_maxed",
-                                        def,
-                                        "auraskills.granite.menu.level_progression_lore_maxed")));
+                        lore.add(
+                                FabricGraniteText.key(
+                                        cfg.resolveFormatKey(
+                                                "lore_maxed",
+                                                def,
+                                                "auraskills.granite.menu.level_progression_lore_maxed")));
                     } else {
-                        lore.add(Text.translatable(
-                                cfg.resolveFormatKey(
-                                        "lore_to_next",
-                                        def,
-                                        "auraskills.granite.menu.level_progression_lore_to_next"),
-                                NumberUtil.format2(currentXp),
-                                NumberUtil.format2(xpToNext)));
+                        lore.add(
+                                FabricGraniteText.key(
+                                        cfg.resolveFormatKey(
+                                                "lore_to_next",
+                                                def,
+                                                "auraskills.granite.menu.level_progression_lore_to_next"),
+                                        NumberUtil.format2(currentXp),
+                                        NumberUtil.format2(xpToNext)));
                     }
                     if (!user.hasSkillPermission(skill)) {
-                        lore.add(Text.translatable(
-                                cfg.resolveFormatKey(
-                                        "no_permission",
-                                        def,
-                                        "auraskills.granite.menu.skills_lore_no_permission")));
+                        lore.add(
+                                FabricGraniteText.key(
+                                        cfg.resolveFormatKey(
+                                                "no_permission",
+                                                def,
+                                                "auraskills.granite.menu.skills_lore_no_permission")));
                     }
                     main.set(DataComponentTypes.LORE, new LoreComponent(lore));
                     inv.setStack(mainSlot, main);
@@ -135,27 +142,29 @@ final class FabricLevelProgressionMenuGui {
                     ItemStack back = new ItemStack(backItem);
                     back.set(
                             DataComponentTypes.ITEM_NAME,
-                            Text.translatable(
+                            FabricGraniteText.key(
                                     cfg.resolveFormatKey(
                                             "back", def, "auraskills.granite.menu.level_progression_back")));
                     back.set(
                             DataComponentTypes.LORE,
-                            new LoreComponent(List.of(Text.translatable(
-                                    cfg.resolveFormatKey(
-                                            "back_lore",
-                                            def,
-                                            "auraskills.granite.menu.level_progression_back_lore")))));
+                            new LoreComponent(
+                                    List.of(
+                                            FabricGraniteText.key(
+                                                    cfg.resolveFormatKey(
+                                                            "back_lore",
+                                                            def,
+                                                            "auraskills.granite.menu.level_progression_back_lore")))));
                     inv.setStack(backSlot, back);
 
                     ItemStack openSources = new ItemStack(Items.HOPPER);
                     openSources.set(
                             DataComponentTypes.ITEM_NAME,
-                            Text.translatable("auraskills.granite.menu.level_progression_open_sources"));
+                            FabricGraniteText.key("auraskills.granite.menu.level_progression_open_sources"));
                     openSources.set(
                             DataComponentTypes.LORE,
                             new LoreComponent(
                                     List.of(
-                                            Text.translatable(
+                                            FabricGraniteText.key(
                                                     "auraskills.granite.menu.level_progression_open_sources_lore"))));
                     inv.setStack(SLOT_OPEN_SOURCES, openSources);
                 },
@@ -190,10 +199,9 @@ final class FabricLevelProgressionMenuGui {
                                                             lo)
                                                     .isEmpty()) {
                                                 p.sendMessage(
-                                                        Text.translatable(
+                                                        FabricGraniteText.key(
                                                                 "auraskills.granite.command.sources.empty",
-                                                                s.getDisplayName(
-                                                                        lo, false)),
+                                                                s.getDisplayName(lo, false)),
                                                         false);
                                                 return;
                                             }

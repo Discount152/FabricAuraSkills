@@ -5,6 +5,7 @@ import dev.aurelium.auraskills.common.message.type.MenuMessage;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.common.util.data.KeyIntPair;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
+import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import dev.aurelium.auraskills.fabric.item.FabricItemRegistry;
 import dev.aurelium.auraskills.fabric.item.FabricUnclaimedItemsMerge;
 import dev.granitelib.fabric.menu.GraniteContainerMenus;
@@ -191,10 +192,10 @@ public final class FabricUnclaimedItemsMenuGui {
 
     private static void putControl(Inventory inv, int slot, String nameKey, String loreKey, net.minecraft.item.Item item) {
         ItemStack s = new ItemStack(item);
-        s.set(DataComponentTypes.ITEM_NAME, Text.translatable(nameKey));
+        s.set(DataComponentTypes.ITEM_NAME, FabricGraniteText.key(nameKey));
         s.set(
                 DataComponentTypes.LORE,
-                new LoreComponent(List.of(Text.translatable(loreKey))));
+                new LoreComponent(List.of(FabricGraniteText.key(loreKey))));
         inv.setStack(slot, s);
     }
 
@@ -236,7 +237,7 @@ public final class FabricUnclaimedItemsMenuGui {
         ItemStack s = new ItemStack(Items.BARRIER);
         s.set(
                 DataComponentTypes.ITEM_NAME,
-                Text.translatable("auraskills.granite.menu.unclaimed_unknown"));
+                FabricGraniteText.key("auraskills.granite.menu.unclaimed_unknown"));
         return s;
     }
 }
