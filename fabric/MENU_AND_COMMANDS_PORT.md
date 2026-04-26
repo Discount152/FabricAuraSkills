@@ -656,5 +656,12 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | Area | Notes |
 |------|--------|
 | **Scope** | **Single lane:** `MessageProvider` + UI **action bar** / **level-up title** use **`FabricTextFormatter`** + **`FabricTextAdapter`**, not raw **`Text.literal`** for MiniMessage strings. **No** gameplay/XP change. **Bedrock** not run-time tested. |
-| **Doc** | **`SPRINT_79_MANUAL_TEXT_RENDERING.md`**. **`projectVersion` 2.3.109**. |
+| **Doc** | **`SPRINT_79_MANUAL_TEXT_RENDERING.md`**. **`projectVersion` 2.3.109** (code + JAR). |
+
+## Sprint 80 — **Java smoke re-run + text fix verification** (operator, 2.3.109)
+
+| Area | Notes |
+|------|--------|
+| **Scope** | Deploy **2.3.109** JAR, **full restart** first (Sprint 79 + cache); verify **no raw** MiniMessage in level-up / action bar / title; **Sprint 78** minimum set + console watch. **Not** a feature sprint. **Bedrock** not tested. |
+| **Doc** | **`SPRINT_80_JAVA_TEXT_SMOKE_RESULTS.md`**, **`SPRINT_75_…`**, **`SPRINT_78_…`**. **`projectVersion` 2.3.110** = doc-only revision. |
 

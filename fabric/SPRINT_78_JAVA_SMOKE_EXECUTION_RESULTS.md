@@ -10,6 +10,8 @@
 
 **Doc revision:** `projectVersion` **2.3.108** (Sprint 78 protocol + this file).
 
+**Sprint 80:** Re-execute this matrix on **`FabricAuraSkills-2.3.109.jar`** and record **Sprint 79** text fix proof — see **`SPRINT_80_JAVA_TEXT_SMOKE_RESULTS.md`**. **Full server restart** preferred before first run after upgrading from pre-79 JARs.
+
 ---
 
 ## Artifacts to record when you run (copy into Notes)

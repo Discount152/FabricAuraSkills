@@ -36,6 +36,12 @@
 
 **Watch console** for every command: **ERROR**, mixin, menu click, **missing translation** key, **permission** denials, **raw MiniMessage** in chat/action bar ( **known issue** — record, do **not** treat as a Sprint 78 code fix unless approved).
 
+## Sprint 80 — re-run on **2.3.109** + **Sprint 79** text proof
+
+**Doc:** `fabric/SPRINT_80_JAVA_TEXT_SMOKE_RESULTS.md` — deploy **`FabricAuraSkills-2.3.109.jar`**, **full restart** recommended first (message cache + **Sprint 79** parsing), then verify **no raw** MiniMessage in **level-up chat**, **action bar**, and **title**; re-run the **Sprint 78** minimum set. **In-repo** cannot execute; operators fill **Pass**/**Fail**/**Skip**.
+
+**After Sprint 79:** re-check the **Sprint 78** / **Sprint 75** tables for any row previously marked for **raw tags**; expect **Pass** for engine paths on **2.3.109+** unless a follow-up bug is found.
+
 ---
 
 ## CI / agent build evidence (in-repo, not a live server)

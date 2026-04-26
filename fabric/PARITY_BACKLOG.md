@@ -27,7 +27,8 @@ The following are **not** part of the default **Granite** product roadmap. The *
 - **Sprint 76C** — **`FabricWorldManager#loadWorlds`**: `blockedCheckBlockReplaceWorlds` was never switched from immutable `Set.of()` to a mutable set while the code added config entries — **`SPRINT_76C_STARTUP_BLOCKER_WORLD_MANAGER.md`**, **`projectVersion` 2.3.106**.
 - **Sprint 77** — **Java dedicated smoke (process):** **Startup validation PASS** on **FabricAuraSkills 2.3.106** + external **GraniteLib 2.3.104**; **partial** proof: two **Java** players opened **Skills** menu — **`SPRINT_77_JAVA_COMMAND_MENU_SMOKE_RESULTS.md`**. **Bedrock** paths **not** tested. **`projectVersion` 2.3.107** documents the Sprint 77 doc revision.
 - **Sprint 78** — **Java minimum smoke execution (operator):** **`SPRINT_78_JAVA_SMOKE_EXECUTION_RESULTS.md`** + **`SPRINT_75_…`**, **Pending** until human fill. **`projectVersion` 2.3.108** (protocol). **In-repo agent** cannot run in-game smoke.
-- **Sprint 79** — **Fabric text / MiniMessage (code):** **`FabricMessageProvider`** + **`FabricUiProvider`** — **`SPRINT_79_MANUAL_TEXT_RENDERING.md`**, **`projectVersion` 2.3.109**. **Sprint 78** “raw tags” item **addressed in code**; **operator re-test** on **2.3.109+** still **NRP** for full matrix. **Bedrock** not tested.
+- **Sprint 79** — **Fabric text / MiniMessage (code):** **`FabricMessageProvider`** + **`FabricUiProvider`** — **`SPRINT_79_MANUAL_TEXT_RENDERING.md`**, **`projectVersion` 2.3.109** (JAR).
+- **Sprint 80** — **Java smoke + text re-verify (operator):** **`SPRINT_80_JAVA_TEXT_SMOKE_RESULTS.md`** — run on **2.3.109**, **full restart** recommended, fill **Pass/Fail**; **`projectVersion` 2.3.110** (doc). **NRP** until operator. **Bedrock** not tested.
 
 ## Geyser / Floodgate / Bedrock (cross-platform acceptance)
 

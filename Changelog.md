@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.110
+
+### Changes
+
+- **Process: Java text smoke re-run (Sprint 80):** Adds **`SPRINT_80_JAVA_TEXT_SMOKE_RESULTS.md`** — operator checklist to deploy **`FabricAuraSkills-2.3.109.jar`**, **full restart** (recommended) for **MessageProvider** cache, verify **Sprint 79** **level-up** / **action bar** / **title** formatting, and re-run **Sprint 78** minimum set. **No code** change. Updates **`SPRINT_75_…`**, **`SPRINT_78_…`**, **MENU** / **PARITY_BACKLOG** / **PARITY_AUDIT_LEDGER** / **COMMAND_PARITY_AUDIT**. **Bedrock** not tested. **`projectVersion` 2.3.109 → 2.3.110** (doc). **Build:** `.\gradlew -PfabricOnly=true :fabric:test` — **PASS** expected.
+
 ## 2.3.109
 
 ### Changes

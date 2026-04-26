@@ -4,7 +4,9 @@
 
 **Sprint 78 (Java minimum execution):** **`SPRINT_78_JAVA_SMOKE_EXECUTION_RESULTS.md`** is where **per-command** **Pass/Fail** for the **minimum** set should be recorded; the audit table below is **not** re-scored in-repo.
 
-**Sprint 79 (Fabric text):** **`FabricMessageProvider`** + **`FabricUiProvider`** now parse **MiniMessage**-style content like Bukkit **`TextFormatter`**; command **roots** are unchanged, **output formatting** to clients is fixed. **Re-run** host smoke on **2.3.109+** for proof.
+**Sprint 79 (Fabric text):** **`FabricMessageProvider`** + **`FabricUiProvider`** now parse **MiniMessage**-style content like Bukkit **`TextFormatter`**; command **roots** are unchanged, **output formatting** to clients is fixed.
+
+**Sprint 80 (operator):** **Runtime** proof on **2.3.109** — see **`SPRINT_80_JAVA_TEXT_SMOKE_RESULTS.md`**. The audit table below is not re-scored in-repo.
 
 **Runtime product:** **Fabric** + **Geyser/Floodgate**; **Bukkit** `CommandRegistrar` + ACF is the **in-repo reference only**, not a second shipped runtime.
 

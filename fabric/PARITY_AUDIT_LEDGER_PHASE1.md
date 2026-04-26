@@ -4,7 +4,7 @@
 
 **Purpose:** Expand the seeded **`fabricauraskills_parity_audit_sheet.xlsx`** into a **repo-anchored** planning spine using this file as the **canonical Pass 1** list (bootstrap + commands + menus + listener map). The **workbook** is the editable **dashboard** (charts, filters); it must not become a second source of truth — **if a row disagrees, this markdown in-repo wins** until reconciled.
 
-**Sprint 77 / 78 (process) + 79 (code):** **Startup** is **PASS** in operator logs for **FabricAuraSkills 2.3.106**; **Java** **Skills** menu **partial** (Sprint 77). **Sprint 78** **minimum** smoke table **NRP** (operator). **Sprint 79** — **MiniMessage** pipeline fixed (**`FabricMessageProvider`**, **`FabricUiProvider`**) for chat / action bar / level-up title; **`SPRINT_79_MANUAL_TEXT_RENDERING.md`**. Re-test **2.3.109+** on host. **Bedrock/Geyser** player text **NRP**.
+**Sprint 77 / 78 (process) + 79 (code) + 80 (operator re-run):** **Startup** was **PASS** for **2.3.106** (Sprint 77). **Sprint 78** minimum table **NRP**. **Sprint 79** fixed **MiniMessage** pipeline ( **`SPRINT_79_MANUAL_TEXT_RENDERING.md`**, JAR **2.3.109**). **Sprint 80** — in-game **2.3.109** smoke + text proof: **`SPRINT_80_JAVA_TEXT_SMOKE_RESULTS.md`**, doc **`2.3.110`**, **NRP** until operator. **Bedrock/Geyser** **NRP**.
 
 **Reference anchor files (Bukkit module — audit source, not runtime):** `bukkit/.../AuraSkills.java`, `CommandRegistrar.java`, `MenuRegistrar.java` (plus current Fabric mappings in `fabric/...`).
 
