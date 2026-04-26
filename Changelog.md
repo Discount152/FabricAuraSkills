@@ -8,6 +8,10 @@ Changelog for versions since 2.0.0.
 
 - **Granite: Smart idle bar — single observed snapshot (Sprint 81C):** Replaced **stable** + **in-window** dual baselines with one **last-observed** displayed tuple **(h, maxH, m, maxM)**. **`visibleUntilMs` extends only when that tuple changes** from the previous tick (see **`SmartIdleObsDisplay`**). Fixes smart mode still **sticking** like **always** after health/mana triggers when the **in-window** branch or **stable** logic still re-extended every frame. **Off** / **Always** unchanged. **Tests:** `SmartIdleObsDisplayTest` (`common`); removed obsolete **81B-only** `ActionBarManagerSmartIdleStableTest`. **Doc:** `fabric/SPRINT_81C_MANUAL_SMART_ACTION_BAR_STUCK_FIX.md`; **81B** note (partial fix superseded). **`projectVersion` 2.3.113 → 2.3.114**. **Build:** `.\gradlew -PfabricOnly=true :common:test :fabric:test :fabric:build`; **Bukkit:** `.\gradlew :bukkit:compileJava` (unchanged API). **Bedrock** not tested.
 
+### Runtime validation (Sprint 81C)
+
+- **Action bar smart mode — operator Pass (2026-04-21):** Confirmed on **`2.3.114`**: **smart** — bar appears on trigger, clears after the visibility window, **Litematica** / other text usable when idle; **off** / **always** baselines match design. **Sprint 81C** marked **Accepted** in **`fabric/SPRINT_81C_MANUAL_SMART_ACTION_BAR_STUCK_FIX.md`**. **Bedrock / Geyser** not in scope for this proof. **Next (process):** continue **Java** smoke matrix (**`SPRINT_80_JAVA_TEXT_SMOKE_RESULTS.md`**, **`SPRINT_78`**) or schedule **Bedrock** validation when ready.
+
 ## 2.3.113
 
 ### Changes

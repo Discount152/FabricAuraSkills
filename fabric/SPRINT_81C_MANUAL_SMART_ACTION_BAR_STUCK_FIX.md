@@ -2,18 +2,30 @@
 
 | Field | Value |
 |--------|--------|
+| **Sprint 81C status** | **Accepted / validated** (runtime) |
 | **Tested artifact** | **`projectVersion` 2.3.114** → `FabricAuraSkills-2.3.114.jar` |
+| **Validation date (in-repo)** | **2026-04-21** — operator confirmed; see **Pass / fail** and **Operator result** below. |
 | **Depends on** | **81** (smart), **81A** (migration + `/abtoggle` forms), **81B** (first stable-diff guard — **superseded** for remaining stickiness) |
 
-## Corrected runtime finding
+## Final product model (action bar lane — closed)
 
-| Mode   | Operator observation |
-|--------|------------------------|
-| **off**  | Hides correctly — no rogue bypass of `ActionBarIdleMode` |
-| **always** | Stays on — expected |
-| **smart**  | Stuck on after health/mana trigger (bug) |
+| Mode | Behavior |
+|------|----------|
+| **off** | Granite health/mana **hidden** on the idle action bar. |
+| **always** | **Persistent** idle health/mana display (legacy-style, when the idle line is active). |
+| **smart** | **Temporary** idle health/mana only when **relevant** (visibility windows); no sticky “always-like” hold after triggers once **`SmartIdleObsDisplay`** is in use (**2.3.114+**). |
 
-**Implication:** The authority path and mode checks are respected. **`/abtoggle status`** should stay **Smart** while the bar is wrong — a **visibility extension** issue, not **idle_mode** mutation.
+This closes the **action bar conflict** lane (smart vs Litematica / other mods) for the **Java** Fabric product path in repo.
+
+## Runtime finding (pre-fix vs validated post-fix)
+
+| Mode | Before 81C (bug) | After 81C (validated) |
+|------|------------------|------------------------|
+| **off** | Hides — mode respected | Hides — unchanged |
+| **always** | Stays on — expected | Stays on — unchanged |
+| **smart** | Stuck on after health/mana trigger | **Bar appears on trigger, then disappears** after the smart window; Litematica / other action bar text **visible** when Granite is idle; **`/abtoggle status`** remains **Smart** |
+
+**Implication (diagnosis):** The sticky smart bar was a **`visibleUntilMs` extension** issue, not **idle_mode** mutation. **`/abtoggle status`** staying **Smart** while the bar was wrong pointed at **Case B** (visibility), fixed by **81C**.
 
 ## Root cause (81C, final)
 
@@ -76,18 +88,26 @@ Sprint **81B** fixed **one** re-extension path: **stable** vs current while alre
 
 | Check | Result | Notes |
 |--------|--------|--------|
-| Off / Always / Smart baseline | | |
-| Post-trigger smart hides | | |
-| `/abtoggle status` after | | |
-| Litematica idle | | |
+| Off / Always / Smart baseline | **Pass** | Per operator sign-off |
+| Post-trigger smart hides | **Pass** | After smart visibility window |
+| `/abtoggle status` after | **Pass** | Remains **Smart** |
+| Litematica idle | **Pass** | Other action bar text when Granite idle |
+| Sticky bar resolved | **Pass** | **81C** accepted |
+
+## Operator result (in-repo)
+
+| Field | Value |
+|--------|--------|
+| **Result** | **Pass** — Sprint **81C** runtime **accepted** |
+| **Confirmed** | Smart: bar on when triggered, off after window, Litematica when idle; **off** / **always** as expected. |
+| **Bedrock** | **Not** validated this round (unchanged) |
 
 ## Remaining limitations
 
 - **Rapid** oscillation of *displayed* integers (e.g. 20↔21 every tick) would still extend each time the tuple changes; that is a **separate** display/rounding issue, not the “same state rediscovered from stable” bug.  
 - Non-EN locale gaps for `toggle.*` (same as 81A) still possible.
 
-## Operator result (in-repo)
+## Next steps (out of band for 81C)
 
-| Filled by | _pending_ |
-|-----------|-----------|
-| **Result** | **NRP** until human run |
+- **Java smoke matrix:** continue from **`SPRINT_80_JAVA_TEXT_SMOKE_RESULTS.md`** / **`SPRINT_78`** minimum set on current artifacts.  
+- **Bedrock / Geyser:** plan a **dedicated** validation sprint when ready — **81C** proof is **Java-only** in this doc.
