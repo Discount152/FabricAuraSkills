@@ -19,7 +19,9 @@ class FabricMenuGuiTranslatableScanTest {
     private static final List<String> SOURCES_RELATIVE =
             List.of(
                     "src/main/java/dev/aurelium/auraskills/fabric/menu/FabricSkillsMenuGui.java",
+                    "src/main/java/dev/aurelium/auraskills/fabric/menu/FabricSkillsTemplateSupport.java",
                     "src/main/java/dev/aurelium/auraskills/fabric/menu/FabricStatsMenuGui.java",
+                    "src/main/java/dev/aurelium/auraskills/fabric/menu/FabricStatsTemplateSupport.java",
                     "src/main/java/dev/aurelium/auraskills/fabric/menu/FabricListMenuPaging.java",
                     "src/main/java/dev/aurelium/auraskills/fabric/menu/FabricLevelProgressionMenuGui.java",
                     "src/main/java/dev/aurelium/auraskills/fabric/menu/FabricStatInfoMenuGui.java",

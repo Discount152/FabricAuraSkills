@@ -31,7 +31,7 @@ import java.util.Locale;
  * Stats: one entry per enabled {@link Stat} (Bukkit {@code stats.yml} spirit). **Sprint 31:** when
  * {@link Option#MENUS_STAT_INFO_ENABLED} is on, list click opens {@link FabricStatInfoMenuGui}. **Sprint
  * 36:** list row item from {@code granite.items.list}. **Sprint 37:** paged list + {@code
- * granite.paging}.
+ * granite.paging}. **Sprint 101:** tries bundled GraniteLib template first.
  */
 final class FabricStatsMenuGui {
 
@@ -41,6 +41,18 @@ final class FabricStatsMenuGui {
     static void open(
             ServerPlayerEntity player, FabricAuraSkills plugin, Text title, FabricMenuContext context) {
         User user = plugin.getUserManager().getUser(player.getUuid());
+        if (FabricStatsTemplateSupport.tryOpen(player, plugin, context, user)) {
+            return;
+        }
+        openBuiltIn(player, plugin, title, context, user);
+    }
+
+    private static void openBuiltIn(
+            ServerPlayerEntity player,
+            FabricAuraSkills plugin,
+            Text title,
+            FabricMenuContext context,
+            User user) {
         Locale locale = user.getLocale();
         MessageProvider msg = plugin.getMessageProvider();
         MenuHelper menus = plugin.getMenuHelper();

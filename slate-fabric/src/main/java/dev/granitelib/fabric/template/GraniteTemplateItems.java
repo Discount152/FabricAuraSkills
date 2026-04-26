@@ -73,4 +73,36 @@ public final class GraniteTemplateItems {
         }
         return null;
     }
+
+    /** Skills list grid: YAML key {@code skill}, else first item with {@link GraniteTemplateActionNames#SKILL_ROW}. */
+    public static @Nullable GraniteTemplateItem findSkillGridDefinition(GraniteMenuTemplate template) {
+        GraniteTemplateItem byKey = template.items().get("skill");
+        if (byKey != null) {
+            return byKey;
+        }
+        for (GraniteTemplateItem item : template.items().values()) {
+            if (item.action()
+                    .filter(a -> GraniteTemplateActionNames.SKILL_ROW.equalsIgnoreCase(a))
+                    .isPresent()) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    /** Stats list grid: YAML key {@code stat}, else first item with {@link GraniteTemplateActionNames#STAT_ROW}. */
+    public static @Nullable GraniteTemplateItem findStatGridDefinition(GraniteMenuTemplate template) {
+        GraniteTemplateItem byKey = template.items().get("stat");
+        if (byKey != null) {
+            return byKey;
+        }
+        for (GraniteTemplateItem item : template.items().values()) {
+            if (item.action()
+                    .filter(a -> GraniteTemplateActionNames.STAT_ROW.equalsIgnoreCase(a))
+                    .isPresent()) {
+                return item;
+            }
+        }
+        return null;
+    }
 }

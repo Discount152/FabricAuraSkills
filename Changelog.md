@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.129
+
+### Changes
+
+- **Fabric + GraniteLib: Sprint 101 — template-backed `skills` and `stats` list menus (`FabricAuraSkills-2.3.129.jar`):** Bundled **`assets/auraskills/granite/templates/skills.yml`** and **`stats.yml`** — **28-slot** grids (same 7×4 order as **`sources`**), **previous/next** at built-in defaults (**45** / **53**). **`FabricSkillsTemplateSupport`** + **`FabricSkillsPlaceholders`** (`{skill}`, `{skill_display}`, `{skill_level}`, `{skill_xp}`, `{skill_xp_in_level}` alias of **`skill_xp`**, `{page}`, `{total_pages}`); **`FabricStatsTemplateSupport`** + **`FabricStatsPlaceholders`** (`{stat}`, `{stat_display}`, `{stat_value}`, `{stat_description}`, `{page}`, `{total_pages}`). **Clicks:** **`skill_row`** → **`FabricAuraSkillsMenus.openLevelProgression`** (permission gate + no-permission lore line like built-in); **`stat_row`** → **`openStatInfo`** when **`MENUS_STAT_INFO_ENABLED`** (same as built-in). **`GraniteTemplateActionNames`:** **`skill_row`**, **`stat_row`**; **`GraniteTemplateItems`:** **`findSkillGridDefinition`**, **`findStatGridDefinition`**. **`FabricSkillsMenuGui`** / **`FabricStatsMenuGui`** try template first, then existing built-in. **Tests:** **`FabricSkillsStatsBundledTemplateParseTest`**, **`GraniteTemplateItemsTest`** / **`GraniteTemplateActionNamesTest`**, translatable scan paths. **Docs:** **`fabric/SPRINT_101_MANUAL_SKILLS_STATS_TEMPLATE_PROTOTYPE.md`**, parity pointers. **Slate / `MenuFileManager`** still **not** complete. **Bedrock / Geyser** not tested. **`projectVersion` 2.3.128 → 2.3.129**. **Build:** `.\gradlew -PfabricOnly=true :granitelib-fabric:test :fabric:test :fabric:build` — **PASS**.
+
 ## 2.3.128
 
 ### Changes

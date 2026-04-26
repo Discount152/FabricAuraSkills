@@ -4,7 +4,8 @@ package dev.granitelib.fabric.template;
  * Documented v0 action string contract for bundled GraniteLib YAML templates (Sprint 99). Values are wired in
  * Fabric gameplay code — this is not a dynamic action engine, only stable identifiers for authors and reviewers.
  *
- * <p>Bundled templates today: {@code stat_info.yml}, {@code sources.yml}, {@code level_progression.yml}.
+ * <p>Bundled templates today: {@code stat_info.yml}, {@code sources.yml}, {@code level_progression.yml},
+ * {@code skills.yml}, {@code stats.yml}.
  */
 public final class GraniteTemplateActionNames {
 
@@ -22,6 +23,12 @@ public final class GraniteTemplateActionNames {
 
     /** One cell in the level progression grid (Fabric level_progression). */
     public static final String LEVEL_ROW = "level_row";
+
+    /** One row in the skills list grid (Fabric skills). */
+    public static final String SKILL_ROW = "skill_row";
+
+    /** One row in the stats list grid (Fabric stats). */
+    public static final String STAT_ROW = "stat_row";
 
     /** Open per-skill sources menu (Fabric level_progression). */
     public static final String OPEN_SOURCES = "open_sources";

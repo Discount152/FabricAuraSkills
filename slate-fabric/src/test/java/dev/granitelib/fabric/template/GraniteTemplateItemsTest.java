@@ -125,6 +125,64 @@ class GraniteTemplateItemsTest {
     }
 
     @Test
+    void findSkillGridDefinition() {
+        GraniteTemplateItem row =
+                new GraniteTemplateItem(
+                        List.of(10),
+                        "minecraft:book",
+                        Optional.empty(),
+                        List.of(),
+                        OptionalInt.empty(),
+                        OptionalInt.empty(),
+                        Optional.of(GraniteTemplateActionNames.SKILL_ROW));
+        GraniteMenuTemplate t =
+                new GraniteMenuTemplate("skills", "s", 6, Optional.empty(), Map.of("foo", row), Optional.empty());
+        assertNotNull(GraniteTemplateItems.findSkillGridDefinition(t));
+        GraniteTemplateItem keyed =
+                new GraniteTemplateItem(
+                        List.of(11),
+                        "minecraft:book",
+                        Optional.empty(),
+                        List.of(),
+                        OptionalInt.empty(),
+                        OptionalInt.empty(),
+                        Optional.of(GraniteTemplateActionNames.SKILL_ROW));
+        GraniteMenuTemplate t2 =
+                new GraniteMenuTemplate(
+                        "skills", "s", 6, Optional.empty(), Map.of("skill", keyed, "foo", row), Optional.empty());
+        assertEquals(keyed, GraniteTemplateItems.findSkillGridDefinition(t2));
+    }
+
+    @Test
+    void findStatGridDefinition() {
+        GraniteTemplateItem row =
+                new GraniteTemplateItem(
+                        List.of(10),
+                        "minecraft:book",
+                        Optional.empty(),
+                        List.of(),
+                        OptionalInt.empty(),
+                        OptionalInt.empty(),
+                        Optional.of(GraniteTemplateActionNames.STAT_ROW));
+        GraniteMenuTemplate t =
+                new GraniteMenuTemplate("stats", "s", 6, Optional.empty(), Map.of("foo", row), Optional.empty());
+        assertNotNull(GraniteTemplateItems.findStatGridDefinition(t));
+        GraniteTemplateItem keyed =
+                new GraniteTemplateItem(
+                        List.of(11),
+                        "minecraft:book",
+                        Optional.empty(),
+                        List.of(),
+                        OptionalInt.empty(),
+                        OptionalInt.empty(),
+                        Optional.of(GraniteTemplateActionNames.STAT_ROW));
+        GraniteMenuTemplate t2 =
+                new GraniteMenuTemplate(
+                        "stats", "s", 6, Optional.empty(), Map.of("stat", keyed, "foo", row), Optional.empty());
+        assertEquals(keyed, GraniteTemplateItems.findStatGridDefinition(t2));
+    }
+
+    @Test
     void actionEquals() {
         GraniteTemplateItem i =
                 new GraniteTemplateItem(

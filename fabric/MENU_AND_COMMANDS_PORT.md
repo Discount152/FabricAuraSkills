@@ -622,6 +622,16 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Gaps (Partial)** | **Not** disk override, **not** hot reload, **not** full action engine, **not** Slate **`MenuFileManager`** parity. **Bedrock** not run-time tested. |
 | **Manual** | **`SPRINT_100_MANUAL_LEVEL_PROGRESSION_TEMPLATE_PROTOTYPE.md`** |
 
+## Sprint 101 — **skills** / **stats** GraniteLib template prototypes (list grids) (shipped, bounded)
+
+| Area | Shipped on Fabric (bounded) |
+|------|-----------------------------|
+| **Templates** | **`assets/auraskills/granite/templates/skills.yml`**, **`stats.yml`**. Constants **`FabricSkillsTemplateSupport.TEMPLATE_RESOURCE_PATH`**, **`FabricStatsTemplateSupport.TEMPLATE_RESOURCE_PATH`**. |
+| **Behavior** | **`FabricSkillsMenuGui.open`** / **`FabricStatsMenuGui.open`** try **`FabricSkillsTemplateSupport.tryOpen`** / **`FabricStatsTemplateSupport.tryOpen`** first: **fill**, **28** list slots (same order as **`FabricSourcesMenuGui.builtinSourceGridSlots()`**), **previous / next** at **45** / **53** (built-in paging defaults). **Skills:** row click → **level progression** with current **Skills** list page; **permission** gate + extra no-permission lore line. **Stats:** row click → **stat_info** when **`menus.stat_info.enabled`** (else no-op, like built-in). On failure → **existing built-in** list GUIs. |
+| **Placeholders** | **Skills:** **`FabricSkillsPlaceholders`**. **Stats:** **`FabricStatsPlaceholders`** (includes **`stat_description`** truncated like built-in list). Unresolved `{...}` → fallback. |
+| **Gaps (Partial)** | **Not** disk override, **not** hot reload, **not** full action engine, **not** trait lines on template **stats** rows (built-in adds traits; template is placeholder-driven). **Bedrock** not run-time tested. |
+| **Manual** | **`SPRINT_101_MANUAL_SKILLS_STATS_TEMPLATE_PROTOTYPE.md`** |
+
 ## Sprint 98 — **sources** GraniteLib template prototype (dynamic grid) (shipped, bounded)
 
 | Area | Shipped on Fabric (bounded) |

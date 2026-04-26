@@ -22,7 +22,7 @@ import java.util.List;
  * 6×9 chest: enabled skills with level/XP; top-slot click opens
  * {@link FabricLevelProgressionMenuGui}. **Sprint 34:** list slot range from {@code granite.layout}.
  * **Sprint 36:** list row item from {@code granite.items.list}. **Sprint 37:** paged list + {@code
- * granite.paging} prev/next.
+ * granite.paging} prev/next. **Sprint 101:** tries bundled GraniteLib template first.
  */
 final class FabricSkillsMenuGui {
 
@@ -32,6 +32,18 @@ final class FabricSkillsMenuGui {
     static void open(
             ServerPlayerEntity player, FabricAuraSkills plugin, Text title, FabricMenuContext context) {
         User user = plugin.getUserManager().getUser(player.getUuid());
+        if (FabricSkillsTemplateSupport.tryOpen(player, plugin, context, user)) {
+            return;
+        }
+        openBuiltIn(player, plugin, title, context, user);
+    }
+
+    private static void openBuiltIn(
+            ServerPlayerEntity player,
+            FabricAuraSkills plugin,
+            Text title,
+            FabricMenuContext context,
+            User user) {
         var locale = user.getLocale();
         var msg = plugin.getMessageProvider();
         FabricMenuYamlSlice cfg = plugin

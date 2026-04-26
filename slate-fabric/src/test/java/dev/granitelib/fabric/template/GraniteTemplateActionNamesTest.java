@@ -12,6 +12,8 @@ class GraniteTemplateActionNamesTest {
         assertEquals("stat_panel", GraniteTemplateActionNames.STAT_PANEL);
         assertEquals("source_row", GraniteTemplateActionNames.SOURCE_ROW);
         assertEquals("level_row", GraniteTemplateActionNames.LEVEL_ROW);
+        assertEquals("skill_row", GraniteTemplateActionNames.SKILL_ROW);
+        assertEquals("stat_row", GraniteTemplateActionNames.STAT_ROW);
         assertEquals("open_sources", GraniteTemplateActionNames.OPEN_SOURCES);
         assertEquals("open_abilities", GraniteTemplateActionNames.OPEN_ABILITIES);
         assertEquals("previous_page", GraniteTemplateActionNames.PREVIOUS_PAGE);
