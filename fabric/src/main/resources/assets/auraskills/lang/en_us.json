@@ -12,6 +12,8 @@
   "auraskills.granite.command.claimitems.partial": "Some unclaimed items remain (%s stack(s); delivered or updated %s this pass).",
   "auraskills.granite.command.confirmation.mismatch": "Confirmation does not match the last preview (re-run the preview step with the same arguments).",
   "auraskills.granite.command.confirmation.no_pending": "No pending confirmation. Run the preview line first, then /… confirm within 30s.",
+  "auraskills.granite.command.templates.overwrite.confirm_console_only": "Only the dedicated server console or RCON may run templates export overwrite confirm.",
+  "auraskills.granite.command.templates.overwrite.preview_arm_from_console": "To arm confirmation, run /auraskills templates export overwrite from the server console or RCON, then /auraskills templates export overwrite confirm within 30s.",
   "auraskills.granite.command.openmenu.unclaimed_console": "Console: /openmenu unclaimed_items <player>  (online target only; opens that player's unclaimed menu).",
   "auraskills.granite.command.item.bad_key": "Invalid item id: %s",
   "auraskills.granite.command.item_armor_mod.players_only": "This command is for players only (hold an item in the main hand).",

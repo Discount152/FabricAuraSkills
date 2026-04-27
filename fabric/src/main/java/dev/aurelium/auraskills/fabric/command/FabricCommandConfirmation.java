@@ -14,7 +14,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Shared **two-step** confirmation state for destructive admin commands (**Sprint 74**). Mirrors the
+ * Shared **two-step** confirmation state for destructive admin commands (**Sprint 74**): **backup** load|restore,
+ * **preset** load, **storage** mergeskills / removeallmodifiers, and **Sprint 109** **templates export overwrite**
+ * (console preview → confirm). Mirrors the
  * in-repo Bukkit {@code ConfirmManager} model: a per-subject pending string and a **30s** expiry.
  * Fabric uses an explicit {@code confirm} literal under Brigadier instead of “type the same command
  * twice”.
@@ -29,6 +31,9 @@ public final class FabricCommandConfirmation {
     public static final UUID CONSOLE_SUBJECT = new UUID(0L, 0L);
 
     public static final String STORAGE_PENDING_REMOVE_ALL_MODIFIERS = "storage:removeallmodifiers";
+
+    /** Preview → confirm key for {@code /auraskills templates export overwrite confirm} (console/RCON only). */
+    public static final String TEMPLATES_EXPORT_OVERWRITE_PENDING = "templates:export:overwrite";
 
     private static final Map<UUID, String> PENDING = new ConcurrentHashMap<>();
 

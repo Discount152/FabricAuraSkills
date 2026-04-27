@@ -180,6 +180,8 @@ class FabricGraniteEnUsKeysTest {
                     "auraskills.granite.command.profile.modifier_none",
                     "auraskills.granite.command.confirmation.no_pending",
                     "auraskills.granite.command.confirmation.mismatch",
+                    "auraskills.granite.command.templates.overwrite.confirm_console_only",
+                    "auraskills.granite.command.templates.overwrite.preview_arm_from_console",
                     "auraskills.granite.command.xp.amount_positive",
                     "auraskills.granite.command.xp.amount_non_negative",
                     "auraskills.granite.command.level.count_positive",

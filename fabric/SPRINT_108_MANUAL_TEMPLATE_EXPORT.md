@@ -89,7 +89,8 @@ The command does **not** trigger **`reloadFromDisk()`** automatically.
 
 ## Known limitations
 
-- **No** overwrite / force mode in **Sprint 108** — delete or rename a file manually to replace it from bundle.
+- **Overwrite** bundled defaults onto disk: **`SPRINT_109_MANUAL_TEMPLATE_EXPORT_OVERWRITE.md`** (**preview** + **console/RCON-only** **confirm**).
+- **No** overwrite / force in **Sprint 108** alone — default **`templates export`** never replaces existing files.
 - **No** file watcher; **no** Slate **`MenuFileManager`** parity claim.
 
 ## Bedrock / Geyser

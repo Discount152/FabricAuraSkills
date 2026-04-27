@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.136
+
+### Changes
+
+- **Fabric: Sprint 109 — guarded Granite template export overwrite (`FabricAuraSkills-2.3.136.jar`):** **`/auraskills templates export overwrite`** (preview only; **no** disk writes) and **`/auraskills templates export overwrite confirm`** (**dedicated server console / RCON only**; requires matching preview within **30s** via **`FabricCommandConfirmation.TEMPLATES_EXPORT_OVERWRITE_PENDING`**). Mirrored on **`/skills|/sk|/skill`**. **`FabricGraniteMenuTemplateExporter#previewOverwrite`** + **`exportOverwrite`** — counts **`would create` / `would overwrite` / `would fail`** vs **`created` / `overwritten` / `failed`**. In-game preview shows counts and **`preview_arm_from_console`**; **console/RCON** preview **arms** confirmation. **`templates export`** (Sprint 108) unchanged — **never** overwrites. **No** auto **`reloadFromDisk`**. **Tests:** **`FabricGraniteMenuTemplateExporterTest`** extensions. **Docs:** **`fabric/SPRINT_109_MANUAL_TEMPLATE_EXPORT_OVERWRITE.md`**, **`COMMAND_PARITY_AUDIT.md`**, parity/README. **Bedrock / Geyser** not tested. **`projectVersion` 2.3.135 → 2.3.136**. **Build:** `.\gradlew -PfabricOnly=true :granitelib-fabric:test :fabric:test :fabric:build` — **PASS** (`verifyFabricReleaseBundle`: OK).
+
 ## 2.3.135
 
 ### Changes

@@ -60,8 +60,7 @@ The following are **not** part of the default **Granite** product roadmap. The *
 - **Sprint 106** — **Disk-first Granite menu templates:** **`SPRINT_106_MANUAL_DISK_TEMPLATE_LOADING.md`**, **`Changelog` 2.3.133** — **`FabricGraniteMenuTemplateLoader`**; **`config/auraskills/granite/templates/<id>.yml`** before bundled; invalid disk → bundled. **`projectVersion` 2.3.132 → 2.3.133**.
 - **Sprint 107** — **Template loader + reload lifecycle:** **`SPRINT_107_MANUAL_TEMPLATE_RELOAD_LIFECYCLE.md`**, **`Changelog` 2.3.134** — **`reloadFromDisk()`** clears **`FabricGraniteMenuTemplateLoader`** diagnostics debounce; disk templates re-read on next open (no cache); **no** file watcher. **`projectVersion` 2.3.133 → 2.3.134`.
 - **Sprint 108** — **Bundled Granite template export:** **`SPRINT_108_MANUAL_TEMPLATE_EXPORT.md`**, **`Changelog` 2.3.135** — **`/auraskills templates export`** (+ **`/skills|/sk|/skill`** mirror), **`auraskills.command.templates`**, **`FabricGraniteMenuTemplateExporter`** — **missing** files only, **no** overwrite. **`projectVersion` 2.3.134 → 2.3.135**.
-
-## Bedrock / Geyser validation follow-up
+- **Sprint 109** — **Guarded Granite template overwrite:** **`SPRINT_109_MANUAL_TEMPLATE_EXPORT_OVERWRITE.md`**, **`Changelog` 2.3.136** — **`templates export overwrite`** (preview) + **`… overwrite confirm`** (**console/RCON** only); **`FabricCommandConfirmation.TEMPLATES_EXPORT_OVERWRITE_PENDING`**; **`previewOverwrite`** / **`exportOverwrite`**. **`projectVersion` 2.3.135 → 2.3.136**.
 
 Sprint **81C** closed the **Java** action bar conflict path for **Smart** / **Always** / **Off** health+mana **idle** line behavior. **Sprint 87** manual (**`fabric/SPRINT_87_MANUAL_BEDROCK_GEYSER_VALIDATION.md`**) is the **future validation plan**; **runtime validation is deferred** until a **Bedrock** tester/client is available — **not** Pass, **not** Fail, **not** removed.
 

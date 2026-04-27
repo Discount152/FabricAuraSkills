@@ -631,7 +631,18 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Exporter** | **`FabricGraniteMenuTemplateExporter`** + **`FabricGraniteBundledMenuTemplateIds`** — copies **missing** **`assets/auraskills/granite/templates/<id>.yml`** into **`config/auraskills/granite/templates/`**; **never** overwrites existing disk files; **no** automatic **`reloadFromDisk()`**. |
 | **Manual** | **`SPRINT_108_MANUAL_TEMPLATE_EXPORT.md`** |
 
-| **Not in Sprint 108** | Overwrite / **force** mode; file watcher; **MenuFileManager** parity. |
+| **Not in Sprint 108–109** | File watcher; blanket overwrite without **preview + confirm**; full **MenuFileManager** parity. |
+
+## Sprint 109 — guarded bundled template overwrite (shipped, bounded)
+
+| Area | Shipped |
+|------|---------|
+| **Commands** | **`/auraskills templates export overwrite`** (forecast only), **`/auraskills templates export overwrite confirm`** (mutate; **dedicated server console / RCON only**); mirrors **`/skills`**, **`/sk`**, **`/skill`**. Same permission **`auraskills.command.templates`**. |
+| **Confirmation** | **`FabricCommandConfirmation.TEMPLATES_EXPORT_OVERWRITE_PENDING`** — **console/RCON** **preview** registers pending; **in-game** preview shows counts + **`preview_arm_from_console`** (no pending). **30s** window. |
+| **Exporter** | **`FabricGraniteMenuTemplateExporter#previewOverwrite`**, **`exportOverwrite`** — result counts **`created` / `overwritten` / `failed`** (execution) and **`would create` / `would overwrite` / `would fail`** (preview). |
+| **Manual** | **`SPRINT_109_MANUAL_TEMPLATE_EXPORT_OVERWRITE.md`** |
+
+| **Not in Sprint 109** | Hot reload; file watcher; full Slate / **`MenuFileManager`**. |
 
 ## Sprint 100 — **level_progression** GraniteLib template prototype (level grid + paging) (shipped, bounded)
 
