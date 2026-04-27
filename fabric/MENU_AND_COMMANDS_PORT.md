@@ -621,7 +621,17 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Reload** | **`FabricAuraSkills#reloadFromDisk()`** (**`/auraskills reload`**, **`auraskills.command.reload`**) and **preset** apply call **`FabricGraniteMenuTemplateLoader#clearDiagnosticsState()`** after other reload steps; one info log; **next** menu open re-reads disk (**Sprint 107**, **`SPRINT_107_MANUAL_TEMPLATE_RELOAD_LIFECYCLE.md`**). **No** file watcher. |
 | **Manual** | **`SPRINT_106_MANUAL_DISK_TEMPLATE_LOADING.md`**, **`SPRINT_107_MANUAL_TEMPLATE_RELOAD_LIFECYCLE.md`** |
 
-| **Not in Sprint 106** | Hot reload; full Slate / **`MenuFileManager`**; automatic export of bundled YAML to `config/`. |
+| **Not in Sprint 106–107** | Hot reload; full Slate / **`MenuFileManager`**. |
+
+## Sprint 108 — bundled Granite menu template export (shipped, bounded)
+
+| Area | Shipped |
+|------|---------|
+| **Command** | **`/auraskills templates export`**, mirrors **`/skills`**, **`/sk`**, **`/skill templates export`**; **`FabricGraniteTemplateCommands`**; **`auraskills.command.templates`** (default **deny** for players; **console/RCON** allowed without explicit node). |
+| **Exporter** | **`FabricGraniteMenuTemplateExporter`** + **`FabricGraniteBundledMenuTemplateIds`** — copies **missing** **`assets/auraskills/granite/templates/<id>.yml`** into **`config/auraskills/granite/templates/`**; **never** overwrites existing disk files; **no** automatic **`reloadFromDisk()`**. |
+| **Manual** | **`SPRINT_108_MANUAL_TEMPLATE_EXPORT.md`** |
+
+| **Not in Sprint 108** | Overwrite / **force** mode; file watcher; **MenuFileManager** parity. |
 
 ## Sprint 100 — **level_progression** GraniteLib template prototype (level grid + paging) (shipped, bounded)
 

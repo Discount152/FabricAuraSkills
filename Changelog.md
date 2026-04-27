@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.135
+
+### Changes
+
+- **Fabric: Sprint 108 — export bundled Granite menu templates (`FabricAuraSkills-2.3.135.jar`):** **`/auraskills templates export`** and mirrors **`/skills`**, **`/sk`**, **`/skill templates export`** — **`auraskills.command.templates`** (default **deny**; **console/RCON** via **`permissionOrNonPlayerSource`**). **`FabricGraniteMenuTemplateExporter`** copies **missing** files from **`assets/auraskills/granite/templates/`** into **`config/auraskills/granite/templates/`**; **never** overwrites existing disk files; summary **`created` / `skipped` / `failed`**. **`FabricGraniteBundledMenuTemplateIds`** centralizes the eight menu ids. **No** auto **`reloadFromDisk`**; feedback line explains **next open** + optional **`/auraskills reload`** for diagnostics. **Tests:** **`FabricGraniteMenuTemplateExporterTest`**. **Docs:** **`fabric/SPRINT_108_MANUAL_TEMPLATE_EXPORT.md`**, **`COMMAND_PARITY_AUDIT.md`**, parity/README. **Slate / `MenuFileManager`** still **not** complete. **Bedrock / Geyser** not tested. **`projectVersion` 2.3.134 → 2.3.135**. **Build:** `.\gradlew -PfabricOnly=true :fabric:test :fabric:build` — **PASS**.
+
 ## 2.3.134
 
 ### Changes

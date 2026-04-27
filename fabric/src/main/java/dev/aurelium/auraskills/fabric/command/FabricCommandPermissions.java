@@ -18,6 +18,12 @@ public final class FabricCommandPermissions {
     public static final String RELOAD = "auraskills.command.reload";
     public static final String SAVE = "auraskills.command.save";
 
+    /**
+     * Granite: export bundled menu YAML to disk (**Sprint 108**). Default <strong>deny</strong>; console and RCON
+     * allowed without explicit grant via {@link FabricCommandRequirements#permissionOrNonPlayerSource}.
+     */
+    public static final String TEMPLATES = "auraskills.command.templates";
+
     /** Bukkit {@code /skills help}; Fabric currently uses {@link #VERSION} for the {@code help} subnode (see audit). */
     public static final String HELP = "auraskills.command.help";
 

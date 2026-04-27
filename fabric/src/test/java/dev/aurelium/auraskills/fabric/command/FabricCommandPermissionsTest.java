@@ -19,6 +19,7 @@ class FabricCommandPermissionsTest {
             FabricCommandPermissions.STATS,
             FabricCommandPermissions.RELOAD,
             FabricCommandPermissions.SAVE,
+            FabricCommandPermissions.TEMPLATES,
             FabricCommandPermissions.MANA,
             FabricCommandPermissions.MANA_OTHER,
             FabricCommandPermissions.MANA_ADD,

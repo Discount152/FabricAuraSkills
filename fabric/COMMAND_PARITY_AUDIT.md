@@ -44,6 +44,7 @@
 | `StatsCommand` @Default @CommandAlias("stats") | `/auraskills stats`, `/stats` | Partial | Same as above for **Stats** |
 | `SkillsRootCommand` `reload` | `/auraskills reload` | Partial | Staff default deny; `reloadFromDisk` |
 | `SkillsRootCommand` `save` | `/auraskills save` | Partial | `saveAllUserProfiles` |
+| **Granite** bundled menu template export | **`/auraskills templates export`**, **`/skills\|/sk\|/skill templates export`** (**Sprint 108**), **`auraskills.command.templates`** (default **deny**; **console/RCON** without explicit grant); **`FabricGraniteTemplateCommands`**, **`FabricGraniteMenuTemplateExporter`** — **missing** files only under **`config/auraskills/granite/templates/`**, **no** overwrite; **no** auto-reload | Partial | Bukkit: **N/A** (Path A operator UX) |
 | `SkillsRootCommand` `version` | `/auraskills version` | Partial | Data dir path; not full Bukkit `version` text |
 | `SkillsRootCommand` `help` (ACF `CommandHelp`) | `/auraskills help` | Partial | Short line; Bukkit has full ACF help pages |
 | `ManaCommand` (common) | `/mana`, `/auraskills mana`, **`/sk|skill mana`** (**Sprint 46** — same `mana` subtree as standalone) | Partial | **Sprint 41:** default self (`MANA_DISPLAY`); `view` / `add` / `set` / `remove` (online `player` + `amount`); no ACF `silent` / `allowOverMax` flags — reference overflow rules via `Traits.MAX_MANA` only. **Sprint 83:** **`/mana view`** (no `player` arg) = same **self** display as bare **`/mana`** (needs **`auraskills.command.mana`**); **`/mana view <player>`** needs **`auraskills.command.mana.other`**; previously **`view`’s** whole subtree required **other**, which hid `view` from Brigadier for senders with only **mana** (smoke / matrix confusion). |
@@ -77,7 +78,7 @@
 **Fabric-only behavior notes**
 
 - **`/auraskills help`** still uses `auraskills.command.version` in `requires` (same as pre–Sprint-39) — Bukkit uses `auraskills.command.help` for the help subcommand. Aligning the Fabric node is a follow-up; see `FabricCommandPermissions#HELP`.
-- **Sprint 65** — **`/skills`**, **`/sk`**, **`/skill`**: one shared **`skillsAliasSharedTree`** (includes **`backup`**, **`preset`**, **`storage`**, **`item`**, **`xp`**, …). **Sprint 84:** Granite **`/item`** and **`/xp`** are **not** also registered as **standalone** top-level literals (vanilla **`/item`** / **`/xp`** collision); **`/skilllevel`** stays top-level. **Sprint 85:** **`item`**, **`storage`**, **`backup`**, **`preset`** literals include root **`.executes`** (usage) and aligned **`.requires`** so bare roots parse.
+- **Sprint 65** — **`/skills`**, **`/sk`**, **`/skill`**: one shared **`skillsAliasSharedTree`** (includes **`backup`**, **`preset`**, **`storage`**, **`item`**, **`xp`**, …). **Sprint 108** — **`/auraskills templates export`**, **`/skills|/sk|/skill templates export`**: **`FabricGraniteMenuTemplateExporter`** + **`FabricGraniteBundledMenuTemplateIds`**; **`auraskills.command.templates`**; copies **missing** bundled Granite YAML to **`config/auraskills/granite/templates/`** (**no** overwrite; **no** `reloadFromDisk` side effect). Bukkit **N/A**.
 - **Permissions** use **fabric-permissions-api**; defaults match typical **LuckPerms**-style `true` for player commands and `false` for staff-only reload/save.
 
 ---

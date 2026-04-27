@@ -27,7 +27,7 @@ public final class FabricBrigadierCommands {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         FabricAuraSkillsMod.LOGGER.info(
-                "Registering Brigadier: /auraskills (…), /skills|/sk|/skill (mirrored; Granite **item**/**xp** only under these + /auraskills — vanilla /item /xp unchanged; Sprint 84–85 root usage on item/storage/backup/preset), /stats, /openmenu, /claimitems, /sources, /resethealth, /transfer, /profile, /backup, /preset, /storage, leaderboards, /multiplier|/toggle|/abtoggle|/lang, /modifier, /trait, /armor, /mana, /skilllevel, /manaability, /antiafk, per-skill shortcuts — see fabric/COMMAND_PARITY_AUDIT.md");
+                "Registering Brigadier: /auraskills (…), /skills|/sk|/skill (mirrored; Granite **item**/**xp** only under these + /auraskills — vanilla /item /xp unchanged; Sprint 84–85 root usage on item/storage/backup/preset; **Sprint 108** **templates export**), /stats, /openmenu, /claimitems, /sources, /resethealth, /transfer, /profile, /backup, /preset, /storage, leaderboards, /multiplier|/toggle|/abtoggle|/lang, /modifier, /trait, /armor, /mana, /skilllevel, /manaability, /antiafk, per-skill shortcuts — see fabric/COMMAND_PARITY_AUDIT.md");
 
         registerAuraskillsAndAliases(dispatcher);
         FabricSkillShortcutCommands.register(dispatcher);
@@ -105,7 +105,8 @@ public final class FabricBrigadierCommands {
                 .then(FabricProfileCommands.profileLiteral())
                 .then(FabricBackupCommands.backupLiteral())
                 .then(FabricPresetCommands.presetLiteral())
-                .then(FabricStorageCommands.storageLiteral());
+                .then(FabricStorageCommands.storageLiteral())
+                .then(FabricGraniteTemplateCommands.templatesLiteral());
     }
 
     private static com.mojang.brigadier.builder.LiteralArgumentBuilder<ServerCommandSource> aliasSkillsRoot(
@@ -145,6 +146,7 @@ public final class FabricBrigadierCommands {
                 .then(literal("save")
                         .requires(FabricCommandRequirements.permission(FabricCommandPermissions.SAVE, false))
                         .executes(FabricBrigadierCommands::save))
+                .then(FabricGraniteTemplateCommands.templatesLiteral())
                 .then(FabricManaCommands.manaCommandRoot())
                 .then(FabricSkillLevelCommands.skillLevelRoot())
                 .then(FabricManaAbilityCommands.manaAbilityRoot())

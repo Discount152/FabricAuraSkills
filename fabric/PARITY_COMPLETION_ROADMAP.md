@@ -64,7 +64,7 @@ GraniteLib (`:granitelib-fabric`, on-disk **`slate-fabric/`) is a **real library
 | Track | Status |
 |-------|--------|
 | **Container / click plumbing** (e.g. `GraniteContainerMenus`) | **Partial** — enough for current built-ins. |
-| **Template loading, YAML layouts, `MenuFileManager`** | **In progress** — v0 YAML + loader (**95**); **`stat_info`** / **`sources`** / **`level_progression`** / **`skills`** / **`stats`** / **`abilities`** / **`leaderboard`** / **`unclaimed_items`** template paths (**96–98**, **100–105**); **Sprint 106** — **disk-first** **`config/auraskills/granite/templates/<id>.yml`** via **`FabricGraniteMenuTemplateLoader`** (**`SPRINT_106_MANUAL_DISK_TEMPLATE_LOADING.md`**) before bundled classpath YAML — **no** auto-copy; **Sprint 107** — **`reloadFromDisk()`** clears template **diagnostics debounce** (**`SPRINT_107_MANUAL_TEMPLATE_RELOAD_LIFECYCLE.md`**) so edited disk YAML is picked up on **next** menu open without JVM restart — **no** file watcher; **Sprint 99** — shared **GraniteLib** helpers + **`FabricGraniteTemplateStacks`** (**`SPRINT_99_TEMPLATE_RUNTIME_CONSOLIDATION.md`**), **action** contract (**`GraniteTemplateActionNames`**); **not** full Slate / `MenuFileManager` |
+| **Template loading, YAML layouts, `MenuFileManager`** | **In progress** — v0 YAML + loader (**95**); **`stat_info`** / **`sources`** / **`level_progression`** / **`skills`** / **`stats`** / **`abilities`** / **`leaderboard`** / **`unclaimed_items`** template paths (**96–98**, **100–105**); **Sprint 106** — **disk-first** **`config/auraskills/granite/templates/<id>.yml`** via **`FabricGraniteMenuTemplateLoader`** (**`SPRINT_106_MANUAL_DISK_TEMPLATE_LOADING.md`**) before bundled classpath YAML; **Sprint 107** — **`reloadFromDisk()`** clears template **diagnostics debounce** (**`SPRINT_107_MANUAL_TEMPLATE_RELOAD_LIFECYCLE.md`**) — **no** file watcher; **Sprint 108** — **`/auraskills templates export`** copies **missing** bundled YAML to disk (**`SPRINT_108_MANUAL_TEMPLATE_EXPORT.md`**, **`FabricGraniteMenuTemplateExporter`**) — **no** overwrite; **Sprint 99** — shared **GraniteLib** helpers + **`FabricGraniteTemplateStacks`** (**`SPRINT_99_TEMPLATE_RUNTIME_CONSOLIDATION.md`**), **action** contract (**`GraniteTemplateActionNames`**); **not** full Slate / `MenuFileManager` |
 | **Contexts, paging, global items, rich click actions** | **Not complete** |
 | **Public API + docs for external mods** | **Partial / evolving** |
 
@@ -96,6 +96,8 @@ GraniteLib (`:granitelib-fabric`, on-disk **`slate-fabric/`) is a **real library
 
 **Sprint 107 (template reload lifecycle):** **`SPRINT_107_MANUAL_TEMPLATE_RELOAD_LIFECYCLE.md`** — **`reloadFromDisk()`** (**`/auraskills reload`**, preset apply) calls **`FabricGraniteMenuTemplateLoader#clearDiagnosticsState()`**; next menu open re-reads disk YAML and can emit fresh **info**/**warn** lines; open menus unchanged. **No** file watcher. **Slate** / **`MenuFileManager`** still **not** complete; **Bedrock** deferred.
 
+**Sprint 108 (bundled template export):** **`SPRINT_108_MANUAL_TEMPLATE_EXPORT.md`** — **`/auraskills templates export`** and **`/skills|/sk|/skill`** mirrors; **`auraskills.command.templates`**; **`FabricGraniteMenuTemplateExporter`** + **`FabricGraniteBundledMenuTemplateIds`** — writes **only missing** files under **`granite/templates/`**; **no** overwrite; **no** `reloadFromDisk()` side effect. **Slate** / **`MenuFileManager`** still **not** complete; **Bedrock** deferred.
+
 ---
 
 ## 5. Packaging / release architecture
@@ -120,5 +122,5 @@ GraniteLib (`:granitelib-fabric`, on-disk **`slate-fabric/`) is a **real library
 
 1. **Hold** “final release” until **two-JAR** policy is what operators run in production and docs match.
 2. **Execute** Bedrock validation when a tester exists.
-3. **Drive** Slate/GraniteLib framework work as its own program (Path A) using **`SPRINT_94`**+ docs, not as a side effect of smoke fixes. **Sprint 105** templates **`unclaimed_items`** (real stacks + claim merge). **Next:** deeper **`MenuFileManager`** / operator export UX — still **not** full **Slate-complete**.
+3. **Drive** Slate/GraniteLib framework work as its own program (Path A) using **`SPRINT_94`**+ docs, not as a side effect of smoke fixes. **Sprint 105** templates **`unclaimed_items`** (real stacks + claim merge). **Sprint 108** **`templates export`** (missing files only). **Next:** deeper **`MenuFileManager`** / Slate action surface — still **not** full **Slate-complete**.
 4. **Revisit** Jobs / economy bridges only if the owner reopens scope.
