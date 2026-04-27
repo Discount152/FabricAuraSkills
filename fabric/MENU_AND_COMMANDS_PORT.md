@@ -611,6 +611,17 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 
 | **Not in Sprint 99** | New menu migration; disk YAML; full action engine; Slate-complete. |
 
+## Sprint 106 — disk-first Granite menu YAML (shipped, bounded)
+
+| Area | Shipped |
+|------|---------|
+| **Disk path** | **`config/auraskills/granite/templates/<menu_id>.yml`** (same root as **`FabricAuraSkills#getPluginFolder()`** / **`config/auraskills`**). |
+| **Loader** | **`FabricGraniteMenuTemplateLoader`**: valid disk YAML with **`id`** matching **`<menu_id>`** wins; invalid disk → **once-per-path** warning + **bundled** classpath template; bundled failure → existing **built-in** **`Fabric*MenuGui`**. **No** auto-copy of defaults; **no** hot reload. |
+| **Menus** | All eight **`Fabric*TemplateSupport`** classes (**`stat_info`**, **`sources`**, **`level_progression`**, **`skills`**, **`stats`**, **`abilities`**, **`leaderboard`**, **`unclaimed_items`**) — template **source** selection only. |
+| **Manual** | **`SPRINT_106_MANUAL_DISK_TEMPLATE_LOADING.md`** |
+
+| **Not in Sprint 106** | Hot reload; full Slate / **`MenuFileManager`**; automatic export of bundled YAML to `config/`. |
+
 ## Sprint 100 — **level_progression** GraniteLib template prototype (level grid + paging) (shipped, bounded)
 
 | Area | Shipped on Fabric (bounded) |

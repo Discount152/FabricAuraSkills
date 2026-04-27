@@ -10,9 +10,6 @@ import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import dev.granitelib.fabric.menu.GraniteContainerMenus;
 import dev.granitelib.fabric.template.GraniteTemplateActionNames;
 import dev.granitelib.fabric.template.GraniteTemplateItems;
-import dev.granitelib.fabric.template.GraniteTemplateResources;
-import dev.granitelib.fabric.template.load.GraniteMenuTemplateYamlLoader;
-import dev.granitelib.fabric.template.load.GraniteTemplateValidationException;
 import dev.granitelib.fabric.template.model.GraniteMenuTemplate;
 import dev.granitelib.fabric.template.model.GraniteTemplateItem;
 import net.minecraft.item.ItemStack;
@@ -20,9 +17,6 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -72,23 +66,13 @@ public final class FabricSourcesTemplateSupport {
             int returnToSkillsListPage,
             List<XpSource> allSources,
             Locale locale) {
-        GraniteMenuTemplate template;
-        try (InputStream in = GraniteTemplateResources.openClasspath(FabricSourcesTemplateSupport.class, TEMPLATE_RESOURCE_PATH)) {
-            if (in == null) {
-                plugin.logger().warn(
-                        "sources template missing from classpath (" + TEMPLATE_RESOURCE_PATH + "); using built-in menu");
-                return false;
-            }
-            String yaml = new String(in.readAllBytes(), StandardCharsets.UTF_8);
-            template = GraniteMenuTemplateYamlLoader.loadString(yaml, TEMPLATE_RESOURCE_PATH);
-        } catch (IOException e) {
-            plugin.logger().warn("sources template read failed; using built-in menu", e);
-            return false;
-        } catch (GraniteTemplateValidationException e) {
-            plugin.logger().warn(
-                    "sources template invalid (" + String.join("; ", e.errors()) + "); using built-in menu");
+        Optional<FabricGraniteMenuTemplateLoader.LoadedTemplate> loaded =
+                FabricGraniteMenuTemplateLoader.load(
+                        plugin, "sources", FabricSourcesTemplateSupport.class, TEMPLATE_RESOURCE_PATH);
+        if (loaded.isEmpty()) {
             return false;
         }
+        GraniteMenuTemplate template = loaded.get().template();
 
         if (!"sources".equalsIgnoreCase(template.id())) {
             plugin.logger().warn(

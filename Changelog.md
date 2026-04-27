@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.133
+
+### Changes
+
+- **Fabric: Sprint 106 — disk/config Granite menu template loading (`FabricAuraSkills-2.3.133.jar`):** Operator-editable YAML under **`config/auraskills/granite/templates/<menu_id>.yml`** (e.g. **`skills.yml`**, **`stat_info.yml`**) loads **before** bundled **`assets/auraskills/granite/templates/*.yml`**. **`FabricGraniteMenuTemplateLoader`** validates **`id`** on disk; broken or mismatched disk YAML logs a **once-per-path** warning and **falls back to bundled**; bundled missing/invalid still yields **built-in Java** menu path unchanged. **No** auto-copy of defaults (**Option A**); **no** hot reload. **Integrated** into **`FabricStatInfoTemplateSupport`**, **`FabricSourcesTemplateSupport`**, **`FabricLevelProgressionTemplateSupport`**, **`FabricSkillsTemplateSupport`**, **`FabricStatsTemplateSupport`**, **`FabricAbilitiesTemplateSupport`**, **`FabricLeaderboardTemplateSupport`**, **`FabricUnclaimedItemsTemplateSupport`**. **Tests:** **`FabricGraniteMenuTemplateLoaderTest`**. **Docs:** **`fabric/SPRINT_106_MANUAL_DISK_TEMPLATE_LOADING.md`**, parity/README pointers. **Slate / `MenuFileManager`** still **not** complete. **Bedrock / Geyser** not tested. **`projectVersion` 2.3.132 → 2.3.133**. **Build:** `.\gradlew -PfabricOnly=true :granitelib-fabric:test :fabric:test :fabric:build` — **PASS**.
+
 ## 2.3.132
 
 ### Changes
