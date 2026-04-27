@@ -658,10 +658,11 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | Area | Shipped on Fabric (bounded) |
 |------|-----------------------------|
 | **Bukkit ref** | `bukkit/.../UnclaimedItemsMenu.java` — 6×9 Slate, one slot per `KeyIntPair`, click to merge one stack, close when empty; no paging (≤54 stacks visible). **No** separate `unclaimed_items.yml` in repo. |
+| **Menu** | **`FabricUnclaimedItemsMenuGui`** — **36** claimable slots (**0–35**), real registered **`ItemStack`** display + click lore; row **5:** **prev** **48**, **claim all** **49**, **next** **50**. **Sprint 105:** tries bundled **`unclaimed_items.yml`** (**`FabricUnclaimedItemsTemplateSupport`**) first; YAML adds lore on top of real stacks; **single**/**claim-all** clicks use **`FabricUnclaimedItemsMerge`** unchanged; strict built-in fallback. |
 | **Commands** | **`/claimitems`** (in-game) opens **`FabricUnclaimedItemsMenuGui`** when the list is non-empty; **`/claimitems all`** = prior **Sprint 56** one-shot merge. **`/openmenu unclaimed_items`** (self) and **`/openmenu unclaimed_items <player>`** (opens **on the target**). **`auraskills.command.claimitems`** (default); **`openmenu`** still **`auraskills.command.openmenu`**. **Console/RCON** on `/claimitems`: still **player-only** (unchanged). |
 | **State** | **`FabricUnclaimedItemsMerge`** — **`mergeAllInOrder`** + **`mergeOneAtListIndex`**, same **`tryMergeRegisteredItemCount`** safety as before. Paging: **36** entries/page; **claim all** on slot 49. |
-| **Gaps (Partial)** | No Slate/YAML; simplified vs full **ItemBuilder** lores; Bukkit can show **>54** only by scrolling? (Bukkit: 54); Fabric pages at 36+controls. **Bedrock** inventory clicks **NRP** — not run-time tested. |
-| **Manual** | **`SPRINT_71_MANUAL_UNCLAIMED_ITEMS_MENU.md`** |
+| **Gaps (Partial)** | Not full Slate **`ItemBuilder`**; Bukkit can show **>54** only by scrolling? (Bukkit: 54); Fabric pages at 36+controls. Bundled template is **v0** (not disk **`MenuFileManager`**). **Bedrock** inventory clicks **NRP** — not run-time tested. |
+| **Manual** | **`SPRINT_71_MANUAL_UNCLAIMED_ITEMS_MENU.md`**, **`SPRINT_105_MANUAL_UNCLAIMED_ITEMS_TEMPLATE_PROTOTYPE.md`** |
 
 ## Sprint 72 — **Leaderboard** menu + **`/openmenu leaderboard`** (shipped, partial)
 

@@ -18,6 +18,8 @@ class GraniteTemplateActionNamesTest {
         assertEquals("mana_ability_row", GraniteTemplateActionNames.MANA_ABILITY_ROW);
         assertEquals("leaderboard_row", GraniteTemplateActionNames.LEADERBOARD_ROW);
         assertEquals("refresh", GraniteTemplateActionNames.REFRESH);
+        assertEquals("claim_item", GraniteTemplateActionNames.CLAIM_ITEM);
+        assertEquals("claim_all", GraniteTemplateActionNames.CLAIM_ALL);
         assertEquals("open_sources", GraniteTemplateActionNames.OPEN_SOURCES);
         assertEquals("open_abilities", GraniteTemplateActionNames.OPEN_ABILITIES);
         assertEquals("previous_page", GraniteTemplateActionNames.PREVIOUS_PAGE);

@@ -162,4 +162,23 @@ public final class GraniteTemplateItems {
         }
         return null;
     }
+
+    /**
+     * Unclaimed items grid: YAML key {@code claimable}, else first item with
+     * {@link GraniteTemplateActionNames#CLAIM_ITEM}.
+     */
+    public static @Nullable GraniteTemplateItem findClaimableGridDefinition(GraniteMenuTemplate template) {
+        GraniteTemplateItem byKey = template.items().get("claimable");
+        if (byKey != null) {
+            return byKey;
+        }
+        for (GraniteTemplateItem item : template.items().values()) {
+            if (item.action()
+                    .filter(a -> GraniteTemplateActionNames.CLAIM_ITEM.equalsIgnoreCase(a))
+                    .isPresent()) {
+                return item;
+            }
+        }
+        return null;
+    }
 }

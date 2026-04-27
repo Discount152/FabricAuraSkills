@@ -1,0 +1,74 @@
+# Sprint 105 — bundled v0 template for unclaimed_items (GraniteLib YAML schema v0).
+# Grid: 36 claimable slots (0–35), same as FabricUnclaimedItemsMenuGui built-in.
+# Row stacks use the REAL registered item from the unclaimed list; template material/name on
+# "claimable" are ignored for display (lore lines only are appended after existing item lore).
+# Controls: previous 48, claim_all 49, next 50 — matches built-in row 5.
+# Fallback: built-in FabricUnclaimedItemsMenuGui on any failure.
+id: unclaimed_items
+title: "Unclaimed Items"
+rows: 6
+
+fill:
+  material: minecraft:black_stained_glass_pane
+  name: " "
+
+items:
+  claimable:
+    material: minecraft:chest
+    slots:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+      - 12
+      - 13
+      - 14
+      - 15
+      - 16
+      - 17
+      - 18
+      - 19
+      - 20
+      - 21
+      - 22
+      - 23
+      - 24
+      - 25
+      - 26
+      - 27
+      - 28
+      - 29
+      - 30
+      - 31
+      - 32
+      - 33
+      - 34
+      - 35
+    lore:
+      - "Click to claim"
+    action: claim_item
+  previous:
+    material: minecraft:arrow
+    slot: 48
+    name: "Previous Page"
+    action: previous_page
+  claim_all:
+    material: minecraft:chest
+    slot: 49
+    name: "Claim All"
+    lore:
+      - "Claim all items that fit in your inventory"
+    action: claim_all
+  next:
+    material: minecraft:arrow
+    slot: 50
+    name: "Next Page"
+    action: next_page

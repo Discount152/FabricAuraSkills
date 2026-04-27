@@ -5,7 +5,7 @@ package dev.granitelib.fabric.template;
  * Fabric gameplay code — this is not a dynamic action engine, only stable identifiers for authors and reviewers.
  *
  * <p>Bundled templates today: {@code stat_info.yml}, {@code sources.yml}, {@code level_progression.yml},
- * {@code skills.yml}, {@code stats.yml}, {@code abilities.yml}, {@code leaderboard.yml}.
+ * {@code skills.yml}, {@code stats.yml}, {@code abilities.yml}, {@code leaderboard.yml}, {@code unclaimed_items.yml}.
  */
 public final class GraniteTemplateActionNames {
 
@@ -41,6 +41,12 @@ public final class GraniteTemplateActionNames {
 
     /** Re-open current leaderboard view from cache (Fabric leaderboard). */
     public static final String REFRESH = "refresh";
+
+    /** One claimable unclaimed reward slot (Fabric unclaimed_items). */
+    public static final String CLAIM_ITEM = "claim_item";
+
+    /** Merge all claimable items (Fabric unclaimed_items). */
+    public static final String CLAIM_ALL = "claim_all";
 
     /** Open per-skill sources menu (Fabric level_progression). */
     public static final String OPEN_SOURCES = "open_sources";

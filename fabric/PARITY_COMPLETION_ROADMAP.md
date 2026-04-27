@@ -64,7 +64,7 @@ GraniteLib (`:granitelib-fabric`, on-disk **`slate-fabric/`) is a **real library
 | Track | Status |
 |-------|--------|
 | **Container / click plumbing** (e.g. `GraniteContainerMenus`) | **Partial** — enough for current built-ins. |
-| **Template loading, YAML layouts, `MenuFileManager`** | **In progress** — v0 YAML + loader (**95**); **`stat_info`** / **`sources`** / **`level_progression`** / **`skills`** / **`stats`** / **`abilities`** / **`leaderboard`** template paths (**96–98**, **100–103**); **Sprint 99** — shared **GraniteLib** helpers + **`FabricGraniteTemplateStacks`** (**`SPRINT_99_TEMPLATE_RUNTIME_CONSOLIDATION.md`**), **action** contract (**`GraniteTemplateActionNames`**); **not** full Slate / disk reload / `MenuFileManager` |
+| **Template loading, YAML layouts, `MenuFileManager`** | **In progress** — v0 YAML + loader (**95**); **`stat_info`** / **`sources`** / **`level_progression`** / **`skills`** / **`stats`** / **`abilities`** / **`leaderboard`** / **`unclaimed_items`** template paths (**96–98**, **100–105**); **Sprint 99** — shared **GraniteLib** helpers + **`FabricGraniteTemplateStacks`** (**`SPRINT_99_TEMPLATE_RUNTIME_CONSOLIDATION.md`**), **action** contract (**`GraniteTemplateActionNames`**); **not** full Slate / disk reload / `MenuFileManager` |
 | **Contexts, paging, global items, rich click actions** | **Not complete** |
 | **Public API + docs for external mods** | **Partial / evolving** |
 
@@ -90,6 +90,8 @@ GraniteLib (`:granitelib-fabric`, on-disk **`slate-fabric/`) is a **real library
 
 **Sprint 104 (working-tree containment):** **`SPRINT_104_WORKING_TREE_CONTAINMENT.md`** — hygiene only: inventory **post–Sprint 103** modified/untracked paths; resolve **phantom** tracked modifications (index refresh); document **optional** clone-local excludes for scratch docs; confirm **two-JAR** / **`depends.granitelib`** policy on committed tree. **No** Path A menu code; **no** version bump.
 
+**Sprint 105 (`unclaimed_items` template prototype):** **`SPRINT_105_MANUAL_UNCLAIMED_ITEMS_TEMPLATE_PROTOTYPE.md`** — bundled **`unclaimed_items.yml`**; **`FabricUnclaimedItemsTemplateSupport`** + **`FabricUnclaimedItemsPlaceholders`**; **36** slots (**0–35**); rows use **real** registered **`ItemStack`s** + YAML **lore** overlay; **claim_item** / **claim_all** / paging actions; all merges via existing **`FabricUnclaimedItemsMerge`**; strict **`FabricUnclaimedItemsMenuGui` built-in** fallback. **Slate** still **not** complete; **Bedrock** deferred.
+
 ---
 
 ## 5. Packaging / release architecture
@@ -114,5 +116,5 @@ GraniteLib (`:granitelib-fabric`, on-disk **`slate-fabric/`) is a **real library
 
 1. **Hold** “final release” until **two-JAR** policy is what operators run in production and docs match.
 2. **Execute** Bedrock validation when a tester exists.
-3. **Drive** Slate/GraniteLib framework work as its own program (Path A) using **`SPRINT_94`**+ docs, not as a side effect of smoke fixes. **Sprint 103** (**`SPRINT_103_MANUAL_LEADERBOARD_TEMPLATE_PROTOTYPE.md`**, **2.3.131**) templates **leaderboard** (ranked rows + paging + refresh). **Next:** **`unclaimed_items`** template, disk/hot-reload depth, or further Path A menus — still **not** full **`MenuFileManager`** / Slate-complete.
+3. **Drive** Slate/GraniteLib framework work as its own program (Path A) using **`SPRINT_94`**+ docs, not as a side effect of smoke fixes. **Sprint 105** (**`SPRINT_105_MANUAL_UNCLAIMED_ITEMS_TEMPLATE_PROTOTYPE.md`**, **2.3.132**) templates **`unclaimed_items`** (real stacks + claim merge). **Next:** **disk override** / **template hot reload** / **`MenuFileManager`** depth — still **not** full **Slate-complete**.
 4. **Revisit** Jobs / economy bridges only if the owner reopens scope.

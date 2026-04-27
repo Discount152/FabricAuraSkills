@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.132
+
+### Changes
+
+- **Fabric + GraniteLib: Sprint 105 — template-backed `unclaimed_items` prototype (`FabricAuraSkills-2.3.132.jar`):** Bundled **`assets/auraskills/granite/templates/unclaimed_items.yml`** — **36** claimable slots (**0–35**, same as built-in), nav **previous** **48** / **claim_all** **49** / **next** **50**. **`FabricUnclaimedItemsTemplateSupport`** + **`FabricUnclaimedItemsPlaceholders`** (`{item_name}`, `{item_amount}`, `{page}`, `{total_pages}`). **Rows:** **real** registered **`ItemStack`** from **`User#getUnclaimedItems()`** (count applied); YAML **`claimable` material/name** ignored for display — only **lore** lines appended after existing item lore. **`GraniteTemplateActionNames`:** **`claim_item`**, **`claim_all`**; **`GraniteTemplateItems`:** **`findClaimableGridDefinition`**. Clicks: **`FabricUnclaimedItemsMenuGui#handleUnclaimedClick`** → **`FabricUnclaimedItemsMerge`** (**`mergeOneAtListIndex`** / **`mergeAllInOrder`**) unchanged. **`FabricUnclaimedItemsMenuGui`** tries template first, then **`openBuiltIn`**. **Tests:** **`FabricUnclaimedItemsBundledTemplateParseTest`**, granitelib template tests, translatable scan. **Docs:** **`fabric/SPRINT_105_MANUAL_UNCLAIMED_ITEMS_TEMPLATE_PROTOTYPE.md`**, parity pointers. **Slate / `MenuFileManager`** still **not** complete. **Bedrock / Geyser** not tested. **`projectVersion` 2.3.131 → 2.3.132**. **Build:** `.\gradlew -PfabricOnly=true :granitelib-fabric:test :fabric:test :fabric:build` — **PASS** (**`verifyFabricReleaseBundle`**: OK).
+
 ## 2.3.131
 
 ### Changes

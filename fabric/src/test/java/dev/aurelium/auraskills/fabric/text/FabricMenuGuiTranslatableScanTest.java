@@ -27,6 +27,7 @@ class FabricMenuGuiTranslatableScanTest {
                     "src/main/java/dev/aurelium/auraskills/fabric/menu/FabricStatInfoMenuGui.java",
                     "src/main/java/dev/aurelium/auraskills/fabric/menu/FabricSourcesMenuGui.java",
                     "src/main/java/dev/aurelium/auraskills/fabric/menu/FabricUnclaimedItemsMenuGui.java",
+                    "src/main/java/dev/aurelium/auraskills/fabric/menu/FabricUnclaimedItemsTemplateSupport.java",
                     "src/main/java/dev/aurelium/auraskills/fabric/menu/FabricLeaderboardMenuGui.java",
                     "src/main/java/dev/aurelium/auraskills/fabric/menu/FabricLeaderboardTemplateSupport.java",
                     "src/main/java/dev/aurelium/auraskills/fabric/menu/FabricAbilitiesMenuGui.java",

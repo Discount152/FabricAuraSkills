@@ -285,6 +285,41 @@ class GraniteTemplateItemsTest {
     }
 
     @Test
+    void findClaimableGridDefinition() {
+        GraniteTemplateItem row =
+                new GraniteTemplateItem(
+                        List.of(11),
+                        "minecraft:chest",
+                        Optional.empty(),
+                        List.of(),
+                        OptionalInt.empty(),
+                        OptionalInt.empty(),
+                        Optional.of(GraniteTemplateActionNames.CLAIM_ITEM));
+        GraniteMenuTemplate t =
+                new GraniteMenuTemplate(
+                        "unclaimed_items", "a", 6, Optional.empty(), Map.of("foo", row), Optional.empty());
+        assertNotNull(GraniteTemplateItems.findClaimableGridDefinition(t));
+        GraniteTemplateItem keyed =
+                new GraniteTemplateItem(
+                        List.of(12),
+                        "minecraft:chest",
+                        Optional.empty(),
+                        List.of(),
+                        OptionalInt.empty(),
+                        OptionalInt.empty(),
+                        Optional.of(GraniteTemplateActionNames.CLAIM_ITEM));
+        GraniteMenuTemplate t2 =
+                new GraniteMenuTemplate(
+                        "unclaimed_items",
+                        "a",
+                        6,
+                        Optional.empty(),
+                        Map.of("claimable", keyed, "foo", row),
+                        Optional.empty());
+        assertEquals(keyed, GraniteTemplateItems.findClaimableGridDefinition(t2));
+    }
+
+    @Test
     void actionEquals() {
         GraniteTemplateItem i =
                 new GraniteTemplateItem(
