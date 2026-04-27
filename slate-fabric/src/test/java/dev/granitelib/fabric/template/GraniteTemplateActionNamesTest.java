@@ -3,6 +3,9 @@ package dev.granitelib.fabric.template;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GraniteTemplateActionNamesTest {
 
@@ -25,5 +28,28 @@ class GraniteTemplateActionNamesTest {
         assertEquals("previous_page", GraniteTemplateActionNames.PREVIOUS_PAGE);
         assertEquals("next_page", GraniteTemplateActionNames.NEXT_PAGE);
         assertEquals("cycle_sort", GraniteTemplateActionNames.CYCLE_SORT);
+    }
+
+    @Test
+    void normalizeTrimsAndRootLowercase() {
+        assertNull(GraniteTemplateActionNames.normalize(null));
+        assertNull(GraniteTemplateActionNames.normalize("   "));
+        assertEquals("back", GraniteTemplateActionNames.normalize("  BACK  "));
+        assertEquals("skill_row", GraniteTemplateActionNames.normalize("Skill_Row"));
+    }
+
+    @Test
+    void isKnown() {
+        assertTrue(GraniteTemplateActionNames.isKnown("BACK"));
+        assertTrue(GraniteTemplateActionNames.isKnown(GraniteTemplateActionNames.SOURCE_ROW));
+        assertFalse(GraniteTemplateActionNames.isKnown("skill_ro"));
+        assertFalse(GraniteTemplateActionNames.isKnown(null));
+        assertFalse(GraniteTemplateActionNames.isKnown(""));
+    }
+
+    @Test
+    void allKnownNormalizedSize17() {
+        assertEquals(17, GraniteTemplateActionNames.allKnownNormalized().size());
+        assertTrue(GraniteTemplateActionNames.allKnownNormalized().contains(GraniteTemplateActionNames.CYCLE_SORT));
     }
 }

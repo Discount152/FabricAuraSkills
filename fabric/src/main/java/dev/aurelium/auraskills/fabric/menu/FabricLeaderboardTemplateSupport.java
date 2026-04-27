@@ -87,6 +87,13 @@ public final class FabricLeaderboardTemplateSupport {
             return false;
         }
 
+        Optional<String> actionContract =
+                FabricGraniteMenuTemplateActionContract.validateTemplateActions("leaderboard", template);
+        if (actionContract.isPresent()) {
+            plugin.logger().warn(MENU_LOG + ": " + actionContract.get() + "; using built-in menu");
+            return false;
+        }
+
         GraniteTemplateItem entryDef = GraniteTemplateItems.findLeaderboardEntryDefinition(template);
         if (entryDef == null) {
             plugin.logger().warn(

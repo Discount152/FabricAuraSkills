@@ -66,6 +66,13 @@ public final class FabricStatsTemplateSupport {
             return false;
         }
 
+        Optional<String> actionContract =
+                FabricGraniteMenuTemplateActionContract.validateTemplateActions("stats", template);
+        if (actionContract.isPresent()) {
+            plugin.logger().warn(MENU_LOG + ": " + actionContract.get() + "; using built-in menu");
+            return false;
+        }
+
         GraniteTemplateItem statDef = GraniteTemplateItems.findStatGridDefinition(template);
         if (statDef == null) {
             plugin.logger().warn(

@@ -2,6 +2,13 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.139
+
+### Changes
+
+- **Fabric + GraniteLib: Sprint 112 -- Granite menu template action contract (`FabricAuraSkills-2.3.139.jar`):** `GraniteTemplateActionNames` gains `normalize`, `isKnown`, and `allKnownNormalized()` (17 v0 actions). `GraniteTemplateItems` gains `findFirstByAction` / `findAllByAction` (normalize-matched) and grid discovery uses `findFirstByAction`. `FabricGraniteMenuTemplateActionContract` enforces per-menu allowed + required `action` strings; all eight `Fabric*TemplateSupport.tryOpenInner` paths validate after id/rows checks (warn + built-in fallback). **Tests:** granitelib + `FabricGraniteMenuTemplateActionContractTest`. **Docs:** `fabric/SPRINT_112_MANUAL_TEMPLATE_ACTION_CONTRACT.md`. **projectVersion** 2.3.138 -> 2.3.139. **Build:** `gradlew.bat -PfabricOnly=true :granitelib-fabric:test :fabric:test :fabric:build`.
+
+
 ## 2.3.138
 
 ### Changes

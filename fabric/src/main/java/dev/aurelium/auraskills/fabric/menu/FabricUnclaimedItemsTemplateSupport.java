@@ -79,6 +79,13 @@ public final class FabricUnclaimedItemsTemplateSupport {
             return false;
         }
 
+        Optional<String> actionContract =
+                FabricGraniteMenuTemplateActionContract.validateTemplateActions("unclaimed_items", template);
+        if (actionContract.isPresent()) {
+            plugin.logger().warn(MENU_LOG + ": " + actionContract.get() + "; using built-in menu");
+            return false;
+        }
+
         GraniteTemplateItem claimableDef = GraniteTemplateItems.findClaimableGridDefinition(template);
         if (claimableDef == null) {
             plugin.logger().warn(

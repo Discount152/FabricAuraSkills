@@ -86,6 +86,13 @@ public final class FabricSourcesTemplateSupport {
             return false;
         }
 
+        Optional<String> actionContract =
+                FabricGraniteMenuTemplateActionContract.validateTemplateActions("sources", template);
+        if (actionContract.isPresent()) {
+            plugin.logger().warn(MENU_LOG + ": " + actionContract.get() + "; using built-in menu");
+            return false;
+        }
+
         GraniteTemplateItem sourceDef = GraniteTemplateItems.findSourceGridDefinition(template);
         if (sourceDef == null) {
             plugin.logger().warn(

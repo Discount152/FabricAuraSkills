@@ -1,11 +1,18 @@
 package dev.granitelib.fabric.template;
 
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+
 /**
  * Documented v0 action string contract for bundled GraniteLib YAML templates (Sprint 99). Values are wired in
- * Fabric gameplay code — this is not a dynamic action engine, only stable identifiers for authors and reviewers.
+ * Fabric gameplay code -- this is not a dynamic action engine, only stable identifiers for authors and reviewers.
  *
  * <p>Bundled templates today: {@code stat_info.yml}, {@code sources.yml}, {@code level_progression.yml},
  * {@code skills.yml}, {@code stats.yml}, {@code abilities.yml}, {@code leaderboard.yml}, {@code unclaimed_items.yml}.
+ *
+ * <p><b>Sprint 112:</b> {@link #normalize(String)}, {@link #isKnown(String)}, and {@link #allKnownNormalized()} define
+ * the canonical trimmed {@link Locale#ROOT} lowercase vocabulary for template validation and item lookups.
  */
 public final class GraniteTemplateActionNames {
 
@@ -59,4 +66,49 @@ public final class GraniteTemplateActionNames {
     public static final String NEXT_PAGE = "next_page";
 
     public static final String CYCLE_SORT = "cycle_sort";
+
+    private static final Set<String> ALL_KNOWN_NORMALIZED = Set.copyOf(List.of(
+            BACK,
+            STAT_PANEL,
+            SOURCE_ROW,
+            LEVEL_ROW,
+            SKILL_ROW,
+            STAT_ROW,
+            ABILITY_ROW,
+            MANA_ABILITY_ROW,
+            LEADERBOARD_ROW,
+            REFRESH,
+            CLAIM_ITEM,
+            CLAIM_ALL,
+            OPEN_SOURCES,
+            OPEN_ABILITIES,
+            PREVIOUS_PAGE,
+            NEXT_PAGE,
+            CYCLE_SORT));
+
+    /**
+     * Sprint 112: stable normalization for action comparisons -- trim, then {@link Locale#ROOT} lowercase; {@code null}
+     * or whitespace-only input yields {@code null}.
+     */
+    public static String normalize(String s) {
+        if (s == null) {
+            return null;
+        }
+        String t = s.trim();
+        if (t.isEmpty()) {
+            return null;
+        }
+        return t.toLowerCase(Locale.ROOT);
+    }
+
+    /** Sprint 112: immutable set of all {@linkplain #normalize(String) normalized} v0 action literals (size 17). */
+    public static Set<String> allKnownNormalized() {
+        return ALL_KNOWN_NORMALIZED;
+    }
+
+    /** Sprint 112: whether {@code s} normalizes to a documented v0 action (see {@link #allKnownNormalized()}). */
+    public static boolean isKnown(String s) {
+        String n = normalize(s);
+        return n != null && ALL_KNOWN_NORMALIZED.contains(n);
+    }
 }

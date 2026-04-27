@@ -68,6 +68,13 @@ public final class FabricSkillsTemplateSupport {
             return false;
         }
 
+        Optional<String> actionContract =
+                FabricGraniteMenuTemplateActionContract.validateTemplateActions("skills", template);
+        if (actionContract.isPresent()) {
+            plugin.logger().warn(MENU_LOG + ": " + actionContract.get() + "; using built-in menu");
+            return false;
+        }
+
         GraniteTemplateItem skillDef = GraniteTemplateItems.findSkillGridDefinition(template);
         if (skillDef == null) {
             plugin.logger().warn(

@@ -77,6 +77,13 @@ public final class FabricLevelProgressionTemplateSupport {
             return false;
         }
 
+        Optional<String> actionContract =
+                FabricGraniteMenuTemplateActionContract.validateTemplateActions("level_progression", template);
+        if (actionContract.isPresent()) {
+            plugin.logger().warn(MENU_LOG + ": " + actionContract.get() + "; using built-in menu");
+            return false;
+        }
+
         GraniteTemplateItem levelDef = GraniteTemplateItems.findLevelGridDefinition(template);
         if (levelDef == null) {
             plugin.logger().warn(

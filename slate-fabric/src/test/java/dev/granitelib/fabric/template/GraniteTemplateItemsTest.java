@@ -332,4 +332,48 @@ class GraniteTemplateItemsTest {
                         Optional.of("BACK"));
         assertTrue(GraniteTemplateItems.actionEquals(i, GraniteTemplateActionNames.BACK));
     }
+
+    @Test
+    void findFirstByActionFindsMatch() {
+        GraniteTemplateItem a =
+                new GraniteTemplateItem(
+                        List.of(10),
+                        "minecraft:paper",
+                        Optional.empty(),
+                        List.of(),
+                        OptionalInt.empty(),
+                        OptionalInt.empty(),
+                        Optional.of("SKILL_ROW"));
+        GraniteMenuTemplate t =
+                new GraniteMenuTemplate("skills", "s", 6, Optional.empty(), Map.of("x", a), Optional.empty());
+        assertEquals(
+                a,
+                GraniteTemplateItems.findFirstByAction(t, GraniteTemplateActionNames.SKILL_ROW).orElseThrow());
+    }
+
+    @Test
+    void findAllByActionReturnsAllMatches() {
+        GraniteTemplateItem r1 =
+                new GraniteTemplateItem(
+                        List.of(1),
+                        "minecraft:stone",
+                        Optional.empty(),
+                        List.of(),
+                        OptionalInt.empty(),
+                        OptionalInt.empty(),
+                        Optional.of(GraniteTemplateActionNames.BACK));
+        GraniteTemplateItem r2 =
+                new GraniteTemplateItem(
+                        List.of(2),
+                        "minecraft:dirt",
+                        Optional.empty(),
+                        List.of(),
+                        OptionalInt.empty(),
+                        OptionalInt.empty(),
+                        Optional.of("Back"));
+        GraniteMenuTemplate t =
+                new GraniteMenuTemplate(
+                        "m", "t", 6, Optional.empty(), Map.of("a", r1, "b", r2), Optional.empty());
+        assertEquals(2, GraniteTemplateItems.findAllByAction(t, GraniteTemplateActionNames.BACK).size());
+    }
 }

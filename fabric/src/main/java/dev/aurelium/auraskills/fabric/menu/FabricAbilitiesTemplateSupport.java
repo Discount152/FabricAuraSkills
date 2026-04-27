@@ -83,6 +83,13 @@ public final class FabricAbilitiesTemplateSupport {
             return false;
         }
 
+        Optional<String> actionContract =
+                FabricGraniteMenuTemplateActionContract.validateTemplateActions("abilities", template);
+        if (actionContract.isPresent()) {
+            plugin.logger().warn(MENU_LOG + ": " + actionContract.get() + "; using built-in menu");
+            return false;
+        }
+
         GraniteTemplateItem abilityDef = GraniteTemplateItems.findAbilityGridDefinition(template);
         if (abilityDef == null) {
             plugin.logger().warn(

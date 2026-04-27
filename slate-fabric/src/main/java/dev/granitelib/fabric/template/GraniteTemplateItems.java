@@ -4,6 +4,7 @@ import dev.granitelib.fabric.template.model.GraniteMenuTemplate;
 import dev.granitelib.fabric.template.model.GraniteTemplateItem;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +14,43 @@ import java.util.Optional;
 public final class GraniteTemplateItems {
 
     private GraniteTemplateItems() {
+    }
+
+    /**
+     * Sprint 112: first template item (iteration order of {@link GraniteMenuTemplate#items()}) whose {@code action}
+     * matches {@code action} after {@link GraniteTemplateActionNames#normalize(String)}.
+     */
+    public static Optional<GraniteTemplateItem> findFirstByAction(GraniteMenuTemplate template, String action) {
+        String want = GraniteTemplateActionNames.normalize(action);
+        if (want == null) {
+            return Optional.empty();
+        }
+        for (GraniteTemplateItem item : template.items().values()) {
+            Optional<String> n = item.action().map(GraniteTemplateActionNames::normalize);
+            if (n.isPresent() && want.equals(n.get())) {
+                return Optional.of(item);
+            }
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Sprint 112: all items whose {@code action} matches {@code action} after
+     * {@link GraniteTemplateActionNames#normalize(String)} (map iteration order).
+     */
+    public static List<GraniteTemplateItem> findAllByAction(GraniteMenuTemplate template, String action) {
+        String want = GraniteTemplateActionNames.normalize(action);
+        if (want == null) {
+            return List.of();
+        }
+        List<GraniteTemplateItem> out = new ArrayList<>();
+        for (GraniteTemplateItem item : template.items().values()) {
+            Optional<String> n = item.action().map(GraniteTemplateActionNames::normalize);
+            if (n.isPresent() && want.equals(n.get())) {
+                out.add(item);
+            }
+        }
+        return List.copyOf(out);
     }
 
     /**
@@ -48,14 +86,7 @@ public final class GraniteTemplateItems {
         if (byKey != null) {
             return byKey;
         }
-        for (GraniteTemplateItem item : template.items().values()) {
-            if (item.action()
-                    .filter(a -> GraniteTemplateActionNames.SOURCE_ROW.equalsIgnoreCase(a))
-                    .isPresent()) {
-                return item;
-            }
-        }
-        return null;
+        return findFirstByAction(template, GraniteTemplateActionNames.SOURCE_ROW).orElse(null);
     }
 
     /** Level grid: YAML key {@code level}, else first item with {@link GraniteTemplateActionNames#LEVEL_ROW}. */
@@ -64,14 +95,7 @@ public final class GraniteTemplateItems {
         if (byKey != null) {
             return byKey;
         }
-        for (GraniteTemplateItem item : template.items().values()) {
-            if (item.action()
-                    .filter(a -> GraniteTemplateActionNames.LEVEL_ROW.equalsIgnoreCase(a))
-                    .isPresent()) {
-                return item;
-            }
-        }
-        return null;
+        return findFirstByAction(template, GraniteTemplateActionNames.LEVEL_ROW).orElse(null);
     }
 
     /** Skills list grid: YAML key {@code skill}, else first item with {@link GraniteTemplateActionNames#SKILL_ROW}. */
@@ -80,14 +104,7 @@ public final class GraniteTemplateItems {
         if (byKey != null) {
             return byKey;
         }
-        for (GraniteTemplateItem item : template.items().values()) {
-            if (item.action()
-                    .filter(a -> GraniteTemplateActionNames.SKILL_ROW.equalsIgnoreCase(a))
-                    .isPresent()) {
-                return item;
-            }
-        }
-        return null;
+        return findFirstByAction(template, GraniteTemplateActionNames.SKILL_ROW).orElse(null);
     }
 
     /** Stats list grid: YAML key {@code stat}, else first item with {@link GraniteTemplateActionNames#STAT_ROW}. */
@@ -96,14 +113,7 @@ public final class GraniteTemplateItems {
         if (byKey != null) {
             return byKey;
         }
-        for (GraniteTemplateItem item : template.items().values()) {
-            if (item.action()
-                    .filter(a -> GraniteTemplateActionNames.STAT_ROW.equalsIgnoreCase(a))
-                    .isPresent()) {
-                return item;
-            }
-        }
-        return null;
+        return findFirstByAction(template, GraniteTemplateActionNames.STAT_ROW).orElse(null);
     }
 
     /**
@@ -115,14 +125,7 @@ public final class GraniteTemplateItems {
         if (byKey != null) {
             return byKey;
         }
-        for (GraniteTemplateItem item : template.items().values()) {
-            if (item.action()
-                    .filter(a -> GraniteTemplateActionNames.ABILITY_ROW.equalsIgnoreCase(a))
-                    .isPresent()) {
-                return item;
-            }
-        }
-        return null;
+        return findFirstByAction(template, GraniteTemplateActionNames.ABILITY_ROW).orElse(null);
     }
 
     /**
@@ -134,14 +137,7 @@ public final class GraniteTemplateItems {
         if (byKey != null) {
             return byKey;
         }
-        for (GraniteTemplateItem item : template.items().values()) {
-            if (item.action()
-                    .filter(a -> GraniteTemplateActionNames.MANA_ABILITY_ROW.equalsIgnoreCase(a))
-                    .isPresent()) {
-                return item;
-            }
-        }
-        return null;
+        return findFirstByAction(template, GraniteTemplateActionNames.MANA_ABILITY_ROW).orElse(null);
     }
 
     /**
@@ -153,14 +149,7 @@ public final class GraniteTemplateItems {
         if (byKey != null) {
             return byKey;
         }
-        for (GraniteTemplateItem item : template.items().values()) {
-            if (item.action()
-                    .filter(a -> GraniteTemplateActionNames.LEADERBOARD_ROW.equalsIgnoreCase(a))
-                    .isPresent()) {
-                return item;
-            }
-        }
-        return null;
+        return findFirstByAction(template, GraniteTemplateActionNames.LEADERBOARD_ROW).orElse(null);
     }
 
     /**
@@ -172,13 +161,6 @@ public final class GraniteTemplateItems {
         if (byKey != null) {
             return byKey;
         }
-        for (GraniteTemplateItem item : template.items().values()) {
-            if (item.action()
-                    .filter(a -> GraniteTemplateActionNames.CLAIM_ITEM.equalsIgnoreCase(a))
-                    .isPresent()) {
-                return item;
-            }
-        }
-        return null;
+        return findFirstByAction(template, GraniteTemplateActionNames.CLAIM_ITEM).orElse(null);
     }
 }

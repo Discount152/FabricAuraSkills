@@ -668,6 +668,16 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 
 | **Not in Sprint 111** | File watcher; hot reload; **`templates status verbose`**; full **`MenuFileManager`**. |
 
+
+
+## Sprint 112 -- template `action` allow/required contract (shipped, bounded)
+
+| Area | Shipped |
+|------|---------|
+| **Validation** | `FabricGraniteMenuTemplateActionContract.validateTemplateActions` after template **id** + **rows** checks in all eight `Fabric*TemplateSupport.tryOpenInner` paths; failure logs **warn** and uses **built-in** menu. |
+| **GraniteLib** | `GraniteTemplateActionNames.normalize` / `isKnown` / `allKnownNormalized`; `GraniteTemplateItems.findFirstByAction` / `findAllByAction`. |
+| **Manual** | `SPRINT_112_MANUAL_TEMPLATE_ACTION_CONTRACT.md` |
+
 ## Sprint 100 — **level_progression** GraniteLib template prototype (level grid + paging) (shipped, bounded)
 
 | Area | Shipped on Fabric (bounded) |

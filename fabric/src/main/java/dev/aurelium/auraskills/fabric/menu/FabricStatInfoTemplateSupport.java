@@ -79,6 +79,13 @@ public final class FabricStatInfoTemplateSupport {
             return false;
         }
 
+        Optional<String> actionContract =
+                FabricGraniteMenuTemplateActionContract.validateTemplateActions("stat_info", template);
+        if (actionContract.isPresent()) {
+            plugin.logger().warn(MENU_LOG + ": " + actionContract.get() + "; using built-in menu");
+            return false;
+        }
+
         User user = plugin.getUserManager().getUser(player.getUuid());
         Locale locale = user.getLocale();
         MessageProvider msg = plugin.getMessageProvider();
