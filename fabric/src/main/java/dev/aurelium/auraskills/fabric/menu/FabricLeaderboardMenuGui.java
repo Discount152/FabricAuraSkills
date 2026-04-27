@@ -24,7 +24,7 @@ import java.util.Locale;
  * 6×9 bounded Granite leaderboard browser (**Sprint 72**). Bukkit {@code LeaderboardMenu} is
  * Slate (10 template slots, skulls per row); this uses the same 10/ page as {@code /top} chat,
  * with paging and **refresh** (re-reads cached lists, no re-sort). Modes: **power**, **average**,
- * **per-skill**.
+ * **per-skill**. **Sprint 103:** tries bundled {@link FabricLeaderboardTemplateSupport} first.
  */
 public final class FabricLeaderboardMenuGui {
 
@@ -41,9 +41,13 @@ public final class FabricLeaderboardMenuGui {
     private static final int SLOT_NEXT = 50;
 
     /** Two rows of five (row0: 0-4, row1: 9-13) — 10 lines/page, matches chat. */
-    private static final int[] ENTRY_SLOTS = {0, 1, 2, 3, 4, 9, 10, 11, 12, 13};
+    private static final List<Integer> ENTRY_SLOTS = List.of(0, 1, 2, 3, 4, 9, 10, 11, 12, 13);
 
-    private FabricLeaderboardMenuGui() {
+    private FabricLeaderboardMenuGui() {}
+
+    /** Slot order for leaderboard entry rows; must match bundled {@code leaderboard.yml}. */
+    public static List<Integer> builtinEntrySlots() {
+        return ENTRY_SLOTS;
     }
 
     public static void open(
@@ -62,6 +66,23 @@ public final class FabricLeaderboardMenuGui {
         var user = plugin.getUserManager().getUser(player.getUuid());
         Locale lo = user != null ? user.getLocale() : plugin.getDefaultLanguage();
         List<SkillValue> slice = fetchPage(lb, mode, skill, page1);
+        if (FabricLeaderboardTemplateSupport.tryOpen(
+                player, plugin, mode, skill, page1, page0, maxPage0, slice, lo)) {
+            return;
+        }
+        openBuiltIn(player, plugin, mode, skill, page1, page0, maxPage0, slice, lo);
+    }
+
+    private static void openBuiltIn(
+            ServerPlayerEntity player,
+            FabricAuraSkills plugin,
+            Mode mode,
+            @Nullable Skill skill,
+            int page1,
+            int page0,
+            int maxPage0,
+            List<SkillValue> slice,
+            Locale lo) {
         Text title = makeTitle(mode, skill, page0, maxPage0, lo, plugin);
         final int fPage1 = page1;
         final int fPage0 = page0;
@@ -75,14 +96,14 @@ public final class FabricLeaderboardMenuGui {
                     for (int i = 0; i < FabricMenuSlotLayout.TOP_SLOTS; i++) {
                         inv.setStack(i, ItemStack.EMPTY);
                     }
-                    for (int i = 0; i < slice.size() && i < ENTRY_SLOTS.length; i++) {
+                    for (int i = 0; i < slice.size() && i < ENTRY_SLOTS.size(); i++) {
                         SkillValue sv = slice.get(i);
                         int rank = FabricCommandLeaderboardText.globalRank1Based(fPage1, i, ENTRIES);
                         String name =
                                 FabricCommandLeaderboardText.resolvePlayerName(
                                         plugin.getServer(), sv.id());
                         String value = valueLine(sv, mode, lo, plugin);
-                        inv.setStack(ENTRY_SLOTS[i], entryStack(rank, name, value));
+                        inv.setStack(ENTRY_SLOTS.get(i), entryStack(rank, name, value));
                     }
                     putControl(
                             inv, SLOT_BACK, true, "auraskills.granite.menu.leaderboard_back", "auraskills.granite.menu.leaderboard_back_lore", Items.ARROW);
@@ -209,7 +230,8 @@ public final class FabricLeaderboardMenuGui {
         };
     }
 
-    private static String valueLine(
+    /** Formatted value column; shared with {@link FabricLeaderboardTemplateSupport}. */
+    static String valueLine(
             SkillValue sv, Mode mode, Locale lo, FabricAuraSkills plugin) {
         return switch (mode) {
             case POWER, SKILL -> String.valueOf(sv.level());

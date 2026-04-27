@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.131
+
+### Changes
+
+- **Fabric + GraniteLib: Sprint 103 — template-backed `leaderboard` prototype (`FabricAuraSkills-2.3.131.jar`):** Bundled **`assets/auraskills/granite/templates/leaderboard.yml`** — **10** ranked entry slots (**same order** as **`FabricLeaderboardMenuGui.builtinEntrySlots()`**), **`minecraft:paper`** rows (matches built-in; no skull/profile binding), nav **back** **45** / **previous** **48** / **refresh** **49** / **next** **50**. **`FabricLeaderboardTemplateSupport`** + **`FabricLeaderboardPlaceholders`** (`{leaderboard_title}`, `{leaderboard_type}`, `{skill}`, `{skill_display}`, `{rank}`, `{player}`, `{value}`, `{page}`, `{total_pages}`). **`GraniteTemplateActionNames`:** **`leaderboard_row`**, **`refresh`**; **`GraniteTemplateItems`:** **`findLeaderboardEntryDefinition`**. **`FabricLeaderboardMenuGui`** tries template first, then **`openBuiltIn`**. **Power** / **average** / **skill** modes, paging, refresh (re-open same view), and **Back** → **Skills** unchanged. **`FabricCommandLeaderboardText`** rank/name/value formatting. **Tests:** **`FabricLeaderboardBundledTemplateParseTest`**, granitelib template tests, translatable scan. **Docs:** **`fabric/SPRINT_103_MANUAL_LEADERBOARD_TEMPLATE_PROTOTYPE.md`**, parity pointers. **Slate / `MenuFileManager`** still **not** complete. **Bedrock / Geyser** not tested. **`projectVersion` 2.3.130 → 2.3.131**. **Build:** `.\gradlew -PfabricOnly=true :granitelib-fabric:test :fabric:test :fabric:build` — **PASS** (**`verifyFabricReleaseBundle`**: OK).
+
 ## 2.3.130
 
 ### Changes

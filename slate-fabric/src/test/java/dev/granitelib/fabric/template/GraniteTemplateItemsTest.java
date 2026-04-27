@@ -251,6 +251,40 @@ class GraniteTemplateItemsTest {
     }
 
     @Test
+    void findLeaderboardEntryDefinition() {
+        GraniteTemplateItem row =
+                new GraniteTemplateItem(
+                        List.of(11),
+                        "minecraft:paper",
+                        Optional.empty(),
+                        List.of(),
+                        OptionalInt.empty(),
+                        OptionalInt.empty(),
+                        Optional.of(GraniteTemplateActionNames.LEADERBOARD_ROW));
+        GraniteMenuTemplate t =
+                new GraniteMenuTemplate("leaderboard", "a", 6, Optional.empty(), Map.of("foo", row), Optional.empty());
+        assertNotNull(GraniteTemplateItems.findLeaderboardEntryDefinition(t));
+        GraniteTemplateItem keyed =
+                new GraniteTemplateItem(
+                        List.of(12),
+                        "minecraft:paper",
+                        Optional.empty(),
+                        List.of(),
+                        OptionalInt.empty(),
+                        OptionalInt.empty(),
+                        Optional.of(GraniteTemplateActionNames.LEADERBOARD_ROW));
+        GraniteMenuTemplate t2 =
+                new GraniteMenuTemplate(
+                        "leaderboard",
+                        "a",
+                        6,
+                        Optional.empty(),
+                        Map.of("entry", keyed, "foo", row),
+                        Optional.empty());
+        assertEquals(keyed, GraniteTemplateItems.findLeaderboardEntryDefinition(t2));
+    }
+
+    @Test
     void actionEquals() {
         GraniteTemplateItem i =
                 new GraniteTemplateItem(

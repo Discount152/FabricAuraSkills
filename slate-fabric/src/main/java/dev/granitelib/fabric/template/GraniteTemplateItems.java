@@ -143,4 +143,23 @@ public final class GraniteTemplateItems {
         }
         return null;
     }
+
+    /**
+     * Leaderboard entry grid: YAML key {@code entry}, else first item with
+     * {@link GraniteTemplateActionNames#LEADERBOARD_ROW}.
+     */
+    public static @Nullable GraniteTemplateItem findLeaderboardEntryDefinition(GraniteMenuTemplate template) {
+        GraniteTemplateItem byKey = template.items().get("entry");
+        if (byKey != null) {
+            return byKey;
+        }
+        for (GraniteTemplateItem item : template.items().values()) {
+            if (item.action()
+                    .filter(a -> GraniteTemplateActionNames.LEADERBOARD_ROW.equalsIgnoreCase(a))
+                    .isPresent()) {
+                return item;
+            }
+        }
+        return null;
+    }
 }

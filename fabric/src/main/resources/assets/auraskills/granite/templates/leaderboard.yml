@@ -1,0 +1,56 @@
+# Sprint 103 — bundled v0 template for leaderboard (GraniteLib YAML schema v0).
+# 10 entry slots match built-in FabricLeaderboardMenuGui (two rows of five).
+# Materials: minecraft:paper for rows (matches built-in; no skull/profile binding).
+# Nav slots match built-in: back 45, previous 48, refresh 49, next 50.
+# Fallback: built-in FabricLeaderboardMenuGui on any failure.
+id: leaderboard
+title: "{leaderboard_title}"
+rows: 6
+
+fill:
+  material: minecraft:black_stained_glass_pane
+  name: " "
+
+items:
+  entry:
+    material: minecraft:paper
+    slots:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 9
+      - 10
+      - 11
+      - 12
+      - 13
+    name: "#{rank} {player}"
+    lore:
+      - "Value: {value}"
+      - "Type: {leaderboard_type}"
+    action: leaderboard_row
+  back:
+    material: minecraft:arrow
+    slot: 45
+    name: "Back"
+    lore:
+      - "Return to skills"
+    action: back
+  previous:
+    material: minecraft:arrow
+    slot: 48
+    name: "Previous Page"
+    action: previous_page
+  refresh:
+    material: minecraft:compass
+    slot: 49
+    name: "Refresh"
+    lore:
+      - "Reload this leaderboard view"
+    action: refresh
+  next:
+    material: minecraft:arrow
+    slot: 50
+    name: "Next Page"
+    action: next_page
