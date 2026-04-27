@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.138
+
+### Changes
+
+- **Fabric: Sprint 111 — Granite template registry diagnostics (`FabricAuraSkills-2.3.138.jar`):** **`RegistryEntry`** exposes **`menuId`**, operator **`config/auraskills/…`** / **`assets/…`** labels, concise **`reason`** (wrong id, validation first + “and N more”, read failures), and **`fallbackDisplay`** (bundled path or **`built-in Java menu`**). **`FabricGraniteMenuTemplateStatusFormatter`** drives **`/auraskills templates status`** (+ **`/skills|/sk|/skill`** mirrors): header **`Granite menu templates: disk X, bundled Y, failed Z`** with counts **disk** = **`DISK_LOADED`**; **bundled** = **`BUNDLED_LOADED` + `DISK_INVALID_BUNDLED_LOADED`**; **failed** = **`BUNDLED_MISSING_OR_INVALID`**. **`FabricGraniteMenuTemplateLoader`** adds **`toConfigRelativeDisplayPath`**, **`formatWrongIdDiskFailure`**, **`summarizeValidationErrors`**; **`ManagedTemplateLoad`** carries **`diskSourceDisplayPath`** + **`bundledClasspathPath`** (load order / rendering unchanged). **Tests:** registry + loader + synthetic formatter coverage. **Docs:** **`fabric/SPRINT_111_MANUAL_TEMPLATE_STATUS_DIAGNOSTICS.md`**, parity/README. **No** file watcher / hot reload. **Bedrock / Geyser** not tested. **`projectVersion` 2.3.137 → 2.3.138**. **Build:** `.\gradlew -PfabricOnly=true :granitelib-fabric:test :fabric:test :fabric:build` — **PASS** (`verifyFabricReleaseBundle`: OK).
+
 ## 2.3.137
 
 ### Changes

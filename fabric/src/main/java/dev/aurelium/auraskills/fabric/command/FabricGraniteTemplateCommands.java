@@ -5,6 +5,7 @@ import dev.aurelium.auraskills.fabric.menu.FabricGraniteBundledMenuTemplateIds;
 import dev.aurelium.auraskills.fabric.menu.FabricGraniteMenuTemplateBindings;
 import dev.aurelium.auraskills.fabric.menu.FabricGraniteMenuTemplateExporter;
 import dev.aurelium.auraskills.fabric.menu.FabricGraniteMenuTemplateRegistry;
+import dev.aurelium.auraskills.fabric.menu.FabricGraniteMenuTemplateStatusFormatter;
 import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -18,7 +19,7 @@ import static net.minecraft.server.command.CommandManager.literal;
  * <p>Sprint 109: guarded overwrite — preview ({@code templates export overwrite}) and console/RCON-only confirm
  * ({@code … overwrite confirm}) via {@link FabricCommandConfirmation}.
  *
- * <p>Sprint 110: {@code templates status} — registry snapshot for known menu ids.
+ * <p>Sprint 110–111: {@code templates status} — registry snapshot with paths, states, and disk/bundled diagnostics.
  */
 public final class FabricGraniteTemplateCommands {
 
@@ -62,35 +63,14 @@ public final class FabricGraniteTemplateCommands {
                 FabricGraniteBundledMenuTemplateIds.class.getClassLoader().getResourceAsStream(cp);
     }
 
-    private static String formatRegistryLine(FabricGraniteMenuTemplateRegistry.RegistryEntry e) {
-        return switch (e.state()) {
-            case DISK_LOADED -> "disk " + e.sourceLabel();
-            case BUNDLED_LOADED -> "bundled " + e.sourceLabel();
-            case DISK_INVALID_BUNDLED_LOADED -> {
-                String d = e.diagnosticDetail() != null ? e.diagnosticDetail() : "invalid disk";
-                yield "disk invalid -> bundled (" + d + ") " + e.sourceLabel();
-            }
-            case BUNDLED_MISSING_OR_INVALID ->
-                    "unavailable — " + (e.diagnosticDetail() != null ? e.diagnosticDetail() : "");
-        };
-    }
-
     private static int templatesStatus(CommandContext<ServerCommandSource> ctx) {
         return FabricCommandPluginState.runtimeReadyOrEmpty()
                 .map(
                         p -> {
-                            StringBuilder sb = new StringBuilder("Granite menu templates:\n");
-                            for (FabricGraniteMenuTemplateBindings.Binding b : FabricGraniteMenuTemplateBindings.ALL) {
-                                FabricGraniteMenuTemplateRegistry.RegistryEntry e =
-                                        p.menuTemplateRegistry().snapshot().get(b.menuId());
-                                String line =
-                                        e != null
-                                                ? formatRegistryLine(e)
-                                                : "unavailable (no registry entry)";
-                                sb.append("- ").append(b.menuId()).append(": ").append(line).append("\n");
-                            }
-                            sb.append("Run /auraskills reload to refresh the registry after editing disk YAML.");
-                            String text = sb.toString().trim();
+                            String text =
+                                    FabricGraniteMenuTemplateStatusFormatter.format(
+                                            p.menuTemplateRegistry().snapshot(),
+                                            FabricGraniteMenuTemplateBindings.ALL);
                             ctx.getSource().sendFeedback(() -> Text.literal(text), false);
                             return 1;
                         })

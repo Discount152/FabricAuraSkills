@@ -21,7 +21,7 @@
 | **`FabricGraniteMenuTemplateBindings`** | Maps each **`menuId`** → classpath anchor + bundled path (aligned with **`FabricGraniteBundledMenuTemplateIds#ALL`**). |
 | **`FabricGraniteMenuTemplateLoader`** | **`loadManagedCore`** — parse-only, structured **`GraniteMenuTemplateState`**; legacy **`load`** still debounces logs for tests. |
 | **`FabricGraniteMenuTemplateRegistry`** | **`reloadAll`** — fills registry, logs summary + per-failure warns. |
-| **`FabricGraniteTemplateCommands`** | **`templates status`** — human-readable snapshot. |
+| **`FabricGraniteTemplateCommands`** | **`templates export`**, **`templates status`** — see **`SPRINT_111_MANUAL_TEMPLATE_STATUS_DIAGNOSTICS.md`** for multiline diagnostics (**Sprint 111**). |
 
 ## Template states (`GraniteMenuTemplateState`)
 

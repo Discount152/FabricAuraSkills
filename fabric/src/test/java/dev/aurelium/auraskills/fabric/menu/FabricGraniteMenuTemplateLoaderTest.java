@@ -31,6 +31,23 @@ class FabricGraniteMenuTemplateLoaderTest {
     }
 
     @Test
+    void summarizeValidationErrorsJoinsFirstAndCount() {
+        assertEquals(
+                "a (and 2 more)",
+                FabricGraniteMenuTemplateLoader.summarizeValidationErrors(List.of("a", "b", "c")));
+        assertEquals("only", FabricGraniteMenuTemplateLoader.summarizeValidationErrors(List.of("only")));
+    }
+
+    @Test
+    void configRelativeDisplayPathUsesForwardSlashes() {
+        Path root = auraskillsRoot.resolve("config").resolve("auraskills");
+        Path f = root.resolve("granite/templates/skills.yml");
+        assertEquals(
+                "config/auraskills/granite/templates/skills.yml",
+                FabricGraniteMenuTemplateLoader.toConfigRelativeDisplayPath(root, f));
+    }
+
+    @Test
     void loadManagedCoreUsesBundledWhenNoDisk() {
         FabricGraniteMenuTemplateLoader.ManagedTemplateLoad ml =
                 FabricGraniteMenuTemplateLoader.loadManagedCore(
@@ -57,6 +74,7 @@ class FabricGraniteMenuTemplateLoaderTest {
         assertEquals(
                 FabricGraniteMenuTemplateLoader.GraniteMenuTemplateState.DISK_INVALID_BUNDLED_LOADED, ml.state());
         assertTrue(ml.template().isPresent());
+        assertTrue(ml.diagnosticDetail() != null && ml.diagnosticDetail().contains("wrong id: expected skills"));
     }
 
     @Test
@@ -216,7 +234,10 @@ class FabricGraniteMenuTemplateLoaderTest {
         assertEquals(FabricSkillsTemplateSupport.TEMPLATE_RESOURCE_PATH, loaded.get().sourceLabel());
         assertTrue(
                 logger.warns.stream()
-                        .anyMatch(w -> w.contains("template id must be 'skills'") && w.contains("wrong_id")),
+                        .anyMatch(
+                                w ->
+                                        w.contains("wrong id: expected skills")
+                                                && w.contains("wrong_id")),
                 logger.warns::toString);
     }
 

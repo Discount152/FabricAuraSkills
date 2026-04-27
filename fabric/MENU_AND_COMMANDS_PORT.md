@@ -656,6 +656,18 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 
 | **Not in Sprint 110** | File watcher; hot reload without **`reloadFromDisk`**; full **`MenuFileManager`**. |
 
+## Sprint 111 — template registry diagnostics / `templates status` detail (shipped, bounded)
+
+| Area | Shipped |
+|------|---------|
+| **Registry** | **`RegistryEntry`** — **`menuId`**, display paths (**`primarySourceDisplay`**, **`diskSourceDisplay`**, **`bundledSourceDisplay`**), **`reason`**, **`fallbackDisplay`**. |
+| **Loader** | **`ManagedTemplateLoad`** gains **`diskSourceDisplayPath`**, **`bundledClasspathPath`**; **`formatWrongIdDiskFailure`**, **`summarizeValidationErrors`**, **`toConfigRelativeDisplayPath`**. |
+| **Status** | **`FabricGraniteMenuTemplateStatusFormatter`** — summary line + per-menu blocks (**`source`**, **`disk`** / **`reason`** / **`fallback`**). Count semantics documented in **`SPRINT_111_MANUAL_TEMPLATE_STATUS_DIAGNOSTICS.md`**. |
+| **Command** | Same literals as Sprint **110**; output format enriched only. |
+| **Manual** | **`SPRINT_111_MANUAL_TEMPLATE_STATUS_DIAGNOSTICS.md`** |
+
+| **Not in Sprint 111** | File watcher; hot reload; **`templates status verbose`**; full **`MenuFileManager`**. |
+
 ## Sprint 100 — **level_progression** GraniteLib template prototype (level grid + paging) (shipped, bounded)
 
 | Area | Shipped on Fabric (bounded) |

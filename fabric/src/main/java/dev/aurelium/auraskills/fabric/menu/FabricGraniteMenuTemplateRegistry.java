@@ -15,14 +15,30 @@ import java.util.concurrent.atomic.AtomicReference;
  * Sprint 110: MenuFileManager-shaped lifecycle slice — loads all known Granite v0 menu templates on server enable and
  * on {@link FabricAuraSkills#reloadFromDisk()}. Menus read parsed templates from here; disk edits require reload to take
  * effect.
+ *
+ * <p>Sprint 111: {@link RegistryEntry} carries operator-facing path labels, concise disk failure reasons, and fallback
+ * hints for {@code /auraskills templates status}.
  */
 public final class FabricGraniteMenuTemplateRegistry {
 
+    /**
+     * @param primarySourceDisplay chat label for effective YAML (disk path under {@code config/auraskills/…} or bundled
+     *                             {@code assets/…} classpath).
+     * @param diskSourceDisplay {@code config/…} path when a disk file was present at load; otherwise {@code null}.
+     * @param bundledSourceDisplay bundled classpath path from {@link FabricGraniteMenuTemplateBindings}.
+     * @param reason concise diagnostic for {@code DISK_INVALID_BUNDLED_LOADED} and {@code BUNDLED_MISSING_OR_INVALID}.
+     * @param fallbackDisplay bundled classpath when falling back from invalid disk; {@code built-in Java menu} when no
+     *                        template loaded.
+     */
     public record RegistryEntry(
+            String menuId,
             FabricGraniteMenuTemplateLoader.GraniteMenuTemplateState state,
             Optional<FabricGraniteMenuTemplateLoader.LoadedTemplate> loaded,
-            String sourceLabel,
-            @Nullable String diagnosticDetail) {}
+            String primarySourceDisplay,
+            @Nullable String diskSourceDisplay,
+            String bundledSourceDisplay,
+            @Nullable String reason,
+            @Nullable String fallbackDisplay) {}
 
     private final AtomicReference<Map<String, RegistryEntry>> entries = new AtomicReference<>(Map.of());
 
@@ -53,9 +69,36 @@ public final class FabricGraniteMenuTemplateRegistry {
 
             Optional<FabricGraniteMenuTemplateLoader.LoadedTemplate> loaded =
                     ml.template().map(t -> new FabricGraniteMenuTemplateLoader.LoadedTemplate(t, ml.sourceLabel()));
+            String bundledDisplay = ml.bundledClasspathPath();
+            String primaryDisplay =
+                    ml.state() == FabricGraniteMenuTemplateLoader.GraniteMenuTemplateState.DISK_LOADED
+                            ? (ml.diskSourceDisplayPath() != null
+                                    ? ml.diskSourceDisplayPath()
+                                    : bundledDisplay)
+                            : bundledDisplay;
+            @Nullable String reason =
+                    switch (ml.state()) {
+                        case DISK_INVALID_BUNDLED_LOADED -> ml.diagnosticDetail();
+                        case BUNDLED_MISSING_OR_INVALID -> "bundled resource missing or invalid";
+                        default -> null;
+                    };
+            @Nullable String fallback =
+                    switch (ml.state()) {
+                        case DISK_INVALID_BUNDLED_LOADED -> bundledDisplay;
+                        case BUNDLED_MISSING_OR_INVALID -> "built-in Java menu";
+                        default -> null;
+                    };
             next.put(
                     b.menuId(),
-                    new RegistryEntry(ml.state(), loaded, ml.sourceLabel(), ml.diagnosticDetail()));
+                    new RegistryEntry(
+                            b.menuId(),
+                            ml.state(),
+                            loaded,
+                            primaryDisplay,
+                            ml.diskSourceDisplayPath(),
+                            bundledDisplay,
+                            reason,
+                            fallback));
 
             if (ml.state() == FabricGraniteMenuTemplateLoader.GraniteMenuTemplateState.BUNDLED_MISSING_OR_INVALID) {
                 logger.warn(
@@ -72,7 +115,7 @@ public final class FabricGraniteMenuTemplateRegistry {
                                 + "' at "
                                 + diskPath.toAbsolutePath().normalize()
                                 + " ("
-                                + ml.diagnosticDetail()
+                                + (ml.diagnosticDetail() != null ? ml.diagnosticDetail() : "invalid disk")
                                 + "); using bundled");
             }
         }

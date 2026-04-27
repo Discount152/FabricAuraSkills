@@ -9,7 +9,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,6 +42,11 @@ class FabricGraniteMenuTemplateRegistryTest {
         assertEquals(FabricGraniteMenuTemplateLoader.GraniteMenuTemplateState.BUNDLED_LOADED, e.state());
         assertTrue(e.loaded().isPresent());
         assertTrue(log.infos.stream().anyMatch(s -> s.contains("disk 0") && s.contains("bundled 8")), log.infos::toString);
+        String status =
+                FabricGraniteMenuTemplateStatusFormatter.format(reg.snapshot(), FabricGraniteMenuTemplateBindings.ALL);
+        assertTrue(status.startsWith("Granite menu templates: disk 0, bundled 8, failed 0"), status);
+        assertTrue(status.contains("skills: BUNDLED_LOADED"), status);
+        assertTrue(status.contains(FabricSkillsTemplateSupport.TEMPLATE_RESOURCE_PATH), status);
     }
 
     @Test
@@ -55,6 +62,11 @@ class FabricGraniteMenuTemplateRegistryTest {
         var e = reg.getEntry("skills").orElseThrow();
         assertEquals(FabricGraniteMenuTemplateLoader.GraniteMenuTemplateState.DISK_LOADED, e.state());
         assertTrue(log.infos.stream().anyMatch(s -> s.contains("disk 1") && s.contains("bundled 7")), log.infos::toString);
+        assertTrue(e.primarySourceDisplay().startsWith("config/auraskills/"), e.primarySourceDisplay());
+        String st =
+                FabricGraniteMenuTemplateStatusFormatter.format(reg.snapshot(), FabricGraniteMenuTemplateBindings.ALL);
+        assertTrue(st.contains("skills: DISK_LOADED"), st);
+        assertTrue(st.contains("config/auraskills/granite/templates/skills.yml"), st);
     }
 
     @Test
@@ -70,6 +82,16 @@ class FabricGraniteMenuTemplateRegistryTest {
         assertEquals(FabricGraniteMenuTemplateLoader.GraniteMenuTemplateState.DISK_INVALID_BUNDLED_LOADED, e.state());
         assertTrue(e.loaded().isPresent());
         assertTrue(log.warns.stream().anyMatch(w -> w.contains("invalid disk template")), log.warns::toString);
+        assertTrue(
+                log.infos.stream().anyMatch(s -> s.contains("failed 0") && s.contains("bundled 8")),
+                log.infos::toString);
+        assertTrue(e.reason() != null && e.reason().contains("wrong id: expected skills"), e.reason());
+        assertTrue(e.fallbackDisplay() != null && e.fallbackDisplay().contains("assets/"), e.fallbackDisplay());
+        String st =
+                FabricGraniteMenuTemplateStatusFormatter.format(reg.snapshot(), FabricGraniteMenuTemplateBindings.ALL);
+        assertTrue(st.contains("DISK_INVALID_BUNDLED_LOADED"), st);
+        assertTrue(st.contains("reason:"), st);
+        assertTrue(st.contains("fallback:"), st);
     }
 
     @Test
@@ -90,6 +112,41 @@ class FabricGraniteMenuTemplateRegistryTest {
         reg.reloadAll(auraskillsRoot, new CollectingLogger());
         assertTrue(
                 reg.getLoadedTemplate("skills").orElseThrow().template().title().contains("Registry v2"));
+    }
+
+    @Test
+    void formatterMarksFailedBundledMissingAsFailedBucket() {
+        Map<String, FabricGraniteMenuTemplateRegistry.RegistryEntry> snap = new LinkedHashMap<>();
+        for (FabricGraniteMenuTemplateBindings.Binding b : FabricGraniteMenuTemplateBindings.ALL) {
+            boolean failed = b.menuId().equals("leaderboard");
+            snap.put(
+                    b.menuId(),
+                    new FabricGraniteMenuTemplateRegistry.RegistryEntry(
+                            b.menuId(),
+                            failed
+                                    ? FabricGraniteMenuTemplateLoader.GraniteMenuTemplateState
+                                            .BUNDLED_MISSING_OR_INVALID
+                                    : FabricGraniteMenuTemplateLoader.GraniteMenuTemplateState.BUNDLED_LOADED,
+                            Optional.empty(),
+                            b.bundledClasspathPath(),
+                            failed
+                                    ? FabricGraniteMenuTemplateLoader.toConfigRelativeDisplayPath(
+                                            auraskillsRoot,
+                                            FabricGraniteMenuTemplateLoader.diskTemplatePath(
+                                                    auraskillsRoot, b.menuId()))
+                                    : null,
+                            b.bundledClasspathPath(),
+                            failed ? "bundled resource missing or invalid" : null,
+                            failed ? "built-in Java menu" : null));
+        }
+        var counts = FabricGraniteMenuTemplateStatusFormatter.summarize(snap);
+        assertEquals(0, counts.diskLoaded());
+        assertEquals(7, counts.bundledEffective());
+        assertEquals(1, counts.failed());
+        String st = FabricGraniteMenuTemplateStatusFormatter.format(snap, FabricGraniteMenuTemplateBindings.ALL);
+        assertTrue(st.startsWith("Granite menu templates: disk 0, bundled 7, failed 1"), st);
+        assertTrue(st.contains("leaderboard: BUNDLED_MISSING_OR_INVALID"), st);
+        assertTrue(st.contains("built-in Java menu"), st);
     }
 
     @Test
