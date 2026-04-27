@@ -58,11 +58,7 @@ public final class FabricUnclaimedItemsTemplateSupport {
             List<KeyIntPair> sub,
             Locale lo) {
         Optional<FabricGraniteMenuTemplateLoader.LoadedTemplate> loaded =
-                FabricGraniteMenuTemplateLoader.load(
-                        plugin,
-                        "unclaimed_items",
-                        FabricUnclaimedItemsTemplateSupport.class,
-                        TEMPLATE_RESOURCE_PATH);
+                plugin.menuTemplateRegistry().getLoadedTemplate("unclaimed_items");
         if (loaded.isEmpty()) {
             return false;
         }

@@ -56,6 +56,7 @@ import dev.aurelium.auraskills.fabric.loot.FabricApiLootBridge;
 import dev.aurelium.auraskills.fabric.loot.FabricLootManager;
 import dev.aurelium.auraskills.fabric.menu.FabricBuiltInMenuConfig;
 import dev.aurelium.auraskills.fabric.menu.FabricGraniteMenuTemplateLoader;
+import dev.aurelium.auraskills.fabric.menu.FabricGraniteMenuTemplateRegistry;
 import dev.aurelium.auraskills.fabric.menu.FabricMenuLoaders;
 import dev.aurelium.auraskills.fabric.menu.FabricMenuRegistry;
 import dev.aurelium.auraskills.fabric.requirement.FabricRequirementManager;
@@ -116,6 +117,7 @@ public final class FabricAuraSkills implements AuraSkillsPlugin {
     private FabricMenuHelper menuHelper;
     private FabricMenuRegistry menuRegistry;
     private final FabricBuiltInMenuConfig builtInMenuConfig = new FabricBuiltInMenuConfig();
+    private final FabricGraniteMenuTemplateRegistry menuTemplateRegistry = new FabricGraniteMenuTemplateRegistry();
     private FabricPlatformUtil platformUtil;
     private FabricLootManager lootManager;
     private FabricRequirementManager requirementManager;
@@ -225,6 +227,7 @@ public final class FabricAuraSkills implements AuraSkillsPlugin {
         leaderboardManager.startLeaderboardUpdater();
         statManager.scheduleTemporaryModifierTask();
         modifierManager.registerSchedulesIfNeeded();
+        menuTemplateRegistry.reloadAll(this);
         runtimeReady = true;
         logger.info("Fabric AuraSkills enabled — block/entity/damage/stat/jump/fishing XP; consume, splash, anvil, grindstone, enchanting table, brewing (BREW + TAKEOUT); mana abilities; permissions via fabric-permissions-api. Use /auraskills reload after editing configs; see fabric/FABRIC_QUICKSTART.md.");
     }
@@ -568,9 +571,9 @@ public final class FabricAuraSkills implements AuraSkillsPlugin {
 
     /**
      * Reloads configs and YAML-driven data from disk. Does not re-register Fabric event callbacks (safe during
-     * normal operation). Call only after startup has finished ({@link #finishEnable()}). Also clears Granite disk
-     * template diagnostics debounce ({@link FabricGraniteMenuTemplateLoader#clearDiagnosticsState()}) so the next menu
-     * open re-reads {@code config/auraskills/granite/templates/*.yml} and can log fresh lines.
+     * normal operation). Call only after startup has finished ({@link #finishEnable()}). Refreshes the {@link
+     * FabricGraniteMenuTemplateRegistry} so Granite menu templates match current disk and bundled YAML — run this after
+     * editing {@code config/auraskills/granite/templates/*.yml} (Sprint 110).
      */
     public void reloadFromDisk() {
         if (!runtimeReady) {
@@ -596,8 +599,7 @@ public final class FabricAuraSkills implements AuraSkillsPlugin {
             statManager.reloadAllTraits(u);
         }
         scheduler.executeAsync(() -> leaderboardManager.updateLeaderboards());
-        FabricGraniteMenuTemplateLoader.clearDiagnosticsState();
-        logger.info("Granite menu template loader state cleared; disk templates will be re-read on next menu open.");
+        runReloadStep("granite menu templates (registry)", () -> menuTemplateRegistry.reloadAll(this));
         logger.info("AuraSkills: reload finished.");
     }
 
@@ -628,6 +630,10 @@ public final class FabricAuraSkills implements AuraSkillsPlugin {
             }
         }
         return ok;
+    }
+
+    public FabricGraniteMenuTemplateRegistry menuTemplateRegistry() {
+        return menuTemplateRegistry;
     }
 
     @Override

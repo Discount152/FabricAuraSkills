@@ -2,7 +2,9 @@
 
 ## Purpose
 
-**Sprint 106** added disk-first YAML under **`config/auraskills/granite/templates/`** and debounced **info** / **invalid-disk** logs so menus stay quiet after the first open. **Sprint 107** ties that debounce to the **existing** AuraSkills **`reloadFromDisk()`** path so operators who edit disk templates can run a **manual reload** and see **fresh** template diagnostics and content on the **next** menu open — **without** a JVM restart and **without** a file watcher.
+**Sprint 106** added disk-first YAML under **`config/auraskills/granite/templates/`** and debounced **info** / **invalid-disk** logs so menus stay quiet after the first open. **Sprint 107** ties that debounce to the **existing** AuraSkills **`reloadFromDisk()`** path so operators who edit disk templates can run a **manual reload** and see **fresh** template diagnostics — **without** a JVM restart and **without** a file watcher.
+
+**Sprint 110** adds **`FabricGraniteMenuTemplateRegistry`**: after **110**, Granite menus consume **cached** templates from the registry, and **`reloadFromDisk()`** reloads that cache (disk edits no longer apply on every menu open without **`/auraskills reload`**). See **`SPRINT_110_MANUAL_TEMPLATE_REGISTRY_LIFECYCLE.md`**.
 
 ## Canonical reload command / path
 

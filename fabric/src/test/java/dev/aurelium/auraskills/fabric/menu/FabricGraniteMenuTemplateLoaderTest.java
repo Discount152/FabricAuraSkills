@@ -31,6 +31,35 @@ class FabricGraniteMenuTemplateLoaderTest {
     }
 
     @Test
+    void loadManagedCoreUsesBundledWhenNoDisk() {
+        FabricGraniteMenuTemplateLoader.ManagedTemplateLoad ml =
+                FabricGraniteMenuTemplateLoader.loadManagedCore(
+                        auraskillsRoot,
+                        "skills",
+                        FabricSkillsTemplateSupport.class,
+                        FabricSkillsTemplateSupport.TEMPLATE_RESOURCE_PATH);
+        assertEquals(
+                FabricGraniteMenuTemplateLoader.GraniteMenuTemplateState.BUNDLED_LOADED, ml.state());
+        assertTrue(ml.template().isPresent());
+    }
+
+    @Test
+    void loadManagedCoreDiskInvalidUsesBundled() throws Exception {
+        Path dir = auraskillsRoot.resolve(FabricGraniteMenuTemplateLoader.RELATIVE_TEMPLATE_DIR);
+        Files.createDirectories(dir);
+        Files.writeString(dir.resolve("skills.yml"), "id: nope\nrows: 6\ntitle: t\nitems: {}");
+        FabricGraniteMenuTemplateLoader.ManagedTemplateLoad ml =
+                FabricGraniteMenuTemplateLoader.loadManagedCore(
+                        auraskillsRoot,
+                        "skills",
+                        FabricSkillsTemplateSupport.class,
+                        FabricSkillsTemplateSupport.TEMPLATE_RESOURCE_PATH);
+        assertEquals(
+                FabricGraniteMenuTemplateLoader.GraniteMenuTemplateState.DISK_INVALID_BUNDLED_LOADED, ml.state());
+        assertTrue(ml.template().isPresent());
+    }
+
+    @Test
     void clearDiagnosticsStateDoesNotThrowWhenEmpty() {
         assertDoesNotThrow(() -> FabricGraniteMenuTemplateLoader.clearDiagnosticsState());
         assertDoesNotThrow(() -> FabricGraniteMenuTemplateLoader.clearDiagnosticsState());

@@ -51,8 +51,7 @@ public final class FabricSkillsTemplateSupport {
     private static boolean tryOpenInner(
             ServerPlayerEntity player, FabricAuraSkills plugin, FabricMenuContext context, User user) {
         Optional<FabricGraniteMenuTemplateLoader.LoadedTemplate> loaded =
-                FabricGraniteMenuTemplateLoader.load(
-                        plugin, "skills", FabricSkillsTemplateSupport.class, TEMPLATE_RESOURCE_PATH);
+                plugin.menuTemplateRegistry().getLoadedTemplate("skills");
         if (loaded.isEmpty()) {
             return false;
         }

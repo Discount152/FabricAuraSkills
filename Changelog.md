@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.137
+
+### Changes
+
+- **Fabric: Sprint 110 — Granite menu template registry / lifecycle slice (`FabricAuraSkills-2.3.137.jar`):** **`FabricGraniteMenuTemplateRegistry`** loads all eight known YAML templates on **`finishEnable`** and on **`reloadFromDisk()`** ( **`/auraskills reload`**, preset apply ); menus read **`GraniteMenuTemplate`** from the registry ( **`FabricGraniteMenuTemplateBindings`**, **`FabricGraniteMenuTemplateLoader#loadManagedCore`** with explicit **`GraniteMenuTemplateState`** — DISK_LOADED / BUNDLED_LOADED / DISK_INVALID_BUNDLED_LOADED / BUNDLED_MISSING_OR_INVALID ). **Disk edits require reload** (cached registry; honest MenuFileManager-shaped step). **`/auraskills templates status`** (+ **`/skills|/sk|/skill`** mirrors), **`auraskills.command.templates`**. Summary log: **`Granite menu templates loaded: disk X, bundled Y, failed Z.`** Direct **`FabricGraniteMenuTemplateLoader#load`** kept for tests with debounced logging. **Tests:** **`FabricGraniteMenuTemplateRegistryTest`**, **`FabricGraniteMenuTemplateLoaderTest`** ( **`loadManagedCore`** ). **Docs:** **`fabric/SPRINT_110_MANUAL_TEMPLATE_REGISTRY_LIFECYCLE.md`**, parity/README. **No** file watcher. **Bedrock / Geyser** not tested. **`projectVersion` 2.3.136 → 2.3.137**. **Build:** `.\gradlew -PfabricOnly=true :granitelib-fabric:test :fabric:test :fabric:build` — **PASS** (`verifyFabricReleaseBundle`: OK).
+
 ## 2.3.136
 
 ### Changes

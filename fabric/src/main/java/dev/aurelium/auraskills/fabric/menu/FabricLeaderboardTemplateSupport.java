@@ -70,8 +70,7 @@ public final class FabricLeaderboardTemplateSupport {
             List<SkillValue> slice,
             Locale lo) {
         Optional<FabricGraniteMenuTemplateLoader.LoadedTemplate> loaded =
-                FabricGraniteMenuTemplateLoader.load(
-                        plugin, "leaderboard", FabricLeaderboardTemplateSupport.class, TEMPLATE_RESOURCE_PATH);
+                plugin.menuTemplateRegistry().getLoadedTemplate("leaderboard");
         if (loaded.isEmpty()) {
             return false;
         }

@@ -66,8 +66,7 @@ public final class FabricAbilitiesTemplateSupport {
             int returnToSkillsListPage,
             User user) {
         Optional<FabricGraniteMenuTemplateLoader.LoadedTemplate> loaded =
-                FabricGraniteMenuTemplateLoader.load(
-                        plugin, "abilities", FabricAbilitiesTemplateSupport.class, TEMPLATE_RESOURCE_PATH);
+                plugin.menuTemplateRegistry().getLoadedTemplate("abilities");
         if (loaded.isEmpty()) {
             return false;
         }

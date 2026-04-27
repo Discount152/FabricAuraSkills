@@ -58,8 +58,7 @@ public final class FabricStatInfoTemplateSupport {
             FabricMenuContext context,
             Stat stat) {
         Optional<FabricGraniteMenuTemplateLoader.LoadedTemplate> loaded =
-                FabricGraniteMenuTemplateLoader.load(
-                        plugin, "stat_info", FabricStatInfoTemplateSupport.class, TEMPLATE_RESOURCE_PATH);
+                plugin.menuTemplateRegistry().getLoadedTemplate("stat_info");
         if (loaded.isEmpty()) {
             return false;
         }

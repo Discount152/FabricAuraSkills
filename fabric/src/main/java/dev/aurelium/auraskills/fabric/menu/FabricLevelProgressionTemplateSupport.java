@@ -56,11 +56,7 @@ public final class FabricLevelProgressionTemplateSupport {
             return false;
         }
         Optional<FabricGraniteMenuTemplateLoader.LoadedTemplate> loaded =
-                FabricGraniteMenuTemplateLoader.load(
-                        plugin,
-                        "level_progression",
-                        FabricLevelProgressionTemplateSupport.class,
-                        TEMPLATE_RESOURCE_PATH);
+                plugin.menuTemplateRegistry().getLoadedTemplate("level_progression");
         if (loaded.isEmpty()) {
             return false;
         }

@@ -6,6 +6,7 @@ import dev.granitelib.fabric.template.GraniteTemplateResources;
 import dev.granitelib.fabric.template.load.GraniteMenuTemplateYamlLoader;
 import dev.granitelib.fabric.template.load.GraniteTemplateValidationException;
 import dev.granitelib.fabric.template.model.GraniteMenuTemplate;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import java.io.IOException;
@@ -20,16 +21,41 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Sprint 106: disk-first load for Granite v0 menu YAML — valid {@code config/auraskills/granite/templates/&lt;id&gt;.yml}
  * overrides bundled classpath templates; invalid disk files fall back to bundled, then callers keep built-in Java
- * fallbacks. Does not copy defaults to disk (operators add files manually).
+ * fallbacks.
  *
- * <p>Sprint 107: one-time diagnostics debounce resets on {@link #clearDiagnosticsState()}, called from
- * {@link dev.aurelium.auraskills.fabric.FabricAuraSkills#reloadFromDisk()} so the next menu open re-reads disk and can
- * log fresh success or warn lines. No file watcher.
+ * <p>Sprint 107: one-time diagnostics debounce for {@link #load(Path, PlatformLogger, String, Class, String)} (direct
+ * per-open calls).
+ *
+ * <p>Sprint 110: {@link #loadManagedForRegistry(Path, String, Class, String)} — structured outcome without debounced
+ * logging for {@link FabricGraniteMenuTemplateRegistry} reload summaries. Operators should run {@code /auraskills reload}
+ * after editing disk YAML so the registry cache refreshes.
  */
 public final class FabricGraniteMenuTemplateLoader {
 
     /** Under {@link FabricAuraSkills} data folder ({@code config/auraskills}). */
     public static final String RELATIVE_TEMPLATE_DIR = "granite/templates";
+
+    /**
+     * Lifecycle state for a managed template load (Sprint 110). {@link #BUNDLED_MISSING_OR_INVALID} means no
+     * {@link GraniteMenuTemplate} is available — menus use built-in Java.
+     */
+    public enum GraniteMenuTemplateState {
+        DISK_LOADED,
+        BUNDLED_LOADED,
+        DISK_INVALID_BUNDLED_LOADED,
+        BUNDLED_MISSING_OR_INVALID
+    }
+
+    /**
+     * @param diagnosticDetail for {@link GraniteMenuTemplateState#DISK_INVALID_BUNDLED_LOADED}, the disk validation
+     *                         message (bundled succeeded). For {@link GraniteMenuTemplateState#BUNDLED_MISSING_OR_INVALID},
+     *                         combined disk/bundle failure detail. Otherwise typically {@code null}.
+     */
+    public record ManagedTemplateLoad(
+            GraniteMenuTemplateState state,
+            Optional<GraniteMenuTemplate> template,
+            String sourceLabel,
+            @Nullable String diagnosticDetail) {}
 
     private static final Set<String> INVALID_DISK_WARNED = ConcurrentHashMap.newKeySet();
     private static final Set<String> DISK_SUCCESS_LOGGED = ConcurrentHashMap.newKeySet();
@@ -39,9 +65,9 @@ public final class FabricGraniteMenuTemplateLoader {
     private FabricGraniteMenuTemplateLoader() {}
 
     /**
-     * Clears per-process debounce for disk success / invalid-disk logs so the next {@link #load} can emit diagnostics
-     * again. YAML is not cached — each open already re-reads files; this only resets log suppression. Safe to call when
-     * empty.
+     * Clears per-process debounce for disk success / invalid-disk logs used by {@link #load}. {@link
+     * FabricGraniteMenuTemplateRegistry#reloadAll} also calls this so legacy direct {@link #load} callers stay
+     * consistent.
      */
     public static void clearDiagnosticsState() {
         INVALID_DISK_WARNED.clear();
@@ -67,74 +93,96 @@ public final class FabricGraniteMenuTemplateLoader {
             String menuId,
             Class<?> classpathAnchor,
             String bundledClasspathPath) {
+        ManagedTemplateLoad managed =
+                loadManagedCore(auraskillsDataRoot, menuId, classpathAnchor, bundledClasspathPath);
         Path diskPath = diskTemplatePath(auraskillsDataRoot, menuId);
+        switch (managed.state()) {
+            case DISK_LOADED -> logDiskSuccessOnce(logger, menuId, diskPath);
+            case DISK_INVALID_BUNDLED_LOADED ->
+                    warnInvalidDiskOnce(
+                            logger, menuId, diskPath, managed.diagnosticDetail() != null ? managed.diagnosticDetail() : "invalid disk");
+            case BUNDLED_LOADED -> { /* quiet */ }
+            case BUNDLED_MISSING_OR_INVALID ->
+                    logger.warn(
+                            "Granite menu template '"
+                                    + menuId
+                                    + "' unavailable ("
+                                    + (managed.diagnosticDetail() != null ? managed.diagnosticDetail() : "no detail")
+                                    + "); falling back to built-in menu");
+        }
+        return managed.template().map(t -> new LoadedTemplate(t, managed.sourceLabel()));
+    }
+
+    /**
+     * Parse-only load for registry refresh: no debounced logging. Callers log a single summary.
+     */
+    public static ManagedTemplateLoad loadManagedCore(
+            Path auraskillsDataRoot,
+            String menuId,
+            Class<?> classpathAnchor,
+            String bundledClasspathPath) {
+        Path diskPath = diskTemplatePath(auraskillsDataRoot, menuId);
+        String diskInvalidReason = null;
         if (Files.isRegularFile(diskPath)) {
             try {
-                GraniteMenuTemplate t = GraniteMenuTemplateYamlLoader.loadPath(diskPath);
-                if (!menuId.equalsIgnoreCase(t.id())) {
-                    warnInvalidDiskOnce(
-                            logger, menuId, diskPath, "template id must be '" + menuId + "', got '" + t.id() + "'");
-                } else {
-                    logDiskSuccessOnce(logger, menuId, diskPath);
-                    return Optional.of(new LoadedTemplate(t, diskPath.toAbsolutePath().normalize().toString()));
+                GraniteMenuTemplate diskTemplate = GraniteMenuTemplateYamlLoader.loadPath(diskPath);
+                if (menuId.equalsIgnoreCase(diskTemplate.id())) {
+                    return new ManagedTemplateLoad(
+                            GraniteMenuTemplateState.DISK_LOADED,
+                            Optional.of(diskTemplate),
+                            diskPath.toAbsolutePath().normalize().toString(),
+                            null);
                 }
+                diskInvalidReason =
+                        "template id must be '" + menuId + "', got '" + diskTemplate.id() + "'";
             } catch (IOException e) {
-                warnInvalidDiskOnce(logger, menuId, diskPath, "read failed: " + e.getMessage());
+                diskInvalidReason = "read failed: " + e.getMessage();
             } catch (GraniteTemplateValidationException e) {
-                warnInvalidDiskOnce(logger, menuId, diskPath, String.join("; ", e.errors()));
+                diskInvalidReason = String.join("; ", e.errors());
             } catch (RuntimeException e) {
-                String diskKey = menuId + "|" + diskPath.toAbsolutePath().normalize();
-                if (INVALID_DISK_WARNED.add(diskKey)) {
-                    logger.warn(
-                            "Invalid Granite menu template '"
-                                    + menuId
-                                    + "' at "
-                                    + diskPath.toAbsolutePath().normalize()
-                                    + ": "
-                                    + e.getMessage()
-                                    + "; falling back to bundled template",
-                            e);
-                }
+                diskInvalidReason = e.getMessage() != null ? e.getMessage() : e.getClass().getSimpleName();
             }
         }
 
-        return loadBundled(logger, menuId, classpathAnchor, bundledClasspathPath);
+        try (InputStream in = GraniteTemplateResources.openClasspath(classpathAnchor, bundledClasspathPath)) {
+            if (in == null) {
+                String diag =
+                        (diskInvalidReason != null ? "invalid disk (" + diskInvalidReason + "); " : "")
+                                + "bundled missing from classpath: "
+                                + bundledClasspathPath;
+                return new ManagedTemplateLoad(
+                        GraniteMenuTemplateState.BUNDLED_MISSING_OR_INVALID,
+                        Optional.empty(),
+                        bundledClasspathPath,
+                        diag);
+            }
+            String yaml = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+            GraniteMenuTemplate t = GraniteMenuTemplateYamlLoader.loadString(yaml, bundledClasspathPath);
+            boolean diskWasInvalid = diskInvalidReason != null;
+            GraniteMenuTemplateState state =
+                    diskWasInvalid
+                            ? GraniteMenuTemplateState.DISK_INVALID_BUNDLED_LOADED
+                            : GraniteMenuTemplateState.BUNDLED_LOADED;
+            return new ManagedTemplateLoad(state, Optional.of(t), bundledClasspathPath, diskWasInvalid ? diskInvalidReason : null);
+        } catch (IOException e) {
+            String diag =
+                    (diskInvalidReason != null ? "invalid disk (" + diskInvalidReason + "); " : "")
+                            + "bundled read failed: "
+                            + e.getMessage();
+            return new ManagedTemplateLoad(
+                    GraniteMenuTemplateState.BUNDLED_MISSING_OR_INVALID, Optional.empty(), bundledClasspathPath, diag);
+        } catch (GraniteTemplateValidationException e) {
+            String diag =
+                    (diskInvalidReason != null ? "invalid disk (" + diskInvalidReason + "); " : "")
+                            + "bundled invalid: "
+                            + String.join("; ", e.errors());
+            return new ManagedTemplateLoad(
+                    GraniteMenuTemplateState.BUNDLED_MISSING_OR_INVALID, Optional.empty(), bundledClasspathPath, diag);
+        }
     }
 
     public static Path diskTemplatePath(Path auraskillsDataRoot, String menuId) {
         return auraskillsDataRoot.resolve(RELATIVE_TEMPLATE_DIR).resolve(menuId + ".yml").normalize();
-    }
-
-    private static Optional<LoadedTemplate> loadBundled(
-            PlatformLogger logger, String menuId, Class<?> classpathAnchor, String bundledClasspathPath) {
-        try (InputStream in = GraniteTemplateResources.openClasspath(classpathAnchor, bundledClasspathPath)) {
-            if (in == null) {
-                logger.warn(
-                        "Bundled Granite menu template '"
-                                + menuId
-                                + "' missing from classpath ("
-                                + bundledClasspathPath
-                                + "); falling back to built-in menu");
-                return Optional.empty();
-            }
-            String yaml = new String(in.readAllBytes(), StandardCharsets.UTF_8);
-            GraniteMenuTemplate t = GraniteMenuTemplateYamlLoader.loadString(yaml, bundledClasspathPath);
-            return Optional.of(new LoadedTemplate(t, bundledClasspathPath));
-        } catch (IOException e) {
-            logger.warn(
-                    "Bundled Granite menu template '" + menuId + "' failed: " + e.getMessage()
-                            + "; falling back to built-in menu",
-                    e);
-            return Optional.empty();
-        } catch (GraniteTemplateValidationException e) {
-            logger.warn(
-                    "Bundled Granite menu template '"
-                            + menuId
-                            + "' invalid: "
-                            + String.join("; ", e.errors())
-                            + "; falling back to built-in menu");
-            return Optional.empty();
-        }
     }
 
     private static void warnInvalidDiskOnce(PlatformLogger logger, String menuId, Path diskPath, String detail) {

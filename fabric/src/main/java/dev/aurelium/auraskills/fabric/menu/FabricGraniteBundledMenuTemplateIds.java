@@ -4,7 +4,8 @@ import java.util.List;
 
 /**
  * Canonical list of bundled Granite v0 menu templates (Sprint 108). Keep in sync with
- * {@code assets/auraskills/granite/templates/*.yml} and {@link FabricGraniteMenuTemplateLoader} disk names.
+ * {@code assets/auraskills/granite/templates/*.yml}, {@link FabricGraniteMenuTemplateLoader} disk names, and
+ * {@link FabricGraniteMenuTemplateBindings} anchors (**Sprint 110**).
  */
 public final class FabricGraniteBundledMenuTemplateIds {
 

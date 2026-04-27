@@ -27,7 +27,7 @@ public final class FabricBrigadierCommands {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         FabricAuraSkillsMod.LOGGER.info(
-                "Registering Brigadier: /auraskills (…), /skills|/sk|/skill (mirrored; Granite **item**/**xp** only under these + /auraskills — vanilla /item /xp unchanged; Sprint 84–85 root usage on item/storage/backup/preset; **Sprint 108–109** **templates export** + guarded **overwrite**), /stats, /openmenu, /claimitems, /sources, /resethealth, /transfer, /profile, /backup, /preset, /storage, leaderboards, /multiplier|/toggle|/abtoggle|/lang, /modifier, /trait, /armor, /mana, /skilllevel, /manaability, /antiafk, per-skill shortcuts — see fabric/COMMAND_PARITY_AUDIT.md");
+                "Registering Brigadier: /auraskills (…), /skills|/sk|/skill (mirrored; Granite **item**/**xp** only under these + /auraskills — vanilla /item /xp unchanged; Sprint 84–85 root usage on item/storage/backup/preset; **Sprint 108–110** **templates** **export** / **status** + guarded **overwrite**), /stats, /openmenu, /claimitems, /sources, /resethealth, /transfer, /profile, /backup, /preset, /storage, leaderboards, /multiplier|/toggle|/abtoggle|/lang, /modifier, /trait, /armor, /mana, /skilllevel, /manaability, /antiafk, per-skill shortcuts — see fabric/COMMAND_PARITY_AUDIT.md");
 
         registerAuraskillsAndAliases(dispatcher);
         FabricSkillShortcutCommands.register(dispatcher);

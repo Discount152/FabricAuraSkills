@@ -67,8 +67,7 @@ public final class FabricSourcesTemplateSupport {
             List<XpSource> allSources,
             Locale locale) {
         Optional<FabricGraniteMenuTemplateLoader.LoadedTemplate> loaded =
-                FabricGraniteMenuTemplateLoader.load(
-                        plugin, "sources", FabricSourcesTemplateSupport.class, TEMPLATE_RESOURCE_PATH);
+                plugin.menuTemplateRegistry().getLoadedTemplate("sources");
         if (loaded.isEmpty()) {
             return false;
         }

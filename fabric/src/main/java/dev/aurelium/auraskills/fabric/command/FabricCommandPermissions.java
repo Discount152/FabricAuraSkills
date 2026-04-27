@@ -19,10 +19,10 @@ public final class FabricCommandPermissions {
     public static final String SAVE = "auraskills.command.save";
 
     /**
-     * Granite: export bundled menu YAML to disk (**Sprint 108**), including guarded overwrite preview + confirm
-     * (**Sprint 109**). Default <strong>deny</strong>; console and RCON allowed without explicit grant via
-     * {@link FabricCommandRequirements#permissionOrNonPlayerSource}. Overwrite <strong>confirm</strong> is dedicated
-     * <strong>console/RCON</strong> only.
+     * Granite: {@code templates export} / {@code templates status} / overwrite flow (**Sprint 108–110**). Default
+     * <strong>deny</strong>; console and RCON allowed without explicit grant via {@link
+     * FabricCommandRequirements#permissionOrNonPlayerSource}. Overwrite <strong>confirm</strong> is dedicated
+     * <strong>console/RCON</strong> only (**Sprint 109**).
      */
     public static final String TEMPLATES = "auraskills.command.templates";
 
