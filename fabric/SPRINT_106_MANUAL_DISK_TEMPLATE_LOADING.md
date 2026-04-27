@@ -103,7 +103,7 @@ Delete the file; reopen **`/skills`**.
 
 ## Known limitations (**Sprint 106**)
 
-- **No hot reload** — disk edits apply after **full restart** (or at least after whatever reload path would re-read files; template menus do not watch files).
+- **No file watcher** — disk edits apply after **full restart** or **`/auraskills reload`** (see **`SPRINT_107_MANUAL_TEMPLATE_RELOAD_LIFECYCLE.md`** — Sprint 107 clears template diagnostics debounce on reload).
 - **No** full **Slate** / **`MenuFileManager`** parity.
 - **No** automatic export of defaults to disk.
 - Diagnostics are **process-lifetime** debounced per path, not file-mtime aware.

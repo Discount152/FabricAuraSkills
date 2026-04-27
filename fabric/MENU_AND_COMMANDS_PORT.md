@@ -616,9 +616,10 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | Area | Shipped |
 |------|---------|
 | **Disk path** | **`config/auraskills/granite/templates/<menu_id>.yml`** (same root as **`FabricAuraSkills#getPluginFolder()`** / **`config/auraskills`**). |
-| **Loader** | **`FabricGraniteMenuTemplateLoader`**: valid disk YAML with **`id`** matching **`<menu_id>`** wins; invalid disk → **once-per-path** warning + **bundled** classpath template; bundled failure → existing **built-in** **`Fabric*MenuGui`**. **No** auto-copy of defaults; **no** hot reload. |
+| **Loader** | **`FabricGraniteMenuTemplateLoader`**: valid disk YAML with **`id`** matching **`<menu_id>`** wins; invalid disk → **once-per-path** warning + **bundled** classpath template; bundled failure → existing **built-in** **`Fabric*MenuGui`**. **No** auto-copy of defaults. YAML is read on every open; **Sprint 107** **`clearDiagnosticsState()`** on reload resets log debounce only. |
 | **Menus** | All eight **`Fabric*TemplateSupport`** classes (**`stat_info`**, **`sources`**, **`level_progression`**, **`skills`**, **`stats`**, **`abilities`**, **`leaderboard`**, **`unclaimed_items`**) — template **source** selection only. |
-| **Manual** | **`SPRINT_106_MANUAL_DISK_TEMPLATE_LOADING.md`** |
+| **Reload** | **`FabricAuraSkills#reloadFromDisk()`** (**`/auraskills reload`**, **`auraskills.command.reload`**) and **preset** apply call **`FabricGraniteMenuTemplateLoader#clearDiagnosticsState()`** after other reload steps; one info log; **next** menu open re-reads disk (**Sprint 107**, **`SPRINT_107_MANUAL_TEMPLATE_RELOAD_LIFECYCLE.md`**). **No** file watcher. |
+| **Manual** | **`SPRINT_106_MANUAL_DISK_TEMPLATE_LOADING.md`**, **`SPRINT_107_MANUAL_TEMPLATE_RELOAD_LIFECYCLE.md`** |
 
 | **Not in Sprint 106** | Hot reload; full Slate / **`MenuFileManager`**; automatic export of bundled YAML to `config/`. |
 

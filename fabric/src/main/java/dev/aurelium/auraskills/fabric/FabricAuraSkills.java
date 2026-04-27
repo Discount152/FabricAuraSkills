@@ -55,6 +55,7 @@ import dev.aurelium.auraskills.fabric.region.FabricRegionManager;
 import dev.aurelium.auraskills.fabric.loot.FabricApiLootBridge;
 import dev.aurelium.auraskills.fabric.loot.FabricLootManager;
 import dev.aurelium.auraskills.fabric.menu.FabricBuiltInMenuConfig;
+import dev.aurelium.auraskills.fabric.menu.FabricGraniteMenuTemplateLoader;
 import dev.aurelium.auraskills.fabric.menu.FabricMenuLoaders;
 import dev.aurelium.auraskills.fabric.menu.FabricMenuRegistry;
 import dev.aurelium.auraskills.fabric.requirement.FabricRequirementManager;
@@ -567,7 +568,9 @@ public final class FabricAuraSkills implements AuraSkillsPlugin {
 
     /**
      * Reloads configs and YAML-driven data from disk. Does not re-register Fabric event callbacks (safe during
-     * normal operation). Call only after startup has finished ({@link #finishEnable()}).
+     * normal operation). Call only after startup has finished ({@link #finishEnable()}). Also clears Granite disk
+     * template diagnostics debounce ({@link FabricGraniteMenuTemplateLoader#clearDiagnosticsState()}) so the next menu
+     * open re-reads {@code config/auraskills/granite/templates/*.yml} and can log fresh lines.
      */
     public void reloadFromDisk() {
         if (!runtimeReady) {
@@ -593,6 +596,8 @@ public final class FabricAuraSkills implements AuraSkillsPlugin {
             statManager.reloadAllTraits(u);
         }
         scheduler.executeAsync(() -> leaderboardManager.updateLeaderboards());
+        FabricGraniteMenuTemplateLoader.clearDiagnosticsState();
+        logger.info("Granite menu template loader state cleared; disk templates will be re-read on next menu open.");
         logger.info("AuraSkills: reload finished.");
     }
 

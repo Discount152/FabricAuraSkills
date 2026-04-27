@@ -20,7 +20,11 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Sprint 106: disk-first load for Granite v0 menu YAML — valid {@code config/auraskills/granite/templates/&lt;id&gt;.yml}
  * overrides bundled classpath templates; invalid disk files fall back to bundled, then callers keep built-in Java
- * fallbacks. No hot reload. Does not copy defaults to disk (operators add files manually).
+ * fallbacks. Does not copy defaults to disk (operators add files manually).
+ *
+ * <p>Sprint 107: one-time diagnostics debounce resets on {@link #clearDiagnosticsState()}, called from
+ * {@link dev.aurelium.auraskills.fabric.FabricAuraSkills#reloadFromDisk()} so the next menu open re-reads disk and can
+ * log fresh success or warn lines. No file watcher.
  */
 public final class FabricGraniteMenuTemplateLoader {
 
@@ -34,10 +38,19 @@ public final class FabricGraniteMenuTemplateLoader {
 
     private FabricGraniteMenuTemplateLoader() {}
 
-    @VisibleForTesting
-    static void clearDiagnosticsStateForTests() {
+    /**
+     * Clears per-process debounce for disk success / invalid-disk logs so the next {@link #load} can emit diagnostics
+     * again. YAML is not cached — each open already re-reads files; this only resets log suppression. Safe to call when
+     * empty.
+     */
+    public static void clearDiagnosticsState() {
         INVALID_DISK_WARNED.clear();
         DISK_SUCCESS_LOGGED.clear();
+    }
+
+    @VisibleForTesting
+    static void clearDiagnosticsStateForTests() {
+        clearDiagnosticsState();
     }
 
     public static Optional<LoadedTemplate> load(

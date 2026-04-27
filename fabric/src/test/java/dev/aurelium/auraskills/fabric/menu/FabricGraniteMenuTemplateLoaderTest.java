@@ -31,6 +31,79 @@ class FabricGraniteMenuTemplateLoaderTest {
     }
 
     @Test
+    void clearDiagnosticsStateDoesNotThrowWhenEmpty() {
+        assertDoesNotThrow(() -> FabricGraniteMenuTemplateLoader.clearDiagnosticsState());
+        assertDoesNotThrow(() -> FabricGraniteMenuTemplateLoader.clearDiagnosticsState());
+    }
+
+    @Test
+    void invalidDiskWarningRepeatsAfterClear() throws Exception {
+        Path templates = auraskillsRoot.resolve(FabricGraniteMenuTemplateLoader.RELATIVE_TEMPLATE_DIR);
+        Files.createDirectories(templates);
+        Files.writeString(templates.resolve("skills.yml"), "id: x\nnotitems: 1");
+
+        CollectingLogger logger = new CollectingLogger();
+        FabricGraniteMenuTemplateLoader.load(
+                auraskillsRoot,
+                logger,
+                "skills",
+                FabricSkillsTemplateSupport.class,
+                FabricSkillsTemplateSupport.TEMPLATE_RESOURCE_PATH);
+        int warnsAfterFirst = logger.warns.size();
+        assertTrue(warnsAfterFirst >= 1, logger.warns::toString);
+
+        FabricGraniteMenuTemplateLoader.load(
+                auraskillsRoot,
+                logger,
+                "skills",
+                FabricSkillsTemplateSupport.class,
+                FabricSkillsTemplateSupport.TEMPLATE_RESOURCE_PATH);
+        assertEquals(warnsAfterFirst, logger.warns.size(), "second load should not duplicate invalid-disk warn");
+
+        FabricGraniteMenuTemplateLoader.clearDiagnosticsState();
+        FabricGraniteMenuTemplateLoader.load(
+                auraskillsRoot,
+                logger,
+                "skills",
+                FabricSkillsTemplateSupport.class,
+                FabricSkillsTemplateSupport.TEMPLATE_RESOURCE_PATH);
+        assertTrue(logger.warns.size() > warnsAfterFirst, logger.warns::toString);
+    }
+
+    @Test
+    void validDiskLoadsAfterPreviousInvalidAfterClear() throws Exception {
+        Path templates = auraskillsRoot.resolve(FabricGraniteMenuTemplateLoader.RELATIVE_TEMPLATE_DIR);
+        Files.createDirectories(templates);
+        Path disk = templates.resolve("skills.yml");
+        Files.writeString(disk, "id: wrong\nrows: 6\ntitle: t\nitems: {}");
+
+        CollectingLogger logger = new CollectingLogger();
+        FabricGraniteMenuTemplateLoader.load(
+                auraskillsRoot,
+                logger,
+                "skills",
+                FabricSkillsTemplateSupport.class,
+                FabricSkillsTemplateSupport.TEMPLATE_RESOURCE_PATH);
+
+        FabricGraniteMenuTemplateLoader.clearDiagnosticsState();
+        String bundled = readBundledYaml(FabricSkillsTemplateSupport.TEMPLATE_RESOURCE_PATH);
+        String fixed =
+                bundled.replaceFirst("(?m)^title:.*$", "title: \"After Reload Fix\"");
+        Files.writeString(disk, fixed);
+
+        Optional<FabricGraniteMenuTemplateLoader.LoadedTemplate> loaded =
+                FabricGraniteMenuTemplateLoader.load(
+                        auraskillsRoot,
+                        logger,
+                        "skills",
+                        FabricSkillsTemplateSupport.class,
+                        FabricSkillsTemplateSupport.TEMPLATE_RESOURCE_PATH);
+        assertTrue(loaded.isPresent());
+        assertTrue(loaded.get().template().title().contains("After Reload Fix"), loaded.get().template()::title);
+        assertEquals(disk.toAbsolutePath().normalize().toString(), loaded.get().sourceLabel());
+    }
+
+    @Test
     void missingDiskUsesBundledAndPreservesClasspathLabel() {
         CollectingLogger logger = new CollectingLogger();
         Optional<FabricGraniteMenuTemplateLoader.LoadedTemplate> loaded =

@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.134
+
+### Changes
+
+- **Fabric: Sprint 107 — Granite menu template reload lifecycle (`FabricAuraSkills-2.3.134.jar`):** **`FabricAuraSkills#reloadFromDisk()`** (canonical **`/auraskills reload`**, permission **`auraskills.command.reload`**, plus preset apply path) now calls **`FabricGraniteMenuTemplateLoader#clearDiagnosticsState()`** after existing reload steps and logs one info line — disk YAML was already re-read every menu open; this resets **one-time** success/invalid-disk log debounce so operators see fresh diagnostics after editing **`config/auraskills/granite/templates/*.yml`**. **No** file watcher. **Tests:** **`FabricGraniteMenuTemplateLoaderTest`** (clear idempotency, invalid warn after clear, valid disk after invalid + clear). **Docs:** **`fabric/SPRINT_107_MANUAL_TEMPLATE_RELOAD_LIFECYCLE.md`**, parity/README. **Slate / `MenuFileManager`** still **not** complete. **Bedrock / Geyser** not tested. **`projectVersion` 2.3.133 → 2.3.134**. **Build:** `.\gradlew -PfabricOnly=true :granitelib-fabric:test :fabric:test :fabric:build` — **PASS**.
+
 ## 2.3.133
 
 ### Changes
