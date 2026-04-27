@@ -88,6 +88,8 @@ GraniteLib (`:granitelib-fabric`, on-disk **`slate-fabric/`) is a **real library
 
 **Sprint 103 (`leaderboard` template prototype):** **`SPRINT_103_MANUAL_LEADERBOARD_TEMPLATE_PROTOTYPE.md`** — bundled **`leaderboard.yml`**; **`FabricLeaderboardTemplateSupport`** + **`FabricLeaderboardPlaceholders`**; **10** ranked rows + paging + **refresh**; **paper** entry material like built-in; nav slots match **45**/**48**/**49**/**50**; strict fallback to **`FabricLeaderboardMenuGui` built-in**. **Slate** still **not** complete; **Bedrock** deferred.
 
+**Sprint 104 (working-tree containment):** **`SPRINT_104_WORKING_TREE_CONTAINMENT.md`** — hygiene only: inventory **post–Sprint 103** modified/untracked paths; resolve **phantom** tracked modifications (index refresh); document **optional** clone-local excludes for scratch docs; confirm **two-JAR** / **`depends.granitelib`** policy on committed tree. **No** Path A menu code; **no** version bump.
+
 ---
 
 ## 5. Packaging / release architecture
