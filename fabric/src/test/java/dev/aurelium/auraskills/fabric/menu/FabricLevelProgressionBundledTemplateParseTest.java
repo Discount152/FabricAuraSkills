@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,6 +19,25 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class FabricLevelProgressionBundledTemplateParseTest {
+
+    @Test
+    void layoutConstantsMatchSprint117() {
+        assertEquals(24, FabricLevelProgressionLayout.PAGE_SIZE);
+        assertEquals(9, FabricLevelProgressionLayout.LEVEL_PATH_FIRST_SLOT);
+        assertEquals(
+                24,
+                FabricLevelProgressionLayout.LEVEL_PATH_SLOTS.size(),
+                "level path must list exactly 24 slots per page");
+        assertEquals(
+                FabricLevelProgressionLayout.LEVEL_PATH_FIRST_SLOT,
+                FabricLevelProgressionLayout.LEVEL_PATH_SLOTS.getFirst());
+        assertEquals(44, FabricLevelProgressionLayout.LEVEL_PATH_SLOTS.getLast());
+        assertEquals(FabricLevelProgressionLayout.SLOT_BACK, 45);
+        assertEquals(FabricLevelProgressionLayout.SLOT_SOURCES, 48);
+        assertEquals(FabricLevelProgressionLayout.SLOT_ABILITIES, 49);
+        assertEquals(FabricLevelProgressionLayout.SLOT_PREVIOUS_PAGE, 52);
+        assertEquals(FabricLevelProgressionLayout.SLOT_NEXT_PAGE, 53);
+    }
 
     @Test
     void bundledLevelProgressionYmlLoads() throws Exception {
@@ -34,14 +54,20 @@ class FabricLevelProgressionBundledTemplateParseTest {
 
             GraniteTemplateItem level = t.items().get("level");
             assertNotNull(level);
-            assertEquals(28, level.slots().size());
-            assertEquals(FabricSourcesMenuGui.builtinSourceGridSlots(), level.slots());
+            assertEquals(FabricLevelProgressionLayout.PAGE_SIZE, level.slots().size());
+            assertEquals(FabricLevelProgressionLayout.LEVEL_PATH_SLOTS, level.slots());
 
             assertNav(t, "back", GraniteTemplateActionNames.BACK);
             assertNav(t, "previous", GraniteTemplateActionNames.PREVIOUS_PAGE);
             assertNav(t, "next", GraniteTemplateActionNames.NEXT_PAGE);
             assertNav(t, "sources", GraniteTemplateActionNames.OPEN_SOURCES);
             assertNav(t, "abilities", GraniteTemplateActionNames.OPEN_ABILITIES);
+
+            assertControlSlot(t, "back", FabricLevelProgressionLayout.SLOT_BACK);
+            assertControlSlot(t, "sources", FabricLevelProgressionLayout.SLOT_SOURCES);
+            assertControlSlot(t, "abilities", FabricLevelProgressionLayout.SLOT_ABILITIES);
+            assertControlSlot(t, "previous", FabricLevelProgressionLayout.SLOT_PREVIOUS_PAGE);
+            assertControlSlot(t, "next", FabricLevelProgressionLayout.SLOT_NEXT_PAGE);
 
             assertSame(level, GraniteTemplateItems.findLevelGridDefinition(t));
             assertTrue(
@@ -84,5 +110,13 @@ class FabricLevelProgressionBundledTemplateParseTest {
         assertTrue(
                 item.action().filter(a -> expectedAction.equalsIgnoreCase(a)).isPresent(),
                 "items." + key + " action should be " + expectedAction);
+    }
+
+    private static void assertControlSlot(GraniteMenuTemplate t, String key, int expectedSlot) {
+        GraniteTemplateItem item = t.items().get(key);
+        assertNotNull(item);
+        List<Integer> slots = item.slots();
+        assertFalse(slots.isEmpty(), key + " needs a slot");
+        assertEquals(expectedSlot, slots.getFirst(), "items." + key + " slot");
     }
 }

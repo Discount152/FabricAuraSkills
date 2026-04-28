@@ -25,14 +25,12 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Sprint 100: template-backed {@code level_progression} (paged level grid). On failure returns {@code false} so
- * {@link FabricLevelProgressionMenuGui} uses the built-in path.
+ * Template-backed {@code level_progression}: paged snake path (Sprint 117, {@link FabricLevelProgressionLayout}). On
+ * failure returns {@code false} so {@link FabricLevelProgressionMenuGui} uses the built-in path.
  */
 public final class FabricLevelProgressionTemplateSupport {
 
     public static final String TEMPLATE_RESOURCE_PATH = "assets/auraskills/granite/templates/level_progression.yml";
-
-    private static final int PAGE_SIZE = 28;
 
     private static final String MENU_LOG = "level_progression template";
 
@@ -90,18 +88,18 @@ public final class FabricLevelProgressionTemplateSupport {
                     "level_progression template: no level grid (key 'level' or action level_row); using built-in menu");
             return false;
         }
-        if (levelDef.slots().size() != PAGE_SIZE) {
+        if (levelDef.slots().size() != FabricLevelProgressionLayout.PAGE_SIZE) {
             plugin.logger().warn(
                     "level_progression template: level item must have exactly "
-                            + PAGE_SIZE
+                            + FabricLevelProgressionLayout.PAGE_SIZE
                             + " slots; got "
                             + levelDef.slots().size()
                             + "; using built-in menu");
             return false;
         }
-        if (!levelDef.slots().equals(FabricSourcesMenuGui.builtinSourceGridSlots())) {
+        if (!levelDef.slots().equals(FabricLevelProgressionLayout.LEVEL_PATH_SLOTS)) {
             plugin.logger().warn(
-                    "level_progression template: level slots must match built-in 7×4 grid order; using built-in menu");
+                    "level_progression template: level slots must match Sprint 117 snake path order; using built-in menu");
             return false;
         }
 
@@ -139,9 +137,10 @@ public final class FabricLevelProgressionTemplateSupport {
         GraniteTemplateItem prevItem = template.items().get("previous");
         GraniteTemplateItem nextItem = template.items().get("next");
         GraniteTemplateItem sourcesItem = template.items().get("sources");
-        if (backItem == null || prevItem == null || nextItem == null || sourcesItem == null) {
+        GraniteTemplateItem abilitiesItem = template.items().get("abilities");
+        if (backItem == null || prevItem == null || nextItem == null || sourcesItem == null || abilitiesItem == null) {
             plugin.logger().warn(
-                    "level_progression template: require YAML keys back, previous, next, sources; using built-in menu");
+                    "level_progression template: require YAML keys back, previous, next, sources, abilities; using built-in menu");
             return false;
         }
         if (!GraniteTemplateItems.actionEquals(backItem, GraniteTemplateActionNames.BACK)
@@ -152,17 +151,32 @@ public final class FabricLevelProgressionTemplateSupport {
                     "level_progression template: navigation actions must be back, previous_page, next_page, open_sources; using built-in menu");
             return false;
         }
+        if (!GraniteTemplateItems.actionEquals(abilitiesItem, GraniteTemplateActionNames.OPEN_ABILITIES)
+                || abilitiesItem.slots().isEmpty()) {
+            plugin.logger().warn(
+                    "level_progression template: abilities item must use action open_abilities with a slot; using built-in menu");
+            return false;
+        }
+        int abilitiesS = abilitiesItem.slots().getFirst();
 
-        GraniteTemplateItem abilitiesItem = template.items().get("abilities");
-        Optional<Integer> abilitiesSlot = Optional.empty();
-        if (abilitiesItem != null) {
-            if (!GraniteTemplateItems.actionEquals(abilitiesItem, GraniteTemplateActionNames.OPEN_ABILITIES)
-                    || abilitiesItem.slots().isEmpty()) {
-                plugin.logger().warn(
-                        "level_progression template: abilities item must use action open_abilities with a slot; using built-in menu");
-                return false;
-            }
-            abilitiesSlot = Optional.of(abilitiesItem.slots().getFirst());
+        if (back != FabricLevelProgressionLayout.SLOT_BACK
+                || sourcesS != FabricLevelProgressionLayout.SLOT_SOURCES
+                || abilitiesS != FabricLevelProgressionLayout.SLOT_ABILITIES
+                || prev != FabricLevelProgressionLayout.SLOT_PREVIOUS_PAGE
+                || next != FabricLevelProgressionLayout.SLOT_NEXT_PAGE) {
+            plugin.logger().warn(
+                    "level_progression template: navigation slots must be back="
+                            + FabricLevelProgressionLayout.SLOT_BACK
+                            + ", sources="
+                            + FabricLevelProgressionLayout.SLOT_SOURCES
+                            + ", abilities="
+                            + FabricLevelProgressionLayout.SLOT_ABILITIES
+                            + ", previous="
+                            + FabricLevelProgressionLayout.SLOT_PREVIOUS_PAGE
+                            + ", next="
+                            + FabricLevelProgressionLayout.SLOT_NEXT_PAGE
+                            + "; using built-in menu");
+            return false;
         }
 
         Locale locale = user.getLocale();
@@ -176,10 +190,10 @@ public final class FabricLevelProgressionTemplateSupport {
             return false;
         }
 
-        int maxPage = FabricListMenuPaging.maxPageIndex(levels.size(), PAGE_SIZE);
-        int p = FabricListMenuPaging.clampPage(context.progressionPage(), levels.size(), PAGE_SIZE);
-        int from = p * PAGE_SIZE;
-        int to = Math.min(from + PAGE_SIZE, levels.size());
+        int maxPage = FabricListMenuPaging.maxPageIndex(levels.size(), FabricLevelProgressionLayout.PAGE_SIZE);
+        int p = FabricListMenuPaging.clampPage(context.progressionPage(), levels.size(), FabricLevelProgressionLayout.PAGE_SIZE);
+        int from = p * FabricLevelProgressionLayout.PAGE_SIZE;
+        int to = Math.min(from + FabricLevelProgressionLayout.PAGE_SIZE, levels.size());
         List<Integer> pageLevels = levels.subList(from, to);
 
         Map<String, String> globalPh = buildGlobalPlaceholders(skill, p, maxPage, locale, msg);
@@ -256,51 +270,55 @@ public final class FabricLevelProgressionTemplateSupport {
             }
         }
 
-        Optional<ItemStack> abilitiesStack = Optional.empty();
-        if (abilitiesItem != null) {
-            Optional<ItemStack> ab =
-                    FabricGraniteTemplateStacks.buildTemplateItemStack(
-                            abilitiesItem, globalPh, plugin, MENU_LOG, "items.abilities");
-            if (ab.isEmpty()) {
-                return false;
-            }
-            FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(ab.get());
-            abilitiesStack = ab;
+        Optional<ItemStack> abilitiesStackOpt =
+                FabricGraniteTemplateStacks.buildTemplateItemStack(
+                        abilitiesItem, globalPh, plugin, MENU_LOG, "items.abilities");
+        if (abilitiesStackOpt.isEmpty()) {
+            return false;
         }
+        FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(abilitiesStackOpt.get());
 
         final int fPage = p;
         final int fMax = maxPage;
         final Optional<ItemStack> fPrevOpt = prevOpt;
         final Optional<ItemStack> fNextOpt = nextOpt;
         final int returnSkillsPage = context.listPage();
-        final Optional<Integer> fAbilitiesSlot = abilitiesSlot;
-        final Optional<ItemStack> fAbilitiesStack = abilitiesStack;
+        final int fAbilitiesSlot = abilitiesS;
+        final ItemStack fAbilitiesStack = abilitiesStackOpt.get();
 
         GraniteContainerMenus.openClickable9x6(
                 player,
                 pageTitle,
                 inv -> {
-                    if (fillBase.isPresent()) {
-                        ItemStack fill = fillBase.get();
-                        for (int s = 0; s < FabricMenuSlotLayout.TOP_SLOTS; s++) {
-                            inv.setStack(s, fill.copy());
-                        }
-                    } else {
-                        for (int s = 0; s < FabricMenuSlotLayout.TOP_SLOTS; s++) {
+                    ItemStack fillCopy = fillBase.map(ItemStack::copy).orElse(ItemStack.EMPTY);
+                    for (int s = 0; s < 45; s++) {
+                        if (s <= 8) {
                             inv.setStack(s, ItemStack.EMPTY);
+                        } else if (FabricLevelProgressionLayout.LEVEL_PATH_SLOT_SET.contains(s)) {
+                            inv.setStack(s, ItemStack.EMPTY);
+                        } else {
+                            inv.setStack(s, fillBase.isPresent() ? fillCopy.copy() : ItemStack.EMPTY);
                         }
                     }
                     for (int i = 0; i < rowStacks.size(); i++) {
                         inv.setStack(levelDef.slots().get(i), rowStacks.get(i).copy());
                     }
+                    for (int u = rowStacks.size(); u < FabricLevelProgressionLayout.PAGE_SIZE; u++) {
+                        int pathSlot = levelDef.slots().get(u);
+                        inv.setStack(
+                                pathSlot,
+                                fillBase.isPresent() ? fillCopy.copy() : ItemStack.EMPTY);
+                    }
+                    for (int s = 45; s <= 53; s++) {
+                        inv.setStack(s, ItemStack.EMPTY);
+                    }
                     inv.setStack(back, backStack.get().copy());
                     inv.setStack(sourcesS, sourcesStack.get().copy());
+                    inv.setStack(fAbilitiesSlot, fAbilitiesStack.copy());
                     if (fMax > 0) {
                         fPrevOpt.ifPresent(st -> inv.setStack(prev, st.copy()));
                         fNextOpt.ifPresent(st -> inv.setStack(next, st.copy()));
                     }
-                    fAbilitiesSlot.ifPresent(
-                            as -> fAbilitiesStack.ifPresent(st -> inv.setStack(as, st.copy())));
                 },
                 (topSlot, pl, b, t) -> {
                     if (topSlot == back) {
@@ -344,7 +362,7 @@ public final class FabricLevelProgressionTemplateSupport {
                                         });
                         return;
                     }
-                    if (fAbilitiesSlot.isPresent() && topSlot == fAbilitiesSlot.get()) {
+                    if (topSlot == fAbilitiesSlot) {
                         final Skill sk = skill;
                         plugin.getScheduler()
                                 .executeSync(

@@ -1,6 +1,6 @@
-# Granite Skills — level progression (template). Row materials overridden in Java:
-# completed = lime dye, current = experience bottle, locked = gray dye (Sprint 116).
-# Fallback: built-in FabricLevelProgressionMenuGui on any failure.
+# Granite Skills — level progression (template). Sprint 117 snake path (24 levels/page); Sprint 116 visuals.
+# Row 1 (slots 0-8): empty in Java. Row cells: LEVEL_PATH_SLOTS in FabricLevelProgressionLayout.
+# Fallback: built-in FabricLevelProgressionMenuGui on any failure (simple layout; see Sprint 117 manual).
 id: level_progression
 title: "<gold><bold>{skill_display}</bold></gold> <gray>Levels</gray>"
 rows: 6
@@ -13,34 +13,30 @@ items:
   level:
     material: minecraft:lime_dye
     slots:
-      - 10
+      - 9
+      - 18
+      - 27
+      - 36
+      - 37
+      - 38
+      - 29
+      - 20
       - 11
       - 12
       - 13
-      - 14
-      - 15
-      - 16
-      - 19
-      - 20
-      - 21
       - 22
-      - 23
-      - 24
-      - 25
-      - 28
-      - 29
-      - 30
       - 31
-      - 32
-      - 33
-      - 34
-      - 37
-      - 38
-      - 39
       - 40
       - 41
       - 42
-      - 43
+      - 33
+      - 24
+      - 15
+      - 16
+      - 17
+      - 26
+      - 35
+      - 44
     name: "<white>Level </white><yellow>{level}</yellow>"
     lore:
       - "{level_status}"
@@ -49,14 +45,14 @@ items:
     action: level_row
   sources:
     material: minecraft:knowledge_book
-    slot: 50
+    slot: 48
     name: "<aqua>Sources</aqua>"
     lore:
       - "<gray>XP sources for this skill</gray>"
     action: open_sources
   abilities:
     material: minecraft:amethyst_shard
-    slot: 51
+    slot: 49
     name: "<light_purple>Abilities</light_purple>"
     lore:
       - "<gray>Passives and mana abilities</gray>"
@@ -70,14 +66,14 @@ items:
     action: back
   previous:
     material: minecraft:arrow
-    slot: 48
+    slot: 52
     name: "<yellow>Previous</yellow>"
     lore:
       - "<gray>Previous page</gray>"
     action: previous_page
   next:
     material: minecraft:arrow
-    slot: 49
+    slot: 53
     name: "<yellow>Next</yellow>"
     lore:
       - "<gray>Next page</gray>"

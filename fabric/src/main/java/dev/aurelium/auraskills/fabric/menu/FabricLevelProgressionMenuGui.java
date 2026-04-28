@@ -23,7 +23,8 @@ import java.util.Locale;
 /**
  * One-skill “level progression” view: live level + XP from {@link User}, not full Bukkit
  * {@code level_progression.yml} / reward tables. **Sprint 100:** tries bundled GraniteLib template first; on
- * failure uses the built-in path below.
+ * failure uses the built-in path below. **Sprint 117:** the template uses a 24-slot snake path; this built-in path
+ * remains a compact legacy layout (book + back + hopper sources at slot 50 — not the template path).
  */
 final class FabricLevelProgressionMenuGui {
 

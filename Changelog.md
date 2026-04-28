@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.146
+
+### Changes
+
+- **Fabric — Sprint 117 level progression snake-path layout lock:** Bundled **`level_progression.yml`** uses **24** level cells per page in owner-approved snake order (**`FabricLevelProgressionLayout.LEVEL_PATH_SLOTS`**; level **1** on page **1** at slot **9**). Row **1** (slots **0–8**) stays **empty/inert** in the template renderer; non-path slots in rows **2–5** use quiet template **fill** when present. Bottom row controls are fixed: **Back** **45**, **Sources** **48**, **Abilities** **49**, **Previous** **52**, **Next** **53**. Paging is **24** levels per page (**1–24**, **25–48**, …). **`FabricLevelProgressionTemplateSupport`** validates path + control slots strictly; disk templates must match or the menu falls back to built-in **`FabricLevelProgressionMenuGui`** (still the **legacy** single-main + hopper layout at slot **50**, **not** the snake path — see **`fabric/SPRINT_117_LEVEL_PROGRESSION_PATH_LAYOUT.md`**). Sprint **116** title, state icons (**lime_dye** / **experience_bottle** / **gray_dye**), compact **`{level_detail}`** tooltips, and mechanics suppression unchanged. **Tests:** **`FabricLevelProgressionBundledTemplateParseTest`**. **Docs/parity:** **`fabric/SPRINT_117_LEVEL_PROGRESSION_PATH_LAYOUT.md`**, port/parity markdown updates. **`projectVersion` 2.3.145 → 2.3.146**. **Build:** `.\gradlew.bat -PfabricOnly=true :granitelib-fabric:test :fabric:test :fabric:build verifyFabricReleaseBundle` — **PASS**. **Bedrock/Geyser** not tested; **Slate/MenuFileManager** still open.
+
 ## 2.3.145
 
 ### Changes
