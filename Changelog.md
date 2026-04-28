@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.140
+
+### Changes
+
+- **Fabric — Skills/Stats menu crash before profile load (`FabricAuraSkills-2.3.140.jar`):** **`UserManager#getUser(UUID)`** stays **null** until async storage load finishes on join; **`/skills`**, **`/stats`**, and **`/openmenu skills|stats`** could **NPE** inside template and built-in menu paths. **`FabricMenuUserReadiness#loadedUserOrWarn`** gates **`FabricSkillsMenuGui`**, **`FabricStatsMenuGui`**, **`FabricBrigadierCommands`**, and **`FabricOpenMenuCommands`**; new chat key **`auraskills.granite.menu.user_not_loaded`**. **`projectVersion` 2.3.139 → 2.3.140**. **Build:** `.\gradlew.bat -PfabricOnly=true :granitelib-fabric:test :fabric:test :fabric:build`.
+
 ## 2.3.139
 
 ### Changes
