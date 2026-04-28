@@ -1,6 +1,6 @@
 # Granite Skills — level progression (template). Sprint 117 snake path (24 levels/page); Sprint 116 visuals.
 # Row 1 (slots 0-8): empty in Java. Row cells: LEVEL_PATH_SLOTS in FabricLevelProgressionLayout.
-# Fallback: built-in FabricLevelProgressionMenuGui on any failure (simple layout; see Sprint 117 manual).
+# Fallback: built-in `FabricLevelProgressionMenuGui` snake path (Sprint 118) when template invalid.
 id: level_progression
 title: "<gold><bold>{skill_display}</bold></gold> <gray>Levels</gray>"
 rows: 6

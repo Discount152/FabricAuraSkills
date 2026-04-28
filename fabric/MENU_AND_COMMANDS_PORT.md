@@ -598,7 +598,7 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | Area | Shipped on Fabric (bounded) |
 |------|-----------------------------|
 | **openmenu** | Literal **`sources`**: **`openmenu sources <skill> [sort]`** (in-game self); **`openmenu sources <player> <skill> [sort]`** (console + in-game; **online** target). **`FabricCommandBuiltInMenuId`**, **`FabricCommandSuggestionProviders#builtInOpenMenuIds`**, **`FabricSourcesOpenSupport`** (shared with **`/sources`**). **`auraskills.command.openmenu`** only. |
-| **Back / list page** | **Level progression** hopper at **slot 50** opens **sources** with **`context.listPage()`** so **Back** on sources returns to **level progression** with the same **Skills** return page; **`/sources`** / plain **`openmenu`** still use return page **0**. |
+| **Back / list page** | **Level progression** **Sources** control at **slot 48** opens **sources** with **`context.listPage()`** so **Back** on sources returns to **level progression** with the same **Skills** return page (built-in snake path matches template as of **Sprint 118**). Legacy docs referenced hopper **50** on the old compact built-in only. **`/sources`** / plain **`openmenu`** still use return page **0**. |
 | **Manual** | **`SPRINT_70_MANUAL_SOURCES_OPENMENU.md`** |
 
 | **Not in Sprint 70** | Full **`sources.yml`** load; **Slate** `sources` template items; **leaderboard** / **abilities**; **unclaimed** — see **Sprint 71**; **MenuFileManager** merge. |
@@ -694,7 +694,7 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | Area | Shipped on Fabric (bounded) |
 |------|-----------------------------|
 | **Template** | Bundled **`assets/auraskills/granite/templates/level_progression.yml`** (v0 schema). Constant **`FabricLevelProgressionTemplateSupport.TEMPLATE_RESOURCE_PATH`**. |
-| **Behavior** | **`FabricLevelProgressionMenuGui.open`** tries **`FabricLevelProgressionTemplateSupport.tryOpen`** first: **fill**, **24** snake-path level slots (**`FabricLevelProgressionLayout.LEVEL_PATH_SLOTS`**; row **1** slots **0–8** left empty in renderer), **previous / next** over levels **1..maxLevel** (24 per page), **back** → Skills, **sources** (**48**, knowledge book) → sources with list-page return, **abilities** (**49**, amethyst shard) → abilities. On any failure → **existing built-in** **`openBuiltIn`** (single main + back + hopper **50** for sources — **not** the template path layout). |
+| **Behavior** | **`FabricLevelProgressionMenuGui.open`** tries **`FabricLevelProgressionTemplateSupport.tryOpen`** first: **fill**, **24** snake-path level slots (**`FabricLevelProgressionLayout.LEVEL_PATH_SLOTS`**; row **1** slots **0–8** left empty in renderer), **previous / next** over levels **1..maxLevel** (24 per page), **back** → Skills, **sources** (**48**, knowledge book) → sources with list-page return, **abilities** (**49**, amethyst shard) → abilities. On any failure → **`openBuiltInSnake`** uses the **same** layout contract (**`FabricLevelProgressionLayout`**, quiet glass for off-path/unused path slots). |
 | **Placeholders** | **`FabricLevelProgressionPlaceholders`:** `{skill}`, `{skill_display}`, `{level}`, `{level_status}`, `{level_xp_required}`, `{current_xp}`, `{page}`, `{total_pages}` — unresolved `{...}` → fallback. |
 | **Chat** | Unchanged — GUI exception → **`menu_fallback`** + chat. |
 | **Gaps (Partial)** | **Not** disk override, **not** hot reload, **not** full action engine, **not** Slate **`MenuFileManager`** parity. **Bedrock** not run-time tested. |

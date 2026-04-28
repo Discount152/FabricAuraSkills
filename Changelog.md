@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.147
+
+### Changes
+
+- **Fabric — Sprint 118 level progression polish + built-in fallback parity:** Template **`level_progression`** title keeps MiniMessage **`<gold><bold>{skill_display}</bold></gold> <gray>Levels</gray>`** from the YAML; paging **“(Page X of Y)”** is appended as **gray literal** text (**`FabricLevelProgressionMenuContent#appendGrayPagingSubtitle`**) so it matches Sprint **116** title styling (no raw `§` codes). **Filler / off-path** glass uses **`applyQuietMenuFiller`** — blank **`ITEM_NAME`** (**`Text.literal(" ")`**) plus **`FabricMenuTooltipPresentation#suppressVanillaMechanicsTooltip`** — so hover does not show **Glass Pane** / registry id noise. **Built-in** **`FabricLevelProgressionMenuGui`** no longer uses the legacy compact layout: it uses **`FabricLevelProgressionLayout`** (**24** levels/page, **`LEVEL_PATH_SLOTS`**, controls **45 / 48 / 49 / 52 / 53**, row **1** empty, same quiet glass policy). Shared helpers live in **`FabricLevelProgressionMenuContent`**. **Tests:** **`FabricLevelProgressionSprint118Test`**. **Docs:** **`fabric/SPRINT_118_LEVEL_PROGRESSION_PATH_POLISH_AND_FALLBACK_PARITY.md`**, parity/port updates. **`projectVersion` 2.3.146 → 2.3.147**. **Build:** `.\gradlew.bat -PfabricOnly=true :granitelib-fabric:test :fabric:test :fabric:build verifyFabricReleaseBundle` — **PASS**. **Bedrock/Geyser** not tested; **Slate/MenuFileManager** still open.
+
 ## 2.3.146
 
 ### Changes

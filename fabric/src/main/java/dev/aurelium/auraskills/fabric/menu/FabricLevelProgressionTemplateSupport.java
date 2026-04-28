@@ -1,7 +1,6 @@
 package dev.aurelium.auraskills.fabric.menu;
 
 import dev.aurelium.auraskills.api.skill.Skill;
-import dev.aurelium.auraskills.api.util.NumberUtil;
 import dev.aurelium.auraskills.common.message.MessageProvider;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
@@ -25,8 +24,8 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Template-backed {@code level_progression}: paged snake path (Sprint 117, {@link FabricLevelProgressionLayout}). On
- * failure returns {@code false} so {@link FabricLevelProgressionMenuGui} uses the built-in path.
+ * Template-backed {@code level_progression}: paged snake path ({@link FabricLevelProgressionLayout}). On failure
+ * returns {@code false} so {@link FabricLevelProgressionMenuGui} uses the matching built-in snake path.
  */
 public final class FabricLevelProgressionTemplateSupport {
 
@@ -196,7 +195,8 @@ public final class FabricLevelProgressionTemplateSupport {
         int to = Math.min(from + FabricLevelProgressionLayout.PAGE_SIZE, levels.size());
         List<Integer> pageLevels = levels.subList(from, to);
 
-        Map<String, String> globalPh = buildGlobalPlaceholders(skill, p, maxPage, locale, msg);
+        Map<String, String> globalPh =
+                FabricLevelProgressionMenuContent.globalPlaceholders(skill, p, maxPage, locale, msg);
 
         String titleExpanded = FabricLevelProgressionPlaceholders.expand(template.title(), globalPh);
         Optional<Text> titleBaseOpt =
@@ -204,14 +204,14 @@ public final class FabricLevelProgressionTemplateSupport {
         if (titleBaseOpt.isEmpty()) {
             return false;
         }
-        Text pageTitle = FabricListMenuPaging.appendPageToTitleIfNeeded(titleBaseOpt.get(), p, maxPage);
+        Text pageTitle = FabricLevelProgressionMenuContent.appendGrayPagingSubtitle(titleBaseOpt.get(), p, maxPage);
 
         Optional<ItemStack> fillBase =
                 FabricGraniteTemplateStacks.buildFillStack(template.fill(), globalPh, plugin, MENU_LOG);
         if (template.fill().isPresent() && fillBase.isEmpty()) {
             return false;
         }
-        fillBase.ifPresent(FabricMenuTooltipPresentation::suppressVanillaMechanicsTooltip);
+        fillBase.ifPresent(FabricLevelProgressionMenuContent::applyQuietMenuFiller);
 
         int userLevel = user.getSkillLevel(skill);
         double currentXp = user.getSkillXp(skill);
@@ -220,7 +220,8 @@ public final class FabricLevelProgressionTemplateSupport {
         List<ItemStack> rowStacks = new ArrayList<>(pageLevels.size());
         for (Integer displayLevel : pageLevels) {
             Map<String, String> rowPh = new HashMap<>(globalPh);
-            addLevelRowPlaceholders(rowPh, userLevel, displayLevel, currentXp, skill, maxLevel, xpReqs);
+            FabricLevelProgressionMenuContent.addLevelRowPlaceholders(
+                    rowPh, userLevel, displayLevel, currentXp, skill, maxLevel, xpReqs);
             Optional<ItemStack> rowStack =
                     FabricGraniteTemplateStacks.buildTemplateItemStack(
                             levelDef, rowPh, plugin, MENU_LOG, "items.level.row");
@@ -297,7 +298,13 @@ public final class FabricLevelProgressionTemplateSupport {
                         } else if (FabricLevelProgressionLayout.LEVEL_PATH_SLOT_SET.contains(s)) {
                             inv.setStack(s, ItemStack.EMPTY);
                         } else {
-                            inv.setStack(s, fillBase.isPresent() ? fillCopy.copy() : ItemStack.EMPTY);
+                            if (fillBase.isPresent()) {
+                                ItemStack f = fillCopy.copy();
+                                FabricLevelProgressionMenuContent.applyQuietMenuFiller(f);
+                                inv.setStack(s, f);
+                            } else {
+                                inv.setStack(s, ItemStack.EMPTY);
+                            }
                         }
                     }
                     for (int i = 0; i < rowStacks.size(); i++) {
@@ -305,9 +312,13 @@ public final class FabricLevelProgressionTemplateSupport {
                     }
                     for (int u = rowStacks.size(); u < FabricLevelProgressionLayout.PAGE_SIZE; u++) {
                         int pathSlot = levelDef.slots().get(u);
-                        inv.setStack(
-                                pathSlot,
-                                fillBase.isPresent() ? fillCopy.copy() : ItemStack.EMPTY);
+                        if (fillBase.isPresent()) {
+                            ItemStack f = fillCopy.copy();
+                            FabricLevelProgressionMenuContent.applyQuietMenuFiller(f);
+                            inv.setStack(pathSlot, f);
+                        } else {
+                            inv.setStack(pathSlot, ItemStack.EMPTY);
+                        }
                     }
                     for (int s = 45; s <= 53; s++) {
                         inv.setStack(s, ItemStack.EMPTY);
@@ -402,79 +413,5 @@ public final class FabricLevelProgressionTemplateSupport {
                     }
                 });
         return true;
-    }
-
-    private static Map<String, String> buildGlobalPlaceholders(
-            Skill skill, int pageIndex, int maxPageIndex, Locale locale, MessageProvider msg) {
-        Map<String, String> m = new HashMap<>();
-        m.put("skill", skill.getId().getSimpleName());
-        m.put("skill_display", msg.getSkillDisplayName(skill, locale, true));
-        m.put("page", String.valueOf(pageIndex + 1));
-        m.put("total_pages", String.valueOf(maxPageIndex + 1));
-        return m;
-    }
-
-    private static void addLevelRowPlaceholders(
-            Map<String, String> m,
-            int userLevel,
-            int displayLevel,
-            double currentXp,
-            Skill skill,
-            int maxLevel,
-            dev.aurelium.auraskills.common.level.XpRequirements xpReqs) {
-        m.put("level", String.valueOf(displayLevel));
-        m.put("current_xp", NumberUtil.format2(currentXp));
-
-        boolean maxed = userLevel >= maxLevel || xpReqs.getListSize(skill) <= userLevel - 1;
-        String xpTierCompleted =
-                displayLevel >= maxLevel
-                        ? NumberUtil.format2(xpReqs.getXpRequired(skill, maxLevel))
-                        : NumberUtil.format2(xpReqs.getXpRequired(skill, displayLevel + 1));
-        String xpTierLocked = NumberUtil.format2(xpReqs.getXpRequired(skill, displayLevel));
-
-        if (displayLevel < userLevel) {
-            m.put(
-                    "level_status",
-                    granitePlain("auraskills.granite.menu.level_progression_status_unlocked"));
-            m.put(
-                    "level_detail",
-                    granitePlain(
-                            "auraskills.granite.menu.level_progression_row_xp_required", xpTierCompleted));
-        } else if (displayLevel == userLevel) {
-            m.put(
-                    "level_status",
-                    granitePlain("auraskills.granite.menu.level_progression_status_current"));
-            if (maxed) {
-                m.put(
-                        "level_detail",
-                        granitePlain("auraskills.granite.menu.level_progression_row_maxed_compact"));
-            } else {
-                int reqNext = xpReqs.getXpRequired(skill, userLevel + 1);
-                m.put(
-                        "level_detail",
-                        granitePlain(
-                                "auraskills.granite.menu.level_progression_row_progress",
-                                NumberUtil.format2(currentXp),
-                                NumberUtil.format2(reqNext)));
-            }
-        } else {
-            m.put(
-                    "level_status",
-                    granitePlain("auraskills.granite.menu.level_progression_status_locked"));
-            m.put(
-                    "level_detail",
-                    granitePlain(
-                            "auraskills.granite.menu.level_progression_row_xp_required", xpTierLocked));
-        }
-
-        if (displayLevel >= maxLevel) {
-            m.put("level_xp_required", NumberUtil.format2(xpReqs.getXpRequired(skill, maxLevel)));
-        } else {
-            m.put("level_xp_required", NumberUtil.format2(xpReqs.getXpRequired(skill, displayLevel + 1)));
-        }
-    }
-
-    private static String granitePlain(String key, Object... args) {
-        return FabricGraniteText.key(key, args).getString();
     }
 }

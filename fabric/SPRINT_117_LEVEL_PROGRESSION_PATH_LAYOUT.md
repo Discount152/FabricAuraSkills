@@ -44,9 +44,11 @@ Title style, lime dye / XP bottle / gray dye states, compact `{level_detail}` / 
 
 `FabricLevelProgressionTemplateSupport` requires level slots to match `LEVEL_PATH_SLOTS` exactly and navigation slots to match the table above. Mismatch or missing `abilities` → warn → `FabricLevelProgressionMenuGui` built-in.
 
-## Built-in fallback (limitation)
+## Built-in fallback (**Sprint 118**)
 
-`FabricLevelProgressionMenuGui.openBuiltIn` is still legacy (book + back + hopper **50** for sources). It does **not** implement the snake path or 24 cells/page.
+**Before 2.3.147:** built-in **`FabricLevelProgressionMenuGui`** used a legacy compact layout (hopper **50** for sources).
+
+**2.3.147+:** built-in **`openBuiltInSnake`** matches **`FabricLevelProgressionLayout`** (same snake path, **24** cells/page, controls **45/48/49/52/53**). See **`SPRINT_118_LEVEL_PROGRESSION_PATH_POLISH_AND_FALLBACK_PARITY.md`**.
 
 ## Tests / build
 
@@ -58,19 +60,3 @@ Title style, lime dye / XP bottle / gray dye states, compact `{level_detail}` / 
 ## Bedrock / Geyser
 
 **Not** tested. Do not claim cross-play menu validation from this sprint.
-
-## Operator screenshot checklist
-
-- Open: `/openmenu level_progression archery` (and farming, mining) or Skills -> skill.
-- Level 1 at slot 9; path snakes 3-down / 2-across / 3-up / 2-across pattern through 24 cells.
-- 24 level icons on a full page; row 1 empty.
-- Sources at 48; Abilities at 49; Previous left of Next at 52–53.
-- Back and paging behave; tooltips clean; fillers quiet.
-
-## Disk templates
-
-Operators overriding `config/auraskills/granite/templates/level_progression.yml` must update `level.slots` to the 24-entry list and control slots to 45/48/49/52/53 or the menu falls back to built-in.
-
-## Next step (optional)
-
-Port built-in GUI to the same path in a future sprint if fallback should match visuals.
