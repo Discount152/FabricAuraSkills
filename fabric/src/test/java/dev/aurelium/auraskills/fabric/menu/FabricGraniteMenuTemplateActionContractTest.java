@@ -54,6 +54,9 @@ class FabricGraniteMenuTemplateActionContractTest {
                 FabricGraniteMenuTemplateActionContract.isNavigationNormalized(
                         GraniteTemplateActionNames.BACK));
         assertTrue(
+                FabricGraniteMenuTemplateActionContract.isNavigationNormalized(
+                        GraniteTemplateActionNames.CLOSE));
+        assertTrue(
                 FabricGraniteMenuTemplateActionContract.isRowOrPanelNormalized(
                         GraniteTemplateActionNames.SKILL_ROW));
         assertFalse(FabricGraniteMenuTemplateActionContract.isNavigationNormalized(GraniteTemplateActionNames.SKILL_ROW));

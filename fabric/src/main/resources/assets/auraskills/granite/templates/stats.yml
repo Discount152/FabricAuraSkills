@@ -1,45 +1,21 @@
-# Granite Skills — stats list (template v0). Row icons: template default + Java stat map for defaults.
-# Fallback: built-in FabricStatsMenuGui on any failure.
+# Granite Skills — locked 3×3 stats hub (Sprint 113). Row 0 empty; row 5 empty; back/close on row 6.
 id: stats
-title: "§6§lStats"
+title: "§8§lYour Stats"
 rows: 6
-
-fill:
-  material: minecraft:gray_stained_glass_pane
-  name: " "
 
 items:
   stat:
-    material: minecraft:map
+    material: minecraft:stone
     slots:
-      - 10
-      - 11
       - 12
       - 13
       - 14
-      - 15
-      - 16
-      - 19
-      - 20
       - 21
       - 22
       - 23
-      - 24
-      - 25
-      - 28
-      - 29
       - 30
       - 31
       - 32
-      - 33
-      - 34
-      - 37
-      - 38
-      - 39
-      - 40
-      - 41
-      - 42
-      - 43
     name: "§b{stat_display}"
     lore:
       - "§7{stat_description}"
@@ -48,17 +24,19 @@ items:
       - ""
       - "§a▸ §7Details"
     action: stat_row
-  previous:
+
+  back:
     material: minecraft:arrow
     slot: 45
-    name: "§e« Previous page"
+    name: "&eBack to Skills"
     lore:
-      - "§7Older stats on this list"
-    action: previous_page
-  next:
-    material: minecraft:arrow
+      - "&7Return to skills"
+    action: back
+
+  close:
+    material: minecraft:barrier
     slot: 53
-    name: "§eNext page »"
+    name: "§cClose"
     lore:
-      - "§7More stats on this list"
-    action: next_page
+      - "§7Exit"
+    action: close

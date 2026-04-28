@@ -23,6 +23,10 @@ class GraniteTemplateActionNamesTest {
         assertEquals("refresh", GraniteTemplateActionNames.REFRESH);
         assertEquals("claim_item", GraniteTemplateActionNames.CLAIM_ITEM);
         assertEquals("claim_all", GraniteTemplateActionNames.CLAIM_ALL);
+        assertEquals("open_leaderboard", GraniteTemplateActionNames.OPEN_LEADERBOARD);
+        assertEquals("open_stats", GraniteTemplateActionNames.OPEN_STATS);
+        assertEquals("open_unclaimed_items", GraniteTemplateActionNames.OPEN_UNCLAIMED_ITEMS);
+        assertEquals("close", GraniteTemplateActionNames.CLOSE);
         assertEquals("open_sources", GraniteTemplateActionNames.OPEN_SOURCES);
         assertEquals("open_abilities", GraniteTemplateActionNames.OPEN_ABILITIES);
         assertEquals("previous_page", GraniteTemplateActionNames.PREVIOUS_PAGE);
@@ -48,8 +52,9 @@ class GraniteTemplateActionNamesTest {
     }
 
     @Test
-    void allKnownNormalizedSize17() {
-        assertEquals(17, GraniteTemplateActionNames.allKnownNormalized().size());
+    void allKnownNormalizedCountsAllV0Actions() {
+        assertEquals(21, GraniteTemplateActionNames.allKnownNormalized().size());
         assertTrue(GraniteTemplateActionNames.allKnownNormalized().contains(GraniteTemplateActionNames.CYCLE_SORT));
+        assertTrue(GraniteTemplateActionNames.allKnownNormalized().contains(GraniteTemplateActionNames.CLOSE));
     }
 }

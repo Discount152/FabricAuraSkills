@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.142
+
+### Changes
+
+- **Fabric — Sprint 113 skills + stats menu visual layout lock-in:** Locked **bundled** `skills.yml` / `stats.yml` to owner layout: **Your Skills** / **Your Stats** titles; **11** fixed skill cells + utilities (**gold ingot** leaderboard, **player head → Your Stats**, **chest minecart** unclaimed when non-empty, **barrier** close); **9** stats in **3×3** grid + **back** / **close**. Row **5** (slots 36–44) left **empty** inside **6×9** `GENERIC_9X6`. New template actions: `open_leaderboard`, `open_stats`, `open_unclaimed_items`, `close`. **`FabricGraniteMenuTemplateActionContract`** uses **required** vs **allowed** for skills/stats so `open_unclaimed_items` is optional on items. **`GraniteTemplateActionNames`** vocabulary size **21**. **`ProfileComponent.ofStatic`** for stats utility head. **`FabricMenuPresentation`** icon maps aligned to approved materials. **Docs:** `fabric/SPRINT_113_SKILLS_STATS_VISUAL_LAYOUT_LOCK.md`. **`projectVersion` 2.3.141 → 2.3.142**. **Build:** `.\gradlew.bat -PfabricOnly=true :granitelib-fabric:test :fabric:test :fabric:build verifyFabricReleaseBundle`.
+
 ## 2.3.141
 
 ### Changes

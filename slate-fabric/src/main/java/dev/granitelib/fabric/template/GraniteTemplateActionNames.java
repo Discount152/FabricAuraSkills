@@ -13,6 +13,8 @@ import java.util.Set;
  *
  * <p><b>Sprint 112:</b> {@link #normalize(String)}, {@link #isKnown(String)}, and {@link #allKnownNormalized()} define
  * the canonical trimmed {@link Locale#ROOT} lowercase vocabulary for template validation and item lookups.
+ * Sprint 113 adds navigation actions for the locked skills/stats hub ({@code open_leaderboard}, {@code open_stats},
+ * {@code open_unclaimed_items}, {@code close}); {@link #allKnownNormalized()} size is <strong>21</strong>.
  */
 public final class GraniteTemplateActionNames {
 
@@ -55,6 +57,18 @@ public final class GraniteTemplateActionNames {
     /** Merge all claimable items (Fabric unclaimed_items). */
     public static final String CLAIM_ALL = "claim_all";
 
+    /** Open leaderboard browser from skills menu (Fabric). */
+    public static final String OPEN_LEADERBOARD = "open_leaderboard";
+
+    /** Open stats list from skills menu (Fabric). */
+    public static final String OPEN_STATS = "open_stats";
+
+    /** Open unclaimed reward list (Fabric skills menu utility). */
+    public static final String OPEN_UNCLAIMED_ITEMS = "open_unclaimed_items";
+
+    /** Close the current screen (Fabric top-level menus). */
+    public static final String CLOSE = "close";
+
     /** Open per-skill sources menu (Fabric level_progression). */
     public static final String OPEN_SOURCES = "open_sources";
 
@@ -80,6 +94,10 @@ public final class GraniteTemplateActionNames {
             REFRESH,
             CLAIM_ITEM,
             CLAIM_ALL,
+            OPEN_LEADERBOARD,
+            OPEN_STATS,
+            OPEN_UNCLAIMED_ITEMS,
+            CLOSE,
             OPEN_SOURCES,
             OPEN_ABILITIES,
             PREVIOUS_PAGE,
@@ -87,8 +105,8 @@ public final class GraniteTemplateActionNames {
             CYCLE_SORT));
 
     /**
-     * Sprint 112: stable normalization for action comparisons -- trim, then {@link Locale#ROOT} lowercase; {@code null}
-     * or whitespace-only input yields {@code null}.
+     * Sprint 112+113: stable normalization for action comparisons -- trim, then {@link Locale#ROOT} lowercase; {@code
+     * null} or whitespace-only input yields {@code null}.
      */
     public static String normalize(String s) {
         if (s == null) {
@@ -101,7 +119,7 @@ public final class GraniteTemplateActionNames {
         return t.toLowerCase(Locale.ROOT);
     }
 
-    /** Sprint 112: immutable set of all {@linkplain #normalize(String) normalized} v0 action literals (size 17). */
+    /** Immutable set of all {@linkplain #normalize(String) normalized} v0 action literals. */
     public static Set<String> allKnownNormalized() {
         return ALL_KNOWN_NORMALIZED;
     }

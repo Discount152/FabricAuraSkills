@@ -30,15 +30,17 @@ class FabricSkillsStatsBundledTemplateParseTest {
             GraniteMenuTemplate t = GraniteMenuTemplateYamlLoader.loadString(yaml, "skills.yml");
             assertEquals("skills", t.id());
             assertEquals(6, t.rows());
-            assertTrue(t.fill().isPresent());
+            assertTrue(t.fill().isEmpty());
 
             GraniteTemplateItem skill = t.items().get("skill");
             assertNotNull(skill);
-            assertEquals(28, skill.slots().size());
-            assertEquals(FabricSourcesMenuGui.builtinSourceGridSlots(), skill.slots());
+            assertEquals(FabricSkillsTemplateSupport.EXPECTED_SKILL_COUNT, skill.slots().size());
+            assertEquals(FabricSkillsTemplateSupport.LOCKED_SKILL_GRID_SLOTS, skill.slots());
 
-            assertNav(t, "previous", GraniteTemplateActionNames.PREVIOUS_PAGE);
-            assertNav(t, "next", GraniteTemplateActionNames.NEXT_PAGE);
+            assertUtility(t, "leaderboard", GraniteTemplateActionNames.OPEN_LEADERBOARD);
+            assertUtility(t, "stats_button", GraniteTemplateActionNames.OPEN_STATS);
+            assertUtility(t, "unclaimed", GraniteTemplateActionNames.OPEN_UNCLAIMED_ITEMS);
+            assertUtility(t, "close", GraniteTemplateActionNames.CLOSE);
 
             assertSame(skill, GraniteTemplateItems.findSkillGridDefinition(t));
             assertTrue(
@@ -72,14 +74,15 @@ class FabricSkillsStatsBundledTemplateParseTest {
             GraniteMenuTemplate t = GraniteMenuTemplateYamlLoader.loadString(yaml, "stats.yml");
             assertEquals("stats", t.id());
             assertEquals(6, t.rows());
+            assertTrue(t.fill().isEmpty());
 
             GraniteTemplateItem stat = t.items().get("stat");
             assertNotNull(stat);
-            assertEquals(28, stat.slots().size());
-            assertEquals(FabricSourcesMenuGui.builtinSourceGridSlots(), stat.slots());
+            assertEquals(FabricStatsTemplateSupport.EXPECTED_STAT_COUNT, stat.slots().size());
+            assertEquals(FabricStatsTemplateSupport.LOCKED_STAT_GRID_SLOTS, stat.slots());
 
-            assertNav(t, "previous", GraniteTemplateActionNames.PREVIOUS_PAGE);
-            assertNav(t, "next", GraniteTemplateActionNames.NEXT_PAGE);
+            assertUtility(t, "back", GraniteTemplateActionNames.BACK);
+            assertUtility(t, "close", GraniteTemplateActionNames.CLOSE);
 
             assertSame(stat, GraniteTemplateItems.findStatGridDefinition(t));
 
@@ -111,9 +114,10 @@ class FabricSkillsStatsBundledTemplateParseTest {
         assertTrue(FabricStatsPlaceholders.hasUnresolvedBraceSyntax(bad));
     }
 
-    private static void assertNav(GraniteMenuTemplate t, String key, String expectedAction) {
+    private static void assertUtility(GraniteMenuTemplate t, String key, String expectedAction) {
         GraniteTemplateItem item = t.items().get(key);
         assertNotNull(item, "missing items." + key);
+        assertEquals(1, item.slots().size(), "items." + key + " must be single-slot");
         assertTrue(
                 item.action().filter(a -> expectedAction.equalsIgnoreCase(a)).isPresent(),
                 "items." + key + " action should be " + expectedAction);

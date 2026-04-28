@@ -710,6 +710,15 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 | **Gaps (Partial)** | **Not** disk override, **not** hot reload, **not** full action engine, **not** trait lines on template **stats** rows (built-in adds traits; template is placeholder-driven). **Bedrock** not run-time tested. |
 | **Manual** | **`SPRINT_101_MANUAL_SKILLS_STATS_TEMPLATE_PROTOTYPE.md`** |
 
+## Sprint 113 — **skills** / **stats** visual layout lock-in (owner grid, shipped)
+
+| Area | Shipped on Fabric (bounded) |
+|------|-----------------------------|
+| **Templates** | Same paths as Sprint 101; **`skills.yml`** — **11** fixed skill slots + utilities (**open_leaderboard**, **open_stats** with **player head** in Java, **open_unclaimed_items**, **close**); **no** fill; row **5** empty in **6×9**. **`stats.yml`** — **9** stats **3×3**, **back**, **close**; **no** fill. |
+| **Behavior** | **`FabricSkillsTemplateSupport`** / **`FabricStatsTemplateSupport`** rewritten for locked ids/slots; **`GraniteTemplateActionNames`** + **`FabricGraniteMenuTemplateActionContract`** (**required** subset for skills/stats). Unclaimed cell **omitted** when **`User#getUnclaimedItems`** empty. |
+| **Manual** | **`fabric/SPRINT_113_SKILLS_STATS_VISUAL_LAYOUT_LOCK.md`** |
+| **Gaps** | **Not** all **15** `Skills` enum entries on hub (**11** curated). **Not** Bedrock-validated. **Built-in** fallback GUIs if template invalid remain **legacy** paged layout. |
+
 ## Sprint 102 — **abilities** GraniteLib template prototype (passive + mana display) (shipped, bounded)
 
 | Area | Shipped on Fabric (bounded) |

@@ -1,63 +1,60 @@
-# Granite Skills — skills list (template v0). Icons: per-row material from template + Java skill map for defaults.
-# Fallback: built-in FabricSkillsMenuGui on any failure.
+# Granite Skills — locked layout (Sprint 113). 6×9 chest with row 5 (slots 36–44) empty; utilities on row 6.
+# Shows 11 curated skills; endurance/sorcery/healing/forging are not on this hub (see sprint doc).
 id: skills
-title: "§6§lSkills"
+title: "§8§lYour Skills"
 rows: 6
-
-fill:
-  material: minecraft:gray_stained_glass_pane
-  name: " "
 
 items:
   skill:
-    material: minecraft:experience_bottle
+    material: minecraft:stone
     slots:
-      - 10
-      - 11
       - 12
       - 13
       - 14
-      - 15
-      - 16
-      - 19
       - 20
       - 21
       - 22
       - 23
       - 24
-      - 25
-      - 28
-      - 29
       - 30
       - 31
       - 32
-      - 33
-      - 34
-      - 37
-      - 38
-      - 39
-      - 40
-      - 41
-      - 42
-      - 43
-    name: "§e{skill_display}"
+    name: "§f{skill_display}"
     lore:
       - "§7Level §f{skill_level} §8· §7XP §f{skill_xp}"
       - "§8({skill_xp_in_level} in this level)"
       - ""
-      - "§a▸ §7Open progression"
+      - "§a▸ §7Levels"
     action: skill_row
-  previous:
-    material: minecraft:arrow
+
+  leaderboard:
+    material: minecraft:gold_ingot
+    slot: 0
+    name: "§6Leaderboard"
+    lore:
+      - "§7Power leaderboard"
+    action: open_leaderboard
+
+  stats_button:
+    material: minecraft:player_head
+    slot: 8
+    name: "§bYour Stats"
+    lore:
+      - "§7Open your stats"
+    action: open_stats
+
+  unclaimed:
+    material: minecraft:chest_minecart
     slot: 45
-    name: "§e« Previous page"
+    name: "§eUnclaimed Items"
     lore:
-      - "§7Older skills on this list"
-    action: previous_page
-  next:
-    material: minecraft:arrow
+      - "§7Claim pending rewards"
+    action: open_unclaimed_items
+
+  close:
+    material: minecraft:barrier
     slot: 53
-    name: "§eNext page »"
+    name: "§cClose"
     lore:
-      - "§7More skills on this list"
-    action: next_page
+      - "§7Exit"
+    action: close

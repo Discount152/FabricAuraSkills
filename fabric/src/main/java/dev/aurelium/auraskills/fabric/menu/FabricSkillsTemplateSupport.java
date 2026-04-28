@@ -25,14 +25,31 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Sprint 101: template-backed {@code skills} list (paged 28-slot grid). On failure returns {@code false} so
- * {@link FabricSkillsMenuGui} uses the built-in path.
+ * Template-backed {@code skills} hub — Sprint 113 locked layout (11 skills + utilities). On failure returns
+ * {@code false} so {@link FabricSkillsMenuGui} uses the built-in path.
  */
 public final class FabricSkillsTemplateSupport {
 
     public static final String TEMPLATE_RESOURCE_PATH = "assets/auraskills/granite/templates/skills.yml";
 
-    private static final int PAGE_SIZE = 28;
+    /** 6×9 menu: curated skill cells (archery…enchanting); row 5 kept empty. */
+    public static final List<Integer> LOCKED_SKILL_GRID_SLOTS = List.of(
+            12, 13, 14, 20, 21, 22, 23, 24, 30, 31, 32);
+
+    public static final List<String> LOCKED_SKILL_IDS = List.of(
+            "archery",
+            "fighting",
+            "defense",
+            "farming",
+            "foraging",
+            "mining",
+            "fishing",
+            "excavation",
+            "agility",
+            "alchemy",
+            "enchanting");
+
+    public static final int EXPECTED_SKILL_COUNT = 11;
 
     private static final String MENU_LOG = "skills template";
 
@@ -64,7 +81,9 @@ public final class FabricSkillsTemplateSupport {
         }
         if (template.rows() != 6) {
             plugin.logger().warn(
-                    "skills template rows must be 6 for 6×9 menu, got " + template.rows() + "; using built-in menu");
+                    "skills template rows must be 6 for locked 6×9 layout, got "
+                            + template.rows()
+                            + "; using built-in menu");
             return false;
         }
 
@@ -81,18 +100,9 @@ public final class FabricSkillsTemplateSupport {
                     "skills template: no skill row (key 'skill' or action skill_row); using built-in menu");
             return false;
         }
-        if (skillDef.slots().size() != PAGE_SIZE) {
+        if (skillDef.slots().size() != EXPECTED_SKILL_COUNT || !skillDef.slots().equals(LOCKED_SKILL_GRID_SLOTS)) {
             plugin.logger().warn(
-                    "skills template: skill item must have exactly "
-                            + PAGE_SIZE
-                            + " slots; got "
-                            + skillDef.slots().size()
-                            + "; using built-in menu");
-            return false;
-        }
-        if (!skillDef.slots().equals(FabricSourcesMenuGui.builtinSourceGridSlots())) {
-            plugin.logger().warn(
-                    "skills template: skill slots must match built-in 7×4 grid order; using built-in menu");
+                    "skills template: skill item must use Sprint 113 locked slot list; using built-in menu");
             return false;
         }
 
@@ -104,64 +114,91 @@ public final class FabricSkillsTemplateSupport {
             return false;
         }
 
-        Optional<Integer> prevSlotOpt =
-                GraniteTemplateItems.firstSlotByPreferredKeyOrActions(
-                        template, "previous", List.of(GraniteTemplateActionNames.PREVIOUS_PAGE));
-        Optional<Integer> nextSlotOpt =
-                GraniteTemplateItems.firstSlotByPreferredKeyOrActions(
-                        template, "next", List.of(GraniteTemplateActionNames.NEXT_PAGE));
-        if (prevSlotOpt.isEmpty() || nextSlotOpt.isEmpty()) {
-            plugin.logger().warn("skills template: missing previous or next item; using built-in menu");
+        int lbSlot = requiredUtilitySlot(template, GraniteTemplateActionNames.OPEN_LEADERBOARD);
+        int statsSlot = requiredUtilitySlot(template, GraniteTemplateActionNames.OPEN_STATS);
+        int unclaimedSlot = requiredUtilitySlot(template, GraniteTemplateActionNames.OPEN_UNCLAIMED_ITEMS);
+        int closeSlot = requiredUtilitySlot(template, GraniteTemplateActionNames.CLOSE);
+        if (lbSlot < 0 || statsSlot < 0 || unclaimedSlot < 0 || closeSlot < 0) {
+            plugin.logger().warn(MENU_LOG + ": utility item missing or multi-slot; using built-in menu");
             return false;
         }
-        int prev = prevSlotOpt.get();
-        int next = nextSlotOpt.get();
 
-        GraniteTemplateItem prevItem = template.items().get("previous");
-        GraniteTemplateItem nextItem = template.items().get("next");
-        if (prevItem == null || nextItem == null) {
-            plugin.logger().warn(
-                    "skills template: require YAML keys previous, next; using built-in menu");
-            return false;
-        }
-        if (!GraniteTemplateItems.actionEquals(prevItem, GraniteTemplateActionNames.PREVIOUS_PAGE)
-                || !GraniteTemplateItems.actionEquals(nextItem, GraniteTemplateActionNames.NEXT_PAGE)) {
-            plugin.logger().warn(
-                    "skills template: navigation actions must be previous_page, next_page; using built-in menu");
+        GraniteTemplateItem leaderboardItem =
+                GraniteTemplateItems.findFirstByAction(template, GraniteTemplateActionNames.OPEN_LEADERBOARD)
+                        .orElseThrow();
+        GraniteTemplateItem statsItem =
+                GraniteTemplateItems.findFirstByAction(template, GraniteTemplateActionNames.OPEN_STATS)
+                        .orElseThrow();
+        GraniteTemplateItem unclaimedItem =
+                GraniteTemplateItems.findFirstByAction(template, GraniteTemplateActionNames.OPEN_UNCLAIMED_ITEMS)
+                        .orElseThrow();
+        GraniteTemplateItem closeItem =
+                GraniteTemplateItems.findFirstByAction(template, GraniteTemplateActionNames.CLOSE).orElseThrow();
+
+        if (GraniteTemplateItems.findAllByAction(template, GraniteTemplateActionNames.OPEN_LEADERBOARD).size() != 1
+                || GraniteTemplateItems.findAllByAction(template, GraniteTemplateActionNames.OPEN_STATS).size() != 1
+                || GraniteTemplateItems.findAllByAction(template, GraniteTemplateActionNames.OPEN_UNCLAIMED_ITEMS).size()
+                        != 1
+                || GraniteTemplateItems.findAllByAction(template, GraniteTemplateActionNames.CLOSE).size() != 1) {
+            plugin.logger().warn(MENU_LOG + ": duplicate utility action; using built-in menu");
             return false;
         }
 
         Locale locale = user.getLocale();
-        var msg = plugin.getMessageProvider();
-        List<Skill> all = new ArrayList<>();
-        for (Skill sk : plugin.getSkillManager().getEnabledSkills()) {
-            all.add(sk);
+        MessageProvider msg = plugin.getMessageProvider();
+        List<Skill> gridSkills = resolveLockedSkills(plugin);
+        if (gridSkills.size() != EXPECTED_SKILL_COUNT) {
+            plugin.logger().warn(
+                    MENU_LOG + ": expected "
+                            + EXPECTED_SKILL_COUNT
+                            + " enabled skills matching locked ids, got "
+                            + gridSkills.size()
+                            + "; using built-in menu");
+            return false;
         }
-        int total = all.size();
-        int maxPage = FabricListMenuPaging.maxPageIndex(total, PAGE_SIZE);
-        int p = FabricListMenuPaging.clampPage(context.listPage(), total, PAGE_SIZE);
-        int from = p * PAGE_SIZE;
-        int to = Math.min(from + PAGE_SIZE, total);
-        List<Skill> pageSkills = all.subList(from, to);
 
-        Map<String, String> globalPh = buildGlobalPlaceholders(p, maxPage);
+        Map<String, String> globalPh = Map.of("page", "1", "total_pages", "1");
 
         String titleExpanded = FabricSkillsPlaceholders.expand(template.title(), globalPh);
-        Optional<Text> titleBaseOpt =
+        Optional<Text> titleOpt =
                 FabricGraniteTemplateStacks.toLiteralNoUnresolved(titleExpanded, plugin, MENU_LOG, "title");
-        if (titleBaseOpt.isEmpty()) {
-            return false;
-        }
-        Text pageTitle = FabricListMenuPaging.appendPageToTitleIfNeeded(titleBaseOpt.get(), p, maxPage);
-
-        Optional<ItemStack> fillBase =
-                FabricGraniteTemplateStacks.buildFillStack(template.fill(), globalPh, plugin, MENU_LOG);
-        if (template.fill().isPresent() && fillBase.isEmpty()) {
+        if (titleOpt.isEmpty()) {
             return false;
         }
 
-        List<ItemStack> rowStacks = new ArrayList<>(pageSkills.size());
-        for (Skill skill : pageSkills) {
+        Optional<ItemStack> leaderboardStack =
+                FabricGraniteTemplateStacks.buildTemplateItemStack(
+                        leaderboardItem, globalPh, plugin, MENU_LOG, "items.leaderboard");
+        if (leaderboardStack.isEmpty()) {
+            return false;
+        }
+
+        Optional<ItemStack> statsTemplate =
+                FabricGraniteTemplateStacks.buildTemplateItemStack(
+                        statsItem, globalPh, plugin, MENU_LOG, "items.open_stats");
+        if (statsTemplate.isEmpty()) {
+            return false;
+        }
+        ItemStack statsStack = FabricMenuPresentation.playerHeadWithTemplateDecor(statsTemplate.get(), player);
+
+        Optional<ItemStack> unclaimedTemplate =
+                FabricGraniteTemplateStacks.buildTemplateItemStack(
+                        unclaimedItem, globalPh, plugin, MENU_LOG, "items.unclaimed");
+        if (unclaimedTemplate.isEmpty()) {
+            return false;
+        }
+
+        Optional<ItemStack> closeStack =
+                FabricGraniteTemplateStacks.buildTemplateItemStack(
+                        closeItem, globalPh, plugin, MENU_LOG, "items.close");
+        if (closeStack.isEmpty()) {
+            return false;
+        }
+
+        boolean hasUnclaimed = !user.getUnclaimedItems().isEmpty();
+
+        List<ItemStack> rowStacks = new ArrayList<>(gridSkills.size());
+        for (Skill skill : gridSkills) {
             Map<String, String> rowPh = new HashMap<>(globalPh);
             addSkillRowPlaceholders(rowPh, skill, user, msg, locale);
             Optional<ItemStack> rowStack =
@@ -174,116 +211,99 @@ public final class FabricSkillsTemplateSupport {
             rowStacks.add(FabricMenuPresentation.applySkillRowIcon(rowStack.get(), skill));
         }
 
-        Optional<ItemStack> prevStackOpt = Optional.empty();
-        Optional<ItemStack> nextStackOpt = Optional.empty();
-        if (maxPage > 0) {
-            if (p > 0) {
-                Optional<ItemStack> ps =
-                        FabricGraniteTemplateStacks.buildTemplateItemStack(
-                                prevItem, globalPh, plugin, MENU_LOG, "items.previous");
-                if (ps.isEmpty()) {
-                    return false;
-                }
-                prevStackOpt = ps;
-            }
-            if (p < maxPage) {
-                Optional<ItemStack> ns =
-                        FabricGraniteTemplateStacks.buildTemplateItemStack(
-                                nextItem, globalPh, plugin, MENU_LOG, "items.next");
-                if (ns.isEmpty()) {
-                    return false;
-                }
-                nextStackOpt = ns;
-            }
-        }
-
-        final int fPage = p;
-        final int fMax = maxPage;
-        final int fFrom = from;
-        final int fTo = to;
-        final int fTotal = total;
-        final Optional<ItemStack> fPrevOpt = prevStackOpt;
-        final Optional<ItemStack> fNextOpt = nextStackOpt;
+        final int fLb = lbSlot;
+        final int fSt = statsSlot;
+        final int fUn = unclaimedSlot;
+        final int fCl = closeSlot;
+        final boolean fHasUnclaimed = hasUnclaimed;
 
         GraniteContainerMenus.openClickable9x6(
                 player,
-                pageTitle,
+                titleOpt.get(),
                 inv -> {
-                    if (fillBase.isPresent()) {
-                        ItemStack fill = fillBase.get();
-                        for (int s = 0; s < FabricMenuSlotLayout.TOP_SLOTS; s++) {
-                            inv.setStack(s, fill.copy());
-                        }
-                    } else {
-                        for (int s = 0; s < FabricMenuSlotLayout.TOP_SLOTS; s++) {
-                            inv.setStack(s, ItemStack.EMPTY);
-                        }
+                    for (int s = 0; s < FabricMenuSlotLayout.TOP_SLOTS; s++) {
+                        inv.setStack(s, ItemStack.EMPTY);
                     }
+                    inv.setStack(fLb, leaderboardStack.get().copy());
+                    inv.setStack(fSt, statsStack.copy());
+                    if (fHasUnclaimed) {
+                        inv.setStack(fUn, unclaimedTemplate.get().copy());
+                    }
+                    inv.setStack(fCl, closeStack.get().copy());
                     for (int i = 0; i < rowStacks.size(); i++) {
                         inv.setStack(skillDef.slots().get(i), rowStacks.get(i).copy());
                     }
-                    if (fMax > 0) {
-                        fPrevOpt.ifPresent(st -> inv.setStack(prev, st.copy()));
-                        fNextOpt.ifPresent(st -> inv.setStack(next, st.copy()));
-                    }
                 },
                 (topSlot, pl, b, t) -> {
-                    if (fMax > 0) {
-                        if (topSlot == prev) {
-                            if (fPage > 0) {
-                                plugin.getScheduler()
-                                        .executeSync(
-                                                () -> plugin
-                                                        .getMenuRegistry()
-                                                        .open(
-                                                                FabricMenuKeys.SKILLS,
-                                                                pl,
-                                                                plugin,
-                                                                FabricMenuContext.none()
-                                                                        .withListPage(fPage - 1)));
-                            }
+                    if (topSlot == fCl) {
+                        pl.closeHandledScreen();
+                        return;
+                    }
+                    if (topSlot == fLb) {
+                        plugin.getScheduler()
+                                .executeSync(
+                                        () -> FabricLeaderboardMenuGui.open(
+                                                pl, plugin, FabricLeaderboardMenuGui.Mode.POWER, null, 1));
+                        return;
+                    }
+                    if (topSlot == fSt) {
+                        plugin.getScheduler()
+                                .executeSync(
+                                        () -> plugin
+                                                .getMenuRegistry()
+                                                .open(
+                                                        FabricMenuKeys.STATS,
+                                                        pl,
+                                                        plugin,
+                                                        FabricMenuContext.none()));
+                        return;
+                    }
+                    if (topSlot == fUn) {
+                        if (!fHasUnclaimed) {
                             return;
                         }
-                        if (topSlot == next) {
-                            if (fPage < fMax) {
-                                plugin.getScheduler()
-                                        .executeSync(
-                                                () -> plugin
-                                                        .getMenuRegistry()
-                                                        .open(
-                                                                FabricMenuKeys.SKILLS,
-                                                                pl,
-                                                                plugin,
-                                                                FabricMenuContext.none()
-                                                                        .withListPage(fPage + 1)));
-                            }
-                            return;
-                        }
+                        plugin.getScheduler()
+                                .executeSync(() -> FabricAuraSkillsMenus.openUnclaimedItems(pl, plugin, 0));
+                        return;
                     }
                     int idx = skillDef.slots().indexOf(topSlot);
-                    if (idx < 0) {
+                    if (idx < 0 || idx >= gridSkills.size()) {
                         return;
                     }
-                    int gIdx = fFrom + idx;
-                    if (gIdx < fFrom || gIdx >= fTo || gIdx < 0 || gIdx >= fTotal) {
-                        return;
-                    }
-                    Skill skill = all.get(gIdx);
+                    Skill skill = gridSkills.get(idx);
                     if (!user.hasSkillPermission(skill)) {
                         return;
                     }
                     final Skill s = skill;
                     plugin.getScheduler()
-                            .executeSync(() -> FabricAuraSkillsMenus.openLevelProgression(s, pl, plugin, fPage));
+                            .executeSync(() -> FabricAuraSkillsMenus.openLevelProgression(s, pl, plugin, 0));
                 });
         return true;
     }
 
-    private static Map<String, String> buildGlobalPlaceholders(int pageIndex, int maxPageIndex) {
-        Map<String, String> m = new HashMap<>();
-        m.put("page", String.valueOf(pageIndex + 1));
-        m.put("total_pages", String.valueOf(maxPageIndex + 1));
-        return m;
+    private static int requiredUtilitySlot(GraniteMenuTemplate template, String normalizedAction) {
+        return GraniteTemplateItems.findFirstByAction(template, normalizedAction)
+                .filter(item -> item.slots().size() == 1)
+                .map(item -> item.slots().getFirst())
+                .orElse(-1);
+    }
+
+    /** Enabled skills matching {@link #LOCKED_SKILL_IDS} in order; skips disabled or missing registry entries. */
+    static List<Skill> resolveLockedSkills(FabricAuraSkills plugin) {
+        List<Skill> out = new ArrayList<>(EXPECTED_SKILL_COUNT);
+        for (String id : LOCKED_SKILL_IDS) {
+            Skill found = null;
+            for (Skill sk : plugin.getSkillManager().getEnabledSkills()) {
+                if (id.equalsIgnoreCase(sk.getId().getSimpleName())) {
+                    found = sk;
+                    break;
+                }
+            }
+            if (found != null) {
+                out.add(found);
+            }
+        }
+        return out;
     }
 
     private static void addSkillRowPlaceholders(

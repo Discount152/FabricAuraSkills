@@ -26,7 +26,11 @@ public final class FabricGraniteMenuTemplateActionContract {
             GraniteTemplateActionNames.OPEN_ABILITIES,
             GraniteTemplateActionNames.CYCLE_SORT,
             GraniteTemplateActionNames.REFRESH,
-            GraniteTemplateActionNames.CLAIM_ALL));
+            GraniteTemplateActionNames.CLAIM_ALL,
+            GraniteTemplateActionNames.OPEN_LEADERBOARD,
+            GraniteTemplateActionNames.OPEN_STATS,
+            GraniteTemplateActionNames.OPEN_UNCLAIMED_ITEMS,
+            GraniteTemplateActionNames.CLOSE));
 
     private static final Set<String> ROW_OR_PANEL_NORMALIZED = Set.copyOf(List.of(
             GraniteTemplateActionNames.SOURCE_ROW,
@@ -40,6 +44,9 @@ public final class FabricGraniteMenuTemplateActionContract {
             GraniteTemplateActionNames.STAT_PANEL));
 
     private static final Map<String, Set<String>> ALLOWED_NORMALIZED_BY_MENU_ID;
+
+    /** When present, only these normalized actions must appear on at least one item; otherwise all {@link #ALLOWED_NORMALIZED_BY_MENU_ID} must appear. */
+    private static final Map<String, Set<String>> REQUIRED_ACTIONS_BY_MENU_ID;
 
     static {
         Map<String, Set<String>> m = new HashMap<>();
@@ -71,15 +78,17 @@ public final class FabricGraniteMenuTemplateActionContract {
                 Set.copyOf(
                         List.of(
                                 GraniteTemplateActionNames.SKILL_ROW,
-                                GraniteTemplateActionNames.PREVIOUS_PAGE,
-                                GraniteTemplateActionNames.NEXT_PAGE)));
+                                GraniteTemplateActionNames.OPEN_LEADERBOARD,
+                                GraniteTemplateActionNames.OPEN_STATS,
+                                GraniteTemplateActionNames.OPEN_UNCLAIMED_ITEMS,
+                                GraniteTemplateActionNames.CLOSE)));
         m.put(
                 "stats",
                 Set.copyOf(
                         List.of(
                                 GraniteTemplateActionNames.STAT_ROW,
-                                GraniteTemplateActionNames.PREVIOUS_PAGE,
-                                GraniteTemplateActionNames.NEXT_PAGE)));
+                                GraniteTemplateActionNames.BACK,
+                                GraniteTemplateActionNames.CLOSE)));
         m.put(
                 "abilities",
                 Set.copyOf(
@@ -105,6 +114,24 @@ public final class FabricGraniteMenuTemplateActionContract {
                                 GraniteTemplateActionNames.PREVIOUS_PAGE,
                                 GraniteTemplateActionNames.NEXT_PAGE)));
         ALLOWED_NORMALIZED_BY_MENU_ID = Map.copyOf(m);
+
+        Map<String, Set<String>> req = new HashMap<>();
+        req.put(
+                "skills",
+                Set.copyOf(
+                        List.of(
+                                GraniteTemplateActionNames.SKILL_ROW,
+                                GraniteTemplateActionNames.OPEN_LEADERBOARD,
+                                GraniteTemplateActionNames.OPEN_STATS,
+                                GraniteTemplateActionNames.CLOSE)));
+        req.put(
+                "stats",
+                Set.copyOf(
+                        List.of(
+                                GraniteTemplateActionNames.STAT_ROW,
+                                GraniteTemplateActionNames.BACK,
+                                GraniteTemplateActionNames.CLOSE)));
+        REQUIRED_ACTIONS_BY_MENU_ID = Map.copyOf(req);
     }
 
     private FabricGraniteMenuTemplateActionContract() {
@@ -121,9 +148,9 @@ public final class FabricGraniteMenuTemplateActionContract {
     }
 
     /**
-     * Validates that every non-empty item action is known and allowed for {@code menuId}, and that each action in the
-     * menu contract appears on at least one item. Returns {@link Optional#empty()} when {@code menuId} has no contract
-     * or when validation passes.
+     * Validates that every non-empty item action is known/in {@code allowed}, and that each <strong>required</strong>
+     * action for this menu appears on at least one item. Required = full {@code allowed} set when no explicit subset is
+     * defined (skills/stats use {@code REQUIRED_ACTIONS_BY_MENU_ID}).
      */
     public static Optional<String> validateTemplateActions(String menuId, GraniteMenuTemplate template) {
         Set<String> allowed = ALLOWED_NORMALIZED_BY_MENU_ID.get(menuId);
@@ -150,9 +177,13 @@ public final class FabricGraniteMenuTemplateActionContract {
                 return Optional.of("action '" + n + "' is not allowed for menu '" + menuId + "'");
             }
         }
-        for (String required : allowed) {
-            if (GraniteTemplateItems.findAllByAction(template, required).isEmpty()) {
-                return Optional.of("required action '" + required + "' is missing");
+        Set<String> required = REQUIRED_ACTIONS_BY_MENU_ID.get(menuId);
+        if (required == null) {
+            required = allowed;
+        }
+        for (String req : required) {
+            if (GraniteTemplateItems.findAllByAction(template, req).isEmpty()) {
+                return Optional.of("required action '" + req + "' is missing");
             }
         }
         return Optional.empty();

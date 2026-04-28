@@ -42,8 +42,8 @@ This file resets **honest accounting**: what is **stable**, **partial**, **missi
 
 | Menu / flow | Built-in Fabric | Full Slate/YAML parity |
 |-------------|-----------------|-------------------------|
-| skills | **Present** | **Partial** |
-| stats | **Present** | **Partial** |
+| skills | **Present** (Sprint **113** locked bundled **`skills.yml`** hub: **11** skills + utilities) | **Partial** |
+| stats | **Present** (Sprint **113** locked bundled **`stats.yml`** **3×3** + back/close) | **Partial** |
 | level_progression | **Present** | **Partial** |
 | stat_info | **Present** | **Partial** |
 | sources | **Present** | **Partial** |
