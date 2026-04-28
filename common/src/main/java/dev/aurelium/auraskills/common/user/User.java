@@ -122,7 +122,15 @@ public abstract class User {
     public abstract boolean hasPermission(String permission);
 
     public int getSkillLevel(Skill skill) {
-        return skillLevels.getOrDefault(skill, plugin.config().getStartLevel());
+        if (skillLevels.containsKey(skill)) {
+            return skillLevels.get(skill);
+        }
+        for (Map.Entry<Skill, Integer> e : skillLevels.entrySet()) {
+            if (e.getKey().getId().equals(skill.getId())) {
+                return e.getValue();
+            }
+        }
+        return plugin.config().getStartLevel();
     }
 
     public Map<Skill, Integer> getSkillLevelMap() {
@@ -161,7 +169,15 @@ public abstract class User {
     }
 
     public double getSkillXp(Skill skill) {
-        return skillXp.getOrDefault(skill, 0.0);
+        if (skillXp.containsKey(skill)) {
+            return skillXp.get(skill);
+        }
+        for (Map.Entry<Skill, Double> e : skillXp.entrySet()) {
+            if (e.getKey().getId().equals(skill.getId())) {
+                return e.getValue();
+            }
+        }
+        return 0.0;
     }
 
     public Map<Skill, Double> getSkillXpMap() {

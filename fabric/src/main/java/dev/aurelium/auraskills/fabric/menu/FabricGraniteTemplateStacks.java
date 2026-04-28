@@ -1,6 +1,8 @@
 package dev.aurelium.auraskills.fabric.menu;
 
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
+import dev.aurelium.auraskills.fabric.text.FabricTextAdapter;
+import dev.aurelium.auraskills.fabric.text.FabricTextFormatter;
 import dev.granitelib.fabric.template.GraniteTemplatePlaceholders;
 import dev.granitelib.fabric.template.model.GraniteTemplateFill;
 import dev.granitelib.fabric.template.model.GraniteTemplateItem;
@@ -82,7 +84,7 @@ public final class FabricGraniteTemplateStacks {
                             + " still contains unresolved placeholders after expansion; using built-in menu");
             return Optional.empty();
         }
-        return Optional.of(Text.literal(expanded));
+        return Optional.of(FabricTextAdapter.toNativeText(FabricTextFormatter.toComponent(expanded), plugin.getServer()));
     }
 
     public static Optional<ItemStack> buildFillStack(

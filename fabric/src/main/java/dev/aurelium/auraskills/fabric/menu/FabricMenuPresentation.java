@@ -4,6 +4,7 @@ import dev.aurelium.auraskills.api.skill.Skill;
 import dev.aurelium.auraskills.api.source.XpSource;
 import dev.aurelium.auraskills.api.stat.Stat;
 import dev.aurelium.auraskills.api.util.NumberUtil;
+import dev.aurelium.auraskills.common.AuraSkillsPlugin;
 import dev.aurelium.auraskills.common.message.MessageProvider;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
@@ -79,13 +80,35 @@ public final class FabricMenuPresentation {
                 stat.getId().getSimpleName().toLowerCase(Locale.ROOT), "");
     }
 
-    public static void applySkillsHubRow(ItemStack stack, Skill skill, User user, MessageProvider msg, Locale locale) {
+    /**
+     * Lifetime XP for hub line 1: progress within the current level plus XP thresholds already cleared for this skill.
+     * Matches how {@link dev.aurelium.auraskills.common.level.LevelManager#levelUpSkill} consumes
+     * {@code getXpRequired(skill, newLevel)} per tier.
+     */
+    public static double totalSkillXpForHub(User user, Skill skill, AuraSkillsPlugin plugin) {
+        int level = user.getSkillLevel(skill);
+        int start = plugin.config().getStartLevel();
+        double total = user.getSkillXp(skill);
+        for (int l = level; l > start; l--) {
+            total += plugin.getXpRequirements().getXpRequired(skill, l);
+        }
+        return total;
+    }
+
+    public static void applySkillsHubRow(
+            ItemStack stack,
+            Skill skill,
+            User user,
+            FabricAuraSkills plugin,
+            MessageProvider msg,
+            Locale locale) {
         stack.set(DataComponentTypes.ITEM_NAME, Text.literal(msg.getSkillDisplayName(skill, locale, false)));
-        String xp = NumberUtil.format2(user.getSkillXp(skill));
+        String xpInLevel = NumberUtil.format2(user.getSkillXp(skill));
+        String xpTotal = NumberUtil.format2(totalSkillXpForHub(user, skill, plugin));
         int level = user.getSkillLevel(skill);
         List<Text> lines = new ArrayList<>();
-        lines.add(Text.literal("Level " + level + " \u00b7 XP " + xp));
-        lines.add(Text.literal(xp + " in this level"));
+        lines.add(Text.literal("Level " + level + " \u00b7 XP " + xpTotal));
+        lines.add(Text.literal(xpInLevel + " in this level"));
         lines.add(Text.empty());
         lines.add(Text.literal("\u25b8 Levels"));
         stack.set(DataComponentTypes.LORE, new LoreComponent(lines));

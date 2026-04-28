@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.144
+
+### Changes
+
+- **Fabric — Sprint 115 skills/stats hub data + tooltip polish:** **`User#getSkillLevel` / `#getSkillXp`** resolve entries by **`Skill` id** when **`ConcurrentHashMap`** identity lookup misses (fixes **Level 0 · XP 0** despite saved progress). **`FabricGraniteTemplateStacks#toLiteralNoUnresolved`** renders YAML **`&`/MiniMessage** through **`FabricTextFormatter`** + **`FabricTextAdapter`** (stats hub **Back** no longer shows raw **`&e`/`&7`** inline). **`FabricMenuPresentation#totalSkillXpForHub`** + **`applySkillsHubRow`** show **lifetime XP** on line 1 and **in-level** XP on line 2. **`FabricMenuTooltipPresentation`** **removes** **`FOOD`**, **`CONSUMABLE`**, **`MAX_DAMAGE`**, **`DAMAGE`**, **`USE_*`**, **`POTION_CONTENTS`** from menu stacks (food + advanced durability lines), then sets **`TOOLTIP_DISPLAY`** as before. **Tests:** **`FabricTextFormatterTest`** legacy **`&`** ampersand round-trip. **Docs:** **`fabric/SPRINT_115_SKILLS_STATS_TOOLTIP_AND_DATA_FIX.md`**, parity/port markdown updates. **`projectVersion` 2.3.143 → 2.3.144**. **Build:** `.\gradlew.bat -PfabricOnly=true :granitelib-fabric:test :fabric:test :fabric:build verifyFabricReleaseBundle` — **PASS**. **Bedrock/Geyser** not tested; **full Slate/MenuFileManager** still open.
+
 ## 2.3.143
 
 ### Changes

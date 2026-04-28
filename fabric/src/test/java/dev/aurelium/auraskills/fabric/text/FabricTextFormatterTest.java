@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * Unit tests for the MiniMessage → legacy string pipeline (same as Bukkit {@code TextFormatter}).
+ * Unit tests for the MiniMessage to legacy string pipeline (same as Bukkit {@code TextFormatter}).
  * Prevents raw {@code <green>}-style tags from surviving into player-visible text when serialized.
  */
 class FabricTextFormatterTest {
@@ -46,8 +46,15 @@ class FabricTextFormatterTest {
 
     @Test
     void legacySectionCodes_roundTrip() {
-        var c = FabricTextFormatter.toComponent("§aGreen plain");
+        var c = FabricTextFormatter.toComponent("\u00a7aGreen plain");
         String out = FabricTextFormatter.toString(c);
-        assertEquals('§', out.charAt(0));
+        assertEquals('\u00a7', out.charAt(0));
+    }
+
+    @Test
+    void legacyAmpersandCodes_roundTrip_noBareAmpersandInLegacyString() {
+        var c = FabricTextFormatter.toComponent("&eBack to Skills");
+        String out = FabricTextFormatter.toString(c);
+        assertFalse(out.contains("&e"), "legacy serializers should use section codes, not &: " + out);
     }
 }

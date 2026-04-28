@@ -8,7 +8,8 @@ import net.minecraft.item.ItemStack;
 import java.util.List;
 
 /**
- * Sprint 114: hide vanilla item-mechanics lines from menu-only ItemStacks so tooltips show Granite name + lore only.
+ * Menu-only tooltips: hide vanilla mechanics (Sprint 114) and strip leak-prone default components (Sprint 115) so
+ * Granite name + lore stay clean (including advanced tooltips and food/durability defaults).
  */
 public final class FabricMenuTooltipPresentation {
 
@@ -31,17 +32,42 @@ public final class FabricMenuTooltipPresentation {
             DataComponentTypes.USE_COOLDOWN,
             DataComponentTypes.FOOD);
 
+    /**
+     * Removed from the stack (not only hidden in {@link DataComponentTypes#TOOLTIP_DISPLAY}) so advanced tooltips
+     * and default item-derived lines (durability, food) cannot leak from built-in defaults.
+     */
+    @SuppressWarnings("rawtypes")
+    private static final List<ComponentType<?>> STRIP_FROM_STACK_FOR_MENU = List.of(
+            DataComponentTypes.MAX_DAMAGE,
+            DataComponentTypes.DAMAGE,
+            DataComponentTypes.FOOD,
+            DataComponentTypes.CONSUMABLE,
+            DataComponentTypes.USE_REMAINDER,
+            DataComponentTypes.USE_COOLDOWN,
+            DataComponentTypes.POTION_CONTENTS);
+
     private FabricMenuTooltipPresentation() {
     }
 
-    /** Sets TOOLTIP_DISPLAY while keeping ITEM_NAME + lore visible. */
+    /**
+     * Mutates {@code stack}: clears leak-prone default components, then sets {@link DataComponentTypes#TOOLTIP_DISPLAY}
+     * so other vanilla mechanic sections stay hidden while {@link DataComponentTypes#ITEM_NAME} and
+     * {@link DataComponentTypes#LORE} still appear.
+     */
     public static void suppressVanillaMechanicsTooltip(ItemStack stack) {
         if (stack == null || stack.isEmpty()) {
             return;
         }
+        for (ComponentType<?> type : STRIP_FROM_STACK_FOR_MENU) {
+            if (type != null) {
+                stack.remove(type);
+            }
+        }
         TooltipDisplayComponent display = TooltipDisplayComponent.DEFAULT;
         for (ComponentType<?> type : HIDE_VANILLA_MECHANICS) {
-            display = display.with(type, true);
+            if (type != null) {
+                display = display.with(type, true);
+            }
         }
         stack.set(DataComponentTypes.TOOLTIP_DISPLAY, display);
     }

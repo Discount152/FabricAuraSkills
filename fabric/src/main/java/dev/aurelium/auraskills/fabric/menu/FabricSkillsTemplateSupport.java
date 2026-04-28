@@ -211,7 +211,7 @@ public final class FabricSkillsTemplateSupport {
                 return false;
             }
             ItemStack icon = FabricMenuPresentation.applySkillRowIcon(rowStack.get(), skill);
-            FabricMenuPresentation.applySkillsHubRow(icon, skill, user, msg, locale);
+            FabricMenuPresentation.applySkillsHubRow(icon, skill, user, plugin, msg, locale);
             appendNoPermissionLoreIfNeeded(icon, user, skill);
             FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(icon);
             rowStacks.add(icon);
