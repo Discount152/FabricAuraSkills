@@ -146,6 +146,7 @@ final class FabricLevelProgressionMenuGui {
                                                 "auraskills.granite.menu.skills_lore_no_permission")));
                     }
                     main.set(DataComponentTypes.LORE, new LoreComponent(lore));
+                    FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(main);
                     inv.setStack(mainSlot, main);
 
                     ItemStack back = new ItemStack(backItem);
@@ -163,9 +164,10 @@ final class FabricLevelProgressionMenuGui {
                                                             "back_lore",
                                                             def,
                                                             "auraskills.granite.menu.level_progression_back_lore")))));
+                    FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(back);
                     inv.setStack(backSlot, back);
 
-                    ItemStack openSources = new ItemStack(Items.HOPPER);
+                    ItemStack openSources = new ItemStack(Items.KNOWLEDGE_BOOK);
                     openSources.set(
                             DataComponentTypes.ITEM_NAME,
                             FabricGraniteText.key("auraskills.granite.menu.level_progression_open_sources"));
@@ -175,6 +177,7 @@ final class FabricLevelProgressionMenuGui {
                                     List.of(
                                             FabricGraniteText.key(
                                                     "auraskills.granite.menu.level_progression_open_sources_lore"))));
+                    FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(openSources);
                     inv.setStack(SLOT_OPEN_SOURCES, openSources);
                 },
                 (topSlot, p, button, actionType) -> {

@@ -44,7 +44,7 @@ This file resets **honest accounting**: what is **stable**, **partial**, **missi
 |-------------|-----------------|-------------------------|
 | skills | **Present** (Sprint **113** locked bundled **`skills.yml`** hub: **11** skills + utilities; Sprint **115** hub shows real level/XP + cleaner tooltips) | **Partial** |
 | stats | **Present** (Sprint **113** locked bundled **`stats.yml`** **3×3** + back/close; Sprint **115** back label formatting + food icon tooltips) | **Partial** |
-| level_progression | **Present** | **Partial** |
+| level_progression | **Present** (Sprint **116** bundled visual polish: title, state rows, controls, tooltip suppression; built-in fallback aligned) | **Partial** |
 | stat_info | **Present** | **Partial** |
 | sources | **Present** | **Partial** |
 | unclaimed_items | **Present** | **Partial** |

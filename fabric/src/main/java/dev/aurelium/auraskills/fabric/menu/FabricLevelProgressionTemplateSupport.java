@@ -197,6 +197,7 @@ public final class FabricLevelProgressionTemplateSupport {
         if (template.fill().isPresent() && fillBase.isEmpty()) {
             return false;
         }
+        fillBase.ifPresent(FabricMenuTooltipPresentation::suppressVanillaMechanicsTooltip);
 
         int userLevel = user.getSkillLevel(skill);
         double currentXp = user.getSkillXp(skill);
@@ -205,15 +206,17 @@ public final class FabricLevelProgressionTemplateSupport {
         List<ItemStack> rowStacks = new ArrayList<>(pageLevels.size());
         for (Integer displayLevel : pageLevels) {
             Map<String, String> rowPh = new HashMap<>(globalPh);
-            addLevelRowPlaceholders(rowPh, userLevel, displayLevel, currentXp, skill, maxLevel, xpReqs, plugin);
+            addLevelRowPlaceholders(rowPh, userLevel, displayLevel, currentXp, skill, maxLevel, xpReqs);
             Optional<ItemStack> rowStack =
                     FabricGraniteTemplateStacks.buildTemplateItemStack(
                             levelDef, rowPh, plugin, MENU_LOG, "items.level.row");
             if (rowStack.isEmpty()) {
                 return false;
             }
-            rowStacks.add(
-                    FabricMenuPresentation.levelProgressionRowIcon(rowStack.get(), userLevel, displayLevel));
+            ItemStack icon =
+                    FabricMenuPresentation.levelProgressionRowIcon(rowStack.get(), userLevel, displayLevel);
+            FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(icon);
+            rowStacks.add(icon);
         }
 
         Optional<ItemStack> backStack =
@@ -225,6 +228,8 @@ public final class FabricLevelProgressionTemplateSupport {
         if (backStack.isEmpty() || sourcesStack.isEmpty()) {
             return false;
         }
+        FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(backStack.get());
+        FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(sourcesStack.get());
 
         Optional<ItemStack> prevOpt = Optional.empty();
         Optional<ItemStack> nextOpt = Optional.empty();
@@ -236,6 +241,7 @@ public final class FabricLevelProgressionTemplateSupport {
                 if (ps.isEmpty()) {
                     return false;
                 }
+                FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(ps.get());
                 prevOpt = ps;
             }
             if (p < maxPage) {
@@ -245,6 +251,7 @@ public final class FabricLevelProgressionTemplateSupport {
                 if (ns.isEmpty()) {
                     return false;
                 }
+                FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(ns.get());
                 nextOpt = ns;
             }
         }
@@ -257,6 +264,7 @@ public final class FabricLevelProgressionTemplateSupport {
             if (ab.isEmpty()) {
                 return false;
             }
+            FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(ab.get());
             abilitiesStack = ab;
         }
 
@@ -395,28 +403,60 @@ public final class FabricLevelProgressionTemplateSupport {
             double currentXp,
             Skill skill,
             int maxLevel,
-            dev.aurelium.auraskills.common.level.XpRequirements xpReqs,
-            FabricAuraSkills plugin) {
+            dev.aurelium.auraskills.common.level.XpRequirements xpReqs) {
         m.put("level", String.valueOf(displayLevel));
         m.put("current_xp", NumberUtil.format2(currentXp));
-        if (displayLevel >= maxLevel) {
-            m.put("level_xp_required", "-");
+
+        boolean maxed = userLevel >= maxLevel || xpReqs.getListSize(skill) <= userLevel - 1;
+        String xpTierCompleted =
+                displayLevel >= maxLevel
+                        ? NumberUtil.format2(xpReqs.getXpRequired(skill, maxLevel))
+                        : NumberUtil.format2(xpReqs.getXpRequired(skill, displayLevel + 1));
+        String xpTierLocked = NumberUtil.format2(xpReqs.getXpRequired(skill, displayLevel));
+
+        if (displayLevel < userLevel) {
+            m.put(
+                    "level_status",
+                    granitePlain("auraskills.granite.menu.level_progression_status_unlocked"));
+            m.put(
+                    "level_detail",
+                    granitePlain(
+                            "auraskills.granite.menu.level_progression_row_xp_required", xpTierCompleted));
+        } else if (displayLevel == userLevel) {
+            m.put(
+                    "level_status",
+                    granitePlain("auraskills.granite.menu.level_progression_status_current"));
+            if (maxed) {
+                m.put(
+                        "level_detail",
+                        granitePlain("auraskills.granite.menu.level_progression_row_maxed_compact"));
+            } else {
+                int reqNext = xpReqs.getXpRequired(skill, userLevel + 1);
+                m.put(
+                        "level_detail",
+                        granitePlain(
+                                "auraskills.granite.menu.level_progression_row_progress",
+                                NumberUtil.format2(currentXp),
+                                NumberUtil.format2(reqNext)));
+            }
         } else {
-            int req = xpReqs.getXpRequired(skill, displayLevel + 1);
-            m.put("level_xp_required", NumberUtil.format2(req));
+            m.put(
+                    "level_status",
+                    granitePlain("auraskills.granite.menu.level_progression_status_locked"));
+            m.put(
+                    "level_detail",
+                    granitePlain(
+                            "auraskills.granite.menu.level_progression_row_xp_required", xpTierLocked));
         }
-        m.put("level_status", statusLabel(plugin, userLevel, displayLevel));
+
+        if (displayLevel >= maxLevel) {
+            m.put("level_xp_required", NumberUtil.format2(xpReqs.getXpRequired(skill, maxLevel)));
+        } else {
+            m.put("level_xp_required", NumberUtil.format2(xpReqs.getXpRequired(skill, displayLevel + 1)));
+        }
     }
 
-    private static String statusLabel(FabricAuraSkills plugin, int userLevel, int displayLevel) {
-        if (displayLevel < userLevel) {
-            return FabricGraniteText.key("auraskills.granite.menu.level_progression_status_unlocked")
-                    .getString();
-        }
-        if (displayLevel == userLevel) {
-            return FabricGraniteText.key("auraskills.granite.menu.level_progression_status_current")
-                    .getString();
-        }
-        return FabricGraniteText.key("auraskills.granite.menu.level_progression_status_locked").getString();
+    private static String granitePlain(String key, Object... args) {
+        return FabricGraniteText.key(key, args).getString();
     }
 }

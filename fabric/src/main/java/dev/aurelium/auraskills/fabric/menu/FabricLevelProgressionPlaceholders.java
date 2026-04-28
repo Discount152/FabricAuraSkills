@@ -12,6 +12,7 @@ public final class FabricLevelProgressionPlaceholders {
             List.of(
                     "level_xp_required",
                     "level_status",
+                    "level_detail",
                     "skill_display",
                     "current_xp",
                     "total_pages",

@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.145
+
+### Changes
+
+- **Fabric — Sprint 116 level progression visual polish:** Bundled **`level_progression.yml`** aligns with Skills/Stats hub language — MiniMessage title **`<gold><bold>{skill_display}</bold></gold> <gray>Levels</gray>`**, quiet **`glass_pane`** fill, state-colored rows remain **lime dye / experience bottle / gray dye** in **`FabricMenuPresentation#levelProgressionRowIcon`**, compact per-state lore via **`{level_status}`** + **`{level_detail}`** (**`FabricLevelProgressionTemplateSupport#addLevelRowPlaceholders`**). Navigation uses **arrow** back, **knowledge book** Sources, **amethyst shard** Abilities, yellow **Previous/Next**. **`FabricMenuTooltipPresentation`** applied to fill, level rows, and all controls on the template path. **Built-in fallback:** title key **`%s Levels`**, **knowledge book** + tooltip suppression on main/back/sources (behavior unchanged). **Lang:** row strings **Completed / Current Level / Locked**, **`level_progression_row_*`** lines. **Tests/docs:** **`FabricLevelProgressionBundledTemplateParseTest`**, **`FabricGraniteEnUsKeysTest`**, **`fabric/SPRINT_116_LEVEL_PROGRESSION_VISUAL_POLISH.md`**, parity/port updates. **`projectVersion` 2.3.144 → 2.3.145**. **Build:** `.\gradlew.bat -PfabricOnly=true :granitelib-fabric:test :fabric:test :fabric:build verifyFabricReleaseBundle` — **PASS**. **Bedrock/Geyser** not tested; **Slate/MenuFileManager** still open.
+
 ## 2.3.144
 
 ### Changes

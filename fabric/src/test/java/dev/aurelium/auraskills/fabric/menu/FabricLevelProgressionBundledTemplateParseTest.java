@@ -54,13 +54,19 @@ class FabricLevelProgressionBundledTemplateParseTest {
                             "skill", "farming",
                             "skill_display", "Farming",
                             "level", "5",
-                            "level_status", "Current",
+                            "level_status", "Current Level",
+                            "level_detail", "Progress: 12.50 / 100.00",
                             "level_xp_required", "100",
                             "current_xp", "12.5",
                             "page", "1",
                             "total_pages", "2");
             String name = FabricLevelProgressionPlaceholders.expand("Level {level}", ph);
             assertEquals("Level 5", name);
+            String title =
+                    FabricLevelProgressionPlaceholders.expand(
+                            "<gold><bold>{skill_display}</bold></gold> <gray>Levels</gray>", ph);
+            assertTrue(title.contains("Farming"), title);
+            assertTrue(title.contains("Levels"), title);
             assertFalse(FabricLevelProgressionPlaceholders.hasUnresolvedBraceSyntax(name));
         }
     }

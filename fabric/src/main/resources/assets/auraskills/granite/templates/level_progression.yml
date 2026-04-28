@@ -1,11 +1,12 @@
-# Granite Skills — level progression (template v0). Row dye colors overridden in Java (completed / current / locked).
+# Granite Skills — level progression (template). Row materials overridden in Java:
+# completed = lime dye, current = experience bottle, locked = gray dye (Sprint 116).
 # Fallback: built-in FabricLevelProgressionMenuGui on any failure.
 id: level_progression
-title: "§6§l{skill_display} §8· §7Levels"
+title: "<gold><bold>{skill_display}</bold></gold> <gray>Levels</gray>"
 rows: 6
 
 fill:
-  material: minecraft:gray_stained_glass_pane
+  material: minecraft:glass_pane
   name: " "
 
 items:
@@ -40,45 +41,44 @@ items:
       - 41
       - 42
       - 43
-    name: "§fLevel §e{level}"
+    name: "<white>Level </white><yellow>{level}</yellow>"
     lore:
-      - "§7{level_status}"
+      - "{level_status}"
       - ""
-      - "§7Need §f{level_xp_required} §7XP for this tier"
-      - "§7You have §f{current_xp} §7in this skill"
+      - "{level_detail}"
     action: level_row
   sources:
-    material: minecraft:oak_sign
+    material: minecraft:knowledge_book
     slot: 50
-    name: "§6XP Sources"
+    name: "<aqua>Sources</aqua>"
     lore:
-      - "§7See what grants XP for this skill"
+      - "<gray>XP sources for this skill</gray>"
     action: open_sources
   abilities:
-    material: minecraft:nether_star
+    material: minecraft:amethyst_shard
     slot: 51
-    name: "§dAbilities"
+    name: "<light_purple>Abilities</light_purple>"
     lore:
-      - "§7Passives and mana ability"
+      - "<gray>Passives and mana abilities</gray>"
     action: open_abilities
   back:
-    material: minecraft:iron_door
+    material: minecraft:arrow
     slot: 45
-    name: "§c← Skills"
+    name: "<white>Back</white>"
     lore:
-      - "§7Back to the skill list"
+      - "<gray>Return to Skills</gray>"
     action: back
   previous:
     material: minecraft:arrow
     slot: 48
-    name: "§e« Levels"
+    name: "<yellow>Previous</yellow>"
     lore:
-      - "§7Previous level page"
+      - "<gray>Previous page</gray>"
     action: previous_page
   next:
     material: minecraft:arrow
     slot: 49
-    name: "§eLevels »"
+    name: "<yellow>Next</yellow>"
     lore:
-      - "§7Next level page"
+      - "<gray>Next page</gray>"
     action: next_page
