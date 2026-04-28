@@ -169,7 +169,7 @@ public final class FabricStatsTemplateSupport {
             if (rowStack.isEmpty()) {
                 return false;
             }
-            rowStacks.add(rowStack.get());
+            rowStacks.add(FabricMenuPresentation.applyStatRowIcon(rowStack.get(), stat));
         }
 
         Optional<ItemStack> prevStackOpt = Optional.empty();

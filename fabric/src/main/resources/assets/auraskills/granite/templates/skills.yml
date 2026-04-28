@@ -1,17 +1,16 @@
-# Sprint 101 — bundled v0 template for skills list (GraniteLib YAML schema v0).
-# 28-slot grid matches sources / level_progression. Paging slots match built-in defaults (45 / 53).
+# Granite Skills — skills list (template v0). Icons: per-row material from template + Java skill map for defaults.
 # Fallback: built-in FabricSkillsMenuGui on any failure.
 id: skills
-title: "Skills"
+title: "§6§lSkills"
 rows: 6
 
 fill:
-  material: minecraft:black_stained_glass_pane
+  material: minecraft:gray_stained_glass_pane
   name: " "
 
 items:
   skill:
-    material: minecraft:book
+    material: minecraft:experience_bottle
     slots:
       - 10
       - 11
@@ -41,20 +40,24 @@ items:
       - 41
       - 42
       - 43
-    name: "{skill_display}"
+    name: "§e{skill_display}"
     lore:
-      - "Level: {skill_level}"
-      - "XP: {skill_xp}"
-      - "In level: {skill_xp_in_level}"
-      - "Click to view progression"
+      - "§7Level §f{skill_level} §8· §7XP §f{skill_xp}"
+      - "§8({skill_xp_in_level} in this level)"
+      - ""
+      - "§a▸ §7Open progression"
     action: skill_row
   previous:
     material: minecraft:arrow
     slot: 45
-    name: "Previous Page"
+    name: "§e« Previous page"
+    lore:
+      - "§7Older skills on this list"
     action: previous_page
   next:
     material: minecraft:arrow
     slot: 53
-    name: "Next Page"
+    name: "§eNext page »"
+    lore:
+      - "§7More skills on this list"
     action: next_page

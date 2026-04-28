@@ -134,6 +134,7 @@ public final class FabricStatInfoTemplateSupport {
                             "stat_info template trait lore generation failed; using built-in menu", ex);
                     return false;
                 }
+                built = FabricMenuPresentation.applyStatPanelIcon(built, stat);
             }
             stacksByKey.put(itemKey, built);
         }

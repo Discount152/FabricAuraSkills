@@ -1,18 +1,16 @@
-# Sprint 101 — bundled v0 template for stats list (GraniteLib YAML schema v0).
-# 28-slot grid matches sources. Paging slots match built-in defaults (45 / 53).
-# Stat row clicks open stat_info only when menus.stat_info.enabled (same as built-in).
+# Granite Skills — stats list (template v0). Row icons: template default + Java stat map for defaults.
 # Fallback: built-in FabricStatsMenuGui on any failure.
 id: stats
-title: "Stats"
+title: "§6§lStats"
 rows: 6
 
 fill:
-  material: minecraft:black_stained_glass_pane
+  material: minecraft:gray_stained_glass_pane
   name: " "
 
 items:
   stat:
-    material: minecraft:book
+    material: minecraft:map
     slots:
       - 10
       - 11
@@ -42,19 +40,25 @@ items:
       - 41
       - 42
       - 43
-    name: "{stat_display}"
+    name: "§b{stat_display}"
     lore:
-      - "{stat_description}"
-      - "Value: {stat_value}"
-      - "Click for details"
+      - "§7{stat_description}"
+      - ""
+      - "§fValue: §e{stat_value}"
+      - ""
+      - "§a▸ §7Details"
     action: stat_row
   previous:
     material: minecraft:arrow
     slot: 45
-    name: "Previous Page"
+    name: "§e« Previous page"
+    lore:
+      - "§7Older stats on this list"
     action: previous_page
   next:
     material: minecraft:arrow
     slot: 53
-    name: "Next Page"
+    name: "§eNext page »"
+    lore:
+      - "§7More stats on this list"
     action: next_page

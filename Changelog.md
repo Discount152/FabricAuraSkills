@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.141
+
+### Changes
+
+- **Fabric — Sprint 112 menu visual redesign (bundled Granite templates + presentation helpers):** Reworked all eight `assets/auraskills/granite/templates/*.yml` for clearer hierarchy (gray frame, §-styled titles/lore, distinct nav icons: iron door back, oak sign / comparator / compass where appropriate). **`FabricMenuPresentation`** applies per-default-skill and per-default-stat vanilla icons to skill/stat/stat_info rows, **completed / current / locked** level row materials (lime dye / gold ingot / gray dye), and merges **source `menu_item`** stacks into sources template rows while keeping template name/lore. **`projectVersion` 2.3.140 → 2.3.141**. **Build:** `.\gradlew.bat -PfabricOnly=true :granitelib-fabric:test :fabric:test :fabric:build`. **Doc:** `fabric/SPRINT_112_MENU_VISUAL_REDESIGN.md`.
+
 ## 2.3.140
 
 ### Changes

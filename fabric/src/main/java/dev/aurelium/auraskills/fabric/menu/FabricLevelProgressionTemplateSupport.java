@@ -212,7 +212,8 @@ public final class FabricLevelProgressionTemplateSupport {
             if (rowStack.isEmpty()) {
                 return false;
             }
-            rowStacks.add(rowStack.get());
+            rowStacks.add(
+                    FabricMenuPresentation.levelProgressionRowIcon(rowStack.get(), userLevel, displayLevel));
         }
 
         Optional<ItemStack> backStack =

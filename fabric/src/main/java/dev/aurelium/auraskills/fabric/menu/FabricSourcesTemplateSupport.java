@@ -5,6 +5,7 @@ import dev.aurelium.auraskills.api.source.XpSource;
 import dev.aurelium.auraskills.api.util.NumberUtil;
 import dev.aurelium.auraskills.common.message.MessageProvider;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
+import dev.aurelium.auraskills.fabric.FabricSourceMenuItems;
 import dev.aurelium.auraskills.fabric.command.FabricSourceSortType;
 import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import dev.granitelib.fabric.menu.GraniteContainerMenus;
@@ -195,7 +196,11 @@ public final class FabricSourcesTemplateSupport {
             if (rowStack.isEmpty()) {
                 return false;
             }
-            rowStacks.add(rowStack.get());
+            ItemStack row = rowStack.get();
+            if (plugin.getItemRegistry().getSourceMenuItems() instanceof FabricSourceMenuItems fsmi) {
+                row = FabricMenuPresentation.mergeSourceRowFromRegistry(fsmi, src, row);
+            }
+            rowStacks.add(row);
         }
 
         Optional<ItemStack> backStack =

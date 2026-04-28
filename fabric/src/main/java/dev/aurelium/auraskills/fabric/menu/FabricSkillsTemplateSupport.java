@@ -171,7 +171,7 @@ public final class FabricSkillsTemplateSupport {
                 return false;
             }
             appendNoPermissionLoreIfNeeded(rowStack.get(), user, skill);
-            rowStacks.add(rowStack.get());
+            rowStacks.add(FabricMenuPresentation.applySkillRowIcon(rowStack.get(), skill));
         }
 
         Optional<ItemStack> prevStackOpt = Optional.empty();

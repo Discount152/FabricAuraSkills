@@ -1,18 +1,16 @@
-# Sprint 102 — bundled v0 template for abilities (GraniteLib YAML schema v0).
-# Passive slots match built-in FabricAbilitiesMenuGui order (14 cells). Mana uses a fixed slot (31) — built-in
-# places mana immediately after passives; template uses explicit layout (see manual).
+# Granite Skills — abilities (template v0). Passive grid slots fixed to built-in order; mana single slot.
 # Fallback: built-in FabricAbilitiesMenuGui on any failure.
 id: abilities
-title: "{skill_display} Abilities"
+title: "§6§l{skill_display} §8· §dAbilities"
 rows: 6
 
 fill:
-  material: minecraft:black_stained_glass_pane
+  material: minecraft:gray_stained_glass_pane
   name: " "
 
 items:
   ability:
-    material: minecraft:book
+    material: minecraft:lapis_lazuli
     slots:
       - 11
       - 12
@@ -28,26 +26,29 @@ items:
       - 24
       - 25
       - 26
-    name: "{ability_display}"
+    name: "§b{ability_display}"
     lore:
-      - "Level required / progress: {ability_unlock_level}"
-      - "Status: {ability_status}"
-      - "{ability_description}"
+      - "§7{ability_unlock_level}"
+      - "§f{ability_status}"
+      - ""
+      - "§8{ability_description}"
     action: ability_row
 
   mana_ability:
-    material: minecraft:nether_star
+    material: minecraft:end_crystal
     slot: 31
-    name: "{mana_ability_display}"
+    name: "§d§l{mana_ability_display}"
     lore:
-      - "Status: {mana_ability_status}"
-      - "{mana_ability_description}"
+      - "§7Mana ability"
+      - "§f{mana_ability_status}"
+      - ""
+      - "§8{mana_ability_description}"
     action: mana_ability_row
 
   back:
-    material: minecraft:arrow
+    material: minecraft:iron_door
     slot: 45
-    name: "Back"
+    name: "§c← Progression"
     lore:
-      - "Return to level progression"
+      - "§7Back to levels"
     action: back
