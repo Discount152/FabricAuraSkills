@@ -1,7 +1,8 @@
 # Granite Skills — XP sources (template v0). Row icon merges source menu_item from skill YAML when present.
+# Sprint 119: Inventory title is built in Java (FabricMenuTitles#sourcesMenuTitle); YAML `title` is ignored at runtime.
 # Fallback: built-in FabricSourcesMenuGui on any failure.
 id: sources
-title: "§6Sources §8· §f{skill_display}"
+title: "{skill_display}"
 rows: 6
 
 fill:

@@ -31,7 +31,7 @@ class FabricLeaderboardBundledTemplateParseTest {
             GraniteMenuTemplate t = GraniteMenuTemplateYamlLoader.loadString(yaml, "leaderboard.yml");
             assertEquals("leaderboard", t.id());
             assertEquals(6, t.rows());
-            assertTrue(t.fill().isPresent());
+            assertTrue(t.fill().isEmpty());
 
             GraniteTemplateItem entry = t.items().get("entry");
             assertNotNull(entry);

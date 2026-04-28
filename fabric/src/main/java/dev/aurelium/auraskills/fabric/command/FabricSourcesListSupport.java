@@ -27,6 +27,10 @@ public final class FabricSourcesListSupport {
             return list;
         }
         list.removeIf(s -> !s.isVersionValid());
+        list.removeIf(s -> {
+            String dn = s.getDisplayName(lo);
+            return "!!REMOVE!!".equals(dn) || "!REMOVE!!".equals(dn);
+        });
         Collections.sort(list, sort.comparator(lo));
         return list;
     }

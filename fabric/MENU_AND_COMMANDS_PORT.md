@@ -4,6 +4,10 @@
 
 **Sprint 93 correction:** The **built-in `Fabric*MenuGui`** set is a **functional partial** of the reference menu experience. It is **Java-smoke adequate**, **not** “Slate parity complete.” Full **Slate / YAML / `MenuFileManager`** parity is **open**; see **`PARITY_COMPLETION_ROADMAP.md`**.
 
+**Sprint 121D (pipeline enforcement):** **`SPRINT_121D_GLOBAL_MENU_PIPELINE_ENFORCEMENT.md`** — one **`FabricMenuLoreFormatting` / `FabricMenuItemPresentation`** path for all Granite menus; **42**-char wrap; **PlatformUtil** removed from stats list rendering; built-in **level progression** uses **empty** non-path slots; **`FabricMenuJavaPipelineScanTest`**. **`FabricAuraSkills-2.3.150.jar`**. Operator **screenshot** gate; **Bedrock** not tested.
+
+**Sprint 120 (repair — visual QA gate):** **`SPRINT_120_MENU_PRESENTATION_REPAIR_GATE.md`** corrects Sprint **119** screenshot failures (Stat Info, Sources, Abilities, Leaderboard, shared title/lore/back/filler/tooltip rules). **Done** means **Gradle verify PASS** and **operator screenshot PASS**, not compile-only. **`FabricAuraSkills-2.3.149.jar`**.
+
 **Cross-platform acceptance:** Menus and commands are **high risk** for **Java vs Bedrock** differences. The shipped mod must remain usable for **Bedrock players joining through Geyser + Floodgate** on the Fabric server — not only for direct **Java** clients. Do **not** assume Java-only inventory packets, click semantics, or chat UX; **validate** (or **document** known gaps) for the Bedrock path. See **§Geyser / Bedrock** in [PARITY_BACKLOG.md](PARITY_BACKLOG.md).
 
 **Sprint 82 (process):** **Java** dedicated-server **command + menu** smoke matrix execution — see **`SPRINT_82_JAVA_SMOKE_MATRIX_RESULTS.md`**. **Runtime validation** on **`2.3.114+`**; does **not** add commands/menus. **Bedrock** not in scope for 82. Update **[COMMAND_PARITY_AUDIT.md](COMMAND_PARITY_AUDIT.md)** only if 82 **changes** command surface (bugs fixed) vs prior audit.

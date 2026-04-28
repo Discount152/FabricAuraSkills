@@ -188,13 +188,7 @@ public final class FabricAbilitiesTemplateSupport {
 
         Map<String, String> globalPh = buildGlobalSkillPlaceholders(skill, lo, msg);
 
-        String titleExpanded = FabricAbilitiesPlaceholders.expand(template.title(), globalPh);
-        Optional<Text> titleOpt =
-                FabricGraniteTemplateStacks.toLiteralNoUnresolved(titleExpanded, plugin, MENU_LOG, "title");
-        if (titleOpt.isEmpty()) {
-            return false;
-        }
-        Text title = titleOpt.get();
+        Text title = FabricMenuTitles.abilitiesMenuTitle(msg, skill, lo);
 
         Optional<ItemStack> fillBase =
                 FabricGraniteTemplateStacks.buildFillStack(template.fill(), globalPh, plugin, MENU_LOG);

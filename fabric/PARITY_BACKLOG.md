@@ -10,6 +10,14 @@ For **bootstrap order**, **Gradle `fabricOnly`**, **fishing mixin** notes, and *
 
 The sections below list behavior present in the **reference** module that is **not yet** implemented on **Fabric**, or that differs.
 
+## Sprint 120 — menu presentation repair (Granite built-in + templates)
+
+**`SPRINT_120_MENU_PRESENTATION_REPAIR_GATE.md`** — corrective work after Sprint **119** visual QA miss. **Gate:** **Gradle verify PASS** and **operator screenshot PASS** (visual/UI sprints are not “done” on compile-only). Ship: **`FabricAuraSkills-2.3.149.jar`**. **Bedrock/Geyser** not tested; **full Slate / `MenuFileManager`** still open.
+
+## Sprint 121D — global menu pipeline enforcement (Granite built-in + shared template hooks)
+
+**`SPRINT_121D_GLOBAL_MENU_PIPELINE_ENFORCEMENT.md`** — **shared** lore/title/suppression/paging helpers, **42**-char description wrap, **no glass pane items** in menu Java, stats rows off **`PlatformUtil`** flattening, regression **scan** tests. Ship: **`FabricAuraSkills-2.3.150.jar`**. **Screenshot QA** still operator-owned; **Bedrock/Geyser** not tested; **Slate** parity and **leaderboard** product behavior still open.
+
 ## Out of scope (explicit)
 
 The following are **not** part of the default **Granite** product roadmap. The **reference** JAR may still mention or optionally hook them; that does **not** obligate this Fabric port. **Owner** may re-open any item later as a **separate** decision.

@@ -1,7 +1,8 @@
 # Granite Skills — stat detail (template v0). Center icon uses stat map in Java when applicable.
+# Sprint 119: Inventory title is built in Java (FabricMenuTitles#statInfoTitle); YAML `title` is ignored at runtime.
 # Fallback: built-in FabricStatInfoMenuGui on any failure.
 id: stat_info
-title: "§6{stat_display}"
+title: "{stat_display}"
 rows: 6
 
 fill:

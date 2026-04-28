@@ -87,7 +87,7 @@ public final class FabricMenuRegistry {
                 }
                 return;
             }
-            title = FabricGraniteText.key(slice.titleTranslationKey());
+            title = FabricMenuTitles.granitePrimaryTitleFromKey(slice.titleTranslationKey());
         } else if (plugin != null && FabricMenuKeys.STATS.equals(id)) {
             FabricMenuYamlSlice slice =
                     plugin.getBuiltInMenuConfig().getSlice(id, FabricMenuYamlSlice.defaultStats());
@@ -98,9 +98,9 @@ public final class FabricMenuRegistry {
                 }
                 return;
             }
-            title = FabricGraniteText.key(slice.titleTranslationKey());
+            title = FabricMenuTitles.granitePrimaryTitleFromKey(slice.titleTranslationKey());
         } else {
-            title = FabricGraniteText.key(def.titleTranslationKey());
+            title = FabricMenuTitles.granitePrimaryTitleFromKey(def.titleTranslationKey());
         }
         def.opener().open(player, plugin, title, context);
     }

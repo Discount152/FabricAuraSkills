@@ -102,9 +102,7 @@ public final class FabricUnclaimedItemsMenuGui {
             int maxPage,
             List<KeyIntPair> sub,
             Locale lo) {
-        String rawTitle = plugin.getMsg(MenuMessage.UNCLAIMED_ITEMS_TITLE, lo);
-        Text base = Text.literal(plugin.getMessageProvider().applyFormatting(rawTitle));
-        Text title = FabricListMenuPaging.appendPageToTitleIfNeeded(base, p, maxPage);
+        Text title = FabricMenuTitles.unclaimedItemsTitle(p, maxPage);
         final int fPage = p;
         final int fMax = maxPage;
         GraniteContainerMenus.openClickable9x6(

@@ -182,13 +182,9 @@ public final class FabricLeaderboardTemplateSupport {
 
         Map<String, String> globalPh = buildGlobalPlaceholders(mode, skill, page0, maxPage0, lo, plugin);
 
-        String titleExpanded = FabricLeaderboardPlaceholders.expand(template.title(), globalPh);
-        Optional<Text> titleBaseOpt =
-                FabricGraniteTemplateStacks.toLiteralNoUnresolved(titleExpanded, plugin, MENU_LOG, "title");
-        if (titleBaseOpt.isEmpty()) {
-            return false;
-        }
-        Text pageTitle = FabricListMenuPaging.appendPageToTitleIfNeeded(titleBaseOpt.get(), page0, maxPage0);
+        String titleLine = leaderboardTitleBaseString(mode, skill, lo, plugin);
+        Text titleBase = FabricMenuTitles.fromLeaderboardContextLine(titleLine);
+        Text pageTitle = FabricListMenuPaging.appendPageToTitleIfNeeded(titleBase, page0, maxPage0);
 
         Optional<ItemStack> fillBase =
                 FabricGraniteTemplateStacks.buildFillStack(template.fill(), globalPh, plugin, MENU_LOG);

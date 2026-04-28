@@ -78,6 +78,11 @@ class FabricGraniteEnUsKeysTest {
                     "auraskills.granite.menu.level_progression_row_progress",
                     "auraskills.granite.menu.level_progression_row_maxed_compact",
                     "auraskills.granite.menu.list_paging_subtitle",
+                    "auraskills.granite.menu.level_progression_levels_suffix",
+                    "auraskills.granite.menu.stat_info_title_prefix",
+                    "auraskills.granite.menu.sources_title_secondary",
+                    "auraskills.granite.menu.abilities_title_suffix",
+                    "auraskills.granite.menu.unclaimed_items_title",
                     "auraskills.granite.menu.paging_prev",
                     "auraskills.granite.menu.paging_prev_lore",
                     "auraskills.granite.menu.paging_next",
@@ -193,6 +198,33 @@ class FabricGraniteEnUsKeysTest {
                     "auraskills.granite.command.resethealth.console_only",
                     "auraskills.granite.command.item_armor_mod.players_only",
                     "auraskills.granite.command.item_armor_mod.empty_hand"
+                }) {
+            assertTrue(json.contains("\"" + key + "\""), "missing " + key);
+        }
+    }
+
+    @Test
+    void sprint120MenuPresentationRepairKeysPresentInEnUs() throws Exception {
+        String json;
+        try (InputStream in =
+                FabricGraniteEnUsKeysTest.class.getResourceAsStream(
+                        "/assets/auraskills/lang/en_us.json")) {
+            assertTrue(in != null, "classpath /assets/auraskills/lang/en_us.json");
+            json = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+        }
+        for (String key :
+                new String[] {
+                    "auraskills.granite.menu.stat_info_title_suffix",
+                    "auraskills.granite.menu.sources_title_suffix",
+                    "auraskills.granite.menu.sources_sort_current",
+                    "auraskills.granite.menu.sources_placeholder_name",
+                    "auraskills.granite.source_type.unknown",
+                    "auraskills.granite.source_type.other",
+                    "auraskills.granite.source_type.block",
+                    "auraskills.granite.source_type.mob",
+                    "auraskills.granite.source_type.fishing",
+                    "auraskills.granite.source_type.farming",
+                    "auraskills.granite.source_type.damage",
                 }) {
             assertTrue(json.contains("\"" + key + "\""), "missing " + key);
         }

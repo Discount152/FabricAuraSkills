@@ -8,7 +8,6 @@ import dev.aurelium.auraskills.common.menu.MenuHelper;
 import dev.aurelium.auraskills.common.message.MessageProvider;
 import dev.aurelium.auraskills.common.util.text.TextUtil;
 import dev.aurelium.auraskills.common.user.User;
-import dev.aurelium.auraskills.common.util.PlatformUtil;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.FabricTraitManager;
 import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
@@ -59,7 +58,6 @@ final class FabricStatsMenuGui {
         Locale locale = user.getLocale();
         MessageProvider msg = plugin.getMessageProvider();
         MenuHelper menus = plugin.getMenuHelper();
-        var util = plugin.getPlatformUtil();
         List<Stat> order = new ArrayList<>();
         for (Stat s : plugin.getStatManager().getEnabledStats()) {
             order.add(s);
@@ -112,7 +110,6 @@ final class FabricStatsMenuGui {
                                     plugin,
                                     locale,
                                     menus,
-                                    util,
                                     listItem,
                                     fStatClicks,
                                     inv,
@@ -209,10 +206,10 @@ final class FabricStatsMenuGui {
             inv.setStack(slot, ItemStack.EMPTY);
             return;
         }
-        ItemStack s = new ItemStack(Items.ARROW);
-        s.set(DataComponentTypes.ITEM_NAME, FabricGraniteText.key(nameKey));
-        s.set(DataComponentTypes.LORE, new LoreComponent(List.of(FabricGraniteText.key(loreKey))));
-        inv.setStack(slot, s);
+        inv.setStack(
+                slot,
+                FabricMenuItemPresentation.pageNavArrow(
+                        FabricGraniteText.key(nameKey), FabricGraniteText.key(loreKey)));
     }
 
     private static void fillOneStatStack(
@@ -222,7 +219,6 @@ final class FabricStatsMenuGui {
             FabricAuraSkills plugin,
             Locale locale,
             MenuHelper menus,
-            PlatformUtil util,
             Item listItem,
             boolean addOpenDetailLore,
             Inventory inv,
@@ -236,22 +232,17 @@ final class FabricStatsMenuGui {
                 "{symbol}", msg.getStatSymbol(stat, locale),
                 "{stat}", msg.getStatDisplayName(stat, locale, false),
                 "{level}", levelText);
-        String itemName = util.toString(util.toComponent(rawName));
-        stack.set(DataComponentTypes.ITEM_NAME, Text.literal(itemName));
+        stack.set(DataComponentTypes.ITEM_NAME, FabricMenuLoreFormatting.formatMenuLine(plugin, rawName));
         List<Text> lore = new ArrayList<>();
         String desc = msg.getStatDescription(stat, locale, false);
         if (desc != null && !desc.isEmpty()) {
-            String oneLine = util.toString(util.toComponent(desc));
-            if (oneLine.length() > 200) {
-                oneLine = oneLine.substring(0, 197) + "...";
-            }
-            lore.add(Text.literal(oneLine));
+            FabricMenuLoreFormatting.appendWrappedFormattedLore(plugin, lore, desc, 10, 800);
         }
         for (Trait tr : stat.getTraits()) {
             if (lore.size() >= 10) {
                 break;
             }
-            addTraitLoreIfPresent(stat, user, tr, msg, plugin, locale, menus, util, lore);
+            addTraitLoreIfPresent(stat, user, tr, msg, plugin, locale, menus, lore);
         }
         if (addOpenDetailLore) {
             String openDetail = plugin
@@ -263,6 +254,7 @@ final class FabricStatsMenuGui {
             lore.add(FabricGraniteText.key(openDetail));
         }
         stack.set(DataComponentTypes.LORE, new LoreComponent(lore));
+        FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(stack);
         inv.setStack(slot, stack);
     }
 
@@ -283,7 +275,6 @@ final class FabricStatsMenuGui {
             FabricAuraSkills plugin,
             Locale locale,
             MenuHelper menus,
-            PlatformUtil util,
             List<Text> lore) {
         if (!trait.isEnabled()) {
             return;
@@ -292,8 +283,7 @@ final class FabricStatsMenuGui {
         if (line == null) {
             return;
         }
-        String plain = util.toString(util.toComponent(line));
-        lore.add(Text.literal(plain));
+        lore.add(FabricMenuLoreFormatting.formatMenuLine(plugin, line));
     }
 
     private static @Nullable String formatTraitLine(

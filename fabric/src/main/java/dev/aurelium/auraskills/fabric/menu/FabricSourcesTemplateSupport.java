@@ -173,13 +173,9 @@ public final class FabricSourcesTemplateSupport {
 
         Map<String, String> globalPh = buildGlobalPlaceholders(skill, sort, p, maxPage, locale, msg);
 
-        String titleExpanded = FabricSourcesPlaceholders.expand(template.title(), globalPh);
-        Optional<Text> titleBaseOpt =
-                FabricGraniteTemplateStacks.toLiteralNoUnresolved(titleExpanded, plugin, MENU_LOG, "title");
-        if (titleBaseOpt.isEmpty()) {
-            return false;
-        }
-        Text pageTitle = FabricListMenuPaging.appendPageToTitleIfNeeded(titleBaseOpt.get(), p, maxPage);
+        String skillName = msg.getSkillDisplayName(skill, locale, true);
+        Text baseTitle = FabricMenuTitles.sourcesMenuTitle(skillName);
+        Text pageTitle = FabricListMenuPaging.appendPageToTitleIfNeeded(baseTitle, p, maxPage);
 
         Optional<ItemStack> fillBase = FabricGraniteTemplateStacks.buildFillStack(template.fill(), globalPh, plugin, MENU_LOG);
         if (template.fill().isPresent() && fillBase.isEmpty()) {
@@ -200,6 +196,7 @@ public final class FabricSourcesTemplateSupport {
             if (plugin.getItemRegistry().getSourceMenuItems() instanceof FabricSourceMenuItems fsmi) {
                 row = FabricMenuPresentation.mergeSourceRowFromRegistry(fsmi, src, row);
             }
+            FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(row);
             rowStacks.add(row);
         }
 
@@ -251,9 +248,7 @@ public final class FabricSourcesTemplateSupport {
                             inv.setStack(s, fill.copy());
                         }
                     } else {
-                        for (int s = 0; s < FabricMenuSlotLayout.TOP_SLOTS; s++) {
-                            inv.setStack(s, ItemStack.EMPTY);
-                        }
+                        FabricMenuInventoryPrep.clearAllSlots(inv);
                     }
                     for (int i = 0; i < rowStacks.size(); i++) {
                         inv.setStack(sourceDef.slots().get(i), rowStacks.get(i).copy());
@@ -349,8 +344,15 @@ public final class FabricSourcesTemplateSupport {
     }
 
     private static void addSourcePlaceholders(Map<String, String> m, XpSource s, Locale locale) {
-        m.put("source_name", s.getDisplayName(locale));
-        m.put("source_type", s.getType().getId().toString());
+        String display = s.getDisplayName(locale);
+        if ("!!REMOVE!!".equals(display)) {
+            String key = "auraskills.granite.menu.sources_placeholder_name";
+            String v = net.minecraft.util.Language.getInstance().get(key);
+            display =
+                    (v == null || v.isBlank() || v.equals(key)) ? "Unknown source" : v;
+        }
+        m.put("source_name", display);
+        m.put("source_type", FabricSourceTypeLabels.playerFacingTypeLine(s));
         String unit = s.getUnitName(locale);
         if (unit == null) {
             m.put("source_xp", NumberUtil.format2(s.getXp()));

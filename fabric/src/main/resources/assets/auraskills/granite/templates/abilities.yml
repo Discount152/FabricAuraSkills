@@ -1,7 +1,8 @@
 # Granite Skills — abilities (template v0). Passive grid slots fixed to built-in order; mana single slot.
+# Sprint 119: Inventory title is built in Java (FabricMenuTitles#abilitiesMenuTitle); YAML `title` is ignored at runtime.
 # Fallback: built-in FabricAbilitiesMenuGui on any failure.
 id: abilities
-title: "§6§l{skill_display} §8· §dAbilities"
+title: "{skill_display}"
 rows: 6
 
 fill:

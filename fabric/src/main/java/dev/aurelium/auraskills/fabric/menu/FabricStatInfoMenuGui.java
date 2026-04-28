@@ -6,7 +6,6 @@ import dev.aurelium.auraskills.common.config.Option;
 import dev.aurelium.auraskills.common.menu.MenuHelper;
 import dev.aurelium.auraskills.common.message.MessageProvider;
 import dev.aurelium.auraskills.common.user.User;
-import dev.aurelium.auraskills.common.util.PlatformUtil;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import dev.granitelib.fabric.menu.GraniteContainerMenus;
@@ -86,15 +85,14 @@ final class FabricStatInfoMenuGui {
         Locale locale = user.getLocale();
         MessageProvider msg = plugin.getMessageProvider();
         MenuHelper menus = plugin.getMenuHelper();
-        var util = plugin.getPlatformUtil();
         String displayName = msg.getStatDisplayName(stat, locale, true);
-        Text title = FabricGraniteText.key(cfg.titleTranslationKey(), displayName);
+        Text title = FabricMenuTitles.statInfoTitle(displayName);
         int mainSlot = cfg.mainSlot();
         int backSlot = cfg.backSlot();
         Item mainItem = FabricMenuItemDefinitions.resolveItem(
                 cfg.mainItemId(), Items.BOOK, plugin, "menus/stat_info.yml", "main");
         Item backItem = FabricMenuItemDefinitions.resolveItem(
-                cfg.backItemId(), Items.ARROW, plugin, "menus/stat_info.yml", "back");
+                cfg.backItemId(), Items.IRON_DOOR, plugin, "menus/stat_info.yml", "back");
 
         GraniteContainerMenus.openClickable9x6(
                 player,
@@ -116,15 +114,16 @@ final class FabricStatInfoMenuGui {
                                     cfg.resolveFormatKey(
                                             "lore_value", def, "auraskills.granite.menu.stat_info_lore_value"),
                                     levelText));
-                    addDescriptionLore(msg, util, stat, locale, lore);
+                    addDescriptionLore(plugin, stat, locale, msg, lore);
                     for (Trait trait : stat.getTraits()) {
                         if (lore.size() >= 16) {
                             break;
                         }
                         FabricStatsMenuGui.addTraitLoreIfPresent(
-                                stat, user, trait, msg, plugin, locale, menus, util, lore);
+                                stat, user, trait, msg, plugin, locale, menus, lore);
                     }
                     main.set(DataComponentTypes.LORE, new LoreComponent(lore));
+                    FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(main);
                     inv.setStack(mainSlot, main);
                     ItemStack back = new ItemStack(backItem);
                     back.set(
@@ -140,6 +139,7 @@ final class FabricStatInfoMenuGui {
                                                             "back_lore",
                                                             def,
                                                             "auraskills.granite.menu.stat_info_back_lore")))));
+                    FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(back);
                     inv.setStack(backSlot, back);
                 },
                 (topSlot, p, b, t) -> {
@@ -156,31 +156,15 @@ final class FabricStatInfoMenuGui {
     }
 
     private static void addDescriptionLore(
-            MessageProvider msg,
-            PlatformUtil util,
+            FabricAuraSkills plugin,
             Stat stat,
             Locale locale,
+            MessageProvider msg,
             List<Text> lore) {
         String desc = msg.getStatDescription(stat, locale, false);
         if (desc == null || desc.isEmpty()) {
             return;
         }
-        for (String line : desc.split("\n", -1)) {
-            if (line.isEmpty()) {
-                continue;
-            }
-            String shown = util.toString(util.toComponent(line));
-            if (shown.length() <= 100) {
-                lore.add(Text.literal(shown));
-            } else {
-                for (int at = 0; at < shown.length(); at += 90) {
-                    if (lore.size() >= 12) {
-                        return;
-                    }
-                    int end = Math.min(at + 90, shown.length());
-                    lore.add(Text.literal(shown.substring(at, end)));
-                }
-            }
-        }
+        FabricMenuLoreFormatting.appendWrappedFormattedLore(plugin, lore, desc, 12, 800);
     }
 }

@@ -1,16 +1,13 @@
-# Granite Skills — leaderboard (template v0). Entries stay paper-like; use framed title and clear controls.
-# Fallback: built-in FabricLeaderboardMenuGui on any failure.
+# Granite Skills — leaderboard template.
+# Sprint 119: inventory title from Java (FabricMenuTitles#fromLeaderboardContextLine); YAML `title` is ignored at runtime.
+# Sprint 120: no global filler panes; entry rows use paper (see built-in FabricLeaderboardMenuGui for parity); back = iron_door.
 id: leaderboard
-title: "§6§l{leaderboard_title}"
+title: "{leaderboard_title}"
 rows: 6
-
-fill:
-  material: minecraft:gray_stained_glass_pane
-  name: " "
 
 items:
   entry:
-    material: minecraft:gold_nugget
+    material: minecraft:paper
     slots:
       - 0
       - 1
@@ -22,36 +19,36 @@ items:
       - 11
       - 12
       - 13
-    name: "§e#{rank} §f{player}"
+    name: "#{rank} {player}"
     lore:
-      - "§7Score: §f{value}"
-      - "§8({leaderboard_type})"
+      - "Score: {value}"
+      - "{leaderboard_type}"
     action: leaderboard_row
   back:
     material: minecraft:iron_door
     slot: 45
-    name: "§c← Skills"
+    name: "+ Skills"
     lore:
-      - "§7Close leaderboard"
+      - "Back to your skills"
     action: back
   previous:
     material: minecraft:arrow
     slot: 48
-    name: "§e« Page"
+    name: "Previous page"
     lore:
-      - "§7Previous ranks"
+      - "Previous ranks"
     action: previous_page
   refresh:
     material: minecraft:compass
     slot: 49
-    name: "§bRefresh"
+    name: "Refresh"
     lore:
-      - "§7Reload rankings from disk"
+      - "Reload rankings from cache"
     action: refresh
   next:
     material: minecraft:arrow
     slot: 50
-    name: "§ePage »"
+    name: "Next page"
     lore:
-      - "§7Next ranks"
+      - "Next ranks"
     action: next_page

@@ -165,14 +165,7 @@ public final class FabricUnclaimedItemsTemplateSupport {
 
         Map<String, String> globalPh = buildGlobalPlaceholders(page0, maxPage0);
 
-        String titleExpanded = FabricUnclaimedItemsPlaceholders.expand(template.title(), globalPh);
-        Optional<Text> titleBaseOpt =
-                FabricGraniteTemplateStacks.toLiteralNoUnresolved(titleExpanded, plugin, MENU_LOG, "title");
-        if (titleBaseOpt.isEmpty()) {
-            return false;
-        }
-        Text pageTitle =
-                FabricListMenuPaging.appendPageToTitleIfNeeded(titleBaseOpt.get(), page0, maxPage0);
+        Text pageTitle = FabricMenuTitles.unclaimedItemsTitle(page0, maxPage0);
 
         Optional<ItemStack> fillBase =
                 FabricGraniteTemplateStacks.buildFillStack(template.fill(), globalPh, plugin, MENU_LOG);

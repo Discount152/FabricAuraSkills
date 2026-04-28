@@ -198,13 +198,7 @@ public final class FabricLevelProgressionTemplateSupport {
         Map<String, String> globalPh =
                 FabricLevelProgressionMenuContent.globalPlaceholders(skill, p, maxPage, locale, msg);
 
-        String titleExpanded = FabricLevelProgressionPlaceholders.expand(template.title(), globalPh);
-        Optional<Text> titleBaseOpt =
-                FabricGraniteTemplateStacks.toLiteralNoUnresolved(titleExpanded, plugin, MENU_LOG, "title");
-        if (titleBaseOpt.isEmpty()) {
-            return false;
-        }
-        Text pageTitle = FabricLevelProgressionMenuContent.appendGrayPagingSubtitle(titleBaseOpt.get(), p, maxPage);
+        Text pageTitle = FabricMenuTitles.levelProgressionTitle(msg, skill, locale, p, maxPage);
 
         Optional<ItemStack> fillBase =
                 FabricGraniteTemplateStacks.buildFillStack(template.fill(), globalPh, plugin, MENU_LOG);

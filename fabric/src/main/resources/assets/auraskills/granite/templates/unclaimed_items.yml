@@ -1,7 +1,8 @@
 # Granite Skills — unclaimed rewards (template v0). Grid stacks are real items; controls only adjust lore/copy.
+# Sprint 119: Inventory title is built in Java (FabricMenuTitles#unclaimedItemsTitle); YAML `title` is ignored at runtime.
 # Fallback: built-in FabricUnclaimedItemsMenuGui on any failure.
 id: unclaimed_items
-title: "§6§lPending Rewards"
+title: "Unclaimed"
 rows: 6
 
 fill:

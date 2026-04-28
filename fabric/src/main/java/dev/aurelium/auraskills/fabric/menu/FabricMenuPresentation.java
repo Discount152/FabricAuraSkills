@@ -102,15 +102,19 @@ public final class FabricMenuPresentation {
             FabricAuraSkills plugin,
             MessageProvider msg,
             Locale locale) {
-        stack.set(DataComponentTypes.ITEM_NAME, Text.literal(msg.getSkillDisplayName(skill, locale, false)));
+        stack.set(
+                DataComponentTypes.ITEM_NAME,
+                FabricMenuLoreFormatting.formatMenuLine(plugin, msg.getSkillDisplayName(skill, locale, false)));
         String xpInLevel = NumberUtil.format2(user.getSkillXp(skill));
         String xpTotal = NumberUtil.format2(totalSkillXpForHub(user, skill, plugin));
         int level = user.getSkillLevel(skill);
         List<Text> lines = new ArrayList<>();
-        lines.add(Text.literal("Level " + level + " \u00b7 XP " + xpTotal));
-        lines.add(Text.literal(xpInLevel + " in this level"));
+        lines.add(
+                FabricMenuLoreFormatting.formatMenuLine(
+                        plugin, "Level " + level + " \u00b7 XP " + xpTotal));
+        lines.add(FabricMenuLoreFormatting.formatMenuLine(plugin, xpInLevel + " in this level"));
         lines.add(Text.empty());
-        lines.add(Text.literal("\u25b8 Levels"));
+        lines.add(FabricMenuLoreFormatting.formatMenuLine(plugin, "\u25b8 Levels"));
         stack.set(DataComponentTypes.LORE, new LoreComponent(lines));
     }
 

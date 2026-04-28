@@ -88,11 +88,8 @@ class FabricLevelProgressionBundledTemplateParseTest {
                             "total_pages", "2");
             String name = FabricLevelProgressionPlaceholders.expand("Level {level}", ph);
             assertEquals("Level 5", name);
-            String title =
-                    FabricLevelProgressionPlaceholders.expand(
-                            "<gold><bold>{skill_display}</bold></gold> <gray>Levels</gray>", ph);
-            assertTrue(title.contains("Farming"), title);
-            assertTrue(title.contains("Levels"), title);
+            assertFalse(t.title().contains("<gold>"));
+            assertFalse(t.title().contains("§6"));
             assertFalse(FabricLevelProgressionPlaceholders.hasUnresolvedBraceSyntax(name));
         }
     }

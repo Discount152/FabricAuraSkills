@@ -189,24 +189,14 @@ final class FabricLevelProgressionMenuGui {
                 title,
                 inv -> {
                     for (int s = 0; s < 45; s++) {
-                        if (s <= 8) {
-                            inv.setStack(s, ItemStack.EMPTY);
-                        } else if (FabricLevelProgressionLayout.LEVEL_PATH_SLOT_SET.contains(s)) {
-                            inv.setStack(s, ItemStack.EMPTY);
-                        } else {
-                            ItemStack glass = new ItemStack(Items.GLASS_PANE);
-                            FabricLevelProgressionMenuContent.applyQuietMenuFiller(glass);
-                            inv.setStack(s, glass);
-                        }
+                        inv.setStack(s, ItemStack.EMPTY);
                     }
                     for (int i = 0; i < rowStacks.size(); i++) {
                         inv.setStack(FabricLevelProgressionLayout.LEVEL_PATH_SLOTS.get(i), rowStacks.get(i).copy());
                     }
                     for (int u = rowStacks.size(); u < FabricLevelProgressionLayout.PAGE_SIZE; u++) {
                         int pathSlot = FabricLevelProgressionLayout.LEVEL_PATH_SLOTS.get(u);
-                        ItemStack glass = new ItemStack(Items.GLASS_PANE);
-                        FabricLevelProgressionMenuContent.applyQuietMenuFiller(glass);
-                        inv.setStack(pathSlot, glass);
+                        inv.setStack(pathSlot, ItemStack.EMPTY);
                     }
                     for (int s = 45; s <= 53; s++) {
                         inv.setStack(s, ItemStack.EMPTY);

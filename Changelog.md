@@ -2,6 +2,24 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.150
+
+### Changes
+
+- **Fabric — Sprint 121D global menu pipeline enforcement:** One shared presentation path for **all** Granite Skills GUI menus. **`FabricMenuLoreFormatting`** (`DEFAULT_MENU_LORE_WRAP_WIDTH = 42`, **`appendWrappedFormattedLore`** with soft input cap), **`FabricMenuItemPresentation`** (quiet filler + **`pageNavArrow`**), **`FabricMenuTooltipPresentation`** on controls and rows. **Skills/Stats hubs** (**FabricMenuPresentation**): names and hub lore via **`formatMenuLine`**; stat short descriptions wrapped. **Level progression** built-in: **empty slots** instead of named glass fillers where path allows; row lore via **`formatMenuLine`**; paging uses shared arrow helper. **Stats** list rows: drop **`PlatformUtil`** text flattening in favor of **`FabricMenuLoreFormatting`** + **`appendWrappedFormattedLore`**; trait lines formatted consistently. **Sources** (already on branch): **`FabricMenuTitles.sourcesMenuTitle`**, comparator sort, iron door back, **`FabricSourceTypeLabels`**, **`!REMOVE!!` / `!!REMOVE!!` filtering**. **Tests:** **`FabricMenuLoreFormattingTest`**, **`FabricMenuJavaPipelineScanTest`** (no glass panes / raw `<#` / `<underline` strings in menu Java). **`projectVersion` 2.3.149 → 2.3.150**. **Build:** `.\gradlew.bat -PfabricOnly=true :granitelib-fabric:test :fabric:test :fabric:build verifyFabricReleaseBundle` — **PASS**. **Operator screenshot QA** is the acceptance gate; **Bedrock/Geyser** not tested; **Slate / MenuFileManager** parity and **per-skill leaderboard** product work remain open (see **`fabric/SPRINT_121D_GLOBAL_MENU_PIPELINE_ENFORCEMENT.md`**).
+
+## 2.3.149
+
+### Changes
+
+- **Fabric — Sprint 120 menu presentation repair gate:** Corrects failed Sprint **119** visual QA without new features. **`FabricMenuLoreFormatting`** + UTF-8-safe sources centralize MiniMessage/legacy → **`FabricTextFormatter`** / **`FabricTextAdapter`** for menu lore; **`FabricMenuInventoryPrep`** clears template grids when no fill. **Stat Info / Sources / Abilities / Leaderboard** paths: **`FabricMenuTitles`** short titles (**`stat_info_title_suffix`**, **`sources_title_suffix`** — sort text moved to sort control via **`sources_sort_current`**), **`FabricSourceTypeLabels`** + **`en_us`** **`source_type.*`**, **`!!REMOVE!!`** placeholder → **`sources_placeholder_name`**, **Iron Door** back on leaderboard built-in + bundled template, **paper** entry rows (template: no gray glass fill, no **gold nugget**). **`FabricAbilitiesMenuGui`**: passive icon variety + deferred **`Items[]`** init (plain JUnit no longer bootstraps registries). **Lang:** back labels **`+ Stats` / `+ Levels` / `+ Skills`** with matching lore. **Tests:** **`FabricGraniteEnUsKeysTest`** sprint **120** keys; **`FabricLeaderboardBundledTemplateParseTest`** no-fill expectation. **Docs:** **`fabric/SPRINT_120_MENU_PRESENTATION_REPAIR_GATE.md`**, parity/port backlog touch-ups. **`projectVersion` 2.3.148 → 2.3.149**. **Build:** `.\gradlew.bat -PfabricOnly=true :granitelib-fabric:test :fabric:test :fabric:build verifyFabricReleaseBundle`. **Operator screenshot QA** is the acceptance gate for this sprint; **Bedrock/Geyser** not tested; **Slate/MenuFileManager** still open.
+
+## 2.3.148
+
+### Changes
+
+- **Fabric — Sprint 119 Granite menu title standardization:** Central **`FabricMenuTitles`** applies **dark gray + bold** primary labels and **gray** secondary/context (and gray paging suffix). **Level progression**, **stat info**, **leaderboard**, **sources**, **abilities**, and **unclaimed items** built-in and bundled-template paths use the helper instead of **gold** primary titles; inventory `title` in bundled YAML is documented as Java-owned where applicable. **Skills/Stats hub** `en_us` strings are **Your Skills** / **Your Stats** with the same primary styling via **`granitePrimaryTitleFromKey`**. New keys: **`level_progression_levels_suffix`**, **`stat_info_title_prefix`**, **`sources_title_secondary`**, **`abilities_title_suffix`**, **`unclaimed_items_title`**. **Docs:** **`fabric/SPRINT_119_MENU_TITLE_STANDARDIZATION.md`**. **`projectVersion` 2.3.147 → 2.3.148**. **Build:** `.\gradlew.bat -PfabricOnly=true :granitelib-fabric:test :fabric:test :fabric:build verifyFabricReleaseBundle`.
+
 ## 2.3.147
 
 ### Changes

@@ -106,7 +106,7 @@ public final class FabricLeaderboardMenuGui {
                         inv.setStack(ENTRY_SLOTS.get(i), entryStack(rank, name, value));
                     }
                     putControl(
-                            inv, SLOT_BACK, true, "auraskills.granite.menu.leaderboard_back", "auraskills.granite.menu.leaderboard_back_lore", Items.ARROW);
+                            inv, SLOT_BACK, true, "auraskills.granite.menu.leaderboard_back", "auraskills.granite.menu.leaderboard_back_lore", Items.IRON_DOOR);
                     if (fMax0 > 0) {
                         putControl(
                                 inv,
@@ -206,28 +206,25 @@ public final class FabricLeaderboardMenuGui {
             int maxPage0,
             Locale lo,
             FabricAuraSkills plugin) {
-        return switch (mode) {
-            case POWER -> {
-                Text base =
-                        FabricGraniteText.key("auraskills.granite.menu.leaderboard_title_power");
-                yield FabricListMenuPaging.appendPageToTitleIfNeeded(base, page0, maxPage0);
-            }
-            case AVERAGE -> {
-                Text base =
-                        FabricGraniteText.key("auraskills.granite.menu.leaderboard_title_average");
-                yield FabricListMenuPaging.appendPageToTitleIfNeeded(base, page0, maxPage0);
-            }
-            case SKILL -> {
-                String sname =
-                        skill == null
-                                ? "?"
-                                : plugin.getMessageProvider()
-                                        .getSkillDisplayName(skill, lo, true);
-                Text base =
-                        FabricGraniteText.key("auraskills.granite.menu.leaderboard_title_skill", sname);
-                yield FabricListMenuPaging.appendPageToTitleIfNeeded(base, page0, maxPage0);
-            }
-        };
+        String line =
+                switch (mode) {
+                    case POWER ->
+                            FabricGraniteText.key("auraskills.granite.menu.leaderboard_title_power").getString();
+                    case AVERAGE ->
+                            FabricGraniteText.key("auraskills.granite.menu.leaderboard_title_average").getString();
+                    case SKILL -> {
+                        String sname =
+                                skill == null
+                                        ? "?"
+                                        : plugin.getMessageProvider()
+                                                .getSkillDisplayName(skill, lo, true);
+                        yield FabricGraniteText.key(
+                                        "auraskills.granite.menu.leaderboard_title_skill", sname)
+                                .getString();
+                    }
+                };
+        Text base = FabricMenuTitles.fromLeaderboardContextLine(line);
+        return FabricListMenuPaging.appendPageToTitleIfNeeded(base, page0, maxPage0);
     }
 
     /** Formatted value column; shared with {@link FabricLeaderboardTemplateSupport}. */
@@ -250,6 +247,7 @@ public final class FabricLeaderboardMenuGui {
                         List.of(
                                 FabricGraniteText.key(
                                         "auraskills.granite.menu.leaderboard_entry_value", value))));
+        FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(s);
         return s;
     }
 
@@ -268,6 +266,7 @@ public final class FabricLeaderboardMenuGui {
         s.set(
                 DataComponentTypes.LORE,
                 new LoreComponent(List.of(FabricGraniteText.key(loreKey))));
+        FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(s);
         inv.setStack(slot, s);
     }
 }

@@ -5,7 +5,6 @@ import dev.aurelium.auraskills.api.trait.Trait;
 import dev.aurelium.auraskills.common.menu.MenuHelper;
 import dev.aurelium.auraskills.common.message.MessageProvider;
 import dev.aurelium.auraskills.common.user.User;
-import dev.aurelium.auraskills.common.util.PlatformUtil;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.granitelib.fabric.menu.GraniteContainerMenus;
 import dev.granitelib.fabric.template.GraniteTemplateActionNames;
@@ -101,12 +100,8 @@ public final class FabricStatInfoTemplateSupport {
         }
         int back = backSlot.get();
 
-        String titleExpanded = FabricStatInfoPlaceholders.expand(template.title(), ph);
-        Optional<Text> titleText =
-                FabricGraniteTemplateStacks.toLiteralNoUnresolved(titleExpanded, plugin, MENU_LOG, "title");
-        if (titleText.isEmpty()) {
-            return false;
-        }
+        String displayName = msg.getStatDisplayName(stat, locale, true);
+        Text titleText = FabricMenuTitles.statInfoTitle(displayName);
 
         Optional<ItemStack> fillBase =
                 FabricGraniteTemplateStacks.buildFillStack(template.fill(), ph, plugin, MENU_LOG);
@@ -116,7 +111,6 @@ public final class FabricStatInfoTemplateSupport {
 
         Map<String, ItemStack> stacksByKey = new HashMap<>();
         MenuHelper menus = plugin.getMenuHelper();
-        PlatformUtil util = plugin.getPlatformUtil();
         for (Map.Entry<String, GraniteTemplateItem> e : template.items().entrySet()) {
             String itemKey = e.getKey();
             Optional<ItemStack> stack =
@@ -128,7 +122,7 @@ public final class FabricStatInfoTemplateSupport {
             ItemStack built = stack.get();
             if (isStatPanelItem(itemKey, e.getValue())) {
                 try {
-                    appendStatPanelTraitLore(built, stat, user, plugin, msg, locale, menus, util);
+                    appendStatPanelTraitLore(built, stat, user, plugin, msg, locale, menus);
                 } catch (RuntimeException ex) {
                     plugin.logger().warn(
                             "stat_info template trait lore generation failed; using built-in menu", ex);
@@ -141,16 +135,19 @@ public final class FabricStatInfoTemplateSupport {
 
         GraniteContainerMenus.openClickable9x6(
                 player,
-                titleText.get(),
+                titleText,
                 inv -> {
                     if (fillBase.isPresent()) {
                         ItemStack fill = fillBase.get();
                         for (int s = 0; s < 54; s++) {
                             inv.setStack(s, fill.copy());
                         }
+                    } else {
+                        FabricMenuInventoryPrep.clearAllSlots(inv);
                     }
                     for (Map.Entry<String, GraniteTemplateItem> e : template.items().entrySet()) {
                         ItemStack base = stacksByKey.get(e.getKey());
+                        FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(base);
                         for (int slot : e.getValue().slots()) {
                             inv.setStack(slot, base.copy());
                         }
@@ -199,8 +196,7 @@ public final class FabricStatInfoTemplateSupport {
             FabricAuraSkills plugin,
             MessageProvider msg,
             Locale locale,
-            MenuHelper menus,
-            PlatformUtil util) {
+            MenuHelper menus) {
         java.util.List<Text> lore = new java.util.ArrayList<>();
         var existing = stack.get(DataComponentTypes.LORE);
         if (existing != null) {
@@ -210,7 +206,7 @@ public final class FabricStatInfoTemplateSupport {
             if (lore.size() >= 16) {
                 break;
             }
-            FabricStatsMenuGui.addTraitLoreIfPresent(stat, user, trait, msg, plugin, locale, menus, util, lore);
+            FabricStatsMenuGui.addTraitLoreIfPresent(stat, user, trait, msg, plugin, locale, menus, lore);
         }
         stack.set(DataComponentTypes.LORE, new LoreComponent(lore));
     }

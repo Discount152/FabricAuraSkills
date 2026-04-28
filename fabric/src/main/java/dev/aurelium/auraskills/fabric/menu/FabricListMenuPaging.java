@@ -1,7 +1,5 @@
 package dev.aurelium.auraskills.fabric.menu;
 
-import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
 /**
@@ -59,14 +57,6 @@ public final class FabricListMenuPaging {
     }
 
     public static Text appendPageToTitleIfNeeded(Text baseTitle, int page, int maxPage) {
-        if (maxPage <= 0) {
-            return baseTitle;
-        }
-        MutableText t = Text.empty();
-        t.append(baseTitle);
-        t.append(
-                FabricGraniteText.key(
-                        "auraskills.granite.menu.list_paging_subtitle", page + 1, maxPage + 1));
-        return t;
+        return FabricMenuTitles.appendPageSuffixGray(baseTitle, page, maxPage);
     }
 }

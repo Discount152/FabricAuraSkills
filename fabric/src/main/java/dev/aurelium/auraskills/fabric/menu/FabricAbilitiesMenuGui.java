@@ -41,6 +41,17 @@ public final class FabricAbilitiesMenuGui {
         11, 12, 13, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26
     };
 
+    private static final class PassiveIconsUnlocked {
+        private static final net.minecraft.item.Item[] ITEMS = {
+            Items.LIME_DYE,
+            Items.EXPERIENCE_BOTTLE,
+            Items.LAPIS_LAZULI,
+            Items.EMERALD,
+            Items.AMETHYST_SHARD,
+            Items.SUNFLOWER
+        };
+    }
+
     private FabricAbilitiesMenuGui() {}
 
     /** Same order as built-in passive ability placement (Sprint 102 template validation). */
@@ -76,8 +87,7 @@ public final class FabricAbilitiesMenuGui {
         Locale lo = user.getLocale();
         AbilityManager am = plugin.getAbilityManager();
         ManaAbilityManager mm = plugin.getManaAbilityManager();
-        String skillName = plugin.getMessageProvider().getSkillDisplayName(skill, lo, true);
-        Text title = FabricGraniteText.key("auraskills.granite.menu.abilities_title", skillName);
+        Text title = FabricMenuTitles.abilitiesMenuTitle(plugin.getMessageProvider(), skill, lo);
         List<Ability> regular = new ArrayList<>();
         for (Ability a : skill.getAbilities()) {
             if (a.isEnabled()) {
@@ -123,7 +133,7 @@ public final class FabricAbilitiesMenuGui {
                             true,
                             "auraskills.granite.menu.abilities_back",
                             "auraskills.granite.menu.abilities_back_lore",
-                            Items.ARROW);
+                            Items.IRON_DOOR);
                 },
                 (topSlot, pl, b, t) -> {
                     if (topSlot == SLOT_BACK) {
@@ -151,9 +161,9 @@ public final class FabricAbilitiesMenuGui {
             Skill skill) {
         int lvl = user.getAbilityLevel(ability);
         boolean unlocked = lvl >= 1;
-        var stack = new ItemStack(unlocked ? Items.LIME_DYE : Items.GRAY_DYE);
+        ItemStack stack = passiveAbilityIcon(ability, unlocked);
         String name = ability.getDisplayName(lo, false);
-        stack.set(DataComponentTypes.ITEM_NAME, Text.literal(name));
+        stack.set(DataComponentTypes.ITEM_NAME, FabricMenuLoreFormatting.formatMenuLine(plugin, name));
         List<Text> lore = new ArrayList<>();
         if (!unlocked) {
             lore.add(FabricGraniteText.key("auraskills.granite.menu.abilities_state_locked"));
@@ -168,7 +178,7 @@ public final class FabricAbilitiesMenuGui {
                             am.getChanceValue(ability, 1),
                             "{guaranteed_value}",
                             am.getGuaranteedValue(ability, 1));
-            lore.addAll(splitDesc(desc, 6));
+            lore.addAll(splitDesc(plugin, desc, 6, FabricMenuLoreFormatting.DEFAULT_MENU_LORE_WRAP_WIDTH));
             lore.add(
                     FabricGraniteText.key(
                             "auraskills.granite.menu.abilities_unlocks_at",
@@ -192,7 +202,7 @@ public final class FabricAbilitiesMenuGui {
                                 am.getChanceValue(ability, lvl),
                                 "{guaranteed_value}",
                                 am.getGuaranteedValue(ability, lvl));
-                lore.addAll(splitDesc(desc, 5));
+                lore.addAll(splitDesc(plugin, desc, 5, FabricMenuLoreFormatting.DEFAULT_MENU_LORE_WRAP_WIDTH));
             } else {
                 String desc =
                         TextUtil.replace(
@@ -201,12 +211,13 @@ public final class FabricAbilitiesMenuGui {
                                 NumberUtil.format1(ability.getValue(lvl)),
                                 "{value_2}",
                                 NumberUtil.format1(ability.getSecondaryValue(lvl)));
-                lore.addAll(splitDesc(desc, 5));
+                lore.addAll(splitDesc(plugin, desc, 5, FabricMenuLoreFormatting.DEFAULT_MENU_LORE_WRAP_WIDTH));
                 lore.add(FabricGraniteText.key("auraskills.granite.menu.abilities_maxed"));
             }
         }
         stack.set(
                 DataComponentTypes.LORE, new LoreComponent(lore.stream().toList()));
+        FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(stack);
         return stack;
     }
 
@@ -221,7 +232,7 @@ public final class FabricAbilitiesMenuGui {
         boolean unlocked = lvl >= 1;
         var stack = new ItemStack(unlocked ? Items.NETHER_STAR : Items.PRISMARINE_SHARD);
         String name = mana.getDisplayName(lo, false);
-        stack.set(DataComponentTypes.ITEM_NAME, Text.literal(name));
+        stack.set(DataComponentTypes.ITEM_NAME, FabricMenuLoreFormatting.formatMenuLine(plugin, name));
         List<Text> lore = new ArrayList<>();
         lore.add(
                 FabricGraniteText.key(
@@ -236,7 +247,7 @@ public final class FabricAbilitiesMenuGui {
                             NumberUtil.format1(mana.getDisplayValue(1)),
                             "{duration}",
                             NumberUtil.format1(manaBaseDuration(mana)));
-            lore.addAll(splitDesc(desc, 5));
+            lore.addAll(splitDesc(plugin, desc, 5, FabricMenuLoreFormatting.DEFAULT_MENU_LORE_WRAP_WIDTH));
             lore.add(
                     FabricGraniteText.key(
                             "auraskills.granite.menu.abilities_unlocks_at",
@@ -256,7 +267,7 @@ public final class FabricAbilitiesMenuGui {
                                 AbilityUtil.getUpgradeValue(mana, lvl, format),
                                 "{duration}",
                                 AbilityUtil.getUpgradeDuration(mana, lvl, format));
-                lore.addAll(splitDesc(desc, 5));
+                lore.addAll(splitDesc(plugin, desc, 5, FabricMenuLoreFormatting.DEFAULT_MENU_LORE_WRAP_WIDTH));
             } else {
                 String desc =
                         TextUtil.replace(
@@ -265,12 +276,13 @@ public final class FabricAbilitiesMenuGui {
                                 NumberUtil.format1(mana.getDisplayValue(lvl)),
                                 "{duration}",
                                 NumberUtil.format1(AbilityUtil.getDuration(mana, lvl)));
-                lore.addAll(splitDesc(desc, 5));
+                lore.addAll(splitDesc(plugin, desc, 5, FabricMenuLoreFormatting.DEFAULT_MENU_LORE_WRAP_WIDTH));
                 lore.add(FabricGraniteText.key("auraskills.granite.menu.abilities_maxed"));
             }
         }
         stack.set(
                 DataComponentTypes.LORE, new LoreComponent(lore.stream().toList()));
+        FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(stack);
         return stack;
     }
 
@@ -281,20 +293,37 @@ public final class FabricAbilitiesMenuGui {
         return mana.getValue(1);
     }
 
-    private static List<Text> splitDesc(String desc, int maxLines) {
+    private static ItemStack passiveAbilityIcon(Ability ability, boolean unlocked) {
+        if (!unlocked) {
+            return new ItemStack(Items.GRAY_DYE);
+        }
+        int i = Math.floorMod(ability.hashCode(), PassiveIconsUnlocked.ITEMS.length);
+        return new ItemStack(PassiveIconsUnlocked.ITEMS[i]);
+    }
+
+    private static List<Text> splitDesc(FabricAuraSkills plugin, String desc, int maxLines, int wrapWidth) {
         if (desc == null || desc.isEmpty()) {
             return List.of();
         }
-        String[] parts = desc.split("\n");
         List<Text> out = new ArrayList<>();
-        for (int i = 0; i < Math.min(parts.length, maxLines); i++) {
-            String line = parts[i].trim();
-            if (!line.isEmpty()) {
-                out.add(Text.literal(line));
+        int safety = 0;
+        for (String part : desc.split("\n")) {
+            String t = part.trim();
+            if (t.isEmpty()) {
+                continue;
             }
-        }
-        if (parts.length > maxLines) {
-            out.add(FabricGraniteText.key("auraskills.granite.menu.abilities_lore_truncated"));
+            for (String chunk : FabricMenuLoreFormatting.wordWrapPlain(t, wrapWidth)) {
+                if (out.size() >= maxLines) {
+                    out.add(FabricGraniteText.key("auraskills.granite.menu.abilities_lore_truncated"));
+                    return out;
+                }
+                out.add(FabricMenuLoreFormatting.formatMenuLine(plugin, chunk));
+                safety++;
+                if (safety > 40) {
+                    out.add(FabricGraniteText.key("auraskills.granite.menu.abilities_lore_truncated"));
+                    return out;
+                }
+            }
         }
         return out;
     }
@@ -325,6 +354,7 @@ public final class FabricAbilitiesMenuGui {
         s.set(
                 DataComponentTypes.LORE,
                 new LoreComponent(List.of(FabricGraniteText.key(loreKey))));
+        FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(s);
         inv.setStack(slot, s);
     }
 }

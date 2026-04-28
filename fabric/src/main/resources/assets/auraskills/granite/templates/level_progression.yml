@@ -1,8 +1,9 @@
 # Granite Skills — level progression (template). Sprint 117 snake path (24 levels/page); Sprint 116 visuals.
+# Sprint 119: Inventory title is built in Java (FabricMenuTitles#levelProgressionTitle); YAML `title` is ignored at runtime.
 # Row 1 (slots 0-8): empty in Java. Row cells: LEVEL_PATH_SLOTS in FabricLevelProgressionLayout.
 # Fallback: built-in `FabricLevelProgressionMenuGui` snake path (Sprint 118) when template invalid.
 id: level_progression
-title: "<gold><bold>{skill_display}</bold></gold> <gray>Levels</gray>"
+title: "{skill_display}"
 rows: 6
 
 fill:

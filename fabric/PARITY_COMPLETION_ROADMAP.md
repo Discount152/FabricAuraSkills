@@ -35,7 +35,7 @@ This file resets **honest accounting**: what is **stable**, **partial**, **missi
 
 | Reality | Status |
 |---------|--------|
-| **Built-in Fabric menus** (`Fabric*MenuGui`, registry) | **Functional partial replacement** — sufficient for **Java smoke** and many operator flows. |
+| **Built-in Fabric menus** (`Fabric*MenuGui`, registry) | **Functional partial replacement** — sufficient for **Java smoke** and many operator flows. **Sprint 121D** enforces a **shared presentation pipeline** (see **`SPRINT_121D_GLOBAL_MENU_PIPELINE_ENFORCEMENT.md`**, **`2.3.150`**) so hubs and leaf menus do not diverge on lore/tooltip/title rules. |
 | **Full Slate parity** (YAML-driven menus, `MenuFileManager`, full template/context/action surface) | **Not complete** — **`MENU_AND_COMMANDS_PORT.md`** Path A remains the **program target**. |
 
 **Per-menu snapshot (built-in Granite layer today):**
@@ -53,7 +53,7 @@ This file resets **honest accounting**: what is **stable**, **partial**, **missi
 | confirm flows (backup/preset/storage) | **Brigadier `confirm`** (not inventory GUI framework) | **Partial** vs reference **ConfirmManager** model |
 | File-backed menus / arbitrary Slate menus | **Missing** | **Open** |
 
-**Rule:** Do **not** describe built-in menus as “Slate parity complete” or “menus done.”
+**Rule:** Do **not** describe built-in menus as “Slate parity complete” or “menus done.” **Sprint 120** tightened **presentation** (title/lore/back/filler/tooltip suppression) on Stat Info, Sources, Abilities, Leaderboard — see **`SPRINT_120_MENU_PRESENTATION_REPAIR_GATE.md`**; **MENU-*** rows are still **Partial** vs full Slate.
 
 ---
 
