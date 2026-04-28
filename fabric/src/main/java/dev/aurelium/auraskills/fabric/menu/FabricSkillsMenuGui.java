@@ -31,7 +31,10 @@ final class FabricSkillsMenuGui {
 
     static void open(
             ServerPlayerEntity player, FabricAuraSkills plugin, Text title, FabricMenuContext context) {
-        User user = plugin.getUserManager().getUser(player.getUuid());
+        User user = FabricMenuUserReadiness.loadedUserOrWarn(plugin, player);
+        if (user == null) {
+            return;
+        }
         if (FabricSkillsTemplateSupport.tryOpen(player, plugin, context, user)) {
             return;
         }

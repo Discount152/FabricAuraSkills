@@ -14,6 +14,7 @@ import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.item.FabricUnclaimedItemsMerge;
 import dev.aurelium.auraskills.fabric.menu.FabricAuraSkillsMenus;
 import dev.aurelium.auraskills.fabric.menu.FabricMenuKeys;
+import dev.aurelium.auraskills.fabric.menu.FabricMenuUserReadiness;
 import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -215,6 +216,9 @@ public final class FabricOpenMenuCommands {
                                         "auraskills.granite.command.openmenu.console_specify"));
                         return 0;
                     }
+                    if (FabricMenuUserReadiness.loadedUserOrWarn(p, self) == null) {
+                        return 1;
+                    }
                     FabricAuraSkillsMenus.open(FabricMenuKeys.SKILLS, self, p);
                     sendListMenuFeedback(
                             s, self, "auraskills.granite.menu.skills_opened", FabricMenuKeys.SKILLS);
@@ -237,6 +241,9 @@ public final class FabricOpenMenuCommands {
                                         "auraskills.granite.command.xp.player_not_found", name));
                         return 0;
                     }
+                    if (FabricMenuUserReadiness.loadedUserOrWarn(p, target) == null) {
+                        return 1;
+                    }
                     FabricAuraSkillsMenus.open(FabricMenuKeys.SKILLS, target, p);
                     sendListMenuFeedback(
                             s, target, "auraskills.granite.menu.skills_opened", FabricMenuKeys.SKILLS);
@@ -254,6 +261,9 @@ public final class FabricOpenMenuCommands {
                                 FabricGraniteText.key(
                                         "auraskills.granite.command.openmenu.console_specify"));
                         return 0;
+                    }
+                    if (FabricMenuUserReadiness.loadedUserOrWarn(p, self) == null) {
+                        return 1;
                     }
                     FabricAuraSkillsMenus.open(FabricMenuKeys.STATS, self, p);
                     sendListMenuFeedback(
@@ -276,6 +286,9 @@ public final class FabricOpenMenuCommands {
                                 FabricGraniteText.key(
                                         "auraskills.granite.command.xp.player_not_found", name));
                         return 0;
+                    }
+                    if (FabricMenuUserReadiness.loadedUserOrWarn(p, target) == null) {
+                        return 1;
                     }
                     FabricAuraSkillsMenus.open(FabricMenuKeys.STATS, target, p);
                     sendListMenuFeedback(

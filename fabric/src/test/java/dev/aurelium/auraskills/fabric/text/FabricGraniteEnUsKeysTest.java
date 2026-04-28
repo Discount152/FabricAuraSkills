@@ -52,6 +52,7 @@ class FabricGraniteEnUsKeysTest {
                     "auraskills.granite.menu.skills_lore_open_detail",
                     "auraskills.granite.menu.skills_lore_no_permission",
                     "auraskills.granite.menu.built_in_disabled",
+                    "auraskills.granite.menu.user_not_loaded",
                     "auraskills.granite.menu.level_progression_opened",
                     "auraskills.granite.menu.level_progression_open_sources",
                     "auraskills.granite.menu.level_progression_open_sources_lore",

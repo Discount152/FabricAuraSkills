@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import dev.aurelium.auraskills.fabric.FabricAuraSkillsMod;
 import dev.aurelium.auraskills.fabric.menu.FabricAuraSkillsMenus;
+import dev.aurelium.auraskills.fabric.menu.FabricMenuUserReadiness;
 import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.server.command.ServerCommandSource;
@@ -225,6 +226,9 @@ public final class FabricBrigadierCommands {
                         source.sendError(Text.literal("Players only."));
                         return 0;
                     }
+                    if (FabricMenuUserReadiness.loadedUserOrWarn(p, player) == null) {
+                        return 0;
+                    }
                     FabricAuraSkillsMenus.open(FabricAuraSkillsMenus.Id.SKILLS, player, p);
                     source.sendFeedback(
                             () -> FabricGraniteText.key("auraskills.granite.menu.skills_opened"), true);
@@ -242,6 +246,9 @@ public final class FabricBrigadierCommands {
                     ServerCommandSource source = ctx.getSource();
                     if (!(source.getEntity() instanceof ServerPlayerEntity player)) {
                         source.sendError(Text.literal("Players only."));
+                        return 0;
+                    }
+                    if (FabricMenuUserReadiness.loadedUserOrWarn(p, player) == null) {
                         return 0;
                     }
                     FabricAuraSkillsMenus.open(FabricAuraSkillsMenus.Id.STATS, player, p);

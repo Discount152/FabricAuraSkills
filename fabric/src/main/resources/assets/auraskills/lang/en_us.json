@@ -50,6 +50,7 @@
   "auraskills.granite.menu.skills_lore_open_detail": "Click: level progression",
   "auraskills.granite.menu.skills_lore_no_permission": "No permission for this skill",
   "auraskills.granite.menu.built_in_disabled": "This menu is disabled in config: %s",
+  "auraskills.granite.menu.user_not_loaded": "Your skill profile is still loading from storage; try again in a moment.",
   "auraskills.granite.menu.skills_opened": "Opened skills menu (E to close).",
   "auraskills.granite.menu.stats_title": "Stats",
   "auraskills.granite.menu.stats_lore_open_detail": "Click: stat details",
