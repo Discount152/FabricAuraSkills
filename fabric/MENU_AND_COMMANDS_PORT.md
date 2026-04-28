@@ -38,7 +38,9 @@
 
 **Sprint 97 (`stat_info` template parity):** **`SPRINT_97_MANUAL_STAT_INFO_TEMPLATE_PARITY.md`** — **trait lore** appended after static YAML; **`custom_model_data`** applied via components API; fallback **unchanged**.
 
-**Recommended next (Java-side):** **Sprint 98** — **`sources`** template prototype; **two-JAR** **`2.3.125+`**; **Sprint 87** when a **Bedrock** tester exists.
+**Sprint 98–105 (template menu rollouts)** — **`sources`**, **`level_progression`**, **`skills`**, **`stats`**, **`abilities`**, **`leaderboard`**, **`unclaimed_items`**: see sections below; **`2.3.126`–`2.3.132`**. **Sprint 106–111** — disk templates, reload/export/registry: **`2.3.133`–`2.3.138`**. **Sprint 112 (process / docs):** **`SPRINT_112_MENU_AESTHETIC_REVIEW.md`** — operator screenshot checklist + layout approval before more MenuFileManager-style work; **Bedrock** not in scope. **Sprint 113 (code):** **`SPRINT_113_MANUAL_TEMPLATE_ACTION_CONTRACT.md`** — **`action:`** allow/required contract; **`FabricAuraSkills-2.3.139`**, **`Changelog`** title may still say “Sprint 112”.
+
+**Bedrock follow-up:** **Sprint 87** when a **Bedrock** tester exists.
 
 This document is the **engineering plan** for shipping **menus and the full command tree together** (one release goal), by **porting Slate** to Fabric instead of writing a second menu engine.
 
@@ -670,13 +672,22 @@ The **`slate-fabric`** Gradle module is **this repo’s** Fabric port skeleton; 
 
 
 
-## Sprint 112 -- template `action` allow/required contract (shipped, bounded)
+## Sprint 112 — menu template visual / layout review (process / docs)
+
+| Area | Deliverable |
+|------|-------------|
+| **Review** | **`SPRINT_112_MENU_AESTHETIC_REVIEW.md`** — YAML slot maps, criteria, operator screenshot checklist, draft classifications (structure-only until screenshots). |
+| **Code** | **None** by default — small YAML tweaks only if owner requests after review. |
+
+| **Not in Sprint 112** | Action-engine work; new placeholders; Bedrock validation; claiming Slate-complete. |
+
+## Sprint 113 — template `action` allow/required contract (shipped, bounded)
 
 | Area | Shipped |
 |------|---------|
 | **Validation** | `FabricGraniteMenuTemplateActionContract.validateTemplateActions` after template **id** + **rows** checks in all eight `Fabric*TemplateSupport.tryOpenInner` paths; failure logs **warn** and uses **built-in** menu. |
 | **GraniteLib** | `GraniteTemplateActionNames.normalize` / `isKnown` / `allKnownNormalized`; `GraniteTemplateItems.findFirstByAction` / `findAllByAction`. |
-| **Manual** | `SPRINT_112_MANUAL_TEMPLATE_ACTION_CONTRACT.md` |
+| **Manual** | **`SPRINT_113_MANUAL_TEMPLATE_ACTION_CONTRACT.md`** (`SPRINT_112_MANUAL_TEMPLATE_ACTION_CONTRACT.md` redirect stub). **`Changelog` 2.3.139** may still say “Sprint 112” for the JAR. |
 
 ## Sprint 100 — **level_progression** GraniteLib template prototype (level grid + paging) (shipped, bounded)
 

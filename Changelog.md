@@ -6,7 +6,11 @@ Changelog for versions since 2.0.0.
 
 ### Changes
 
-- **Fabric + GraniteLib: Sprint 112 -- Granite menu template action contract (`FabricAuraSkills-2.3.139.jar`):** `GraniteTemplateActionNames` gains `normalize`, `isKnown`, and `allKnownNormalized()` (17 v0 actions). `GraniteTemplateItems` gains `findFirstByAction` / `findAllByAction` (normalize-matched) and grid discovery uses `findFirstByAction`. `FabricGraniteMenuTemplateActionContract` enforces per-menu allowed + required `action` strings; all eight `Fabric*TemplateSupport.tryOpenInner` paths validate after id/rows checks (warn + built-in fallback). **Tests:** granitelib + `FabricGraniteMenuTemplateActionContractTest`. **Docs:** `fabric/SPRINT_112_MANUAL_TEMPLATE_ACTION_CONTRACT.md`. **projectVersion** 2.3.138 -> 2.3.139. **Build:** `gradlew.bat -PfabricOnly=true :granitelib-fabric:test :fabric:test :fabric:build`.
+- **Fabric + GraniteLib: Sprint 112 / 113 -- Granite menu template action contract (`FabricAuraSkills-2.3.139.jar`):** *(Changelog title “Sprint 112”; planning manual **Sprint 113** — see **`fabric/SPRINT_112_MENU_AESTHETIC_REVIEW.md`**.)* `GraniteTemplateActionNames` gains `normalize`, `isKnown`, and `allKnownNormalized()` (17 v0 actions). `GraniteTemplateItems` gains `findFirstByAction` / `findAllByAction` (normalize-matched) and grid discovery uses `findFirstByAction`. `FabricGraniteMenuTemplateActionContract` enforces per-menu allowed + required `action` strings; all eight `Fabric*TemplateSupport.tryOpenInner` paths validate after id/rows checks (warn + built-in fallback). **Tests:** granitelib + `FabricGraniteMenuTemplateActionContractTest`. **Docs:** `fabric/SPRINT_113_MANUAL_TEMPLATE_ACTION_CONTRACT.md`; `fabric/SPRINT_112_MANUAL_TEMPLATE_ACTION_CONTRACT.md` redirects. **projectVersion** 2.3.138 -> 2.3.139. **Build:** `gradlew.bat -PfabricOnly=true :granitelib-fabric:test :fabric:test :fabric:build`.
+
+### Documentation (process)
+
+- **Sprint 112 (visual/layout):** **`fabric/SPRINT_112_MENU_AESTHETIC_REVIEW.md`** — bundled YAML slot maps, screenshot checklist, draft classifications; **no** `projectVersion` bump when docs-only.
 
 
 ## 2.3.138
