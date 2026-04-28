@@ -4,7 +4,6 @@ import dev.aurelium.auraskills.api.stat.Stat;
 import dev.aurelium.auraskills.common.config.Option;
 import dev.aurelium.auraskills.common.message.MessageProvider;
 import dev.aurelium.auraskills.common.user.User;
-import dev.aurelium.auraskills.common.util.PlatformUtil;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.granitelib.fabric.menu.GraniteContainerMenus;
 import dev.granitelib.fabric.template.GraniteTemplateActionNames;
@@ -141,7 +140,6 @@ public final class FabricStatsTemplateSupport {
         boolean statInfoClicks = plugin.configBoolean(Option.MENUS_STAT_INFO_ENABLED);
         Locale locale = user.getLocale();
         MessageProvider msg = plugin.getMessageProvider();
-        PlatformUtil util = plugin.getPlatformUtil();
 
         Map<String, String> globalPh = Map.of("page", "1", "total_pages", "1");
 
@@ -164,18 +162,23 @@ public final class FabricStatsTemplateSupport {
         if (closeStack.isEmpty()) {
             return false;
         }
+        FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(backStack.get());
+        FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(closeStack.get());
 
         List<ItemStack> rowStacks = new ArrayList<>(gridStats.size());
         for (Stat stat : gridStats) {
             Map<String, String> rowPh = new HashMap<>(globalPh);
-            addStatRowPlaceholders(rowPh, stat, user, plugin, msg, locale, util);
+            addStatRowPlaceholders(rowPh, stat, user, plugin, msg, locale);
             Optional<ItemStack> rowStack =
                     FabricGraniteTemplateStacks.buildTemplateItemStack(
                             statDef, rowPh, plugin, MENU_LOG, "items.stat.row");
             if (rowStack.isEmpty()) {
                 return false;
             }
-            rowStacks.add(FabricMenuPresentation.applyStatRowIcon(rowStack.get(), stat));
+            ItemStack icon = FabricMenuPresentation.applyStatRowIcon(rowStack.get(), stat);
+            FabricMenuPresentation.applyStatsHubRow(icon, stat, user, plugin, msg, locale);
+            FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(icon);
+            rowStacks.add(icon);
         }
 
         final int fBack = backSlot;
@@ -260,19 +263,11 @@ public final class FabricStatsTemplateSupport {
             User user,
             FabricAuraSkills plugin,
             MessageProvider msg,
-            Locale locale,
-            PlatformUtil util) {
+            Locale locale) {
         m.put("stat", stat.getId().getSimpleName());
         m.put("stat_display", msg.getStatDisplayName(stat, locale, true));
         m.put("stat_value", FabricStatsMenuGui.formatStatLevel(stat, user, plugin, locale));
-        String desc = msg.getStatDescription(stat, locale, false);
-        if (desc == null) {
-            desc = "";
-        }
-        String oneLine = util.toString(util.toComponent(desc.replace('\n', ' ').trim()));
-        if (oneLine.length() > 200) {
-            oneLine = oneLine.substring(0, 197) + "...";
-        }
-        m.put("stat_description", oneLine);
+        // Sprint 114: hub rows overwrite lore in code; YAML placeholders need a dummy for expansion.
+        m.put("stat_description", "");
     }
 }

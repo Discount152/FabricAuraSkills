@@ -91,7 +91,7 @@ class FabricSkillsStatsBundledTemplateParseTest {
                             "stat", "health",
                             "stat_display", "Health",
                             "stat_value", "25.0",
-                            "stat_description", "Max HP bonus.",
+                            "stat_description", "",
                             "page", "1",
                             "total_pages", "2");
             String line = FabricStatsPlaceholders.expand("Value: {stat_value}", ph);

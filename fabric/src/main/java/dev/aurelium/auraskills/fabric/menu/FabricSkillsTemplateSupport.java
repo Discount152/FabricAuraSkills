@@ -172,6 +172,7 @@ public final class FabricSkillsTemplateSupport {
         if (leaderboardStack.isEmpty()) {
             return false;
         }
+        FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(leaderboardStack.get());
 
         Optional<ItemStack> statsTemplate =
                 FabricGraniteTemplateStacks.buildTemplateItemStack(
@@ -187,6 +188,7 @@ public final class FabricSkillsTemplateSupport {
         if (unclaimedTemplate.isEmpty()) {
             return false;
         }
+        FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(unclaimedTemplate.get());
 
         Optional<ItemStack> closeStack =
                 FabricGraniteTemplateStacks.buildTemplateItemStack(
@@ -194,6 +196,7 @@ public final class FabricSkillsTemplateSupport {
         if (closeStack.isEmpty()) {
             return false;
         }
+        FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(closeStack.get());
 
         boolean hasUnclaimed = !user.getUnclaimedItems().isEmpty();
 
@@ -207,8 +210,11 @@ public final class FabricSkillsTemplateSupport {
             if (rowStack.isEmpty()) {
                 return false;
             }
-            appendNoPermissionLoreIfNeeded(rowStack.get(), user, skill);
-            rowStacks.add(FabricMenuPresentation.applySkillRowIcon(rowStack.get(), skill));
+            ItemStack icon = FabricMenuPresentation.applySkillRowIcon(rowStack.get(), skill);
+            FabricMenuPresentation.applySkillsHubRow(icon, skill, user, msg, locale);
+            appendNoPermissionLoreIfNeeded(icon, user, skill);
+            FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(icon);
+            rowStacks.add(icon);
         }
 
         final int fLb = lbSlot;

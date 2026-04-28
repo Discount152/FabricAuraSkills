@@ -102,6 +102,8 @@ GraniteLib (`:granitelib-fabric`, on-disk **`slate-fabric/`) is a **real library
 
 **Sprint 110 (template registry / lifecycle):** **`SPRINT_110_MANUAL_TEMPLATE_REGISTRY_LIFECYCLE.md`** — **`FabricGraniteMenuTemplateRegistry`**, **`FabricGraniteMenuTemplateBindings`**, **`loadManagedCore`**, **`templates status`**; **`reloadFromDisk`** refreshes cached **`GraniteMenuTemplate`** instances; disk edits require reload. **Slate** / **`MenuFileManager`** still **not** complete; **Bedrock** deferred.
 
+**Sprint 114 (skills/stats hub tooltip polish):** **`SPRINT_114_SKILLS_STATS_TOOLTIP_POLISH.md`** — template-first **skills** / **stats** hubs use compact **ITEM_NAME** / **LORE** rows, **brewing stand** for **Alchemy**, and **`FabricMenuTooltipPresentation`** (**`TOOLTIP_DISPLAY`**) to strip vanilla item-mechanics tooltip lines from grid + utility stacks; **Sprint 113** slot lock unchanged. **Slate** still **not** complete; **Bedrock** deferred.
+
 ## 5. Packaging / release architecture
 
 | Policy | Canonical |

@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.143
+
+### Changes
+
+- **Fabric — Sprint 114 skills/stats hub tooltip polish:** Compact **skills** row tooltips (`Level … · XP …`, `… in this level`, `▸ Levels`) and **stats** hub rows (`Value: …`, short English one-liners from `FabricMenuPresentation.STAT_HUB_SHORT_DESCRIPTIONS`, `▸ Details`). **Alchemy** hub icon uses **`minecraft:brewing_stand`** (not potion). **`FabricMenuTooltipPresentation`** applies **`DataComponentTypes.TOOLTIP_DISPLAY`** to hide vanilla mechanics lines (attributes, durability/tool, potion contents, shield blocks, etc.) while keeping custom name + lore on template-built menu stacks. **Tests:** `FabricSprint114HubCopyContractTest` (hub blurb strings vs locked stat ids; plain unit test — `FabricMenuPresentation` is not loaded to avoid `Items` registry init in JUnit). **Docs:** `fabric/SPRINT_114_SKILLS_STATS_TOOLTIP_POLISH.md`. **`projectVersion` 2.3.142 → 2.3.143**. **Build:** `.\gradlew.bat -PfabricOnly=true :granitelib-fabric:test :fabric:test :fabric:build verifyFabricReleaseBundle` — **PASS** (`verifyFabricReleaseBundle`: OK).
+
 ## 2.3.142
 
 ### Changes
