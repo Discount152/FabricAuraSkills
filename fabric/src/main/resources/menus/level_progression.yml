@@ -7,7 +7,7 @@ granite:
   size:
     rows: 6
     columns: 9
-  # Detail menu: main_slot (book) and back_slot (arrow). list_* is ignored; invalid layout logs a warn and uses defaults.
+  # Detail menu: main_slot (book) and back_slot (iron door). list_* is ignored; invalid layout logs a warn and uses defaults.
   layout:
     list_start_slot: 0
     list_end_slot_exclusive: 54
@@ -16,7 +16,7 @@ granite:
   items:
     list: "minecraft:book"
     main: "minecraft:book"
-    back: "minecraft:arrow"
+    back: "minecraft:iron_door"
   format:
     main_title: "auraskills.granite.menu.level_progression_main_title"
     lore_level: "auraskills.granite.menu.level_progression_lore_level"

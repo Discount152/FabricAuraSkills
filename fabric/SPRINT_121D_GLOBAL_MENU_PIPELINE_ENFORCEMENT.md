@@ -32,7 +32,7 @@ Sprint 120 repaired specific QA callouts, but other menus still used **local** `
 | **Stat Info** | **`FabricMenuTitles.statInfoTitle`** | Built-in + template: Granite keys + **`appendWrappedFormattedLore`** for description | Template fill / empty per layout | **`IRON_DOOR`** (configurable id) | Main + back |
 | **Level progression** | **`FabricMenuTitles.levelProgressionTitle`** | Row lore **`formatMenuLine`**; controls MiniMessage via **`FabricGraniteTemplateStacks.toLiteralNoUnresolved`** where used | **Built-in:** `ItemStack.EMPTY` for non-path slots (no glass); template: YAML fill | Back **`IRON_DOOR`**; paging **`pageNavArrow`**; Sources/Abilities custom icons | All stacks |
 | **Sources** | **`FabricMenuTitles.sourcesMenuTitle`** (sort **not** in title) | **`formatMenuLine`** name; **`FabricSourceTypeLabels`** for type line; XP lines from keys | Empty grid slots | Back **`IRON_DOOR`**; sort **COMPARATOR**; paging arrows | All |
-| **Abilities** | **`FabricMenuTitles.abilitiesMenuTitle`** | Descriptions via **`splitDesc` → `wordWrapPlain` @ 42** | Empty | **`IRON_DOOR`** | All |
+| **Abilities** | **`FabricMenuTitles.abilitiesMenuTitle`** | Body descriptions via **`FabricAbilitiesTemplateSupport` → `appendWrappedFormattedLore` @ 42** | Empty | **`IRON_DOOR`** | All |
 | **Leaderboard** | **`FabricMenuTitles.fromLeaderboardContextLine`** + paging | **Paper** rows (built-in); keys for name/value | Empty top grid | **`IRON_DOOR`**, **`COMPASS`** refresh, arrow paging | All |
 | **Unclaimed** | **`FabricMenuTitles.unclaimedItemsTitle`** | Built-in / template aligned with branch | Per template / empty | Controls per YAML | Intended on all menu stacks |
 
@@ -42,7 +42,7 @@ Sprint 120 repaired specific QA callouts, but other menus still used **local** `
 
 ## Template YAML
 
-Bundled `fill` may still use `glass_pane` / gray stained pane **material**, but **Java** applies **quiet** display names and suppression when no template name is set (**`FabricGraniteTemplateStacks.buildFillStack`**). **No** `Items.GLASS_PANE` in `fabric/.../menu/*.java` (enforced by **`FabricMenuJavaPipelineScanTest`**).
+**Sprint 122 update:** bundled **`assets/auraskills/granite/templates/*.yml`** no longer declare a global **`fill`** using glass panes — empty slots are left empty. If a future menu needs a fill, use **quiet** presentation (no visible pane id as the player-facing identity) per **`FabricMenuItemPresentation`**. **No** `Items.GLASS_PANE` in `fabric/.../menu/*.java` (enforced by **`FabricMenuJavaPipelineScanTest`**).
 
 ## Tests and build
 

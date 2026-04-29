@@ -31,7 +31,7 @@ class FabricUnclaimedItemsBundledTemplateParseTest {
             GraniteMenuTemplate t = GraniteMenuTemplateYamlLoader.loadString(yaml, "unclaimed_items.yml");
             assertEquals("unclaimed_items", t.id());
             assertEquals(6, t.rows());
-            assertTrue(t.fill().isPresent());
+            assertTrue(t.fill().isEmpty(), "Sprint 122: bundled unclaimed_items must not use global glass fill");
 
             GraniteTemplateItem claimable = t.items().get("claimable");
             assertNotNull(claimable);

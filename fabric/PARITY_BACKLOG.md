@@ -18,6 +18,10 @@ The sections below list behavior present in the **reference** module that is **n
 
 **`SPRINT_121D_GLOBAL_MENU_PIPELINE_ENFORCEMENT.md`** — **shared** lore/title/suppression/paging helpers, **42**-char description wrap, **no glass pane items** in menu Java, stats rows off **`PlatformUtil`** flattening, regression **scan** tests. Ship: **`FabricAuraSkills-2.3.150.jar`**. **Screenshot QA** still operator-owned; **Bedrock/Geyser** not tested; **Slate** parity and **leaderboard** product behavior still open.
 
+## Sprint 122 — targeted runtime menu fixes (operator audit follow-up)
+
+**`SPRINT_122_TARGETED_RUNTIME_MENU_FIXES.md`** — Confirmed **2.3.150** environment had templates **BUNDLED_LOADED**; failures were in formatter, YAML, and presentation paths: **`<underlined>`** for legacy underline, **no** global glass **fill** in bundled templates, whitespace-only display names → **quiet filler**, abilities body lore **42**-char wrap in Java, **Back** = **`iron_door`** in embedded **`menus/*.yml`**. Ship: **`FabricAuraSkills-2.3.151.jar`**. **Bedrock/Geyser**, **Slate/MenuFileManager**, **leaderboard/abilities redesign** still open.
+
 ## Out of scope (explicit)
 
 The following are **not** part of the default **Granite** product roadmap. The **reference** JAR may still mention or optionally hook them; that does **not** obligate this Fabric port. **Owner** may re-open any item later as a **separate** decision.

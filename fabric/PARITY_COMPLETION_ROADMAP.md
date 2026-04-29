@@ -35,7 +35,7 @@ This file resets **honest accounting**: what is **stable**, **partial**, **missi
 
 | Reality | Status |
 |---------|--------|
-| **Built-in Fabric menus** (`Fabric*MenuGui`, registry) | **Functional partial replacement** — sufficient for **Java smoke** and many operator flows. **Sprint 121D** enforces a **shared presentation pipeline** (see **`SPRINT_121D_GLOBAL_MENU_PIPELINE_ENFORCEMENT.md`**, **`2.3.150`**) so hubs and leaf menus do not diverge on lore/tooltip/title rules. |
+| **Built-in Fabric menus** (`Fabric*MenuGui`, registry) | **Functional partial replacement** — sufficient for **Java smoke** and many operator flows. **Sprint 121D** enforces a **shared presentation pipeline** (see **`SPRINT_121D_GLOBAL_MENU_PIPELINE_ENFORCEMENT.md`**, **`2.3.150`**) so hubs and leaf menus do not diverge on lore/tooltip/title rules. **Sprint 122** (**`SPRINT_122_TARGETED_RUNTIME_MENU_FIXES.md`**, **`2.3.151`**) fixes confirmed runtime issues (underline MiniMessage token, template glass fills, whitespace quiet filler, abilities wrap, **iron_door** back defaults) without claiming Slate parity. |
 | **Full Slate parity** (YAML-driven menus, `MenuFileManager`, full template/context/action surface) | **Not complete** — **`MENU_AND_COMMANDS_PORT.md`** Path A remains the **program target**. |
 
 **Per-menu snapshot (built-in Granite layer today):**

@@ -12,6 +12,8 @@
 
 **Sprint 121D (global menu pipeline enforcement):** **`SPRINT_121D_GLOBAL_MENU_PIPELINE_ENFORCEMENT.md`** — **all** Granite menu Java paths share **`FabricMenuLoreFormatting`** (42-char wrap), **`FabricMenuItemPresentation`**, and **`FabricMenuTooltipPresentation`**; built-in **level progression** uses **empty** off-path slots; **`FabricMenuJavaPipelineScanTest`** guards glass-pane / raw MiniMessage string regressions in listed sources. **`FabricAuraSkills-2.3.150.jar`**. **MENU-*** ledger rows stay **Partial** vs **full Slate**; this sprint is **presentation consistency**, not **`MenuFileManager`** completion. **Bedrock/Geyser** still **not** tested.
 
+**Sprint 122 (targeted runtime menu fixes):** **`SPRINT_122_TARGETED_RUNTIME_MENU_FIXES.md`** — post-**2.3.150** operator audit with templates already **BUNDLED_LOADED**: **`FabricTextFormatter`** legacy underline → **`<underlined>`**; bundled templates **without** global glass **fill**; whitespace-only template display names → **quiet filler**; abilities body lore **42**-char wrap in **`FabricAbilitiesTemplateSupport`**; embedded **`menus/*.yml`** **Back** = **`minecraft:iron_door`**; **`FabricSprint122RuntimeMenuRegressionTest`**. **`FabricAuraSkills-2.3.151.jar`**. **MENU-*** still **Partial**; **Bedrock/Geyser** not tested.
+
 **Reference anchor files (Bukkit module — audit source, not runtime):** `bukkit/.../AuraSkills.java`, `CommandRegistrar.java`, `MenuRegistrar.java` (plus current Fabric mappings in `fabric/...`).
 
 **Status values** (use in `Audit Matrix` → Status): `Missing` | `Stub` | `Partial` | `Equivalent` | `Needs Regression Proof` — prefer **Partial** or **Needs Regression Proof** over **Stub** when Fabric already implements real logic.

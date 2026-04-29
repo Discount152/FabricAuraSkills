@@ -32,7 +32,7 @@ class FabricSourcesBundledTemplateParseTest {
             GraniteMenuTemplate t = GraniteMenuTemplateYamlLoader.loadString(yaml, "sources.yml");
             assertEquals("sources", t.id());
             assertEquals(6, t.rows());
-            assertTrue(t.fill().isPresent());
+            assertTrue(t.fill().isEmpty(), "Sprint 122: bundled sources must not use global glass fill");
 
             GraniteTemplateItem source = t.items().get("source");
             assertNotNull(source);

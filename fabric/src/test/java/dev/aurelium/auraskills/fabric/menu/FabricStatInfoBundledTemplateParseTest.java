@@ -29,7 +29,7 @@ class FabricStatInfoBundledTemplateParseTest {
             GraniteMenuTemplate t = GraniteMenuTemplateYamlLoader.loadString(yaml, "stat_info.yml");
             assertEquals("stat_info", t.id());
             assertEquals(6, t.rows());
-            assertTrue(t.fill().isPresent());
+            assertTrue(t.fill().isEmpty(), "Sprint 122: bundled stat_info must not use global glass fill");
             assertTrue(t.items().containsKey("stat"));
             assertTrue(t.items().containsKey("back"));
             assertTrue(

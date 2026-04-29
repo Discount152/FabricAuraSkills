@@ -4,6 +4,8 @@
 
 **Sprint 93 correction:** The **built-in `Fabric*MenuGui`** set is a **functional partial** of the reference menu experience. It is **Java-smoke adequate**, **not** “Slate parity complete.” Full **Slate / YAML / `MenuFileManager`** parity is **open**; see **`PARITY_COMPLETION_ROADMAP.md`**.
 
+**Sprint 122 (targeted runtime fixes):** **`SPRINT_122_TARGETED_RUNTIME_MENU_FIXES.md`** — post-**2.3.150** audit: **`<underlined>`** legacy mapping (no **`<underline>`**), bundled templates **without** global glass fills, blank/space template names → **quiet filler**, abilities descriptions wrapped at **42** via **`appendWrappedFormattedLore`**, **Back** = **`iron_door`** in built-in YAML + defaults (arrows **only** for paging). Tests: **`FabricSprint122RuntimeMenuRegressionTest`**, formatter + lore tests. **`FabricAuraSkills-2.3.151.jar`**.
+
 **Sprint 121D (pipeline enforcement):** **`SPRINT_121D_GLOBAL_MENU_PIPELINE_ENFORCEMENT.md`** — one **`FabricMenuLoreFormatting` / `FabricMenuItemPresentation`** path for all Granite menus; **42**-char wrap; **PlatformUtil** removed from stats list rendering; built-in **level progression** uses **empty** non-path slots; **`FabricMenuJavaPipelineScanTest`**. **`FabricAuraSkills-2.3.150.jar`**. Operator **screenshot** gate; **Bedrock** not tested.
 
 **Sprint 120 (repair — visual QA gate):** **`SPRINT_120_MENU_PRESENTATION_REPAIR_GATE.md`** corrects Sprint **119** screenshot failures (Stat Info, Sources, Abilities, Leaderboard, shared title/lore/back/filler/tooltip rules). **Done** means **Gradle verify PASS** and **operator screenshot PASS**, not compile-only. **`FabricAuraSkills-2.3.149.jar`**.

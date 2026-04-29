@@ -37,7 +37,7 @@ class FabricStatInfoTemplateSupportStatPanelTest {
     void backItemIsNotStatPanel() {
         GraniteTemplateItem def = new GraniteTemplateItem(
                 List.of(45),
-                "minecraft:arrow",
+                "minecraft:iron_door",
                 Optional.empty(),
                 List.of(),
                 OptionalInt.empty(),

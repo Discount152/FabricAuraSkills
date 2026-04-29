@@ -6,9 +6,7 @@ id: level_progression
 title: "{skill_display}"
 rows: 6
 
-fill:
-  material: minecraft:glass_pane
-  name: " "
+# Sprint 122: no global glass fill — empty slots stay empty.
 
 items:
   level:
@@ -59,7 +57,7 @@ items:
       - "<gray>Passives and mana abilities</gray>"
     action: open_abilities
   back:
-    material: minecraft:arrow
+    material: minecraft:iron_door
     slot: 45
     name: "<white>Back</white>"
     lore:

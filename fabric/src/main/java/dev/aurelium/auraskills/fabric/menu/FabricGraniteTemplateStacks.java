@@ -15,6 +15,8 @@ import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -27,7 +29,15 @@ import java.util.Optional;
  */
 public final class FabricGraniteTemplateStacks {
 
-    private FabricGraniteTemplateStacks() {
+    private FabricGraniteTemplateStacks() {}
+
+    /**
+     * Sprint 122: placeholder-expanded display names that are null, empty, or only whitespace should use
+     * {@link FabricMenuItemPresentation#applyQuietFiller} instead of {@link Text#literal} on a lone space (avoids
+     * vanilla item names / tooltips on glass fillers).
+     */
+    public static boolean isBlankTemplateDisplayName(@Nullable String expanded) {
+        return expanded == null || expanded.isBlank();
     }
 
     /**
@@ -103,11 +113,18 @@ public final class FabricGraniteTemplateStacks {
         ItemStack stack = new ItemStack(item.get(), 1);
         if (f.displayName().isPresent()) {
             String name = GraniteTemplatePlaceholders.expandAllKeysLongestFirst(f.displayName().get(), ph);
-            Optional<Text> line = toLiteralNoUnresolved(name, plugin, menuLogName, "fill.name");
-            if (line.isEmpty()) {
-                return Optional.empty();
+            if (isBlankTemplateDisplayName(name)) {
+                FabricMenuItemPresentation.applyQuietFiller(stack);
+            } else {
+                Optional<Text> line = toLiteralNoUnresolved(name, plugin, menuLogName, "fill.name");
+                if (line.isEmpty()) {
+                    return Optional.empty();
+                }
+                stack.set(DataComponentTypes.ITEM_NAME, line.get());
+                FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(stack);
             }
-            stack.set(DataComponentTypes.ITEM_NAME, line.get());
+        } else {
+            FabricMenuItemPresentation.applyQuietFiller(stack);
         }
         return Optional.of(stack);
     }
@@ -127,11 +144,15 @@ public final class FabricGraniteTemplateStacks {
 
         if (item.displayName().isPresent()) {
             String name = GraniteTemplatePlaceholders.expandAllKeysLongestFirst(item.displayName().get(), ph);
-            Optional<Text> line = toLiteralNoUnresolved(name, plugin, menuLogName, itemLogPath + ".name");
-            if (line.isEmpty()) {
-                return Optional.empty();
+            if (isBlankTemplateDisplayName(name)) {
+                FabricMenuItemPresentation.applyQuietFiller(stack);
+            } else {
+                Optional<Text> line = toLiteralNoUnresolved(name, plugin, menuLogName, itemLogPath + ".name");
+                if (line.isEmpty()) {
+                    return Optional.empty();
+                }
+                stack.set(DataComponentTypes.ITEM_NAME, line.get());
             }
-            stack.set(DataComponentTypes.ITEM_NAME, line.get());
         }
 
         List<Text> loreLines = new ArrayList<>();
@@ -151,6 +172,7 @@ public final class FabricGraniteTemplateStacks {
             stack.set(DataComponentTypes.LORE, new LoreComponent(loreLines));
         }
         FabricStatInfoItemComponents.applyCustomModelData(stack, item.customModelData());
+        FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(stack);
         return Optional.of(stack);
     }
 }

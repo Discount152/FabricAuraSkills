@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.151
+
+### Changes
+
+- **Fabric — Sprint 122 targeted runtime menu fixes (post-2.3.150 audit):** **`FabricTextFormatter`** maps legacy **`&n` / `§n`** to MiniMessage **`<underlined>`** (not invalid **`<underline>`**). **`FabricGraniteTemplateStacks`** treats **`null`**, empty, space-only, and whitespace-only template display names as blank and routes them through **`FabricMenuItemPresentation.applyQuietFiller`** (no named pane hover). **Bundled Granite templates** (`assets/auraskills/granite/templates/*.yml`): removed global **glass** / **gray stained glass** fill blocks so empty slots stay **empty** (no item, no hover); **`stats.yml`** and **`level_progression.yml`** **back** rows use **`minecraft:iron_door`** (arrows remain on paging only). **`FabricAbilitiesTemplateSupport`**: ability and mana body descriptions appended in Java via **`FabricMenuLoreFormatting.appendWrappedFormattedLore`** at **42** characters (headers stay in YAML). **Built-in embedded menus** (`menus/skills.yml`, `stats.yml`, `stat_info.yml`, **`level_progression.yml`**) and **`FabricMenuItemDefinitions.DEFAULT_BACK_ITEM_ID`** use **`minecraft:iron_door`** for **Back**; arrows remain **only** for paging. **Tests:** **`FabricTextFormatterTest`** underline assertions; **`FabricSprint122RuntimeMenuRegressionTest`** (no forbidden glass substrings in bundled templates, embedded menu back id, blank display-name helper); **`FabricMenuLoreFormattingTest`** multiline wrap guard. **Docs:** **`fabric/SPRINT_122_TARGETED_RUNTIME_MENU_FIXES.md`**, **`fabric/MENU_AND_COMMANDS_PORT.md`**, parity markdown touch-up. **`projectVersion` 2.3.150 → 2.3.151**. **Build:** `.\gradlew.bat -PfabricOnly=true :granitelib-fabric:test :fabric:test :fabric:build verifyFabricReleaseBundle`. **Operator in-game checklist** is the acceptance gate for screenshot regressions; **Bedrock/Geyser**, **Slate/MenuFileManager**, and **leaderboard/abilities redesign** remain explicitly out of scope.
+
 ## 2.3.150
 
 ### Changes

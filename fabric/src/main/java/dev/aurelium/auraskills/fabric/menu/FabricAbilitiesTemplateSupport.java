@@ -19,6 +19,8 @@ import dev.granitelib.fabric.template.GraniteTemplateActionNames;
 import dev.granitelib.fabric.template.GraniteTemplateItems;
 import dev.granitelib.fabric.template.model.GraniteMenuTemplate;
 import dev.granitelib.fabric.template.model.GraniteTemplateItem;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.LoreComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -206,7 +208,12 @@ public final class FabricAbilitiesTemplateSupport {
             if (rowStack.isEmpty()) {
                 return false;
             }
-            passiveStacks.add(rowStack.get());
+            ItemStack passiveBuilt = rowStack.get();
+            appendWrappedGrayDescriptionLines(
+                    plugin,
+                    passiveBuilt,
+                    passiveDescriptionPlain(plugin, am, user, ability, lo, skill));
+            passiveStacks.add(passiveBuilt);
         }
 
         Optional<ItemStack> manaStack = Optional.empty();
@@ -219,7 +226,10 @@ public final class FabricAbilitiesTemplateSupport {
             if (ms.isEmpty()) {
                 return false;
             }
-            manaStack = ms;
+            ItemStack manaBuilt = ms.get();
+            appendWrappedGrayDescriptionLines(
+                    plugin, manaBuilt, manaDescriptionPlain(plugin, mm, user, mana, lo, skill));
+            manaStack = Optional.of(manaBuilt);
         }
 
         Optional<ItemStack> backStack =
@@ -458,6 +468,26 @@ public final class FabricAbilitiesTemplateSupport {
             return ManaAbilities.LIGHTNING_BLADE.optionDouble("base_duration", 5.0);
         }
         return mana.getValue(1);
+    }
+
+    /**
+     * Sprint 122: body descriptions are not in Granite YAML lore rows — appended here so
+     * {@link FabricMenuLoreFormatting#appendWrappedFormattedLore} can wrap at 42 characters.
+     */
+    private static void appendWrappedGrayDescriptionLines(
+            FabricAuraSkills plugin, ItemStack stack, String plainDescription) {
+        if (plainDescription == null || plainDescription.isBlank()) {
+            return;
+        }
+        List<Text> lore = new ArrayList<>();
+        var existing = stack.get(DataComponentTypes.LORE);
+        if (existing != null) {
+            lore.addAll(existing.lines());
+        }
+        FabricMenuLoreFormatting.appendWrappedFormattedLore(
+                plugin, lore, "§8" + plainDescription, 16, 8000);
+        stack.set(DataComponentTypes.LORE, new LoreComponent(lore));
+        FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(stack);
     }
 
     private static String descToPlain(String desc, int maxLines) {

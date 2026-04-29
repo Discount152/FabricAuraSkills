@@ -5,9 +5,7 @@ id: unclaimed_items
 title: "Unclaimed"
 rows: 6
 
-fill:
-  material: minecraft:gray_stained_glass_pane
-  name: " "
+# Sprint 122: no global glass fill — empty slots stay empty.
 
 items:
   claimable:

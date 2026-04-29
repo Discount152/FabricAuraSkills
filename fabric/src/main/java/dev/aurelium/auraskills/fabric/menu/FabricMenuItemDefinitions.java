@@ -20,7 +20,7 @@ public final class FabricMenuItemDefinitions {
 
     public static final String DEFAULT_LIST_ITEM_ID = "minecraft:book";
     public static final String DEFAULT_MAIN_ITEM_ID = "minecraft:book";
-    public static final String DEFAULT_BACK_ITEM_ID = "minecraft:arrow";
+    public static final String DEFAULT_BACK_ITEM_ID = "minecraft:iron_door";
 
     public record Resolved(String listItemId, String mainItemId, String backItemId) {
         public static Resolved fromSlice(FabricMenuYamlSlice s) {

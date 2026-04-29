@@ -15,7 +15,7 @@ granite:
   items:
     list: "minecraft:book"
     main: "minecraft:book"
-    back: "minecraft:arrow"
+    back: "minecraft:iron_door"
   format:
     main_title: "auraskills.granite.menu.stat_info_main_title"
     lore_value: "auraskills.granite.menu.stat_info_lore_value"

@@ -5,9 +5,7 @@ id: abilities
 title: "{skill_display}"
 rows: 6
 
-fill:
-  material: minecraft:gray_stained_glass_pane
-  name: " "
+# Sprint 122: no global glass fill — empty slots stay empty.
 
 items:
   ability:
@@ -32,7 +30,6 @@ items:
       - "§7{ability_unlock_level}"
       - "§f{ability_status}"
       - ""
-      - "§8{ability_description}"
     action: ability_row
 
   mana_ability:
@@ -43,7 +40,6 @@ items:
       - "§7Mana ability"
       - "§f{mana_ability_status}"
       - ""
-      - "§8{mana_ability_description}"
     action: mana_ability_row
 
   back:

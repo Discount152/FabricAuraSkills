@@ -20,7 +20,7 @@ granite:
   items:
     list: "minecraft:book"
     main: "minecraft:book"
-    back: "minecraft:arrow"
+    back: "minecraft:iron_door"
   # When entries do not fit in [list_start, min(list_end, 45)), prev/next use these top slots; must not overlap the list.
   paging:
     prev_slot: 45

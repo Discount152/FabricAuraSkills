@@ -31,7 +31,7 @@ class FabricAbilitiesBundledTemplateParseTest {
             GraniteMenuTemplate t = GraniteMenuTemplateYamlLoader.loadString(yaml, "abilities.yml");
             assertEquals("abilities", t.id());
             assertEquals(6, t.rows());
-            assertTrue(t.fill().isPresent());
+            assertTrue(t.fill().isEmpty(), "Sprint 122: bundled abilities must not use global glass fill");
 
             GraniteTemplateItem ability = t.items().get("ability");
             assertNotNull(ability);

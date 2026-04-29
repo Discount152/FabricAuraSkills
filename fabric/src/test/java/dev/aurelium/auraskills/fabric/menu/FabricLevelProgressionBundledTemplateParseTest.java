@@ -50,7 +50,7 @@ class FabricLevelProgressionBundledTemplateParseTest {
             GraniteMenuTemplate t = GraniteMenuTemplateYamlLoader.loadString(yaml, "level_progression.yml");
             assertEquals("level_progression", t.id());
             assertEquals(6, t.rows());
-            assertTrue(t.fill().isPresent());
+            assertTrue(t.fill().isEmpty(), "Sprint 122: bundled level_progression must not use global glass fill");
 
             GraniteTemplateItem level = t.items().get("level");
             assertNotNull(level);
