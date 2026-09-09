@@ -7,6 +7,7 @@ import dev.aurelium.auraskills.common.message.MessageProvider;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.FabricSourceMenuItems;
 import dev.aurelium.auraskills.fabric.command.FabricSourceSortType;
+import dev.aurelium.auraskills.fabric.command.FabricSourcesRuntimeDiagnostics;
 import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import dev.granitelib.fabric.menu.GraniteContainerMenus;
 import dev.granitelib.fabric.template.GraniteTemplateActionNames;
@@ -185,7 +186,7 @@ public final class FabricSourcesTemplateSupport {
         List<ItemStack> rowStacks = new ArrayList<>(sub.size());
         for (XpSource src : sub) {
             Map<String, String> rowPh = new HashMap<>(globalPh);
-            addSourcePlaceholders(rowPh, src, locale);
+            addSourcePlaceholders(rowPh, src, locale, plugin);
             Optional<ItemStack> rowStack =
                     FabricGraniteTemplateStacks.buildTemplateItemStack(
                             sourceDef, rowPh, plugin, MENU_LOG, "items.source.row");
@@ -242,6 +243,7 @@ public final class FabricSourcesTemplateSupport {
                 player,
                 pageTitle,
                 inv -> {
+                    List<FabricSourcesRuntimeDiagnostics.PlannedRow> plannedRows = new ArrayList<>(rowStacks.size());
                     if (fillBase.isPresent()) {
                         ItemStack fill = fillBase.get();
                         for (int s = 0; s < FabricMenuSlotLayout.TOP_SLOTS; s++) {
@@ -251,7 +253,10 @@ public final class FabricSourcesTemplateSupport {
                         FabricMenuInventoryPrep.clearAllSlots(inv);
                     }
                     for (int i = 0; i < rowStacks.size(); i++) {
-                        inv.setStack(sourceDef.slots().get(i), rowStacks.get(i).copy());
+                        int slot = sourceDef.slots().get(i);
+                        ItemStack row = rowStacks.get(i).copy();
+                        plannedRows.add(FabricSourcesRuntimeDiagnostics.plannedRow(slot, row));
+                        inv.setStack(slot, row);
                     }
                     inv.setStack(back, backStack.get().copy());
                     inv.setStack(sortS, sortStack.get().copy());
@@ -259,6 +264,7 @@ public final class FabricSourcesTemplateSupport {
                         fPrevOpt.ifPresent(st -> inv.setStack(prev, st.copy()));
                         fNextOpt.ifPresent(st -> inv.setStack(next, st.copy()));
                     }
+                    FabricSourcesRuntimeDiagnostics.capture(skill, plannedRows, inv);
                 },
                 (topSlot, pl, b, t) -> {
                     if (topSlot == back) {
@@ -343,14 +349,9 @@ public final class FabricSourcesTemplateSupport {
         return m;
     }
 
-    private static void addSourcePlaceholders(Map<String, String> m, XpSource s, Locale locale) {
-        String display = s.getDisplayName(locale);
-        if ("!!REMOVE!!".equals(display)) {
-            String key = "auraskills.granite.menu.sources_placeholder_name";
-            String v = net.minecraft.util.Language.getInstance().get(key);
-            display =
-                    (v == null || v.isBlank() || v.equals(key)) ? "Unknown source" : v;
-        }
+    private static void addSourcePlaceholders(
+            Map<String, String> m, XpSource s, Locale locale, FabricAuraSkills plugin) {
+        String display = FabricXpSourceMenuDisplay.effectiveRowTitle(plugin, s, locale);
         m.put("source_name", display);
         m.put("source_type", FabricSourceTypeLabels.playerFacingTypeLine(s));
         String unit = s.getUnitName(locale);

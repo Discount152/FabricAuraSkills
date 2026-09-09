@@ -157,13 +157,16 @@ public class SkillLoader {
 
     private ImmutableList<XpSource> loadSources(Skill skill) {
         if (skill instanceof Skills auraSkill) {
-            // Load sources from file for included skill
-            return ImmutableList.copyOf(sourceLoader.loadSources(auraSkill, plugin.getPluginFolder(), true));
+            SourceLoader.SourceLoadResult result = sourceLoader.loadSourcesDetailed(auraSkill, plugin.getPluginFolder(), true);
+            plugin.getSkillManager().registerSourceDiagnostics(skill, result.diagnostics());
+            return ImmutableList.copyOf(result.sources());
         } else if (skill instanceof CustomSkill customSkill) {
             // Load sources of custom skill using the content directory of its registry
             NamespacedRegistry registry = plugin.getApi().getNamespacedRegistry(customSkill.getId().getNamespace());
             if (registry != null) {
-                return ImmutableList.copyOf(sourceLoader.loadSources(customSkill, registry.getContentDirectory(), false));
+                SourceLoader.SourceLoadResult result = sourceLoader.loadSourcesDetailed(customSkill, registry.getContentDirectory(), false);
+                plugin.getSkillManager().registerSourceDiagnostics(skill, result.diagnostics());
+                return ImmutableList.copyOf(result.sources());
             }
         }
         return ImmutableList.of();

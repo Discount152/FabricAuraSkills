@@ -28,6 +28,17 @@ public final class FabricFishingCatchHolder {
         return s;
     }
 
+    /** Non-destructive read for diagnostics (Sprint 135); does not replace {@link #take}. */
+    public static @Nullable ItemStack peek() {
+        ItemStack s = PENDING.get();
+        return s == null ? null : s.copy();
+    }
+
+    /** Alias of {@link #peek()} for diagnostics/tests (Sprint 136); never consumes the pending catch. */
+    public static @Nullable ItemStack peekCaughtStack() {
+        return peek();
+    }
+
     public static void clear() {
         PENDING.remove();
     }

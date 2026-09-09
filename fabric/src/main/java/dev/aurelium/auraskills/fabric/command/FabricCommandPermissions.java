@@ -69,6 +69,7 @@ public final class FabricCommandPermissions {
     public static final String XP_SET = "auraskills.command.xp.set";
 
     public static final String XP_REMOVE = "auraskills.command.xp.remove";
+    public static final String XP_DIAG = "auraskills.command.xpdiag";
 
     /**
      * Read-only: {@code /skilllevel view <player> <skill>} — not a separate Bukkit node; use a

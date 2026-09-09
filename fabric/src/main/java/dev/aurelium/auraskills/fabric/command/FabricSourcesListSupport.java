@@ -2,6 +2,7 @@ package dev.aurelium.auraskills.fabric.command;
 
 import dev.aurelium.auraskills.api.source.XpSource;
 import dev.aurelium.auraskills.common.skill.LoadedSkill;
+import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,17 +22,14 @@ public final class FabricSourcesListSupport {
      * Copy of the skill’s sources, with invalid-version entries removed, sorted by {@code sort} for
      * {@code lo}. May be empty if there were none or all were pruned.
      */
-    public static List<XpSource> buildSorted(LoadedSkill loaded, FabricSourceSortType sort, Locale lo) {
+    public static List<XpSource> buildSorted(
+            FabricAuraSkills plugin, LoadedSkill loaded, FabricSourceSortType sort, Locale lo) {
         List<XpSource> list = new ArrayList<>(loaded.sources());
         if (list.isEmpty()) {
             return list;
         }
         list.removeIf(s -> !s.isVersionValid());
-        list.removeIf(s -> {
-            String dn = s.getDisplayName(lo);
-            return "!!REMOVE!!".equals(dn) || "!REMOVE!!".equals(dn);
-        });
-        Collections.sort(list, sort.comparator(lo));
+        Collections.sort(list, sort.comparator(lo, plugin));
         return list;
     }
 }

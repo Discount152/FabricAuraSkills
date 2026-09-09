@@ -2,16 +2,12 @@ package dev.aurelium.auraskills.fabric.menu;
 
 import dev.aurelium.auraskills.api.ability.Ability;
 import dev.aurelium.auraskills.api.ability.AbstractAbility;
-import dev.aurelium.auraskills.api.mana.ManaAbilities;
 import dev.aurelium.auraskills.api.mana.ManaAbility;
 import dev.aurelium.auraskills.api.skill.Skill;
-import dev.aurelium.auraskills.api.util.NumberUtil;
 import dev.aurelium.auraskills.common.ability.AbilityManager;
-import dev.aurelium.auraskills.common.ability.AbilityUtil;
 import dev.aurelium.auraskills.common.mana.ManaAbilityManager;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.common.util.math.RomanNumber;
-import dev.aurelium.auraskills.common.util.text.TextUtil;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import dev.granitelib.fabric.menu.GraniteContainerMenus;
@@ -168,16 +164,12 @@ public final class FabricAbilitiesMenuGui {
         if (!unlocked) {
             lore.add(FabricGraniteText.key("auraskills.granite.menu.abilities_state_locked"));
             String desc =
-                    TextUtil.replace(
-                            am.getBaseDescription(ability, user, false),
-                            "{value}",
-                            NumberUtil.format1(ability.getValue(1)),
-                            "{value_2}",
-                            NumberUtil.format1(ability.getSecondaryValue(1)),
-                            "{chance_value}",
-                            am.getChanceValue(ability, 1),
-                            "{guaranteed_value}",
-                            am.getGuaranteedValue(ability, 1));
+                    FabricAbilityMenuLore.passiveAbilityDescriptionBodyPlain(
+                            plugin,
+                            am,
+                            user,
+                            ability,
+                            FabricAbilityMenuLore.PassiveBodyMode.LOCKED);
             lore.addAll(splitDesc(plugin, desc, 6, FabricMenuLoreFormatting.DEFAULT_MENU_LORE_WRAP_WIDTH));
             lore.add(
                     FabricGraniteText.key(
@@ -190,27 +182,22 @@ public final class FabricAbilitiesMenuGui {
                             "auraskills.granite.menu.abilities_state_level",
                             RomanNumber.toRoman(lvl, plugin)));
             if (isNotMaxed(user, ability)) {
-                String format = "{current} → {next}";
                 String desc =
-                        TextUtil.replace(
-                                am.getBaseDescription(ability, user, false),
-                                "{value}",
-                                AbilityUtil.getUpgradeValue(ability, lvl, format),
-                                "{value_2}",
-                                AbilityUtil.getUpgradeValue2(ability, lvl, format),
-                                "{chance_value}",
-                                am.getChanceValue(ability, lvl),
-                                "{guaranteed_value}",
-                                am.getGuaranteedValue(ability, lvl));
+                        FabricAbilityMenuLore.passiveAbilityDescriptionBodyPlain(
+                                plugin,
+                                am,
+                                user,
+                                ability,
+                                FabricAbilityMenuLore.PassiveBodyMode.UPGRADING);
                 lore.addAll(splitDesc(plugin, desc, 5, FabricMenuLoreFormatting.DEFAULT_MENU_LORE_WRAP_WIDTH));
             } else {
                 String desc =
-                        TextUtil.replace(
-                                am.getBaseDescription(ability, user, false),
-                                "{value}",
-                                NumberUtil.format1(ability.getValue(lvl)),
-                                "{value_2}",
-                                NumberUtil.format1(ability.getSecondaryValue(lvl)));
+                        FabricAbilityMenuLore.passiveAbilityDescriptionBodyPlain(
+                                plugin,
+                                am,
+                                user,
+                                ability,
+                                FabricAbilityMenuLore.PassiveBodyMode.MAXED);
                 lore.addAll(splitDesc(plugin, desc, 5, FabricMenuLoreFormatting.DEFAULT_MENU_LORE_WRAP_WIDTH));
                 lore.add(FabricGraniteText.key("auraskills.granite.menu.abilities_maxed"));
             }
@@ -241,12 +228,12 @@ public final class FabricAbilitiesMenuGui {
         if (!unlocked) {
             lore.add(FabricGraniteText.key("auraskills.granite.menu.abilities_state_locked"));
             String desc =
-                    TextUtil.replace(
-                            mm.getBaseDescription(mana, user, false),
-                            "{value}",
-                            NumberUtil.format1(mana.getDisplayValue(1)),
-                            "{duration}",
-                            NumberUtil.format1(manaBaseDuration(mana)));
+                    FabricAbilityMenuLore.manaAbilityDescriptionBodyPlain(
+                            plugin,
+                            mm,
+                            user,
+                            mana,
+                            FabricAbilityMenuLore.ManaBodyMode.LOCKED);
             lore.addAll(splitDesc(plugin, desc, 5, FabricMenuLoreFormatting.DEFAULT_MENU_LORE_WRAP_WIDTH));
             lore.add(
                     FabricGraniteText.key(
@@ -259,23 +246,22 @@ public final class FabricAbilitiesMenuGui {
                             "auraskills.granite.menu.abilities_state_level",
                             RomanNumber.toRoman(lvl, plugin)));
             if (isNotMaxed(user, mana)) {
-                String format = "{current} → {next}";
                 String desc =
-                        TextUtil.replace(
-                                mm.getBaseDescription(mana, user, false),
-                                "{value}",
-                                AbilityUtil.getUpgradeValue(mana, lvl, format),
-                                "{duration}",
-                                AbilityUtil.getUpgradeDuration(mana, lvl, format));
+                        FabricAbilityMenuLore.manaAbilityDescriptionBodyPlain(
+                                plugin,
+                                mm,
+                                user,
+                                mana,
+                                FabricAbilityMenuLore.ManaBodyMode.UPGRADING);
                 lore.addAll(splitDesc(plugin, desc, 5, FabricMenuLoreFormatting.DEFAULT_MENU_LORE_WRAP_WIDTH));
             } else {
                 String desc =
-                        TextUtil.replace(
-                                mm.getBaseDescription(mana, user, false),
-                                "{value}",
-                                NumberUtil.format1(mana.getDisplayValue(lvl)),
-                                "{duration}",
-                                NumberUtil.format1(AbilityUtil.getDuration(mana, lvl)));
+                        FabricAbilityMenuLore.manaAbilityDescriptionBodyPlain(
+                                plugin,
+                                mm,
+                                user,
+                                mana,
+                                FabricAbilityMenuLore.ManaBodyMode.MAXED);
                 lore.addAll(splitDesc(plugin, desc, 5, FabricMenuLoreFormatting.DEFAULT_MENU_LORE_WRAP_WIDTH));
                 lore.add(FabricGraniteText.key("auraskills.granite.menu.abilities_maxed"));
             }
@@ -284,13 +270,6 @@ public final class FabricAbilitiesMenuGui {
                 DataComponentTypes.LORE, new LoreComponent(lore.stream().toList()));
         FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(stack);
         return stack;
-    }
-
-    private static double manaBaseDuration(ManaAbility mana) {
-        if (mana == ManaAbilities.LIGHTNING_BLADE) {
-            return ManaAbilities.LIGHTNING_BLADE.optionDouble("base_duration", 5.0);
-        }
-        return mana.getValue(1);
     }
 
     private static ItemStack passiveAbilityIcon(Ability ability, boolean unlocked) {

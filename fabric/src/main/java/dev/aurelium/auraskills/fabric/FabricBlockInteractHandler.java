@@ -41,6 +41,14 @@ public final class FabricBlockInteractHandler {
             if (world.isClient() || !(player instanceof ServerPlayerEntity sp) || !(world instanceof ServerWorld sw)) {
                 return ActionResult.PASS;
             }
+            FabricCropPreUseCapture.record(
+                    sp,
+                    sw,
+                    hitResult.getBlockPos(),
+                    sw.getBlockState(hitResult.getBlockPos()),
+                    "before_useblock_handler",
+                    hand,
+                    sp.getStackInHand(hand));
             onUseBlock(plugin, sp, sw, hand, hitResult);
             return ActionResult.PASS;
         });
@@ -49,7 +57,7 @@ public final class FabricBlockInteractHandler {
     private static void onUseBlock(FabricAuraSkills plugin, ServerPlayerEntity sp, ServerWorld sw, Hand hand,
             BlockHitResult hitResult) {
         BlockPos pos = hitResult.getBlockPos();
-        BlockState state = sw.getBlockState(pos);
+        BlockState state = FabricCropPreUseCapture.resolveBlockStateForUse(sp, sw, pos);
         if (state.isAir()) {
             return;
         }

@@ -1,11 +1,14 @@
 package dev.aurelium.auraskills.fabric.command;
 
 import dev.aurelium.auraskills.api.source.XpSource;
+import dev.aurelium.auraskills.fabric.FabricAuraSkills;
+import dev.aurelium.auraskills.fabric.menu.FabricXpSourceMenuDisplay;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * Matches Bukkit {@code SourcesMenu.SortType} / {@code @sort_types} (lowercase names in the
@@ -36,15 +39,21 @@ public enum FabricSourceSortType {
         };
     }
 
-    public Comparator<XpSource> comparator(Locale locale) {
+    public Comparator<XpSource> comparator(Locale locale, FabricAuraSkills plugin) {
+        Function<XpSource, String> alphabeticalKey =
+                s -> FabricXpSourceMenuDisplay.effectiveRowTitle(plugin, s, locale);
+        return comparator(locale, alphabeticalKey);
+    }
+
+    Comparator<XpSource> comparator(Locale locale, Function<XpSource, String> alphabeticalKey) {
         return switch (this) {
             case ASCENDING -> Comparator.comparingDouble(XpSource::getXp);
             case DESCENDING -> Comparator.comparingDouble(XpSource::getXp).reversed();
             case ALPHABETICAL ->
-                    Comparator.comparing(s -> s.getDisplayName(locale), String::compareTo);
+                    Comparator.comparing(alphabeticalKey, Comparator.nullsLast(String::compareTo));
             case REVERSE_ALPHABETICAL ->
-                    Comparator.comparing(
-                            s -> s.getDisplayName(locale), (a, b) -> b.compareTo(a));
+                    Comparator.comparing(alphabeticalKey, Comparator.nullsLast(String::compareTo))
+                            .reversed();
         };
     }
 }

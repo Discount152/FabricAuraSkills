@@ -231,7 +231,7 @@ Explicit registrations:
 | `FabricStatisticXpHandler` | Bukkit `StatisticLeveler` timer + delta; **`FabricStatisticSourceResolver`** — `Stats.CUSTOM` (incl. `mob_kills` / `damage_dealt` / deaths / shield-damage), typed **`killed/`**, **`killed_by/`**, **`dropped/`**, plus mined/used/broken/picked_up (Sprint 10). |
 | `FabricJumpingXpHandler` | End-tick jump impulse matching (Bukkit `JumpingLeveler`); **Sprint 13** — `shouldBlockXp`, spectator + climb skip. **Partial** vs `PlayerMoveEvent` + Bukkit `LevelerContext` location blocks. |
 
-**Fishing:** **Not** registered here. Documented in Javadoc: implemented by **`FishingBobberEntityMixin`** calling **`FabricFishingXpHandler.onFishCaughtStat`** when vanilla increments **`Stats.FISH_CAUGHT`** during bobber `use`.
+**Fishing:** **Not** registered here. Documented in Javadoc: implemented by **`FishingBobberEntityMixin`** at **`FishingBobberEntity#use`** **RETURN** calling **`FabricFishingXpHandler.onBobberUseReturn`** (Sprint 136; no **`PlayerEntity#increaseStat`** mixin for fishing).
 
 **Also mixin-driven (no `registerFabricXpHandlers` call):** **`LivingEntityConsumeMixin`** → **`FabricItemConsumeHandler`** (Sprint 17: **`onConsumeItemCommit`**, spectator, source-type gate, `consumeItem` = commit); **`PotionEntityMixin`** → **`FabricPotionSplashHandler`** (Sprint 18: empty-effect parity, spectator, `POTION_SPLASH` enabled, splash+lingering on same entity); **`ForgingScreenHandlerMixin`** → **`FabricAnvilXpHandler`** (Sprint 16: **`FabricAnvilTakeContext`** at `onTake` HEAD for output + level cost, spectator); **`ScreenHandlerGrindstoneXpMixin`** (grindstone-only branch on **`ScreenHandler.onSlotClick`**) → **`FabricGrindstoneXpHandler`** (Sprint 15: Bukkit **`failsClickChecks`**-style click gates, spectator); **`EnchantmentScreenHandlerMixin`** → **`FabricEnchantingXpHandler`** (Sprint 14: **`enchantmentPower`**-based level cost for `exp_requirement` unit, spectator skip); **`BrewingStandBlockEntityMixin`** → **`FabricBrewingXpHandler`** (`BREW` trigger only; see backlog for limits).
 
@@ -258,7 +258,7 @@ Fabric has no Bukkit fish event. The port hooks **vanilla** behavior inside **`F
 |-----------|---------|
 | **`@ModifyArgs`** on `ItemEntity` **5-arg** `<init>(World, double×3, ItemStack)` | Captures the **first** spawned item stack into **`FabricFishingCatchHolder`** (arg index **4** = `ItemStack`). |
 | **`@ModifyArgs`** on `ItemEntity` **8-arg** `<init>(World, double×3, ItemStack, double×3)` | Same for alternate constructor (same arg index **4**). |
-| **`@Redirect`** on `PlayerEntity.increaseStat(Stat, int)` inside `use` | After calling `player.increaseStat(stat, amount)`, if stat is **`FISH_CAUGHT`** and player is **`ServerPlayerEntity`**, calls **`FabricFishingXpHandler.onFishCaughtStat(...)`**. |
+| **`FishingBobberEntity#use` RETURN** | Calls **`FabricFishingXpHandler.onBobberUseReturn`** after vanilla catch handling (see **`SPRINT_136_FISHING_BOBBER_USE_HOOK.md`**). No **`PlayerEntity.increaseStat`** fishing hook. |
 | **`@Inject` at `use` RETURN** | **`FabricFishingCatchHolder.clear()`** so thread-local state does not leak between uses. |
 
 **Fragility:** `ordinal = 0` and exact **`INVOKE` descriptor** strings must match Yarn for **1.21.11**. If Mojang adds another `ItemEntity` construction before the “catch” in `use`, ordinals may need adjustment.

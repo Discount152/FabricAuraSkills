@@ -51,6 +51,9 @@ public final class FabricBrigadierCommands {
         dispatcher.register(aliasSkillsRoot("skill"));
         dispatcher.register(FabricManaCommands.manaCommandRoot());
         dispatcher.register(FabricSkillLevelCommands.skillLevelRoot());
+        // /xpdiag is not a vanilla command; register it top-level too so admins do not have to
+        // remember the /auraskills prefix (Sprint 146).
+        dispatcher.register(FabricXpDiagnosticsCommands.xpDiagRoot());
         dispatcher.register(FabricClaimItemsCommands.claimItemsLiteral());
         dispatcher.register(FabricSourcesCommands.sourcesLiteral());
         dispatcher.register(FabricResetHealthCommands.resetHealthLiteral());
@@ -95,6 +98,7 @@ public final class FabricBrigadierCommands {
                 .then(FabricItemArmorModifierCommands.itemCommandRoot())
                 .then(FabricItemArmorModifierCommands.armorCommandRoot())
                 .then(FabricXpCommands.xpRoot())
+                .then(FabricXpDiagnosticsCommands.xpDiagRoot())
                 .then(FabricManaCommands.manaCommandRoot())
                 .then(FabricSkillLevelCommands.skillLevelRoot())
                 .then(FabricManaAbilityCommands.manaAbilityRoot())
@@ -153,6 +157,7 @@ public final class FabricBrigadierCommands {
                 .then(FabricManaAbilityCommands.manaAbilityRoot())
                 .then(FabricAntiAfkCommands.antiafkRoot())
                 .then(FabricXpCommands.xpRoot())
+                .then(FabricXpDiagnosticsCommands.xpDiagRoot())
                 .then(FabricOpenMenuCommands.openMenuSubcommand())
                 .then(FabricLeaderboardCommands.topRoot())
                 .then(FabricLeaderboardCommands.skillTopRoot())

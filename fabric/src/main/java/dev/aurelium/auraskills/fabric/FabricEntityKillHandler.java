@@ -5,6 +5,7 @@ import dev.aurelium.auraskills.api.source.type.DamageXpSource.DamageCause;
 import dev.aurelium.auraskills.api.source.type.EntityXpSource;
 import dev.aurelium.auraskills.api.source.type.EntityXpSource.EntityDamagers;
 import dev.aurelium.auraskills.common.source.SourceTypes;
+import dev.aurelium.auraskills.common.user.User;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -52,8 +53,10 @@ public final class FabricEntityKillHandler {
                     return;
                 }
                 double xp = FabricSpawnerMobTracker.xpMultiplier(entity, skill) * source.getXp();
-                var user = plugin.getUserManager().getUser(player.getUuid());
-                plugin.getLevelManager().addXp(user, skill, source, xp);
+                User user = FabricXpUserResolution.resolve(plugin, player);
+                if (user != null) {
+                    plugin.getLevelManager().addXp(user, skill, source, xp);
+                }
             } finally {
                 FabricSpawnerMobTracker.clear(entity);
             }

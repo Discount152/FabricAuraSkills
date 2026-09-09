@@ -25,7 +25,9 @@ public final class FabricUserManager extends UserManager {
         if (existing != null) {
             return existing;
         }
-        return createNewUser(player.getUuid(), new FabricPlayerRef(player));
+        User created = createNewUser(player.getUuid(), new FabricPlayerRef(player));
+        addUser(created);
+        return created;
     }
 
     @Override

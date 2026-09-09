@@ -89,7 +89,7 @@ final class FabricLevelProgressionMenuGui {
         int to = Math.min(from + FabricLevelProgressionLayout.PAGE_SIZE, levels.size());
         List<Integer> pageLevels = levels.subList(from, to);
 
-        Text title = FabricLevelProgressionMenuContent.builtInMenuTitle(msg, skill, locale, p, maxPage);
+        Text title = FabricMenuTitles.levelProgressionTitle(msg, skill, locale, p, maxPage);
 
         int userLevel = user.getSkillLevel(skill);
         double currentXp = user.getSkillXp(skill);
@@ -108,9 +108,9 @@ final class FabricLevelProgressionMenuGui {
                     "<white>Level </white><yellow>" + displayLevel + "</yellow>",
                     "items.level.name");
             List<Text> loreLines = new ArrayList<>();
-            loreLines.add(Text.literal(rowPh.get("level_status")));
+            loreLines.add(FabricMenuLoreFormatting.formatMenuLine(plugin, rowPh.get("level_status")));
             loreLines.add(Text.empty());
-            loreLines.add(Text.literal(rowPh.get("level_detail")));
+            loreLines.add(FabricMenuLoreFormatting.formatMenuLine(plugin, rowPh.get("level_detail")));
             st.set(DataComponentTypes.LORE, new LoreComponent(loreLines));
             FabricMenuPresentation.levelProgressionRowIcon(st, userLevel, displayLevel);
             FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(st);
@@ -123,8 +123,10 @@ final class FabricLevelProgressionMenuGui {
         int pSlot = FabricLevelProgressionLayout.SLOT_PREVIOUS_PAGE;
         int nSlot = FabricLevelProgressionLayout.SLOT_NEXT_PAGE;
 
-        ItemStack backStack = new ItemStack(Items.ARROW);
-        setMiniMessageItemName(plugin, backStack, "<white>Back</white>", "items.back");
+        ItemStack backStack = new ItemStack(Items.IRON_DOOR);
+        backStack.set(
+                DataComponentTypes.ITEM_NAME,
+                FabricGraniteText.key("auraskills.granite.menu.level_progression_back"));
         backStack.set(
                 DataComponentTypes.LORE,
                 new LoreComponent(
@@ -157,23 +159,31 @@ final class FabricLevelProgressionMenuGui {
         Optional<ItemStack> nextOpt = Optional.empty();
         if (maxPage > 0) {
             if (p > 0) {
-                ItemStack ps = new ItemStack(Items.ARROW);
-                setMiniMessageItemName(plugin, ps, "<yellow>Previous</yellow>", "items.previous");
-                ps.set(
-                        DataComponentTypes.LORE,
-                        new LoreComponent(
-                                List.of(FabricGraniteText.key("auraskills.granite.menu.paging_prev_lore"))));
-                FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(ps);
+                Text prevName =
+                        FabricGraniteTemplateStacks.toLiteralNoUnresolved(
+                                        "<yellow>Previous</yellow>",
+                                        plugin,
+                                        "level_progression.builtin",
+                                        "items.previous")
+                                .orElseGet(() -> Text.literal("Previous"));
+                ItemStack ps =
+                        FabricMenuItemPresentation.pageNavArrow(
+                                prevName,
+                                FabricGraniteText.key("auraskills.granite.menu.paging_prev_lore"));
                 prevOpt = Optional.of(ps);
             }
             if (p < maxPage) {
-                ItemStack ns = new ItemStack(Items.ARROW);
-                setMiniMessageItemName(plugin, ns, "<yellow>Next</yellow>", "items.next");
-                ns.set(
-                        DataComponentTypes.LORE,
-                        new LoreComponent(
-                                List.of(FabricGraniteText.key("auraskills.granite.menu.paging_next_lore"))));
-                FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(ns);
+                Text nextName =
+                        FabricGraniteTemplateStacks.toLiteralNoUnresolved(
+                                        "<yellow>Next</yellow>",
+                                        plugin,
+                                        "level_progression.builtin",
+                                        "items.next")
+                                .orElseGet(() -> Text.literal("Next"));
+                ItemStack ns =
+                        FabricMenuItemPresentation.pageNavArrow(
+                                nextName,
+                                FabricGraniteText.key("auraskills.granite.menu.paging_next_lore"));
                 nextOpt = Optional.of(ns);
             }
         }
@@ -230,6 +240,7 @@ final class FabricLevelProgressionMenuGui {
                                             User u = plugin.getUserManager().getUser(pl.getUuid());
                                             Locale lo = u != null ? u.getLocale() : plugin.getDefaultLanguage();
                                             if (FabricSourcesListSupport.buildSorted(
+                                                            plugin,
                                                             plugin.getSkillManager().getSkill(sk),
                                                             FabricSourceSortType.ASCENDING,
                                                             lo)

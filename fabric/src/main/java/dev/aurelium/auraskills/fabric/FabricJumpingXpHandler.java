@@ -4,6 +4,7 @@ import dev.aurelium.auraskills.api.skill.Skill;
 import dev.aurelium.auraskills.api.source.SkillSource;
 import dev.aurelium.auraskills.api.source.type.JumpingXpSource;
 import dev.aurelium.auraskills.common.source.SourceTypes;
+import dev.aurelium.auraskills.common.user.User;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -12,28 +13,20 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
- * Per–end-tick jump detection aligned with Bukkit {@code JumpingLeveler#handleJump}:
- * <ul>
- *   <li>Upward velocity ({@code vy &gt; 0}) and initial jump speed {0.42} + Jump Boost (amplifier × 0.1)
- *   <li>Previous tick “on ground” tracking (Bukkit {@code prevPlayersOnGround})
- *   <li>Block at feet is ladder → no count (Bukkit {@code Material.LADDER})
- *   <li>Not on ground and {@code vy} exactly equals expected jump impulse (vanilla jump, not knockback)
- *   <li>Interval counter (Bukkit {@code skillsJumps} metadata) before {@link JumpingXpSource#getInterval} awards
- * </ul>
- * Uses {@link ServerTickEvents#END_SERVER_TICK} instead of Bukkit {@code PlayerMoveEvent}; core velocity rules match.
- * <p>
- * <strong>Fabric hardening (Sprint 13):</strong> {@link FabricXpHandlerUtil#shouldBlockXp} (same gates as other
- * Fabric levelers where applicable), skip {@linkplain ServerPlayerEntity#isSpectator() spectators}, skip
- * {@linkplain net.minecraft.entity.LivingEntity#isClimbing() climbing} (reduces false positives not covered by the
- * ladder-at-feet check). Bukkit location-based XP blocks (WorldGuard, etc.) are not on Fabric by default.
+ * Per–end-tick jump detection aligned with Bukkit {@code JumpingLeveler#handleJump}; Fabric uses epsilon matching for
+ * jump velocity rather than bitwise {@link Double#compare} parity with vanilla impulses.
  */
 public final class FabricJumpingXpHandler {
+
+    private static final double JUMP_VY_EPSILON = 1.5e-4;
 
     private final FabricAuraSkills plugin;
     private final Set<UUID> prevOnGround = ConcurrentHashMap.newKeySet();
@@ -45,18 +38,57 @@ public final class FabricJumpingXpHandler {
 
     public static void register(FabricAuraSkills plugin) {
         if (!plugin.getSkillManager().isSourceEnabled(SourceTypes.JUMPING)) {
+            plugin.logger().info("[AuraSkills] Jumping XP handler not started — source.type jumping is disabled.");
             return;
         }
-        SkillSource<JumpingXpSource> skillSource = plugin.getSkillManager().getSingleSourceOfType(JumpingXpSource.class);
-        if (skillSource == null) {
+        List<SkillSource<JumpingXpSource>> jumps = plugin.getSkillManager().getSourcesOfType(JumpingXpSource.class);
+        if (jumps.isEmpty()) {
+            plugin.logger().info("[AuraSkills] Jumping XP handler not started — no JumpingXpSource entries loaded.");
             return;
         }
+        SkillSource<JumpingXpSource> resolved = resolveAgilityJumpSource(plugin);
+        if (resolved == null) {
+            plugin.logger().info("[AuraSkills] Jumping XP handler not started — could not resolve any JumpingXpSource.");
+            return;
+        }
+        String agilityTracked = jumps.stream()
+                .filter(j -> FabricAgilitySkill.isAgility(j.skill()))
+                .map(j -> j.source().getId().getSimpleName())
+                .sorted()
+                .collect(Collectors.joining(", "));
+        plugin.logger().info("[AuraSkills] Agility jump handler registered");
+        plugin.logger().info("[AuraSkills] Tracked agility jumping sources: "
+                + (agilityTracked.isEmpty() ? "none resolved" : agilityTracked));
+        plugin.logger().info("[AuraSkills] Jump XP award hook uses source=" + resolved.source().getId()
+                + "; interval=" + resolved.source().getInterval()
+                + " (total JumpingXpSource defs=" + jumps.size() + ").");
         FabricJumpingXpHandler handler = new FabricJumpingXpHandler(plugin);
         ServerTickEvents.END_SERVER_TICK.register(handler::onEndTick);
     }
 
+    /** Prefer agility's {@code jump_per_100} when multiple {@link JumpingXpSource}s exist across skills (Bukkit parity). */
+    static SkillSource<JumpingXpSource> resolveAgilityJumpSource(FabricAuraSkills plugin) {
+        List<SkillSource<JumpingXpSource>> list = plugin.getSkillManager().getSourcesOfType(JumpingXpSource.class);
+        if (list.isEmpty()) {
+            return null;
+        }
+        SkillSource<JumpingXpSource> agilityAlternate = null;
+        for (SkillSource<JumpingXpSource> s : list) {
+            if (FabricAgilitySkill.isAgility(s.skill())) {
+                agilityAlternate = s;
+                if ("jump_per_100".equalsIgnoreCase(s.source().getId().getKey())) {
+                    return s;
+                }
+            }
+        }
+        if (agilityAlternate != null) {
+            return agilityAlternate;
+        }
+        return list.getFirst();
+    }
+
     private void onEndTick(MinecraftServer server) {
-        SkillSource<JumpingXpSource> skillSource = plugin.getSkillManager().getSingleSourceOfType(JumpingXpSource.class);
+        SkillSource<JumpingXpSource> skillSource = resolveAgilityJumpSource(plugin);
         if (skillSource == null) {
             return;
         }
@@ -91,7 +123,7 @@ public final class FabricJumpingXpHandler {
             updateGroundState(player, id);
             return;
         }
-        if (player.isOnGround() || Double.compare(vy, jumpVelocity) != 0) {
+        if (player.isOnGround() || Math.abs(vy - jumpVelocity) > JUMP_VY_EPSILON) {
             updateGroundState(player, id);
             return;
         }
@@ -99,10 +131,45 @@ public final class FabricJumpingXpHandler {
             updateGroundState(player, id);
             return;
         }
-        int next = jumpsAccumulated.merge(id, 1, Integer::sum);
-        if (next >= source.getInterval()) {
-            plugin.getLevelManager().addXp(plugin.getUserManager().getUser(id), skill, source, source.getXp());
+        int beforeJumps = jumpsAccumulated.getOrDefault(id, 0);
+        int next = beforeJumps + 1;
+        int interval = Math.max(1, source.getInterval());
+        boolean crossesInterval = next >= interval;
+        User uForAward = crossesInterval ? FabricXpUserResolution.resolve(plugin, player) : null;
+        boolean awardCalled = crossesInterval && uForAward != null;
+        String reason =
+                crossesInterval
+                        ? (uForAward != null ? "threshold_met_jump_awarded" : "award_blocked_user_unresolved")
+                        : "increment_no_award_yet";
+        if (FabricXpDiagnostics.isEnabled()) {
+            int remainderAfterJump = crossesInterval ? 0 : next;
+            FabricXpDiagnostics.logAgilityJumpDelta(
+                    plugin,
+                    player,
+                    source.getId().toString(),
+                    beforeJumps,
+                    next,
+                    next - beforeJumps,
+                    remainderAfterJump,
+                    interval,
+                    awardCalled,
+                    reason);
+            FabricXpDiagnostics.logAgilityJumpProgress(
+                    plugin,
+                    player,
+                    source.getId().toString(),
+                    next,
+                    interval,
+                    awardCalled,
+                    reason);
+        }
+        if (awardCalled) {
+            plugin.getLevelManager().addXp(uForAward, skill, source, source.getXp());
             jumpsAccumulated.remove(id);
+        } else if (crossesInterval) {
+            jumpsAccumulated.remove(id);
+        } else {
+            jumpsAccumulated.put(id, next);
         }
         updateGroundState(player, id);
     }
@@ -128,5 +195,4 @@ public final class FabricJumpingXpHandler {
         BlockPos pos = BlockPos.ofFloored(player.getX(), player.getY(), player.getZ());
         return player.getEntityWorld().getBlockState(pos).isOf(Blocks.LADDER);
     }
-
 }

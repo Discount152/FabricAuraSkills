@@ -1,17 +1,13 @@
 package dev.aurelium.auraskills.fabric.menu;
 
 import dev.aurelium.auraskills.api.ability.Ability;
-import dev.aurelium.auraskills.api.mana.ManaAbilities;
 import dev.aurelium.auraskills.api.mana.ManaAbility;
 import dev.aurelium.auraskills.api.skill.Skill;
-import dev.aurelium.auraskills.api.util.NumberUtil;
 import dev.aurelium.auraskills.common.ability.AbilityManager;
-import dev.aurelium.auraskills.common.ability.AbilityUtil;
 import dev.aurelium.auraskills.common.mana.ManaAbilityManager;
 import dev.aurelium.auraskills.common.message.MessageProvider;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.common.util.math.RomanNumber;
-import dev.aurelium.auraskills.common.util.text.TextUtil;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import dev.granitelib.fabric.menu.GraniteContainerMenus;
@@ -372,43 +368,21 @@ public final class FabricAbilitiesTemplateSupport {
             Locale lo,
             Skill skill) {
         int lvl = user.getAbilityLevel(ability);
-        String desc;
         if (lvl < 1) {
-            desc =
-                    TextUtil.replace(
-                            am.getBaseDescription(ability, user, false),
-                            "{value}",
-                            NumberUtil.format1(ability.getValue(1)),
-                            "{value_2}",
-                            NumberUtil.format1(ability.getSecondaryValue(1)),
-                            "{chance_value}",
-                            am.getChanceValue(ability, 1),
-                            "{guaranteed_value}",
-                            am.getGuaranteedValue(ability, 1));
+            String desc =
+                    FabricAbilityMenuLore.passiveAbilityDescriptionBodyPlain(
+                            plugin, am, user, ability, FabricAbilityMenuLore.PassiveBodyMode.LOCKED);
             return descToPlain(desc, 6);
         }
         if (FabricAbilitiesMenuGui.isAbilityNotMaxed(user, ability)) {
-            String format = "{current} → {next}";
-            desc =
-                    TextUtil.replace(
-                            am.getBaseDescription(ability, user, false),
-                            "{value}",
-                            AbilityUtil.getUpgradeValue(ability, lvl, format),
-                            "{value_2}",
-                            AbilityUtil.getUpgradeValue2(ability, lvl, format),
-                            "{chance_value}",
-                            am.getChanceValue(ability, lvl),
-                            "{guaranteed_value}",
-                            am.getGuaranteedValue(ability, lvl));
+            String desc =
+                    FabricAbilityMenuLore.passiveAbilityDescriptionBodyPlain(
+                            plugin, am, user, ability, FabricAbilityMenuLore.PassiveBodyMode.UPGRADING);
             return descToPlain(desc, 5);
         }
-        desc =
-                TextUtil.replace(
-                        am.getBaseDescription(ability, user, false),
-                        "{value}",
-                        NumberUtil.format1(ability.getValue(lvl)),
-                        "{value_2}",
-                        NumberUtil.format1(ability.getSecondaryValue(lvl)));
+        String desc =
+                FabricAbilityMenuLore.passiveAbilityDescriptionBodyPlain(
+                        plugin, am, user, ability, FabricAbilityMenuLore.PassiveBodyMode.MAXED);
         String base = descToPlain(desc, 5);
         String maxed = FabricGraniteText.key("auraskills.granite.menu.abilities_maxed").getString();
         return base.isEmpty() ? maxed : base + "\n" + maxed;
@@ -422,15 +396,14 @@ public final class FabricAbilitiesTemplateSupport {
             Locale lo,
             Skill skill) {
         int lvl = user.getManaAbilityLevel(mana);
-        String desc;
         if (lvl < 1) {
-            desc =
-                    TextUtil.replace(
-                            mm.getBaseDescription(mana, user, false),
-                            "{value}",
-                            NumberUtil.format1(mana.getDisplayValue(1)),
-                            "{duration}",
-                            NumberUtil.format1(manaBaseDuration(mana)));
+            String desc =
+                    FabricAbilityMenuLore.manaAbilityDescriptionBodyPlain(
+                            plugin,
+                            mm,
+                            user,
+                            mana,
+                            FabricAbilityMenuLore.ManaBodyMode.LOCKED);
             String plain = descToPlain(desc, 5);
             String unlock =
                     FabricGraniteText.key(
@@ -441,33 +414,25 @@ public final class FabricAbilitiesTemplateSupport {
             return plain.isEmpty() ? unlock : plain + "\n" + unlock;
         }
         if (FabricAbilitiesMenuGui.isAbilityNotMaxed(user, mana)) {
-            String format = "{current} → {next}";
-            desc =
-                    TextUtil.replace(
-                            mm.getBaseDescription(mana, user, false),
-                            "{value}",
-                            AbilityUtil.getUpgradeValue(mana, lvl, format),
-                            "{duration}",
-                            AbilityUtil.getUpgradeDuration(mana, lvl, format));
+            String desc =
+                    FabricAbilityMenuLore.manaAbilityDescriptionBodyPlain(
+                            plugin,
+                            mm,
+                            user,
+                            mana,
+                            FabricAbilityMenuLore.ManaBodyMode.UPGRADING);
             return descToPlain(desc, 5);
         }
-        desc =
-                TextUtil.replace(
-                        mm.getBaseDescription(mana, user, false),
-                        "{value}",
-                        NumberUtil.format1(mana.getDisplayValue(lvl)),
-                        "{duration}",
-                        NumberUtil.format1(AbilityUtil.getDuration(mana, lvl)));
+        String desc =
+                FabricAbilityMenuLore.manaAbilityDescriptionBodyPlain(
+                        plugin,
+                        mm,
+                        user,
+                        mana,
+                        FabricAbilityMenuLore.ManaBodyMode.MAXED);
         String base = descToPlain(desc, 5);
         String maxed = FabricGraniteText.key("auraskills.granite.menu.abilities_maxed").getString();
         return base.isEmpty() ? maxed : base + "\n" + maxed;
-    }
-
-    private static double manaBaseDuration(ManaAbility mana) {
-        if (mana == ManaAbilities.LIGHTNING_BLADE) {
-            return ManaAbilities.LIGHTNING_BLADE.optionDouble("base_duration", 5.0);
-        }
-        return mana.getValue(1);
     }
 
     /**

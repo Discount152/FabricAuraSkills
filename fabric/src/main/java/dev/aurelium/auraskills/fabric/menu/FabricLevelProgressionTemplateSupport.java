@@ -346,6 +346,7 @@ public final class FabricLevelProgressionTemplateSupport {
                                             User u = plugin.getUserManager().getUser(pl.getUuid());
                                             Locale lo = u != null ? u.getLocale() : plugin.getDefaultLanguage();
                                             if (FabricSourcesListSupport.buildSorted(
+                                                            plugin,
                                                             plugin.getSkillManager().getSkill(sk),
                                                             FabricSourceSortType.ASCENDING,
                                                             lo)

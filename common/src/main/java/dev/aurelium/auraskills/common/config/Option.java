@@ -182,7 +182,18 @@ public enum Option {
     AUTOMATIC_BACKUPS_ENABLED("automatic_backups.enabled", OptionType.BOOLEAN),
     AUTOMATIC_BACKUPS_MINIMUM_INTERVAL_HOURS("automatic_backups.minimum_interval_hours", OptionType.DOUBLE),
     AUTOMATIC_BACKUPS_MAX_USERS("automatic_backups.max_users", OptionType.INT),
-    SAVE_BLANK_PROFILES("save_blank_profiles", OptionType.BOOLEAN);
+    SAVE_BLANK_PROFILES("save_blank_profiles", OptionType.BOOLEAN),
+    /**
+     * Fabric: award block-break XP for every block removed by Ore Harvester / Tree Harvester /
+     * vein-miner style mods, which cancel the vanilla break and remove blocks themselves.
+     */
+    MOD_COMPAT_MULTI_BREAK_XP_ENABLED("mod_compat.multi_break_xp.enabled", OptionType.BOOLEAN),
+    /** Most blocks a single multi-break harvest may be paid for; guards against runaway veins. */
+    MOD_COMPAT_MULTI_BREAK_XP_MAX_BLOCKS("mod_compat.multi_break_xp.max_blocks", OptionType.INT),
+    /** Fabric: Right-click crop harvest (no break event) via delayed maturity check. */
+    MOD_COMPAT_INTERACTION_HARVEST_XP_ENABLED("mod_compat.interaction_harvest_xp.enabled", OptionType.BOOLEAN),
+    /** Fabric: If no FishingXpSource matches by item filter, retry using {@code minecraft:fishes} tag heuristics (Rsponge-style mod fish). */
+    MOD_COMPAT_FISHING_TAG_FALLBACK_ENABLED("mod_compat.fishing.tag_fallback_for_fish.enabled", OptionType.BOOLEAN);
 
     private final String path;
     private final OptionType type;

@@ -3,6 +3,7 @@ package dev.aurelium.auraskills.fabric;
 import dev.aurelium.auraskills.api.mana.ManaAbility;
 import dev.aurelium.auraskills.common.mana.ManaAbilityManager;
 import dev.aurelium.auraskills.common.user.User;
+import dev.aurelium.auraskills.fabric.menu.FabricManaAbilityDescPlaceholders;
 import org.jetbrains.annotations.NotNull;
 
 public final class FabricManaAbilityManager extends ManaAbilityManager {
@@ -48,6 +49,7 @@ public final class FabricManaAbilityManager extends ManaAbilityManager {
 
     @Override
     public @NotNull String getBaseDescription(ManaAbility manaAbility, User user, boolean formatted) {
-        return manaAbility.getDescription(user.getLocale(), formatted);
+        String desc = manaAbility.getDescription(user.getLocale(), formatted);
+        return FabricManaAbilityDescPlaceholders.applyAbilitySpecificStatic(manaAbility, desc);
     }
 }

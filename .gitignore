@@ -53,3 +53,7 @@ fabric/logs/
 run-strict/
 
 htmlReport/
+
+# Accidental local junk (do not publish)
+/net/
+fabric/_parity_ok.txt

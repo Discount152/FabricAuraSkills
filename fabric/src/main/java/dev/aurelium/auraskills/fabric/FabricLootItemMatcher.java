@@ -70,12 +70,21 @@ final class FabricLootItemMatcher {
             return false;
         }
         String typeKey = Registries.ITEM.getId(stack.getItem()).getPath();
-        if (materials != null && !TextUtil.contains(materials, typeKey)) {
-            return false;
+        if (materials != null) {
+            boolean matched = false;
+            for (String material : materials) {
+                if (materialTokenMatchesPath(material, typeKey)) {
+                    matched = true;
+                    break;
+                }
+            }
+            if (!matched) {
+                return false;
+            }
         }
         if (excludedMaterials != null) {
             for (String excluded : excludedMaterials) {
-                if (excluded != null && excluded.equalsIgnoreCase(typeKey)) {
+                if (materialTokenMatchesPath(excluded, typeKey)) {
                     return false;
                 }
             }
@@ -87,6 +96,18 @@ final class FabricLootItemMatcher {
             }
         }
         return passesItemMeta(stack, meta);
+    }
+
+    static boolean materialTokenMatchesPath(@Nullable String configuredMaterial, String runtimePath) {
+        if (configuredMaterial == null || runtimePath == null) {
+            return false;
+        }
+        String cfg = configuredMaterial.toLowerCase().trim();
+        int colon = cfg.indexOf(':');
+        if (colon >= 0 && colon + 1 < cfg.length()) {
+            cfg = cfg.substring(colon + 1);
+        }
+        return cfg.equalsIgnoreCase(runtimePath);
     }
 
     private static boolean passesItemMeta(ItemStack stack, ItemFilterMeta filterMeta) {

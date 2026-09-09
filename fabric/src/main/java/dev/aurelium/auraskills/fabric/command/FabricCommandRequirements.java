@@ -21,6 +21,15 @@ public final class FabricCommandRequirements {
     }
 
     /**
+     * Like {@link #permission} but falls back to the vanilla operator level when no permission
+     * provider is installed. {@code permission(node, false)} denies operators outright on servers
+     * without LuckPerms, which also hides the node from tab-completion.
+     */
+    public static Predicate<ServerCommandSource> permissionOrOpLevel(String node, int opLevel) {
+        return src -> Permissions.check(src, node, opLevel);
+    }
+
+    /**
      * Like {@link #permission} but allows non-player sources (console, RCON, functions) without an
      * explicit provider grant. Many permission backends do not attach {@code auraskills.command.*}
      * nodes to the console {@link ServerCommandSource}; admin commands would otherwise always fail

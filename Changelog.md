@@ -2,6 +2,132 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.175
+
+### Changes
+
+- **Fabric — Sprint 146 OreHarvester multi-break XP + `/xpdiag` root:** Replaces the Sprint **131–144** snapshot scanner (**`FabricModCompatMultiBreakXp`**, ~550 lines) with read-only **`Block.dropStacks`** capture (**`BlockDropStacksMultiBreakMixin`**, **`FabricExternalBlockBreakXp`**): capture window armed from **`tryBreakBlock`** HEAD (before Ore Harvester's **`PlayerBlockBreakEvents.BEFORE`** cancel), XP flushed at **`END_SERVER_TICK`** with **`FabricXpHarvestDedupe`** so single-block mining pays once; silk-touch veins award from broken **`BlockState`**. **`mod_compat.multi_break_xp`** defaults **`enabled: true`**, **`max_blocks: 128`** (stale **`radius`** / **`window_ticks`** ignored). **`/xpdiag`** registered as a top-level root (**`/xpdiag on|off|status`**, bare **`/xpdiag`** = status); permission **`auraskills.command.xpdiag`** OR operator level **2** via **`permissionOrOpLevel`**. **`multi_break_lifecycle phase=external_capture_flush`** diagnostics. Tests **`FabricS146ExternalMultiBreakXpTest`**. Doc **`fabric/SPRINT_146_OREHARVESTER_MULTIBREAK_XP.md`**. Farming, fishing, defense/fighting/excavation, **`/sources`**, ability lore, leaderboard, GraniteLib untouched.
+
+## 2.3.174
+
+### Changes
+
+- **Fabric — Sprint 145 emergency OreHarvester + agility stats:** **Multi-break / vein XP compat** is **off by default** (`mod_compat.multi_break_xp.enabled: false`); when disabled, **no** `PlayerBlockBreakEvents` / world-tick hooks are registered for that feature (normal **`FabricBlockBreakHandler`** mining XP unchanged). Reverted Sprint 144 **baseline radius +2** expansion for enabled installs. **Agility** movement CUSTOM stats resolve via vanilla **`Stats.WALK_ONE_CM` / `SPRINT_ONE_CM` / `SWIM_ONE_CM`** identifiers before generic id creation so **`walk_one_cm`** etc. resolve at startup. Tests **`FabricS145EmergencyOreHarvesterAndAgilityTest`**. Doc **`fabric/SPRINT_145_EMERGENCY_OREHARVESTER_AND_AGILITY.md`**. Farming, fishing, defense/fighting/excavation paths, **`/sources`**, ability lore, leaderboard, GraniteLib untouched.
+
+## 2.3.173
+
+### Changes
+
+- **Fabric — Sprint 144 agility statistic resolution + vein mining detection:** **Agility** movement sources keep AuraSkills ids (`walk_per_meter`, `sprint_per_meter`, `swim_per_meter`) while **`FabricStatisticSourceResolver`** maps them to **`minecraft:walk_one_cm`** / **`sprint_one_cm`** / **`swim_one_cm`** via **`resolveForAgility`** / **`resolveDetailedForAgility`**; custom stat ids are built with **`Identifier.of("minecraft", path)`** so bare paths never produce a null **`Identifier`** in **`Stats.CUSTOM.getOrCreateStat`**. **`FabricStatisticXpHandler`** uses agility-specific resolution; **`agility_stat_delta`** logs use **`source_id`** simple names and **`converted_units`** as whole-meter equivalents (cm÷100) for agility. **`FabricAgilityResolutionProof`** filters with **`resolveForAgility`**. **OreHarvester / multi-break:** volume baseline radius is **snapshot radius + 2** (capped) for wider comparison; embedded **`mod_compat.multi_break_xp.window_ticks`** default **60**. Tests **`FabricS144AgilityStatisticAliasTest`**. Doc **`fabric/SPRINT_144_AGILITY_AND_VEINMINING_FINAL_FIX.md`**. **Farming**, **Fishing**, **`/sources`**, **ability lore**, **leaderboard**, **GraniteLib**, global XP pipeline outside these files unchanged.
+
+## 2.3.172
+
+### Changes
+
+- **Fabric — Sprint 143 emergency statistic resolver crash:** Fixed dedicated-server **`NullPointerException`** when resolving **Agility** (and other) **`StatisticXpSource`** entries: **`FabricStatisticSourceResolver`** never calls **`Stats.CUSTOM.getOrCreateStat`** with a null **`Identifier`**; **`resolve(null/blank)`** is safe; **`resolveDetailed`** records failure reasons. **`FabricStatisticXpHandler`** wraps **per-player** and **per-source** work so **no exception escapes** the statistic polling tick; **`[XPDIAG] event=statistic_resolution`** (**`FabricXpDiagnostics.logStatisticResolution`**) on skip/catch when **`xpdiag`** is on. **Mandatory startup lines:** **`[AuraSkills] Agility statistic source config:`** per agility source (**`raw_stat`**, **`normalized`**, **`resolved`**, **`reason`**). Tests **`FabricS143EmergencyStatisticResolverTest`**. Doc **`fabric/SPRINT_143_EMERGENCY_STATISTIC_RESOLVER_CRASH_FIX.md`**. **Farming**, **Fishing**, **`/sources`**, **menus**, **leaderboard**, **ability lore**, **GraniteLib** unchanged.
+
+## 2.3.171
+
+### Changes
+
+- **Fabric — Sprint 142b agility resolution + multi-break fallback:** Startup “tracked agility … none resolved” was caused by comparing skill/source ids to bare strings (`agility`, `walk_per_meter`) while runtime uses **`auraskills/agility`** and **`auraskills/walk_per_meter`**. Handlers now use **`Skills.AGILITY` id equality** and **`NamespacedId#getSimpleName()` / `getKey()`** for source keys. **`FabricStatisticSourceResolver`** accepts **`minecraft:`** and **`stat.minecraft.`** statistic prefixes. **`FabricAgilityResolutionProof.emit`** logs **`[AuraSkills] agility_sources_resolved`** and warns when YAML rows exist but stats do not resolve; **`[XPDIAG] agility_sources_resolved`** when **`xpdiag`** is on. **`agility_stat_delta`** adds **`stat`**, **`before`/`after`**, **`remainder`** aliases; **`agility_jump_progress`** lines accompany jump awards. **OreHarvester:** immutable **volume baseline** (snapshot ∪ live Chebyshev fill) plus **`runVolumeBaselineFallback`** after the snapshot pass; **`multi_break_lifecycle`** gains **`fallback_detected`** and **`phase=fallback_scan`**. Default **`window_ticks`** tightened to **50**. Version **2.3.171**.
+
+## 2.3.170
+
+### Changes
+
+- **Fabric — Sprint 142 vein mining + Agility non-fall XP:** Multi-break jobs now honor **`mod_compat.multi_break_xp.window_ticks`** (default **100**) so OreHarvester-style delayed removals stay inside the compensation window; redstone ore **`lit`** flicker is ignored when comparing snapshot vs live blocks; **`job_queued`** logs the snapshot center block. Agility **statistic** XP polling runs on **`END_SERVER_TICK`** modulo **`source.statistic.gain_period_ticks`** (true server-tick cadence). Agility **jump** detection uses epsilon velocity matching and prefers **`jump_per_100`** when multiple jumping sources exist. **`xpdiag`** adds **`agility_jump_delta`** and expands **`agility_stat_delta`** (**`stat_id`**, **`converted_units`**). Startup info lines confirm statistic + jump registration and tracked agility source ids. Tests **`FabricS142VeinMiningAndAgilityTest`**; doc **`fabric/SPRINT_142_VEINMINING_AND_AGILITY_FINAL_FIX.md`**. **Farming**, **Fishing**, **`/sources`**, ability lore, leaderboard, GraniteLib, menu layout untouched.
+
+## 2.3.169
+
+### Changes
+
+- **Fabric - Sprint 141 runtime order/state proof:** Added explicit hook-order diagnostics for crop harvesting via **`event=crop_order_probe`** (interactBlock head, UseBlock callback paths, tryBreak head, break before/after) and updated **`FabricCropPreUseCapture`** to keep short capture history per block and resolve the **earliest mature** captured state instead of last-write wins. Added **`event=agility_stat_delta`** fields for runtime stat proof (`before_stat`, `after_stat`, `delta`, `stored_remainder`, `threshold`, `xp`, `source_match`, `award_called`) and fixed statistic accumulation stability by keying tracking/remainder maps by stable source keys instead of source object identity. Added **`event=multi_break_lifecycle`** phases (`entry`, `job_queued`, `tick`, `award`, `complete`) with full counts/reasons for OreHarvester/FallingTree-style comparison evidence. Added helper test suite **`FabricS141RuntimeOrderAndStateProofTest`** and sprint doc **`fabric/SPRINT_141_RUNTIME_ORDER_AND_STATE_PROOF.md`**. Scope preserved: **`/sources`**, ability lore, leaderboard, GraniteLib/menu layout, fishing logic untouched.
+
+## 2.3.165
+
+### Changes
+
+- **Fabric — Sprint 137 XP source matching matrix + diagnostics:** Introduces **`FabricXpLookupNormalize`** (canonical **`block:`**/**`block_path:`**/**`damage_cause:`** keys and CSV of configured BREAK / DAMAGE source ids) and **`FabricXpUserResolution`** so statistic / jump / combat / entity-kill / block-break paths resolve users like **`FabricUserManager#getUser(ServerPlayerEntity)`** instead of dropping awards on null map misses. **`FabricXpDiagnostics.logSourceResolution`** logs **`event=block_break_resolution`** / **`damage_resolution`** with **`runtime_context`**, **`normalized_lookup_keys`**, **`candidate_source_count`**, **`candidate_source_ids`**, and explicit **`no_*_matched`** reasons. **`FabricLevelManager#addXp`** emits **`event=addxp_mutation`** with **`before_skill_xp`/`after_skill_xp`**, levels, **`state_mutated`**. **`shared_gate_pass`** replaces vague **`checks_passed`** gate reason. **`multi_break_window`** adds **`dedupe_skipped_count`** and **`placed_block_skipped_count`**. Tests **`FabricS137XpMatrixNormalizeTest`**. Doc **`fabric/SPRINT_137_XP_SOURCE_MATCHING_MATRIX.md`**. **`/sources`**, ability lore, leaderboard, GraniteLib architecture, menu layout unchanged.
+
+## 2.3.164
+
+### Changes
+
+- **Fabric — Sprint 136 fishing bobber-use XP hook:** Dedicated-server startup crashed on **1.21.11** because **`PlayerEntityIncreaseStatFishingMixin`** targeted **`PlayerEntity#increaseStat`** with the wrong method descriptor after Yarn remap (**Identifier** vs **Stat** overload mismatch). Removed **`PlayerEntityIncreaseStatFishingMixin`** entirely from **`auraskills.mixins.json`** and deleted the mixin class. Fishing XP now runs only from **`FishingBobberEntityMixin`** at **`FishingBobberEntity#use`** **RETURN**, calling **`FabricFishingXpHandler#onBobberUseReturn`** (no hook on **`PlayerEntity.increaseStat`** for fishing). **`FabricFishingCatchHolder#peekCaughtStack()`** is an alias of **`peek()`**; diagnostics and HEAD entry use peek-only; the award path uses **`take()`** only when resolving XP. **`logFishingEntryResult`** (event **`fishing_entry`**) records **`source_lookup_key`**, **`source_match`**, **`matched_source`**, **`fallback_used`**, **`award_called`**, **`reason`** (e.g. **`no_caught_stack`**, **`no_matching_source`**). One startup info line confirms the bobber path and stat-mixin removal. Tests **`FabricS136FishingBobberUseHookTest`**, S133 test updated. Doc **`fabric/SPRINT_136_FISHING_BOBBER_USE_HOOK.md`**. **`/sources`**, ability lore, leaderboard, GraniteLib core, farming crop aliases, vein mining, menu layout unchanged.
+
+## 2.3.163
+
+### Changes
+
+- **Fabric — Sprint 135 final targeted XP fixes:** Farming **`minecraft:wheat`** (and similar crops) now resolves BREAK sources when YAML lists seed/item-style block names (e.g. **`wheat_seeds`**) via **`FabricFarmingCropBreakAliases`** and **`FabricBlockXpSourceLookup.breakSourceBlockMatchesState`** (Farming skill only). Fishing XP hooks **`PlayerEntityIncreaseStatFishingMixin`** on **`PlayerEntity#increaseStat`** with **`FabricFishingBobberUseContext`** (bobber **`use`** HEAD / RETURN) so **`fish_caught`** awards even when the old bobber **`@Redirect`** no longer matches bytecode; **`FabricFishingCatchHolder#peek`** fixes diagnostics consuming the catch stack before XP; **`logFishingCompat`** adds **`source_lookup_key`** and logs **`shared_xp_gate`** when the global gate blocks. Vein mining / async break: **`FabricBlockBreakPreCapture.takeRelaxed`** and **`FabricModCompatMultiBreakXp`** draft removal tolerate up to **5** server ticks of BEFORE/AFTER skew; job keys use **`d.tick`**. Tests **`FabricS135FarmingCropAliasTest`**. Doc **`fabric/SPRINT_135_FINAL_XP_TARGETED_FIXES.md`**. **`/sources`** rendering, ability lore, leaderboard, GraniteLib, menu layout unchanged.
+
+## 2.3.162
+
+### Changes
+
+- **Fabric — Sprint 133 crouch Veinminer + fishing hooks:** Fixed multi-break compensation **clobbering** when several blocks break in the same tick by keying **`FabricModCompatMultiBreakXp`** jobs with **`FabricBlockBreakPreCapture.breakKey`** (player+world+pos+tick) instead of player UUID alone. Added **`FabricBlockBreakPreCapture`** tick pruning from world tick. **`block_break_entry`** diagnostics on **`PlayerBlockBreakEvents.BEFORE`** and **AFTER**; **`multi_break_window`** lines now include **`initial_block`**, counts, and **`reason`**. Hardened **`FabricFishingXpHandler.isFishCaughtStat`** for **`minecraft:fish_caught`** on 1.21.x; **`FishingBobberEntityMixin`** **`use`** HEAD + redirect **`fishing_entry`** logs. Tests **`FabricS133CrouchVeinminerAndFishingHooksTest`** (break-key string + null stat guard; fish stat match is runtime-validated). Doc **`fabric/SPRINT_133_CROUCH_VEINMINER_AND_FISHING_HOOKS.md`**. **`/sources`**, ability lore, leaderboard, GraniteLib, and menu layout unchanged.
+
+## 2.3.157
+
+### Changes
+
+- **Fabric — Sprint 128 global ability lore rendering:** **`FabricAbilityMenuLore`** centralizes passive + mana placeholder expansion for **`FabricAbilitiesMenuGui`** and **`FabricAbilitiesTemplateSupport`** (locked / upgrading / maxed). **`FabricManaAbilityManager#getBaseDescription`** now applies Bukkit-parity static substitutions (**`{haste_level}`** on Speed Mine, **`{radius}`** on Terraform = 4). **`FabricAbilityLoreNormalization`** strips **`!!REMOVE!!`** and replaces AuraSkills numbered segment markers (**`<1>`**, **`<2>`**, …) with newlines before wrap/MiniMessage so activation hints are readable lines. **`FabricArcheryAbilities`** implements **`{time}`** / **`{reduction_percent}`** like Bukkit. **`FabricAbilityLoreUnresolvedTokens`** plus **`FabricAbilityLorePipelineS128Test`** guard template leaks. **`fabric/SPRINT_128_GLOBAL_ABILITY_LORE_RENDERING.md`**, parity + menu port docs. **`/sources`** and **leaderboard** unchanged.
+
+## 2.3.158
+
+### Changes
+
+- **Fabric — Sprint 129 XP award pipeline audit + fishing fix:** Fixed Fishing XP gating in **`FishingBobberEntityMixin`** / **`FabricFishingXpHandler`** by switching fish-caught detection from fragile stat-object equality to identifier-value matching via **`FabricFishingXpHandler.isFishCaughtStat`**. Added runtime XP diagnostics toggle **`/auraskills xpdiag on|off|status`** (**`FabricXpDiagnostics`**, **`FabricXpDiagnosticsCommands`**) and block-reason tracing in **`FabricXpHandlerUtil`** plus fishing-path decision logs. Audited all active Fabric XP source handlers against AuraSkills flow. Added **`FabricFishingXpPipelineS129Test`** and **`FabricXpDiagnosticsS129Test`**. Documented in **`fabric/SPRINT_129_XP_AWARD_PIPELINE_AUDIT.md`**. **`/sources`**, ability lore, and leaderboard are untouched.
+
+## 2.3.159
+
+### Changes
+
+- **Fabric — Sprint 130 global XP award failure fix:** Restored all-skill XP award flow by fixing the shared gate in **`FabricXpHandlerUtil`** that blocked on missing in-memory user data. **`FabricUserManager#getUser(ServerPlayerEntity)`** now persists newly created users into the manager map; shared gate lazily resolves users and no longer hard-blocks on transient map misses. Added clearer XP diagnostics evidence: **`checks_passed`** in shared gate and **`addxp_called`** in **`FabricLevelManager#addXp`** so operators can trace gate-pass vs award-invocation globally. Documented in **`fabric/SPRINT_130_GLOBAL_XP_AWARD_FAILURE.md`**. **`/sources`**, ability lore, and leaderboard untouched.
+
+## 2.3.160
+
+### Changes
+
+- **Fabric — Sprint 131 mod compatibility XP:** Adds same-tick **multi-break compensation** for mining/foraging when extra valid blocks disappear without per-block break events (**`FabricModCompatMultiBreakXp`**, configurable **`mod_compat.multi_break_xp`**). Adds **right-click crop harvest** XP for mature **`break`**-only farming sources via delayed state check (**`FabricCropInteractionHarvestXp`**, **`mod_compat.interaction_harvest_xp`**). Extends fishing source resolution with optional **`minecraft:fishes`** tag material heuristics for modded catches (**`FabricFishingXpHandler`**, **`mod_compat.fishing.tag_fallback_for_fish`**). Introduces **`FabricXpHarvestDedupe`** to avoid double awards when break and interaction paths overlap. Expands **`FabricXpDiagnostics`** with structured block/fishing fields. New tests **`FabricS131ModCompatTest`**, doc **`fabric/SPRINT_131_MOD_COMPATIBILITY_XP.md`**. **`/sources`**, ability lore, leaderboard, and GraniteLib architecture unchanged.
+
+## 2.3.161
+
+### Changes
+
+- **Fabric — Sprint 132 crop + mod XP compat:** Captures block state at **`ServerPlayerInteractionManager#interactBlock`** HEAD (**`ServerPlayerInteractionManagerCropPreUseMixin`**, **`FabricCropPreUseCapture`**) so farming XP resolves from **pre-harvest** state (RightClickHarvest and similar mods). Generic helpers **`FabricFarmingCropResolver`**, **`FabricFarmingVanillaBlocks`**, **`FabricCropInteractionHarvestXp`** + **`FabricBlockInteractHandler`** use the capture. **Multi-break** compensation now scans the **same break tick through tick+5** (**`FabricModCompatMultiBreakXp`**) with deduped per-position awards and **`FabricXpDiagnostics.logMultiBreakCompat`** (`snapshot_count`, `removed_count`, `matched_count`, `xp_awarded_blocks`, `event_path`). Farming diagnostics use **`logFarmingHarvestCompat`** (block, ages, `source_lookup_key`, `source_match`, `matched_source`, `award_called`, `reason`). Fishing diagnostics add **`caught_stack`** and **`fallback_used`**. Tests **`FabricS132CropAndCompatTest`**, doc **`fabric/SPRINT_132_FULL_CROP_AND_MOD_COMPAT.md`**. **`/sources`**, ability lore, leaderboard, and GraniteLib architecture unchanged.
+
+## 2.3.156
+
+### Changes
+
+- **Fabric — Sprint 127 `/sources` renderability + AuraSkills source display parity:** Block XP sources (`Source.getDisplayName` → `!!REMOVE!!`) are no longer pruned by `FabricSourcesListSupport`; **`FabricXpSourceMenuDisplay`** supplies Fabric-safe row titles via block/registry labels and merges them into Granite template placeholders and built-in rows. Alphabetical **`/sources`** sorting uses **`effectiveRowTitle`**. **`FabricSourceMenuItems`** guarantees non-empty recognizable icons for **`damager: mob/player`** defense rows (**`zombie_head` / `iron_sword`** policy). Expanded **`/sources diagnose <skill>`** server-log detail per source (raw vs effective names, **`renderable`**, material, slot). Added gremlin-ish tests (**`FabricSourcesSprint127ListSupportContractTest`**, **`FabricXpSourceMenuDisplayTest`**, bundled YAML contracts). **`fabric/SPRINT_127_SOURCES_RENDERABILITY_PARITY.md`**, **`MENU_AND_COMMANDS_PORT.md`**, parity docs. — **Forging unchanged / out of scope; leaderboard untouched.**
+
+## 2.3.155
+
+### Changes
+
+- **Fabric — Sprint 126 `/sources` runtime verification + final fix pass:** added final inventory diagnostics capture (`planned slot/item/name` vs `actual slot item/name` plus survived flag) from the real menu render path (built-in and template), switched `/sources diagnose <skill>` to concise in-game summary with detailed server-log output, and corrected empty-warning behavior so version-valid-but-non-visible sources do not emit the false "no version-valid sources" message. Added `FabricSourcesOpenSupportTest` and `FabricSourcesRuntimeDiagnosticsTest`. `/sources` scope remains defense/farming/foraging/mining/excavation; forging stays out of Sprint validation scope. **Leaderboard untouched.**
+
+## 2.3.154
+
+### Changes
+
+- **Common + Fabric — Sprint 125 `/sources` runtime corrections:** removed forging from Sprint `/sources` validation scope/docs/tests and deleted `common/src/main/resources/sources/forging.yml` from bundled-source assumptions. Added runtime safety fallback in `SourceLoader` to use embedded defaults when merged disk+embedded config yields zero valid sources, without overwriting disk config. Expanded `/sources diagnose <skill>` to include loaded-vs-rendered counts, source-by-source details (`id`, `type`, `xp`, version validity, mapping status, menu slot, display material/name), and embedded-fallback usage. Added menu render-plan test coverage to guard slot-overwrite regressions and ensure two visible defense sources map to two distinct slots. **Leaderboard untouched.**
+
+## 2.3.153
+
+### Changes
+
+- **Common + Fabric — Sprint 124 `/sources` runtime pipeline repair:** `SourceLoader` now unions embedded and disk source keys for bundled skills, so partial disk `sources/*.yml` no longer hide bundled defaults. Source parsing is fault-tolerant per entry (a single bad source no longer empties a whole skill), with rejected-source diagnostics captured at load time. Added `/sources diagnose <skill>` (admin-gated) for disk/embedded/merged counts and visibility metrics from the same list path used by `/sources`. Updated sprint/parity docs and bumped `projectVersion` to **2.3.153**. **Leaderboard intentionally untouched**.
+
+## 2.3.152
+
+### Changes
+
+- **Common + Fabric — Sprint 123 XP source menu runtime parity:** **`SourceLoader`** now loads embedded defaults when the disk **`sources:`** section has **no** per-source keys; when at least one key exists, merges **only** listed keys (preserves intentional omissions). Previously, an **empty** `sources:` map skipped **all** bundled defaults, so **`/sources`** showed the empty-message key **`auraskills.granite.command.sources.empty`** for farming, mining, excavation, and similar skills despite valid packaged YAML. **`common/src/main/resources/sources/forging.yml`** is added — forging had **no** embedded defaults, so **`generateConfigs()`** never wrote forging sources on fresh installs. **Tests:** **`FabricEmbeddedSourceYamlClasspathTest`** (bundled skills list; **endurance/sorcery/healing** still ship no embedded sources in this fork; **`defense.yml`** mob + player rows; forging anvil + grindstone). **Docs:** **`fabric/SPRINT_123_XP_SOURCE_MENU_RUNTIME_PARITY.md`**, parity/doc touch-ups. **`projectVersion` 2.3.151 → 2.3.152**. **Build:** `.\gradlew.bat -PfabricOnly=true :granitelib-fabric:test :fabric:test :fabric:build verifyFabricReleaseBundle` — **PASS**. **Leaderboard** aggregation and UI **unchanged** (power-only leaderboard stays a separate product thread). Operators should re-run **`/sources`** for the affected skills.
+
 ## 2.3.151
 
 ### Changes

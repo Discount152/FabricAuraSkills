@@ -230,6 +230,7 @@ public final class FabricAuraSkills implements AuraSkillsPlugin {
         menuTemplateRegistry.reloadAll(this);
         runtimeReady = true;
         logger.info("Fabric AuraSkills enabled — block/entity/damage/stat/jump/fishing XP; consume, splash, anvil, grindstone, enchanting table, brewing (BREW + TAKEOUT); mana abilities; permissions via fabric-permissions-api. Use /auraskills reload after editing configs; see fabric/FABRIC_QUICKSTART.md.");
+        logger.info("AuraSkills: Fishing XP via FishingBobberEntity.use (FishingBobberEntityMixin); PlayerEntityIncreaseStatFishingMixin removed (Sprint 136).");
     }
 
     private void loadSkills() {

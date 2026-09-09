@@ -6,6 +6,7 @@ import dev.aurelium.auraskills.api.util.NumberUtil;
 import dev.aurelium.auraskills.common.skill.LoadedSkill;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.menu.FabricAuraSkillsMenus;
+import dev.aurelium.auraskills.fabric.menu.FabricXpSourceMenuDisplay;
 import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -34,6 +35,7 @@ public final class FabricSourcesOpenSupport {
      * Paged feedback lines (console/RCON, or in-game if the screen failed to open).
      */
     public static void sendChatListing(
+            FabricAuraSkills plugin,
             ServerCommandSource source,
             Locale lo,
             Skill skill,
@@ -66,7 +68,7 @@ public final class FabricSourcesOpenSupport {
                         FabricGraniteText.key(
                                 "auraskills.granite.command.sources.line",
                                 index,
-                                s.getDisplayName(lo),
+                                FabricXpSourceMenuDisplay.effectiveRowTitle(plugin, s, lo),
                                 NumberUtil.format2(s.getXp()),
                                 s.getId().toString(),
                                 s.getType().getId().toString()));
@@ -89,17 +91,30 @@ public final class FabricSourcesOpenSupport {
             FabricSourceSortType sort,
             int returnToSkillsListPage) {
         LoadedSkill loaded = p.getSkillManager().getSkill(skill);
-        List<XpSource> list = FabricSourcesListSupport.buildSorted(loaded, sort, lo);
+        List<XpSource> list = FabricSourcesListSupport.buildSorted(p, loaded, sort, lo);
         if (list.isEmpty()) {
-            feedbackSource.sendFeedback(
-                    () -> FabricGraniteText.key(
-                            "auraskills.granite.command.sources.empty",
-                            skill.getDisplayName(lo, false)),
-                    false);
+            long versionValidCount = loaded.sources().stream().filter(XpSource::isVersionValid).count();
+            if (shouldShowVisibleButNotRenderableWarning(versionValidCount, list.size())) {
+                feedbackSource.sendFeedback(
+                        () -> Text.literal(
+                                "No visible XP sources are currently renderable for "
+                                        + skill.getDisplayName(lo, false)
+                                        + ". Version-valid sources found: "
+                                        + versionValidCount
+                                        + ". Run /sources diagnose "
+                                        + skill.getId().getSimpleName()),
+                        false);
+            } else {
+                feedbackSource.sendFeedback(
+                        () -> FabricGraniteText.key(
+                                "auraskills.granite.command.sources.empty",
+                                skill.getDisplayName(lo, false)),
+                        false);
+            }
             return 1;
         }
         if (menuPlayer == null) {
-            sendChatListing(feedbackSource, lo, skill, list, sort);
+            sendChatListing(p, feedbackSource, lo, skill, list, sort);
             return 1;
         }
         try {
@@ -110,7 +125,7 @@ public final class FabricSourcesOpenSupport {
             feedbackSource.sendFeedback(
                     () -> FabricGraniteText.key("auraskills.granite.command.sources.menu_fallback"),
                     false);
-            sendChatListing(feedbackSource, lo, skill, list, sort);
+            sendChatListing(p, feedbackSource, lo, skill, list, sort);
         }
         return 1;
     }
@@ -139,8 +154,12 @@ public final class FabricSourcesOpenSupport {
             feedbackSource.sendFeedback(
                     () -> FabricGraniteText.key("auraskills.granite.command.sources.menu_fallback"),
                     false);
-            sendChatListing(feedbackSource, lo, skill, list, sort);
+            sendChatListing(p, feedbackSource, lo, skill, list, sort);
             return false;
         }
+    }
+
+    static boolean shouldShowVisibleButNotRenderableWarning(long versionValidCount, int visibleCount) {
+        return visibleCount == 0 && versionValidCount > 0;
     }
 }

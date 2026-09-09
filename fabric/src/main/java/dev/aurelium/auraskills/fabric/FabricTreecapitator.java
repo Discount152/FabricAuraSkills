@@ -344,7 +344,12 @@ public final class FabricTreecapitator {
         }
         BlockEntity be = world.getBlockEntity(pos);
         ItemStack tool = player.getMainHandStack();
-        Block.dropStacks(state, world, pos, be, player, tool);
+        FabricExternalBlockBreakXp.setInternalBreak(true);
+        try {
+            Block.dropStacks(state, world, pos, be, player, tool);
+        } finally {
+            FabricExternalBlockBreakXp.setInternalBreak(false);
+        }
         boolean removed = world.setBlockState(pos, net.minecraft.block.Blocks.AIR.getDefaultState(), Block.NOTIFY_ALL);
         if (removed && !player.getAbilities().creativeMode && !tool.isEmpty() && tool.isDamageable()) {
             tool.damage(1, player, EquipmentSlot.MAINHAND);

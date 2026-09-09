@@ -4,6 +4,42 @@
 
 **Sprint 93 correction:** The **built-in `Fabric*MenuGui`** set is a **functional partial** of the reference menu experience. It is **Java-smoke adequate**, **not** “Slate parity complete.” Full **Slate / YAML / `MenuFileManager`** parity is **open**; see **`PARITY_COMPLETION_ROADMAP.md`**.
 
+**Sprint 123 (XP source data parity):** **`SPRINT_123_XP_SOURCE_MENU_RUNTIME_PARITY.md`** — **`SourceLoader`** applies embedded **`sources/*.yml`** defaults when disk **`sources:`** has **no** per-source keys (if keys exist, only those merge). **Leaderboard** not part of this sprint. **`FabricAuraSkills-2.3.152.jar`**.
+
+**Sprint 124 (`/sources` end-to-end pipeline repair):** **`SPRINT_124_SOURCES_PIPELINE_REPAIR.md`** — `/sources` pipeline hardened: embedded+disk source-key union for bundled skills, per-source parse fault isolation, and live operator diagnostics via `/sources diagnose <skill>`. Scope explicitly excludes leaderboard and menu redesign.
+
+**Sprint 125 (`/sources` runtime corrections):** **`SPRINT_125_SOURCES_RUNTIME_CORRECTIONS.md`** — `/sources` core-skill acceptance narrowed to defense/farming/foraging/mining/excavation, forging removed from source-parity validation, runtime embedded fallback added for zero-valid merged configs, and diagnostics extended with loaded-vs-rendered per-source slot/material/name detail.
+
+**Sprint 126 (`/sources` runtime verification + final fix pass):** **`SPRINT_126_SOURCES_FINAL_RUNTIME_VERIFICATION.md`** — added final post-mutation inventory diagnostics capture (planned vs actual slot item/name + survival), changed diagnose output to short chat summary + server-log detail, and corrected empty-warning semantics when version-valid sources exist but visibility conversion yields no rows.
+
+**Sprint 128 (abilities menu — global lore pipeline):** **`SPRINT_128_GLOBAL_ABILITY_LORE_RENDERING.md`** — **`FabricAbilityMenuLore`** + mana base-description parity; numbered activation segment markers (**`<1>`** …) → separate lines; unresolved-token test helper. **`2.3.157`**.
+
+**Sprint 129 (runtime XP pipeline):** **`SPRINT_129_XP_AWARD_PIPELINE_AUDIT.md`** — fixes Fishing XP trigger parity in **`FishingBobberEntityMixin`**/**`FabricFishingXpHandler`**, adds admin runtime diagnostics toggle **`/auraskills xpdiag on|off|status`**, and documents all audited XP handlers. **No menu redesign changes.** **`2.3.158`**.
+
+**Sprint 130 (runtime XP shared gate fix):** **`SPRINT_130_GLOBAL_XP_AWARD_FAILURE.md`** — resolves global XP outage by fixing shared user-resolution gate in **`FabricXpHandlerUtil`** and persisting lazily created users in **`FabricUserManager`**. Keeps `xpdiag` command and expands evidence with shared **`checks_passed`** + central **`addxp_called`** markers. **No menu layout changes.** **`2.3.159`**.
+
+**Sprint 133 (crouch Veinminer + fishing XP hooks):** **`SPRINT_133_CROUCH_VEINMINER_AND_FISHING_HOOKS.md`** — multi-break job key fix, break/fishing **`xpdiag`** entry lines, fish-caught stat detection hardening; **no** command/menu surface changes beyond existing **`xpdiag`**. **`2.3.162`**.
+
+**Sprint 135 (targeted XP — wheat, fishing, vein mining):** **`SPRINT_135_FINAL_XP_TARGETED_FIXES.md`** — farming crop alias resolution, fishing stat hook on **`PlayerEntity#increaseStat`**, multi-break/pre-capture tick slack; **`xpdiag`** fishing lines gain **`source_lookup_key`**. **No** `/sources` or menu layout changes. **`2.3.163`**.
+
+**Sprint 136 (fishing XP — bobber use only):** **`SPRINT_136_FISHING_BOBBER_USE_HOOK.md`** — removes fragile **`PlayerEntityIncreaseStatFishingMixin`**; fishing XP from **`FishingBobberEntity#use`** **RETURN** only; **`xpdiag`** **`fishing_entry`** result lines. **No** command/menu changes beyond existing **`xpdiag`**. **`2.3.164`**.
+
+**Sprint 137 (XP diagnostics matrix):** **`SPRINT_137_XP_SOURCE_MATCHING_MATRIX.md`** — richer **`xpdiag`** lines (**`block_break_resolution`**, **`damage_resolution`**, **`addxp_mutation`**, **`multi_break_window`** skip counts); no menu surface change. **`2.3.165`**.
+
+**Sprint 141 (runtime order/state proof):** **`SPRINT_141_RUNTIME_ORDER_AND_STATE_PROOF.md`** — diagnostics-only command/runtime observability expansion for unresolved XP categories: ordered farming hook probes (**`crop_order_probe`**), statistic delta probes (**`agility_stat_delta`** with remainder/threshold/xp), and multi-break lifecycle probes (**`multi_break_lifecycle`** phase model). No command tree or menu layout changes.
+
+**Sprint 142 (vein mining + agility non-fall XP):** **`SPRINT_142_VEINMINING_AND_AGILITY_FINAL_FIX.md`** — runtime XP hook fixes for OreHarvester/multi-break (**`FabricModCompatMultiBreakXp`** window + redstone-lit drift), tick-aligned agility statistic polling, jump epsilon + prioritized **`jump_per_100`** source selection, expanded **`xpdiag`** lines (**`converted_units`**, **`stat_id`**, **`agility_jump_delta`**), plus **`[AuraSkills]`** startup registration logs. No `/sources`/menu/command tree changes beyond existing **`xpdiag`**.
+
+**Sprint 143 (emergency — statistic resolver crash):** **`SPRINT_143_EMERGENCY_STATISTIC_RESOLVER_CRASH_FIX.md`** — null-safe agility/statistic resolution (**`FabricStatisticSourceResolver`**, **`FabricStatisticXpHandler`**), per-source failure isolation, startup **`Agility statistic source config`** lines, **`xpdiag`** **`statistic_resolution`**. No `/sources`/menu/command tree changes beyond existing **`xpdiag`**.
+
+**Sprint 144 (agility movement stats + multi-break):** **`SPRINT_144_AGILITY_AND_VEINMINING_FINAL_FIX.md`** — **`resolveForAgility`** maps AuraSkills source keys to vanilla **`minecraft:*_one_cm`** stats; **`agility_stat_delta`** **`converted_units`** for cm→m; multi-break wider volume baseline + longer default window. No `/sources`/menu/command tree changes beyond existing **`xpdiag`**.
+
+**Sprint 145 (OreHarvester emergency + agility stats):** **`SPRINT_145_EMERGENCY_OREHARVESTER_AND_AGILITY.md`** — multi-break XP **default disabled** (no hooks); agility movement stats use vanilla **`Stats`** distance identifiers. No `/sources`/menu/command tree changes.
+
+**Sprint 146 (`/xpdiag` top-level root + OreHarvester XP):** **`SPRINT_146_OREHARVESTER_MULTIBREAK_XP.md`** — **`/xpdiag`** registered as a **standalone root** (**`/xpdiag on|off|status`**; bare **`/xpdiag`** reports status). Permission: **`auraskills.command.xpdiag`** OR operator level **2** (**`FabricCommandRequirements.permissionOrOpLevel`**). Still available under **`/auraskills`**, **`/skills`**, **`/sk`**, **`/skill`**. Multi-break XP path is runtime-only (no menu layout changes). **`2.3.175`**.
+
+**Sprint 127 (`/sources` renderability + source-display parity):** **`SPRINT_127_SOURCES_RENDERABILITY_PARITY.md`** — removed **`!!REMOVE!!`** list pruning for bundled block skills by introducing **`FabricXpSourceMenuDisplay`**, stabilized damage-defense menu icons (**`zombie_head`/`iron sword`** policy), extended diagnose detail, added gremlin-ish tests.
+
 **Sprint 122 (targeted runtime fixes):** **`SPRINT_122_TARGETED_RUNTIME_MENU_FIXES.md`** — post-**2.3.150** audit: **`<underlined>`** legacy mapping (no **`<underline>`**), bundled templates **without** global glass fills, blank/space template names → **quiet filler**, abilities descriptions wrapped at **42** via **`appendWrappedFormattedLore`**, **Back** = **`iron_door`** in built-in YAML + defaults (arrows **only** for paging). Tests: **`FabricSprint122RuntimeMenuRegressionTest`**, formatter + lore tests. **`FabricAuraSkills-2.3.151.jar`**.
 
 **Sprint 121D (pipeline enforcement):** **`SPRINT_121D_GLOBAL_MENU_PIPELINE_ENFORCEMENT.md`** — one **`FabricMenuLoreFormatting` / `FabricMenuItemPresentation`** path for all Granite menus; **42**-char wrap; **PlatformUtil** removed from stats list rendering; built-in **level progression** uses **empty** non-path slots; **`FabricMenuJavaPipelineScanTest`**. **`FabricAuraSkills-2.3.150.jar`**. Operator **screenshot** gate; **Bedrock** not tested.

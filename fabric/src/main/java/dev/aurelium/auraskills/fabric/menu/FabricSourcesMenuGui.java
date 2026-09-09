@@ -6,6 +6,7 @@ import dev.aurelium.auraskills.api.util.NumberUtil;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.command.FabricSourceSortType;
+import dev.aurelium.auraskills.fabric.command.FabricSourcesRuntimeDiagnostics;
 import dev.aurelium.auraskills.fabric.text.FabricGraniteText;
 import dev.aurelium.auraskills.fabric.command.FabricSourcesListSupport;
 import dev.granitelib.fabric.menu.GraniteContainerMenus;
@@ -52,6 +53,19 @@ final class FabricSourcesMenuGui {
         return List.copyOf(out);
     }
 
+    static List<RenderedSourceRow> renderPlanForPage(List<XpSource> all, int page) {
+        int maxPage = FabricListMenuPaging.maxPageIndex(all.size(), ITEMS_PER_PAGE);
+        int clamped = FabricListMenuPaging.clampPage(page, all.size(), ITEMS_PER_PAGE);
+        int from = clamped * ITEMS_PER_PAGE;
+        int to = Math.min(from + ITEMS_PER_PAGE, all.size());
+        List<XpSource> sub = all.subList(from, to);
+        List<RenderedSourceRow> rows = new ArrayList<>(sub.size());
+        for (int i = 0; i < sub.size(); i++) {
+            rows.add(new RenderedSourceRow(sourceSlotInPage(i), sub.get(i)));
+        }
+        return rows;
+    }
+
     /**
      * Bukkit default grid: {@code source_start 1,1} → {@code source_end 4,8} (7×4, 28 slots).
      */
@@ -71,7 +85,7 @@ final class FabricSourcesMenuGui {
         User user = plugin.getUserManager().getUser(player.getUuid());
         Locale lo = user.getLocale();
         var loaded = plugin.getSkillManager().getSkill(skill);
-        List<XpSource> all = FabricSourcesListSupport.buildSorted(loaded, sort, lo);
+        List<XpSource> all = FabricSourcesListSupport.buildSorted(plugin, loaded, sort, lo);
         if (all.isEmpty()) {
             return;
         }
@@ -98,8 +112,7 @@ final class FabricSourcesMenuGui {
         int to = Math.min(from + ITEMS_PER_PAGE, all.size());
         String skillName = msg.getSkillDisplayName(skill, lo, true);
         String sortLabel = sortTitle(sort).getString();
-        Text baseTitle =
-                FabricGraniteText.key("auraskills.granite.menu.sources_title", skillName, sortLabel);
+        Text baseTitle = FabricMenuTitles.sourcesMenuTitle(skillName);
         Text pageTitle = FabricListMenuPaging.appendPageToTitleIfNeeded(baseTitle, p, maxPage);
         var sub = all.subList(from, to);
         final int fPage = p;
@@ -109,41 +122,44 @@ final class FabricSourcesMenuGui {
                 player,
                 pageTitle,
                 inv -> {
+                    List<FabricSourcesRuntimeDiagnostics.PlannedRow> plannedRows = new ArrayList<>(sub.size());
                     for (int i = 0; i < FabricMenuSlotLayout.TOP_SLOTS; i++) {
                         inv.setStack(i, ItemStack.EMPTY);
                     }
                     for (int i = 0; i < sub.size(); i++) {
                         XpSource s = sub.get(i);
-                        inv.setStack(sourceSlotInPage(i), sourceStack(s, lo));
+                        int slot = sourceSlotInPage(i);
+                        ItemStack rowStack = sourceStack(plugin, s, lo);
+                        plannedRows.add(FabricSourcesRuntimeDiagnostics.plannedRow(slot, rowStack));
+                        inv.setStack(slot, rowStack);
                     }
-                    putControl(inv, SLOT_BACK, true, "auraskills.granite.menu.sources_back", "auraskills.granite.menu.sources_back_lore", Items.ARROW);
+                    putControl(
+                            inv,
+                            SLOT_BACK,
+                            true,
+                            "auraskills.granite.menu.sources_back",
+                            "auraskills.granite.menu.sources_back_lore",
+                            Items.IRON_DOOR);
                     if (fMax > 0) {
                         if (fPage > 0) {
-                            putControl(
+                            putArrowControl(
                                     inv,
                                     SLOT_PREV,
                                     true,
                                     "auraskills.granite.menu.paging_prev",
-                                    "auraskills.granite.menu.paging_prev_lore",
-                                    Items.ARROW);
+                                    "auraskills.granite.menu.paging_prev_lore");
                         }
                         if (fPage < fMax) {
-                            putControl(
+                            putArrowControl(
                                     inv,
                                     SLOT_NEXT,
                                     true,
                                     "auraskills.granite.menu.paging_next",
-                                    "auraskills.granite.menu.paging_next_lore",
-                                    Items.ARROW);
+                                    "auraskills.granite.menu.paging_next_lore");
                         }
                     }
-                    putControl(
-                            inv,
-                            SLOT_SORT,
-                            true,
-                            "auraskills.granite.menu.sources_sort",
-                            "auraskills.granite.menu.sources_sort_lore",
-                            Items.HOPPER);
+                    putSortControl(inv, SLOT_SORT, sortLabel);
+                    FabricSourcesRuntimeDiagnostics.capture(skill, plannedRows, inv);
                 },
                 (topSlot, pl, b, t) -> {
                     if (topSlot == SLOT_BACK) {
@@ -212,14 +228,30 @@ final class FabricSourcesMenuGui {
         s.set(
                 DataComponentTypes.LORE,
                 new LoreComponent(List.of(FabricGraniteText.key(loreKey))));
+        FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(s);
         inv.setStack(slot, s);
     }
 
-    private static ItemStack sourceStack(XpSource s, Locale lo) {
+    private static void putArrowControl(
+            Inventory inv, int slot, boolean active, String nameKey, String loreKey) {
+        putControl(inv, slot, active, nameKey, loreKey, Items.ARROW);
+    }
+
+    private static void putSortControl(Inventory inv, int slot, String sortLabel) {
+        ItemStack s = new ItemStack(Items.COMPARATOR);
+        s.set(DataComponentTypes.ITEM_NAME, FabricGraniteText.key("auraskills.granite.menu.sources_sort"));
+        List<Text> lore = new ArrayList<>();
+        lore.add(FabricGraniteText.key("auraskills.granite.menu.sources_sort_lore"));
+        lore.add(FabricGraniteText.key("auraskills.granite.menu.sources_sort_current", sortLabel));
+        s.set(DataComponentTypes.LORE, new LoreComponent(lore));
+        FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(s);
+        inv.setStack(slot, s);
+    }
+
+    private static ItemStack sourceStack(FabricAuraSkills plugin, XpSource s, Locale lo) {
         ItemStack st = new ItemStack(Items.GRAY_DYE);
-        st.set(
-                DataComponentTypes.ITEM_NAME,
-                Text.literal(s.getDisplayName(lo)));
+        String rawName = FabricXpSourceMenuDisplay.effectiveRowTitle(plugin, s, lo);
+        st.set(DataComponentTypes.ITEM_NAME, FabricMenuLoreFormatting.formatMenuLine(plugin, rawName));
         List<Text> lore = new ArrayList<>();
         String unit = s.getUnitName(lo);
         if (unit == null) {
@@ -235,11 +267,28 @@ final class FabricSourcesMenuGui {
         }
         lore.add(
                 FabricGraniteText.key(
-                        "auraskills.granite.menu.sources_lore_id", s.getId().toString()));
-        lore.add(
-                FabricGraniteText.key(
-                        "auraskills.granite.menu.sources_lore_type", s.getType().getId().toString()));
+                        "auraskills.granite.menu.sources_lore_type",
+                        FabricSourceTypeLabels.playerFacingTypeLine(s)));
         st.set(DataComponentTypes.LORE, new LoreComponent(lore));
+        FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(st);
         return st;
+    }
+
+    static final class RenderedSourceRow {
+        private final int slot;
+        private final XpSource source;
+
+        RenderedSourceRow(int slot, XpSource source) {
+            this.slot = slot;
+            this.source = source;
+        }
+
+        int slot() {
+            return slot;
+        }
+
+        XpSource source() {
+            return source;
+        }
     }
 }

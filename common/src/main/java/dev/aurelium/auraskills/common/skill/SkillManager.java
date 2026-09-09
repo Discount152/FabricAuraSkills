@@ -10,6 +10,7 @@ import dev.aurelium.auraskills.api.source.SourceType;
 import dev.aurelium.auraskills.api.source.XpSource;
 import dev.aurelium.auraskills.common.AuraSkillsPlugin;
 import dev.aurelium.auraskills.common.config.ConfigurateLoader;
+import dev.aurelium.auraskills.common.source.SourceLoader;
 import dev.aurelium.auraskills.common.source.SourceTag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,6 +31,7 @@ public class SkillManager {
     private final Set<File> contentDirectories;
     private final Map<SourceType, Boolean> sourceEnabledCache = new ConcurrentHashMap<>();
     private final Map<Class<?>, List<SkillSource<?>>> typeToSourceCache = new ConcurrentHashMap<>();
+    private final Map<Skill, SourceLoader.SourceLoadDiagnostics> sourceDiagnostics = new ConcurrentHashMap<>();
 
     public SkillManager(AuraSkillsPlugin plugin) {
         this.plugin = plugin;
@@ -49,6 +51,7 @@ public class SkillManager {
 
     public void unregisterAll() {
         skillMap.clear();
+        sourceDiagnostics.clear();
     }
 
     @NotNull
@@ -109,6 +112,14 @@ public class SkillManager {
     public void clearCache() {
         sourceEnabledCache.clear();
         typeToSourceCache.clear();
+    }
+
+    public void registerSourceDiagnostics(Skill skill, SourceLoader.SourceLoadDiagnostics diagnostics) {
+        sourceDiagnostics.put(skill, diagnostics);
+    }
+
+    public @Nullable SourceLoader.SourceLoadDiagnostics getSourceDiagnostics(Skill skill) {
+        return sourceDiagnostics.get(skill);
     }
 
     /**

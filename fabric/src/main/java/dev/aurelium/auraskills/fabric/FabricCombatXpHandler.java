@@ -79,6 +79,24 @@ public final class FabricCombatXpHandler {
         DamageCause skillsCause = FabricDamageCauseMapper.toApiCause(source);
         SkillSource<DamageXpSource> skillSource = findDamageXpSource(source, skillsCause);
         if (skillSource == null) {
+            if (FabricXpDiagnostics.isEnabled()) {
+                FabricXpDiagnostics.logSourceResolution(
+                        plugin,
+                        "damage_resolution",
+                        player,
+                        null,
+                        SourceTypes.DAMAGE,
+                        false,
+                        null,
+                        0.0,
+                        false,
+                        "not_evaluated",
+                        FabricXpLookupNormalize.damageRuntimeSummary(source),
+                        FabricXpLookupNormalize.joinKeys(FabricXpLookupNormalize.normalizedKeysForDamage(skillsCause)),
+                        FabricXpLookupNormalize.damageXpCandidateCount(plugin),
+                        FabricXpLookupNormalize.damageXpCandidateSourceIdsCsv(plugin),
+                        "no_damage_source_matched");
+            }
             return;
         }
         DamageXpSource dx = skillSource.source();
@@ -111,8 +129,10 @@ public final class FabricCombatXpHandler {
                 return;
             }
         }
-        User user = plugin.getUserManager().getUser(player.getUuid());
-        plugin.getLevelManager().addXp(user, skill, dx, xp);
+        User user = FabricXpUserResolution.resolve(plugin, player);
+        if (user != null) {
+            plugin.getLevelManager().addXp(user, skill, dx, xp);
+        }
         playerDamageCooldownUntil.put(player.getUuid(), System.currentTimeMillis());
     }
 
@@ -162,8 +182,10 @@ public final class FabricCombatXpHandler {
             }
         }
         double xp = xpPortion * ex.getXp() * FabricSpawnerMobTracker.xpMultiplier(victim, skill);
-        User user = plugin.getUserManager().getUser(player.getUuid());
-        plugin.getLevelManager().addXp(user, skill, ex, xp);
+        User user = FabricXpUserResolution.resolve(plugin, player);
+        if (user != null) {
+            plugin.getLevelManager().addXp(user, skill, ex, xp);
+        }
     }
 
     private boolean hasAnyEntityDamageTrigger() {

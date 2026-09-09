@@ -285,6 +285,16 @@ menus:
 loot:
   update_loot_tables: true
   directly_to_inventory: false
+# Fabric-only mod compatibility (ignored on Bukkit; keys merged from embedded config).
+mod_compat:
+  multi_break_xp:
+    enabled: true
+    max_blocks: 128
+  interaction_harvest_xp:
+    enabled: true
+  fishing:
+    tag_fallback_for_fish:
+      enabled: true
 check_for_updates: true
 automatic_backups:
   enabled: true

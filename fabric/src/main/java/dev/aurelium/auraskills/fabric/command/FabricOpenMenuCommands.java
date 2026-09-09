@@ -646,7 +646,7 @@ public final class FabricOpenMenuCommands {
         User menuUser = p.getUserManager().getUser(menuRecipient.getUuid());
         Locale lo = menuUser != null ? menuUser.getLocale() : p.getDefaultLanguage();
         LoadedSkill loaded = p.getSkillManager().getSkill(skill);
-        List<XpSource> list = FabricSourcesListSupport.buildSorted(loaded, sort, lo);
+        List<XpSource> list = FabricSourcesListSupport.buildSorted(p, loaded, sort, lo);
         if (list.isEmpty()) {
             feedbackSource.sendFeedback(
                     () -> FabricGraniteText.key(
