@@ -2,6 +2,14 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.176
+
+### Changes
+
+- **Fabric — Agility statistic poll cadence + XP dedupe invariants:** **`source.statistic.gain_period_ticks`** now defaults to **`100`** (5 s) instead of upstream's **`12000`** (10 minutes). Upstream Bukkit's **`StatisticLeveler`** schedules on **`gain_period_ticks * 50 ms`**, so both platforms polled Agility movement stats once per 10 minutes; walk/sprint/swim XP therefore arrived in invisible lumps and read as "Agility is broken" in play. Award amounts are unchanged — **`FabricStatisticXpHandler.computeProgress`** banks sub-threshold centimetres as a remainder, so a shorter period changes only *when* XP lands. Existing installs keep their on-disk value; edit **`config.yml`** to pick up the new default. Only the embedded default changed — no XP, block-break, or command code was touched, so **`2.3.175`** and **`2.3.176`** are behaviourally identical for mining, farming and every other source.
+- **Tests:** **`FabricAgilityStatisticPollingTest`** (poll period bound; **`agility.yml`** thresholds/multipliers pinned so documented spot-check amounts cannot go stale; numeric XP for 20 blocks of walking/sprinting/swimming; remainder carry-over across polls; negative/zero stat deltas never award) and **`FabricBlockBreakXpDedupeInvariantsTest`** (normal-break award is recorded before the capture path can see it; flush checks dedupe **before** paying and records **after**; dedupe floor is the capture window's arm tick; flush stays on **`END_SERVER_TICK`**; capture targets only the player-attributed six-arg **`Block.dropStacks`** overload, keeping explosion/piston/fluid breaks out; **`internalBreak`** is cleared in a **`finally`**; the retired **`FabricModCompatMultiBreakXp`** scanner stays gone). **248** Fabric tests green.
+- **Docs:** **`docs/solutions/junit-cannot-bootstrap-minecraft-registries.md`** records why Agility stat resolution cannot be unit-tested here (Yarn splits **`SimpleRegistry`** from **`RegistryEntry$Reference`** across packages, so registry bootstrap needs Fabric API's transitive access wideners, and **`fabric-loader-junit`** **`0.18.4`** reads class tweakers in **`intermediary`** before runtime remapping) and what to assert instead.
+
 ## 2.3.175
 
 ### Changes

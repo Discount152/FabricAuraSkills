@@ -271,7 +271,10 @@ source:
       - blinding_curse
       - vanishing_curse
   statistic:
-    gain_period_ticks: 12000
+    # Fabric divergence: upstream ships 12000 (10 minutes), which makes Agility walk/sprint/swim XP arrive in
+    # invisible lumps and read as broken. Deltas and remainders are preserved either way, so a short period only
+    # changes how often XP lands. Raise this if statistic polling ever shows up in a profile.
+    gain_period_ticks: 100
   entity:
     give_alchemy_on_potion_combat: false
 menus:
