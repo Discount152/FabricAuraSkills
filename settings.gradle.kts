@@ -18,7 +18,7 @@ rootProject.name = "FabricAuraSkills"
 
 /**
 
- * When true, only `api`, `common`, `granitelib-fabric`, and `fabric` are included (`slate-fabric/` on disk via projectDir). Use for Fabric-only dev builds:
+ * When true, only `api`, `common`, `granitelib-fabric`, and `fabric` are included. Use for Fabric-only dev builds:
 
  * `gradlew -PfabricOnly=true :fabric:compileJava`
 
@@ -40,8 +40,6 @@ if (fabricOnly) {
 
     include("granitelib-fabric")
 
-    project(":granitelib-fabric").projectDir = file("slate-fabric")
-
     include("fabric")
 
 } else {
@@ -55,8 +53,6 @@ if (fabricOnly) {
     include("api-bukkit")
 
     include("granitelib-fabric")
-
-    project(":granitelib-fabric").projectDir = file("slate-fabric")
 
     include("fabric")
 

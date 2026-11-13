@@ -11,7 +11,7 @@ public final class GraniteTemplateResources {
     }
 
     /**
-     * @param classpathPath e.g. {@code assets/auraskills/granite/templates/stat_info.yml}
+     * @param classpathPath e.g. {@code templates/stat_info.yml}
      */
     public static @Nullable InputStream openClasspath(Class<?> anchor, String classpathPath) {
         ClassLoader cl = anchor.getClassLoader();
