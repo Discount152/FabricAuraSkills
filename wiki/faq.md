@@ -46,7 +46,7 @@ See the [SQL page](main-config/sql.md#migrating-data-from-yaml) for migration st
 
 ### How do I add a skill XP multiplier?
 
-You just need to give a player or group the `auraskills.multiplier.[percent]` permission, where percent is the percentage more XP that should be received. For example, adding a 2x multiplier to everyone using LuckPerms would be `/lp group default permission set auraskills.multiplier.100`.
+You just need to give a player or group the `graniteskills.multiplier.[percent]` permission, where percent is the percentage more XP that should be received. For example, adding a 2x multiplier to everyone using LuckPerms would be `/lp group default permission set graniteskills.multiplier.100`.
 
 See the [XP Multipliers page](skills/xp-multipliers.md) for more details.
 
@@ -56,4 +56,4 @@ Only Spigot and Paper are officially supported, but many Paper forks like Purpur
 
 ### Why am I not appearing on the leaderboard? / How do I exclude op players from the leaderboard?
 
-The `auraskills.leaderboard.exclude` permission controls whether a player is shown on the leaderboard. This is `false` by default, but if a player has `auraskills.*` then that player will be excluded. Simply set this permission individually to `false` (want the player to show) or `true` (do not want the player to show.
+The `graniteskills.leaderboard.exclude` permission controls whether a player is shown on the leaderboard. This is `false` by default, but if a player has `graniteskills.*` then that player will be excluded. Simply set this permission individually to `false` (want the player to show) or `true` (do not want the player to show.

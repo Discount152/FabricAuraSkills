@@ -1,9 +1,9 @@
-name: AuraSkills
+name: GraniteSkills
 version: ${projectVersion}
-main: dev.aurelium.auraskills.bukkit.AuraSkills
+main: dev.granite.graniteskills.bukkit.GraniteSkills
 description: The ultra-versatile RPG skills plugin
-author: Archyx
-website: https://aurelium.dev/auraskills
+author: Granite Skills
+website: https://github.com/Discount152/FabricAuraSkills
 softdepend:
 - WorldGuard
 - PlaceholderAPI
@@ -18,238 +18,238 @@ softdepend:
 - FancyHolograms
 api-version: '1.13'
 folia-supported: true
-prefix: AuraSkills
+prefix: GraniteSkills
 
 permissions:
-  auraskills.*:
-    description: Permission to use all commands from AuraSkills
+  graniteskills.*:
+    description: Permission to use all commands from GraniteSkills
     children:
-      auraskills.command.user: true
-      auraskills.skill.*: true
-      auraskills.command.admin: true
+      graniteskills.command.user: true
+      graniteskills.skill.*: true
+      graniteskills.command.admin: true
     default: false
 
-  auraskills.command.user:
+  graniteskills.command.user:
     description: Permissions users have by default
     children:
-      auraskills.command.skills: true
-      auraskills.command.stats: true
-      auraskills.command.sources: true
-      auraskills.command.help: true
-      auraskills.command.mana: true
-      auraskills.command.top: true
-      auraskills.command.rank: true
-      auraskills.command.lang: true
-      auraskills.command.abtoggle: true
-      auraskills.command.claimitems: true
+      graniteskills.command.skills: true
+      graniteskills.command.stats: true
+      graniteskills.command.sources: true
+      graniteskills.command.help: true
+      graniteskills.command.mana: true
+      graniteskills.command.top: true
+      graniteskills.command.rank: true
+      graniteskills.command.lang: true
+      graniteskills.command.abtoggle: true
+      graniteskills.command.claimitems: true
     default: true
 
-  auraskills.skill.*:
+  graniteskills.skill.*:
     description: Permission to use all skills
     children:
-      auraskills.skill.farming: true
-      auraskills.skill.foraging: true
-      auraskills.skill.mining: true
-      auraskills.skill.fishing: true
-      auraskills.skill.excavation: true
-      auraskills.skill.archery: true
-      auraskills.skill.defense: true
-      auraskills.skill.fighting: true
-      auraskills.skill.endurance: true
-      auraskills.skill.agility: true
-      auraskills.skill.alchemy: true
-      auraskills.skill.enchanting: true
-      auraskills.skill.sorcery: true
-      auraskills.skill.healing: true
-      auraskills.skill.forging: true
+      graniteskills.skill.farming: true
+      graniteskills.skill.foraging: true
+      graniteskills.skill.mining: true
+      graniteskills.skill.fishing: true
+      graniteskills.skill.excavation: true
+      graniteskills.skill.archery: true
+      graniteskills.skill.defense: true
+      graniteskills.skill.fighting: true
+      graniteskills.skill.endurance: true
+      graniteskills.skill.agility: true
+      graniteskills.skill.alchemy: true
+      graniteskills.skill.enchanting: true
+      graniteskills.skill.sorcery: true
+      graniteskills.skill.healing: true
+      graniteskills.skill.forging: true
     default: true
 
-  auraskills.command.item.*:
-    description: All permissions related to the creation of items using AuraSkills modifiers
+  graniteskills.command.item.*:
+    description: All permissions related to the creation of items using GraniteSkills modifiers
     children:
-      auraskills.command.item.modifier: true
-      auraskills.command.item.requirement: true
-      auraskills.command.item.multiplier: true
-      auraskills.command.item.register: true
-      auraskills.command.item.give: true
-      auraskills.command.item.ignore: true
+      graniteskills.command.item.modifier: true
+      graniteskills.command.item.requirement: true
+      graniteskills.command.item.multiplier: true
+      graniteskills.command.item.register: true
+      graniteskills.command.item.give: true
+      graniteskills.command.item.ignore: true
     default: false
 
-  auraskills.command.armor.*:
-    description: All permissions related to the creation of armors using AuraSkills modifiers
+  graniteskills.command.armor.*:
+    description: All permissions related to the creation of armors using GraniteSkills modifiers
     children:
-      auraskills.command.armor.modifier: true
-      auraskills.command.armor.requirement: true
-      auraskills.command.armor.multiplier: true
+      graniteskills.command.armor.modifier: true
+      graniteskills.command.armor.requirement: true
+      graniteskills.command.armor.multiplier: true
     default: false
 
-  auraskills.command.admin:
+  graniteskills.command.admin:
     description: Permission to use all admin/op commands
     children:
-      auraskills.command.item.*: true
-      auraskills.command.armor.*: true
-      auraskills.command.save: true
-      auraskills.command.version: true
-      auraskills.command.multiplier: true
-      auraskills.command.updateleaderboards: true
-      auraskills.command.transfer: true
-      auraskills.command.mana.add: true
-      auraskills.command.mana.remove: true
-      auraskills.command.mana.set: true
-      auraskills.command.mana.other: true
-      auraskills.command.reload: true
-      auraskills.command.backup.save: true
-      auraskills.command.backup.load: true
-      auraskills.command.skill.setlevel: true
-      auraskills.command.skill.reset: true
-      auraskills.command.xp.add: true
-      auraskills.command.xp.set: true
-      auraskills.command.xp.remove: true
-      auraskills.command.preset: true
-      auraskills.command.profile: true
-      auraskills.command.modifier: true
-      auraskills.command.storage: true
-      auraskills.command.openmenu: true
-      auraskills.command.manaability.resetcooldown: true
-      auraskills.command.jobs: true
-      auraskills.command.jobs.other: true
-      auraskills.command.antiafk.logs: true
-      auraskills.multiplier: true
-      auraskills.checkupdates: true
-      auraskills.jobs.limit: true
-      auraskills.jobs.block: true
-      auraskills.antiafk.notify: true
+      graniteskills.command.item.*: true
+      graniteskills.command.armor.*: true
+      graniteskills.command.save: true
+      graniteskills.command.version: true
+      graniteskills.command.multiplier: true
+      graniteskills.command.updateleaderboards: true
+      graniteskills.command.transfer: true
+      graniteskills.command.mana.add: true
+      graniteskills.command.mana.remove: true
+      graniteskills.command.mana.set: true
+      graniteskills.command.mana.other: true
+      graniteskills.command.reload: true
+      graniteskills.command.backup.save: true
+      graniteskills.command.backup.load: true
+      graniteskills.command.skill.setlevel: true
+      graniteskills.command.skill.reset: true
+      graniteskills.command.xp.add: true
+      graniteskills.command.xp.set: true
+      graniteskills.command.xp.remove: true
+      graniteskills.command.preset: true
+      graniteskills.command.profile: true
+      graniteskills.command.modifier: true
+      graniteskills.command.storage: true
+      graniteskills.command.openmenu: true
+      graniteskills.command.manaability.resetcooldown: true
+      graniteskills.command.jobs: true
+      graniteskills.command.jobs.other: true
+      graniteskills.command.antiafk.logs: true
+      graniteskills.multiplier: true
+      graniteskills.checkupdates: true
+      graniteskills.jobs.limit: true
+      graniteskills.jobs.block: true
+      graniteskills.antiafk.notify: true
     default: false
 
-  auraskills.command.skills:
+  graniteskills.command.skills:
     default: false
-  auraskills.command.stats:
+  graniteskills.command.stats:
     default: false
-  auraskills.command.sources:
+  graniteskills.command.sources:
     default: false
-  auraskills.command.help:
+  graniteskills.command.help:
     default: false
-  auraskills.command.mana:
+  graniteskills.command.mana:
     default: false
-  auraskills.command.top:
+  graniteskills.command.top:
     default: false
-  auraskills.command.rank:
+  graniteskills.command.rank:
     default: false
-  auraskills.command.lang:
+  graniteskills.command.lang:
     default: false
-  auraskills.command.abtoggle:
+  graniteskills.command.abtoggle:
     default: false
-  auraskills.command.save:
+  graniteskills.command.save:
     default: op
-  auraskills.command.claimitems:
+  graniteskills.command.claimitems:
     default: false
-  auraskills.command.version:
+  graniteskills.command.version:
     default: op
-  auraskills.command.multiplier:
+  graniteskills.command.multiplier:
     default: op
-  auraskills.command.updateleaderboards:
+  graniteskills.command.updateleaderboards:
     default: op
-  auraskills.command.transfer:
+  graniteskills.command.transfer:
     default: op
-  auraskills.command.mana.add:
+  graniteskills.command.mana.add:
     default: op
-  auraskills.command.mana.remove:
+  graniteskills.command.mana.remove:
     default: op
-  auraskills.command.mana.set:
+  graniteskills.command.mana.set:
     default: op
-  auraskills.command.mana.other:
+  graniteskills.command.mana.other:
     default: op
-  auraskills.command.reload:
+  graniteskills.command.reload:
     default: op
-  auraskills.command.backup.save:
+  graniteskills.command.backup.save:
     default: op
-  auraskills.command.backup.load:
+  graniteskills.command.backup.load:
     default: op
-  auraskills.command.skill.setlevel:
+  graniteskills.command.skill.setlevel:
     default: op
-  auraskills.command.skill.reset:
+  graniteskills.command.skill.reset:
     default: op
-  auraskills.command.xp.add:
+  graniteskills.command.xp.add:
     default: op
-  auraskills.command.xp.set:
+  graniteskills.command.xp.set:
     default: op
-  auraskills.command.xp.remove:
+  graniteskills.command.xp.remove:
     default: op
-  auraskills.command.preset:
+  graniteskills.command.preset:
     default: op
-  auraskills.command.profile:
+  graniteskills.command.profile:
     default: op
-  auraskills.command.modifier:
+  graniteskills.command.modifier:
     default: op
-  auraskills.command.armor.modifier:
+  graniteskills.command.armor.modifier:
     default: op
-  auraskills.command.armor.requirement:
+  graniteskills.command.armor.requirement:
     default: op
-  auraskills.command.armor.multiplier:
+  graniteskills.command.armor.multiplier:
     default: op
-  auraskills.command.item.modifier:
+  graniteskills.command.item.modifier:
     default: op
-  auraskills.command.item.requirement:
+  graniteskills.command.item.requirement:
     default: op
-  auraskills.command.item.multiplier:
+  graniteskills.command.item.multiplier:
     default: op
-  auraskills.command.item.register:
+  graniteskills.command.item.register:
     default: op
-  auraskills.command.item.give:
+  graniteskills.command.item.give:
     default: op
-  auraskills.command.item.ignore:
+  graniteskills.command.item.ignore:
     default: op
-  auraskills.command.storage:
+  graniteskills.command.storage:
     default: op
-  auraskills.command.openmenu:
+  graniteskills.command.openmenu:
     default: op
-  auraskills.command.manaability.resetcooldown:
+  graniteskills.command.manaability.resetcooldown:
     default: op
-  auraskills.command.jobs:
+  graniteskills.command.jobs:
     default: op
-  auraskills.command.jobs.other:
+  graniteskills.command.jobs.other:
     default: op
-  auraskills.command.antiafk.logs:
+  graniteskills.command.antiafk.logs:
     default: op
-  auraskills.multiplier:
+  graniteskills.multiplier:
     default: false
-  auraskills.skill.farming:
+  graniteskills.skill.farming:
     default: false
-  auraskills.skill.foraging:
+  graniteskills.skill.foraging:
     default: false
-  auraskills.skill.mining:
+  graniteskills.skill.mining:
     default: false
-  auraskills.skill.fishing:
+  graniteskills.skill.fishing:
     default: false
-  auraskills.skill.excavation:
+  graniteskills.skill.excavation:
     default: false
-  auraskills.skill.archery:
+  graniteskills.skill.archery:
     default: false
-  auraskills.skill.defense:
+  graniteskills.skill.defense:
     default: false
-  auraskills.skill.fighting:
+  graniteskills.skill.fighting:
     default: false
-  auraskills.skill.endurance:
+  graniteskills.skill.endurance:
     default: false
-  auraskills.skill.agility:
+  graniteskills.skill.agility:
     default: false
-  auraskills.skill.alchemy:
+  graniteskills.skill.alchemy:
     default: false
-  auraskills.skill.enchanting:
+  graniteskills.skill.enchanting:
     default: false
-  auraskills.skill.sorcery:
+  graniteskills.skill.sorcery:
     default: false
-  auraskills.skill.healing:
+  graniteskills.skill.healing:
     default: false
-  auraskills.skill.forging:
+  graniteskills.skill.forging:
     default: false
-  auraskills.checkupdates:
+  graniteskills.checkupdates:
     default: op
-  auraskills.jobs.limit:
+  graniteskills.jobs.limit:
     default: false
-  auraskills.jobs.block:
+  graniteskills.jobs.block:
     default: false
-  auraskills.antiafk.notify:
+  graniteskills.antiafk.notify:
     default: op
-  auraskills.leaderboard.exclude:
+  graniteskills.leaderboard.exclude:
     default: false

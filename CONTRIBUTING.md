@@ -1,27 +1,27 @@
 # Contributing guide
 
-Thank you for your interest in contributing to AuraSkills. We want to make it easy to get started and open your first
+Thank you for your interest in contributing to GraniteSkills. We want to make it easy to get started and open your first
 PR, so please make sure to read this guide to set up a development environment and understand our code standards.
 
 ## Getting started
 
-You will need to set up a development environment to build AuraSkills in.
+You will need to set up a development environment to build GraniteSkills in.
 The recommended IDE is [IntelliJ IDEA](https://www.jetbrains.com/idea/), but you
 may use any Java IDE of your choice. If you already have this set up, skip to [Code style](#code-style).
 
-### Fork and clone AuraSkills
+### Fork and clone GraniteSkills
 
-First, create a fork of AuraSkills on GitHub to your personal GitHub account.
+First, create a fork of GraniteSkills on GitHub to your personal GitHub account.
 Then, [clone the project](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
 to your computer (requires Git to be installed).
 
 ### Setting Up the JDK
 
-AuraSkills uses Java 21 for building with Gradle and in source files.
+GraniteSkills uses Java 21 for building with Gradle and in source files.
 If you are using IntelliJ, you should set the SDK in `File -> Project Structure` to a Java 21 JDK.
 We recommend Eclipse Temurin.
 
-### Building AuraSkills
+### Building GraniteSkills
 
 To build the jar file from the source code, use one of the following commands:
 
@@ -41,7 +41,7 @@ The output jar can be found in the `build/libs` directory.
 
 ### Starting a server
 
-AuraSkills contains a Gradle task to quickly build the plugin and start up a test server:
+GraniteSkills contains a Gradle task to quickly build the plugin and start up a test server:
 
 ```
 ./gradlew clean :bukkit:runServer
@@ -62,14 +62,14 @@ also [add additional plugins](https://github.com/jpenilla/run-task/wiki/Basic-Us
 test server. However, make sure you do not commit changes to the runServer task when submitting a PR.
 
 In IntelliJ, you can find this task through the Gradle window under
-`AuraSkills -> bukkit -> Tasks -> run paper -> runServer`.
+`GraniteSkills -> bukkit -> Tasks -> run paper -> runServer`.
 Clicking this button will save this to a run configuration on the top right of the IDE, which can be run by selecting
 the
 `[runServer]` task in the drop-down and clicking the green run button.
 
 ## Code style
 
-AuraSkills uses the Checkstyle Gradle plugin to enforce a consistent code style. Checkstyle is not configured to run
+GraniteSkills uses the Checkstyle Gradle plugin to enforce a consistent code style. Checkstyle is not configured to run
 when
 you build the plugin normally, so you must run the following command to manually run checkstyle:
 

@@ -18,7 +18,7 @@ The following is a list of menus in the plugin:
 
 ## File structure
 
-The files for configuring menus are located in the `AuraSkills/menus` folder. Each menu has its own corresponding file used to configure that menu.
+The files for configuring menus are located in the `GraniteSkills/menus` folder. Each menu has its own corresponding file used to configure that menu.
 
 The following is an overview of keys and sections that are at left-most indent of the menu file:
 
@@ -101,7 +101,7 @@ Placeholders are used in the menu configuration to allow the plugin to insert co
 
 * Single curly braces (`{example}`) - Replaced internally by the plugin for variable data such as player levels and XP. They only work within the same item they were originally defined in (or a component attached to the item), so it should not be moved outside the item.
 * Double curly braces (`{{example}}`) - Message placeholders replaced by the message key defined in the messages file by the key `menus.[menu_name].[placeholder]` where `[menu_name]` is the name of the menu and `[placeholder]` is the text within the double curly braces. If this key doesn't exist, it will look at the key `menus.common.[placeholder]` for the message. The player's set language determines which message file the message will come from, allowing the single menu configuration to work with any language.
-* PlaceholderAPI placeholders (`%example%`) - Placeholders within percent symbols are PlaceholderAPI placeholders. They can either be AuraSkills placeholders or for any other plugin. The PlaceholderAPI plugin must be installed for them to work (and necessary ecloud expansions for other plugins).
+* PlaceholderAPI placeholders (`%example%`) - Placeholders within percent symbols are PlaceholderAPI placeholders. They can either be GraniteSkills placeholders or for any other plugin. The PlaceholderAPI plugin must be installed for them to work (and necessary ecloud expansions for other plugins).
 
 ## Custom menus
 

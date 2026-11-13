@@ -1,5 +1,5 @@
 mana_abilities:
-  auraskills/replenish:
+  graniteskills/replenish:
     enabled: true
     base_value: 5.0
     value_per_level: 5.0
@@ -16,7 +16,7 @@ mana_abilities:
     replant_delay: 4
     show_particles: true
     prevent_unripe_break: true
-  auraskills/treecapitator:
+  graniteskills/treecapitator:
     enabled: true
     base_value: 5.0
     value_per_level: 5.0
@@ -35,7 +35,7 @@ mana_abilities:
     durability_multiplier: 0
     max_limit_durability: false
     call_block_break_event: false
-  auraskills/speed_mine:
+  graniteskills/speed_mine:
     enabled: true
     base_value: 10.0
     value_per_level: 5.0
@@ -50,7 +50,7 @@ mana_abilities:
     check_offhand: true
     sneak_offhand_bypass: true
     haste_level: 10
-  auraskills/sharp_hook:
+  graniteskills/sharp_hook:
     enabled: true
     base_value: 0.5
     value_per_level: 0.5
@@ -64,7 +64,7 @@ mana_abilities:
     display_damage_with_scaling: true
     enable_sound: true
     disable_health_check: false
-  auraskills/terraform:
+  graniteskills/terraform:
     enabled: true
     base_value: 5.0
     value_per_level: 4.0
@@ -81,7 +81,7 @@ mana_abilities:
     max_blocks: 61
     durability_multiplier: 0
     max_limit_durability: false
-  auraskills/charged_shot:
+  graniteskills/charged_shot:
     enabled: true
     base_value: 0.5
     value_per_level: 0.1
@@ -95,7 +95,7 @@ mana_abilities:
     enable_message: true
     enable_sound: true
     always_enabled: false
-  auraskills/absorption:
+  graniteskills/absorption:
     enabled: true
     base_value: 2.0
     value_per_level: 3.0
@@ -107,7 +107,7 @@ mana_abilities:
     level_up: 6
     max_level: 0
     enable_particles: true
-  auraskills/lightning_blade:
+  graniteskills/lightning_blade:
     enabled: true
     base_value: 5.0
     value_per_level: 5.0

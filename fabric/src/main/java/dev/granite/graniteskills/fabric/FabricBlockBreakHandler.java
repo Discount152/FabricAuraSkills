@@ -1,0 +1,70 @@
+package dev.granite.graniteskills.fabric;
+
+import dev.granite.graniteskills.api.skill.Skill;
+import dev.granite.graniteskills.api.source.SkillSource;
+import dev.granite.graniteskills.api.source.type.BlockXpSource;
+import dev.granite.graniteskills.common.source.SourceTypes;
+import dev.granite.graniteskills.common.user.User;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.List;
+
+public final class FabricBlockBreakHandler {
+
+    private FabricBlockBreakHandler() {
+    }
+
+    public static void register(FabricGraniteSkills plugin) {
+        PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, blockEntity) -> {
+            if (world.isClientSide() || !(player instanceof ServerPlayer sp) || !(world instanceof ServerLevel sw)) {
+                return;
+            }
+            SkillSource<BlockXpSource> match = findBreakSource(plugin, state);
+            if (match == null) {
+                return;
+            }
+            BlockXpSource xpSource = match.source();
+            Skill skill = match.skill();
+            if (FabricXpHandlerUtil.shouldBlockXp(plugin, sp, skill, SourceTypes.BLOCK)) {
+                return;
+            }
+            User user = plugin.getUserManager().getUser(sp.getUUID());
+            double blocksMult = FabricBlockLevelerHelper.getBlocksBroken(sw, pos, xpSource, plugin);
+            double mult = blocksMult * FabricBlockStateMatcher.getStateMultiplier(state, xpSource);
+            plugin.getLevelManager().addXp(user, skill, xpSource, xpSource.getXp() * mult);
+            FabricInteractGatheringLuck.tryApply(plugin, sp, user, skill, xpSource, sw, pos, state);
+        });
+    }
+
+    private static SkillSource<BlockXpSource> findBreakSource(FabricGraniteSkills plugin, BlockState state) {
+        String path = BuiltInRegistries.BLOCK.getKey(state.getBlock()).getPath();
+        for (SkillSource<BlockXpSource> entry : plugin.getSkillManager().getSourcesOfType(BlockXpSource.class)) {
+            BlockXpSource source = entry.source();
+            if (!List.of(source.getTriggers()).contains(BlockXpSource.BlockTriggers.BREAK)) {
+                continue;
+            }
+            boolean blockOk = false;
+            for (String blockName : source.getBlocks()) {
+                if (blockName != null && blockName.equalsIgnoreCase(path)) {
+                    blockOk = true;
+                    break;
+                }
+            }
+            if (!blockOk) {
+                continue;
+            }
+            BlockXpSource.BlockXpSourceState[] states = source.getStates();
+            if (states != null && states.length > 0) {
+                if (!FabricBlockStateMatcher.matchesStates(state, states)) {
+                    continue;
+                }
+            }
+            return entry;
+        }
+        return null;
+    }
+}

@@ -1,0 +1,49 @@
+package dev.granite.graniteskills.fabric.ability;
+
+import dev.granite.graniteskills.api.ability.Abilities;
+import dev.granite.graniteskills.api.damage.DamageModifier;
+import dev.granite.graniteskills.api.damage.DamageType;
+import dev.granite.graniteskills.common.user.User;
+import dev.granite.graniteskills.fabric.FabricGraniteSkills;
+import dev.granite.graniteskills.fabric.damage.FabricDamageMeta;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.block.state.BlockState;
+
+public final class FabricMiningAbilities extends FabricAbilityImpl implements FabricDamagePipelineContributor {
+
+    public FabricMiningAbilities(FabricGraniteSkills plugin) {
+        super(plugin, Abilities.LUCKY_MINER, Abilities.MINER, Abilities.PICK_MASTER, Abilities.HARDENED_ARMOR, Abilities.STAMINA);
+    }
+
+    /**
+     * Used by block levelers when deciding direct-drop behavior (ported from Bukkit {@code MiningAbilities}).
+     */
+    public boolean dropsMineralDirectly(BlockState state) {
+        String p = BuiltInRegistries.BLOCK.getKey(state.getBlock()).getPath();
+        return p.contains("diamond_ore") || p.contains("redstone_ore") || p.contains("emerald_ore")
+                || p.contains("coal_ore") || p.contains("lapis_ore") || p.contains("nether_quartz_ore")
+                || p.contains("nether_gold_ore") || p.contains("iron_ore") || p.contains("gold_ore")
+                || p.contains("copper_ore");
+    }
+
+    @Override
+    public void contributeAttackDamage(FabricGraniteSkills plugin, FabricDamageMeta meta, ServerPlayer attacker) {
+        if (meta.getDamageType() != DamageType.PICKAXE) {
+            return;
+        }
+        User user = plugin.getUserManager().getUser(attacker.getUUID());
+        meta.addAttackModifier(pickMaster(attacker, user));
+    }
+
+    private DamageModifier pickMaster(ServerPlayer player, User user) {
+        var ability = Abilities.PICK_MASTER;
+        if (isDisabled(ability) || failsChecks(player, ability)) {
+            return DamageModifier.none();
+        }
+        if (user.getAbilityLevel(ability) <= 0) {
+            return DamageModifier.none();
+        }
+        return new DamageModifier(getValue(ability, user) / 100.0, DamageModifier.Operation.ADD_COMBINED);
+    }
+}

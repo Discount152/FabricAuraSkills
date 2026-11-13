@@ -1,0 +1,14 @@
+package dev.granite.graniteskills.api.event.mana;
+
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.jetbrains.annotations.NotNull;
+
+public class ManaAbilityBlockBreakEvent extends BlockBreakEvent {
+
+    public ManaAbilityBlockBreakEvent(@NotNull Block theBlock, @NotNull Player player) {
+        super(theBlock, player);
+    }
+
+}

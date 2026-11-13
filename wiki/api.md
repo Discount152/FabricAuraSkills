@@ -1,14 +1,14 @@
 ---
-description: Guide to the AuraSkills API
+description: Guide to the GraniteSkills API
 ---
 
 # API
 
-The AuraSkills API allows developers to interact with the plugin, integrate with an existing plugin, or register content (custom skills, stats, abilities).
+The GraniteSkills API allows developers to interact with the plugin, integrate with an existing plugin, or register content (custom skills, stats, abilities).
 
 The API consists of just the `api` and `api-bukkit` sub-modules. This allows API methods to be stable across versions and prevents the use of unstable internal methods.
 
-Javadocs are available [here](https://aurelium.dev/javadocs/auraskills-api-bukkit/).
+Javadocs are available [here](https://github.com/Discount152/FabricAuraSkills).
 
 ## Getting Started
 
@@ -18,8 +18,8 @@ Release versions are published to the Maven central repository.
 
 ```xml
 <dependency>
-    <groupId>dev.aurelium</groupId>
-    <artifactId>auraskills-api-bukkit</artifactId>
+    <groupId>dev.granite</groupId>
+    <artifactId>graniteskills-api-bukkit</artifactId>
     <version>2.2.4</version>
     <scope>provided</scope>
 </dependency>
@@ -35,7 +35,7 @@ repositories {
 }
 
 dependencies {
-     compileOnly 'dev.aurelium:auraskills-api-bukkit:2.2.4'
+     compileOnly 'dev.granite:graniteskills-api-bukkit:2.2.4'
 }
 ```
 
@@ -47,26 +47,26 @@ repositories {
 }
 
 dependencies {
-     compileOnly("dev.aurelium:auraskills-api-bukkit:2.2.4")
+     compileOnly("dev.granite:graniteskills-api-bukkit:2.2.4")
 }
 ```
 
 ## Getting the API instance
 
-Most API classes are accessible through the AuraSkillsApi interface accessed using the following static method.
+Most API classes are accessible through the GraniteSkillsApi interface accessed using the following static method.
 
 ```java
-AuraSkillsApi auraSkills = AuraSkillsApi.get();
+GraniteSkillsApi auraSkills = GraniteSkillsApi.get();
 ```
 
-In very limited situations where the API requires Bukkit classes, such as the ItemManager and Regions API, you will have to obtain an instance of the AuraSkillsBukkit interface:
+In very limited situations where the API requires Bukkit classes, such as the ItemManager and Regions API, you will have to obtain an instance of the GraniteSkillsBukkit interface:
 
 ```java
-AuraSkillsBukkit auraSkillsBukkit = AuraSkillsBukkit.get();
+GraniteSkillsBukkit auraSkillsBukkit = GraniteSkillsBukkit.get();
 ```
 
 ::: warning
-Any use of the `auraSkills` variable name below refers to the `AuraSkillsApi` instance.
+Any use of the `auraSkills` variable name below refers to the `GraniteSkillsApi` instance.
 :::
 
 ## Interacting with players
@@ -173,7 +173,7 @@ The following is a list of available events. This may not always be up-to-date, 
 
 ## Global Registry
 
-The global registry is used to get any Skill, Stat, Ability, etc instance by its NamespacedId. This allows you to parse content from a name that supports custom content. Use `AuraSkillsApi#getGlobalRegistry` to get the registry. This is a read-only interface, to register your own custom content, see [#custom-content](api.md#custom-content "mention").
+The global registry is used to get any Skill, Stat, Ability, etc instance by its NamespacedId. This allows you to parse content from a name that supports custom content. Use `GraniteSkillsApi#getGlobalRegistry` to get the registry. This is a read-only interface, to register your own custom content, see [#custom-content](api.md#custom-content "mention").
 
 ```java
 GlobalRegistry registry = auraSkills.getGlobalRegistry();
@@ -187,7 +187,7 @@ Skill skill = registry.getSkill(NamespacedId.of("pluginname", "skillname");
 To register custom content, you must first obtain a NamespacedRegistry that identifies your plugin and the directory from which to load content files (including skills.yml, rewards, sources, etc).
 
 ```java
-AuraSkillsApi auraSkills = AuraSkillsApi.get(); // Get the API instance
+GraniteSkillsApi auraSkills = GraniteSkillsApi.get(); // Get the API instance
 
 // Getting the NamespacedRegistry with your plugin name and the plugin's folder
 NamespacedRegistry registry = auraSkills.useRegistry("pluginname", getDataFolder());
@@ -199,7 +199,7 @@ The first argument of `useRegistry` is the name of your plugin registering the c
 
 The second argument of `useRegistry` is a Java File object representing the content directory. Some things like sources and rewards cannot be registered through code alone and must be done through config files that are automatically detected and loaded from the content directory. A good choice is just the plugin's data folder, which is accessed from `Plugin#getDataFolder()`.
 
-The format for content files is the same as the main AuraSkills plugin, as your content files are merged together with the main plugin's config files when loading skills, stats, and abilities. For example, you can reference `auraskills/` namespaced abilities in your skills.yml file, and `yourplugin/` namespaced abilities can be used in the AuraSkills skills.yml file.
+The format for content files is the same as the main GraniteSkills plugin, as your content files are merged together with the main plugin's config files when loading skills, stats, and abilities. For example, you can reference `graniteskills/` namespaced abilities in your skills.yml file, and `yourplugin/` namespaced abilities can be used in the GraniteSkills skills.yml file.
 
 ### Stats
 
@@ -230,7 +230,7 @@ public class CustomStats {
             .symbol("")
             .item(ItemContext.builder()
                     .material("lime_stained_glass_pane")
-                    .group("lower") // A group defined in AuraSkills/menus/stats.yml
+                    .group("lower") // A group defined in GraniteSkills/menus/stats.yml
                     .order(2) // The position within that group
                     .build())
             .build();
@@ -241,7 +241,7 @@ public class CustomStats {
 You must then register the CustomTrait and CustomStat in your plugin's onEnable:
 
 ```java
-AuraSkillsApi auraSkills = AuraSkillsApi.get();
+GraniteSkillsApi auraSkills = GraniteSkillsApi.get();
 
 NamespacedRegistry registry = auraSkills.useRegistry("pluginnanme", getDataFolder());
 
@@ -250,7 +250,7 @@ registry.registerStat(CustomStats.DEXTERITY);
 ```
 
 ::: warning
-Replace "pluginname" with the name of your plugin in lowercase. The name passed into `NamespacedId.of` must match the one passed in `AuraSkillsApi#useRegistry`.
+Replace "pluginname" with the name of your plugin in lowercase. The name passed into `NamespacedId.of` must match the one passed in `GraniteSkillsApi#useRegistry`.
 :::
 
 #### Trait handlers
@@ -262,10 +262,10 @@ To implement your trait functionality, create a new class that implements `Bukki
 ```java
 public class DodgeChanceTrait implements BukkitTraitHandler, Listener {
 
-    private final AuraSkillsApi auraSkills;
+    private final GraniteSkillsApi auraSkills;
     
     // Inject API dependency in constructor
-    public DodgeChanceTrait(AuraSkillsApi auraSkills) {
+    public DodgeChanceTrait(GraniteSkillsApi auraSkills) {
         this.auraSkills = auraSkills;
     }
 
@@ -311,7 +311,7 @@ public class DodgeChanceTrait implements BukkitTraitHandler, Listener {
 Finally, register your `BukkitTraitHandler` in onEnable:
 
 ```java
-AuraSkillsApi auraSkills = AuraSkillsApi.get();
+GraniteSkillsApi auraSkills = GraniteSkillsApi.get();
 
 auraSkills.getHandlers().registerTraitHandler(new DodgeChanceTrait(auraSkills));
 ```
@@ -368,7 +368,7 @@ public class CustomSkills {
 Then, register the skill in your plugin's onEnable:
 
 ```java
-AuraSkillsApi auraSkills = AuraSkillsApi.get();
+GraniteSkillsApi auraSkills = GraniteSkillsApi.get();
 
 NamespacedRegistry registry = auraSkills.useRegistry("pluginnanme", getDataFolder());
 
@@ -377,7 +377,7 @@ registry.registerSkill(CustomSkills.TRADING);
 
 #### Adding XP sources
 
-To add ways to gain XP for a custom skill, create a sources file with the same format as the AuraSkills sources files. For our example, create a file at `sources/trading.yml`.
+To add ways to gain XP for a custom skill, create a sources file with the same format as the GraniteSkills sources files. For our example, create a file at `sources/trading.yml`.
 
 If your custom skill's XP sources use existing source types available in default skills (such as breaking blocks, killing a mob, tracking a statistic, etc), then you just need to add configured sources of the existing types to the file. See [Sources](sources.md) for how to add existing source types.
 
@@ -434,7 +434,7 @@ You are responsible for generating the sources file in the user's folder using `
 
 #### Adding rewards
 
-Rewards are added by creating a rewards file in the same format as the AuraSkills rewards files. For this example, create a file at `rewards/trading.yml`. We make Trading give the Luck stat every skill level and the Dexterity stat created above every two levels:
+Rewards are added by creating a rewards file in the same format as the GraniteSkills rewards files. For this example, create a file at `rewards/trading.yml`. We make Trading give the Luck stat every skill level and the Dexterity stat created above every two levels:
 
 ```yaml
 patterns:
@@ -475,7 +475,7 @@ public class CustomAbilities {
 Then, register your `CustomAbility` using the `NamespacedRegistry` in your plugin's onEnable.
 
 ```java
-AuraSkillsApi auraSkills = AuraSkillsApi.get();
+GraniteSkillsApi auraSkills = GraniteSkillsApi.get();
 
 NamespacedRegistry registry = auraSkills.useRegistry("pluginnanme", getDataFolder());
 
@@ -498,7 +498,7 @@ For your ability to work, it must be linked to a skill. You can do this by calli
 
 #### Configuration
 
-The example above hardcoded the values for baseValue, unlock, levelUp, etc. If you want to make these values configurable by the user, create an `abilities.yml` file in your content directory. The format is the same as the AuraSkills file.
+The example above hardcoded the values for baseValue, unlock, levelUp, etc. If you want to make these values configurable by the user, create an `abilities.yml` file in your content directory. The format is the same as the GraniteSkills file.
 
 ```yaml
 abilities:
@@ -531,12 +531,12 @@ public class CustomManaAbilities {
 }
 ```
 
-To define the values for your mana ability like base\_value, value\_per\_level, base\_cooldown, base\_mana\_cost, etc., you can either set them directly using the builder methods or create a `mana_abilities.yml` file in your content directory in the same format as the AuraSkills file, but with the mana ability name being your mana ability's NamespacedId of course. You should define all the necessary options using one of the two methods, otherwise they will use arbitrary default values.
+To define the values for your mana ability like base\_value, value\_per\_level, base\_cooldown, base\_mana\_cost, etc., you can either set them directly using the builder methods or create a `mana_abilities.yml` file in your content directory in the same format as the GraniteSkills file, but with the mana ability name being your mana ability's NamespacedId of course. You should define all the necessary options using one of the two methods, otherwise they will use arbitrary default values.
 
 Make sure to register your `CustomManaAbility` in your plugin's onEnable.
 
 ```java
-AuraSkillsApi auraSkills = AuraSkillsApi.get();
+GraniteSkillsApi auraSkills = GraniteSkillsApi.get();
 
 NamespacedRegistry registry = auraSkills.useRegistry("pluginnanme", getDataFolder());
 

@@ -3,7 +3,7 @@ import java.util.jar.JarFile
 
 plugins {
     `java-library`
-    id("com.gradleup.shadow") version "8.3.5"
+    id("com.gradleup.shadow") version "8.3.11"
     id("io.papermc.hangar-publish-plugin") version "0.1.2"
     id("com.modrinth.minotaur") version "2.+"
     id("xyz.jpenilla.run-paper") version "2.3.1"
@@ -84,22 +84,22 @@ val jetbrainsLauncher = javaToolchains.launcherFor {
 tasks {
     withType<ShadowJar> {
         val projectVersion: String by project
-        archiveFileName.set("AuraSkills-${projectVersion}.jar")
+        archiveFileName.set("GraniteSkills-${projectVersion}.jar")
 
-        relocate("co.aikar.commands", "dev.aurelium.auraskills.acf")
-        relocate("co.aikar.locales", "dev.aurelium.auraskills.locales")
-        relocate("de.tr7zw.changeme.nbtapi", "dev.aurelium.auraskills.nbtapi")
-        relocate("org.bstats", "dev.aurelium.auraskills.bstats")
-        relocate("com.ezylang.evalex", "dev.aurelium.auraskills.evalex")
-        relocate("net.kyori", "dev.aurelium.auraskills.kyori")
-        relocate("com.zaxxer.hikari", "dev.aurelium.auraskills.hikari")
-        relocate("dev.aurelium.slate", "dev.aurelium.auraskills.slate")
-        relocate("org.spongepowered.configurate", "dev.aurelium.auraskills.configurate")
-        relocate("io.leangen.geantyref", "dev.aurelium.auraskills.geantyref")
-        relocate("net.querz", "dev.aurelium.auraskills.querz")
-        relocate("com.archyx.polyglot", "dev.aurelium.auraskills.polyglot")
-        relocate("org.atteo.evo.inflector", "dev.aurelium.auraskills.inflector")
-        relocate("com.tcoded.folialib", "dev.aurelium.auraskills.folialib")
+        relocate("co.aikar.commands", "dev.granite.graniteskills.acf")
+        relocate("co.aikar.locales", "dev.granite.graniteskills.locales")
+        relocate("de.tr7zw.changeme.nbtapi", "dev.granite.graniteskills.nbtapi")
+        relocate("org.bstats", "dev.granite.graniteskills.bstats")
+        relocate("com.ezylang.evalex", "dev.granite.graniteskills.evalex")
+        relocate("net.kyori", "dev.granite.graniteskills.kyori")
+        relocate("com.zaxxer.hikari", "dev.granite.graniteskills.hikari")
+        relocate("dev.aurelium.slate", "dev.granite.graniteskills.slate")
+        relocate("org.spongepowered.configurate", "dev.granite.graniteskills.configurate")
+        relocate("io.leangen.geantyref", "dev.granite.graniteskills.geantyref")
+        relocate("net.querz", "dev.granite.graniteskills.querz")
+        relocate("com.archyx.polyglot", "dev.granite.graniteskills.polyglot")
+        relocate("org.atteo.evo.inflector", "dev.granite.graniteskills.inflector")
+        relocate("com.tcoded.folialib", "dev.granite.graniteskills.folialib")
 
         exclude("acf-*.properties")
 
@@ -108,7 +108,7 @@ tasks {
 
     register<Copy>("copyJar") {
         val projectVersion: String by project
-        from("build/libs/AuraSkills-${projectVersion}.jar")
+        from("build/libs/GraniteSkills-${projectVersion}.jar")
         into("../build/libs")
     }
 
@@ -157,11 +157,11 @@ val supportedVersions = (project.property("supportedMCVersions") as String).spli
 if (project.hasProperty("hangarApiKey")) {
     if (!(project.version as String).endsWith("-SNAPSHOT")) {
         hangarPublish {
-            publications.register("AuraSkills") {
+            publications.register("GraniteSkills") {
                 val projectVersion = project.version as String
 
                 version.set(projectVersion)
-                id.set("AuraSkills")
+                id.set("GraniteSkills")
                 channel.set("Release")
                 changelog.set(extractChangelog(projectVersion))
 
@@ -185,7 +185,7 @@ if (project.hasProperty("modrinthToken")) {
 
             token.set(project.property("modrinthToken") as String)
 
-            projectId.set("auraskills")
+            projectId.set("graniteskills")
             versionNumber.set(projectVersion)
             versionType.set("release")
             changelog.set(extractChangelog(projectVersion))

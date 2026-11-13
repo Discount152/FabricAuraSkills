@@ -2,6 +2,18 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.18
+
+### New Features
+
+- Retarget the Fabric dedicated-server build to Minecraft 26.3 (Java 25, Fabric Loader 0.20.1, Fabric API 0.166.2+26.3, Mojang names)
+- Standalone Granite Skills identity: mod id `graniteskills`, packages `dev.granite.graniteskills`, config `config/graniteskills`, permissions `graniteskills.*`, command `/graniteskills`
+- Worlds, player files, and items saved under `auraskills`, `AuraSkills`, or `AureliumSkills` are copied into the Granite Skills folder and rewritten to the new names. The old folders are left in place. Slate and Polyglot stay third-party libraries: Granitelib does not provide menu or message loading.
+- Fabric gameplay that previously registered and did nothing now runs: agility (light fall, jumper, sugar rush, fleeting, thunder fall), endurance (anti-hunger, meal steal, recovery, golden heal), healing (revival, life essence, golden heart), fishing grappler, farming (geneticist, growth aura), enchanting (XP convert, XP warrior, lucky table, enchanted strength), forging (skill mender, anvil master), and alchemy (life steal, wise effect)
+- Fabric anti-AFK checks, XP boss bar, and entity fishing loot
+- `FabricSkillsListeners` so another Fabric mod (Granitelib) can observe user load, level-up, and XP gain without Bukkit events
+- GitHub build and checkstyle run on Java 25, which Loom 1.20 requires
+
 ## 2.3.12
 
 ### New Features
@@ -214,7 +226,7 @@ Changelog for versions since 2.0.0.
 
 ### New Features
 
-- Add auraskills.leaderboard.exclude permission to hide players from the leaderboard
+- Add graniteskills.leaderboard.exclude permission to hide players from the leaderboard
   - Setting this to online players requires a relog to take effect (leaderboard still takes time to update)
 
 ### Bug Fixes
@@ -391,12 +403,12 @@ Changelog for versions since 2.0.0.
 ### New Features
 
 - Add more permission nodes with child permissions
-  - auraskills.* contains permissions for all commands
-  - auraskills.command.user contains permissions users have by default
-  - auraskills.skill.* contains permissions to use all skills
-  - auraskills.command.item.* contains permissions related to item modifier creation
-  - auraskills.command.armor.* contains permissions related to armor modifier creation
-  - auraskills.command.admin contains permissions for all admin/op commands
+  - graniteskills.* contains permissions for all commands
+  - graniteskills.command.user contains permissions users have by default
+  - graniteskills.skill.* contains permissions to use all skills
+  - graniteskills.command.item.* contains permissions related to item modifier creation
+  - graniteskills.command.armor.* contains permissions related to armor modifier creation
+  - graniteskills.command.admin contains permissions for all admin/op commands
 
 ### Changes
 
@@ -474,8 +486,8 @@ Changelog for versions since 2.0.0.
   - Logging for failing anti-AFK checks can be enabled with the `anti_afk.logging_enabled` option
     - The
       `log_threshold` is an expression determining the count of identical conditions required for logging an event. The min_count variable can be used in this expression to reference the min_count in the checks section for a check type.
-    - Logs will be sent to any online player with the auraskills.antiafk.notify permission (op by default)
-    - Logs are saved to storage can can be viewed for any player with the `/skills antiafk logs <player> [page] [perPage]` command (auraskills.command.antiafk.logs permission)
+    - Logs will be sent to any online player with the graniteskills.antiafk.notify permission (op by default)
+    - Logs are saved to storage can can be viewed for any player with the `/skills antiafk logs <player> [page] [perPage]` command (graniteskills.command.antiafk.logs permission)
   - Important disclaimer: A player failing checks and being logged does not necessarily mean they are cheating or using a macro, as false positives can be common for legitmate players, especially if min_count is low. An example is a player using a mob farm manually can still trigger anti-AFK checks. Always check logged players manually before taking any action.
 - Add entity loot for fishing loot tables
   - The new entity loot type adds the ability to catch entity with fishing
@@ -600,11 +612,11 @@ Changelog for versions since 2.0.0.
 ### New Features
 
 - Add roman and int placeholders for abilities (thanks Erik)
-  - `%auraskills_[ability]_roman%` - Gets ability level as a Roman numeral
-  - `%auraskills_[ability]_value_int%` - Gets ability value rounded to an integer
-  - `%auraskills_[ability]_value_2_int%` - Gets secondary ability value rounded to an integer if it exists
-  - `%auraskills_mability_[ability]_roman%` - Gets mana ability level as a Roman numeral
-  - `%auraskills_mability_[ability]_value_int%` - Gets mana ability value rounded to an integer
+  - `%graniteskills_[ability]_roman%` - Gets ability level as a Roman numeral
+  - `%graniteskills_[ability]_value_int%` - Gets ability value rounded to an integer
+  - `%graniteskills_[ability]_value_2_int%` - Gets secondary ability value rounded to an integer if it exists
+  - `%graniteskills_mability_[ability]_roman%` - Gets mana ability level as a Roman numeral
+  - `%graniteskills_mability_[ability]_value_int%` - Gets mana ability value rounded to an integer
 - Add correct_over_max_level option to main config to prevent skill levels being over max level on join (false by default)
 - Add shape option to menu fill items
   - Available values are border, top_row, bottom_row, left_column, and right_column
@@ -630,8 +642,8 @@ Changelog for versions since 2.0.0.
 
 ### New Features
 
-- Add auraskills.jobs.block.[skill] permission to prevent skills from being selected as jobs if set to true (ex: auraskills.jobs.block.mining)
-- Add `%auraskils_jobs_active_[skill]%` placeholder that returns true/false whether the job is active (ex: %auraskills_jobs_active_farming%)
+- Add graniteskills.jobs.block.[skill] permission to prevent skills from being selected as jobs if set to true (ex: graniteskills.jobs.block.mining)
+- Add `%auraskils_jobs_active_[skill]%` placeholder that returns true/false whether the job is active (ex: %graniteskills_jobs_active_farming%)
 
 ### Changes
 
@@ -659,7 +671,7 @@ Changelog for versions since 2.0.0.
     - Players select a skill as a job using a new item in the level progression menu of a skill (gold_ingot by default)
     - If require_selection is set to false, players will gain income for all skills and selection will be hidden
     - The default_job_limit is the maximum number of skills that can be selected as jobs at the same time
-    - The limit can be changed per-player using the auraskills.jobs.limit.[number] permission node (ex: auraskills.jobs.limit.4)
+    - The limit can be changed per-player using the graniteskills.jobs.limit.[number] permission node (ex: graniteskills.jobs.limit.4)
     - The disable_unselected_xp option will block gaining XP in all skills that are not active jobs if set to true
   - Income can also be configured per-source inside the sources files
     - Keys can be added to both the default section or an individual source
@@ -674,27 +686,27 @@ Changelog for versions since 2.0.0.
     - `/skills jobs add <job> [user]` - Joins a specific job for yourself or a different player
     - `/skills jobs remove <job> [user]` - Quits a specific job for yourself or a different player
     - `/skills jobs removeall [user]` - Quits all jobs for yourself or a different player
-    - When user is not specified, these commands use the auraskills.command.jobs permission (op by default)
-    - To specify a different user, the sender must also have the auraskills.command.jobs.other permission (op by default)
+    - When user is not specified, these commands use the graniteskills.command.jobs permission (op by default)
+    - To specify a different user, the sender must also have the graniteskills.command.jobs.other permission (op by default)
   - New jobs PlaceholderAPI placeholders:
-    - `%auraskills_jobs_list%` - Lists active jobs in a comma separated list of default skill names in all lowercase
-    - `%auraskills_jobs_list_formatted%` - Lists active jobs in a comma separated list with the skill display name of the config default_language
-    - `%auraskills_jobs_count%` - Gets the number of jobs the player currently has active
-    - `%auraskills_jobs_limit%` - Gets the maximum number of jobs the player is allowed to have active at the same time
+    - `%graniteskills_jobs_list%` - Lists active jobs in a comma separated list of default skill names in all lowercase
+    - `%graniteskills_jobs_list_formatted%` - Lists active jobs in a comma separated list with the skill display name of the config default_language
+    - `%graniteskills_jobs_count%` - Gets the number of jobs the player currently has active
+    - `%graniteskills_jobs_limit%` - Gets the maximum number of jobs the player is allowed to have active at the same time
 - Add trait commands for adding trait modifiers directly to players
   - `/skills trait add <player> <trait> <name> <value> [silent] [stack]` - Adds a trait modifier to a player with the given name
   - `/skills trait remove <player> <name> [silent]` - Removes a trait modifier from a player with the given name
   - `/skills trait list [player] [trait]` - Lists trait modifiers of a player
   - `/skills trait removeall [player] [trait] [silent]` - Removes all trait modifiers from a player
   - The functionality of these commands is almost identical to the modifier commands for stat modifiers
-  - These commands use the existing auraskills.command.modifier permission
+  - These commands use the existing graniteskills.command.modifier permission
 - Add item and armor trait commands for adding trait modifiers to items
   - `/skills item|armor trait add <trait> <value> [lore]` - Adds a trait modifier to the held item, with lore by default
   - `/skills item|armor trait remove <trait>` - Removes a trait modifier from the item held
   - `/skills item|armor trait list` - Lists all trait modifiers on the item held
   - `/skills item|armor trait removeall` - Removes all trait modifiers from the item held
   - Where item|armor is shown above, only item or armor should be specified, not both
-  - These commands use the existing auraskills.command.item.modifier or auraskills.command.armor.modifier permissions
+  - These commands use the existing graniteskills.command.item.modifier or graniteskills.command.armor.modifier permissions
   - Like stat modifiers, trait modifiers use PDC and do not depend on lore to function
 - Add item ignore commands to ignore interactions on specific items
   - This allows you to disable mana abilities on custom items to allow separate right-click functionality
@@ -703,7 +715,7 @@ Changelog for versions since 2.0.0.
 - Add format_title option to menus to allow disabling color and MiniMessage parsing of menu titles
   - To use, manually add it to the options section of a menu file (create it if it doesn't exist)
 - Add PlaceholderAPI support to level up chat message
-- Add `%auraskills_xp_bar_[skill]%` placeholder that gets the XP progress bar shown in the menus
+- Add `%graniteskills_xp_bar_[skill]%` placeholder that gets the XP progress bar shown in the menus
 
 ### Changes
 
@@ -816,7 +828,7 @@ Note: If you are using the 15 skill legacy preset and previously updated to 2.0.
 
 ### API Changes
 
-- Slate is now relocated in the AuraSkills jar, so if you use dev.aurelium.slate packages with the api, you should relocate them to dev.aurelium.auraskills.slate using the Gradle Shadow or Maven Shade plugin
+- Slate is now relocated in the GraniteSkills jar, so if you use dev.aurelium.slate packages with the api, you should relocate them to dev.granite.graniteskills.slate using the Gradle Shadow or Maven Shade plugin
 - Add MainConfig#getStartLevel and getHighestMaxLevel
 - Add MenuManager#registerGlobalReplacer
 
@@ -825,13 +837,13 @@ Note: If you are using the 15 skill legacy preset and previously updated to 2.0.
 ### New Features
 
 - Add trait placeholders
-  - `%auraskills_trait_[trait]%` gets the effective level of a trait
-  - `%auraskills_trait_[trait]_bonus%` gets the bonus level of a trait (level excluding the base value)
-  - `%auraskills_trait_[trait]_menu%` gets the trait in the same format displayed in the stats menu
+  - `%graniteskills_trait_[trait]%` gets the effective level of a trait
+  - `%graniteskills_trait_[trait]_bonus%` gets the bonus level of a trait (level excluding the base value)
+  - `%graniteskills_trait_[trait]_menu%` gets the trait in the same format displayed in the stats menu
 - Add mana ability placeholders (thanks Erik)
-  - `%auraskills_mability_[ability]%` gets the player's mana ability level
-  - `%auraskills_mability_[ability]_value%` gets the mana ability value
-  - `%auraskills_mability_[ability]_active%` returns true if mana ability is active, false otherwise
+  - `%graniteskills_mability_[ability]%` gets the player's mana ability level
+  - `%graniteskills_mability_[ability]_value%` gets the mana ability value
+  - `%graniteskills_mability_[ability]_active%` returns true if mana ability is active, false otherwise
 - Add MythicMobs hook to fix issues with damage (thanks Erik)
   - Add takeMana mechanic
     - Syntax: takeMana{m=number}
@@ -882,13 +894,13 @@ Note: If you are using the 15 skill legacy preset and previously updated to 2.0.
   - The properties argument is a JSON string required to open some menus
     - For example, `{"skill":"Skill:mining"}` should be passed when opening the level_progression, abilities, sources, and leaderboard menu
   - The page argument starts at 0 for the first page
-  - Requires the auraskills.command.openmenu permission (defaults to op)
+  - Requires the graniteskills.command.openmenu permission (defaults to op)
 - Add ability placeholders
-  - `%auraskills_[ability]%` gets the ability level
-  - `%auraskills_[ability]_value%` gets the ability value
-  - `%auraskills_[ability]_value_2%` gets the secondary value of the ability if there is one
+  - `%graniteskills_[ability]%` gets the ability level
+  - `%graniteskills_[ability]_value%` gets the ability value
+  - `%graniteskills_[ability]_value_2%` gets the secondary value of the ability if there is one
   - Replace `[ability]` with the default English name of an ability in lowercase
-  - AuraSkills placeholders will now show in the tab completion of /papi parse
+  - GraniteSkills placeholders will now show in the tab completion of /papi parse
 
 ### Bug Fixes
 
@@ -903,7 +915,7 @@ Note: If you are using the 15 skill legacy preset and previously updated to 2.0.
 ### API Changes
 
 - Add MenuManager API to extend existing and create custom menus
-  - Accessible with AuraSkillsBukkit#getMenuManager
+  - Accessible with GraniteSkillsBukkit#getMenuManager
   - Can be used to define behavior for custom items and templates in default or custom menus
   - Add NamespacedRegistry#setMenuDirectory for loading external menu files, which are automatically merged with default menu files before being loaded
 - Make TerraformBlockBreakEvent accessible in the API
@@ -1064,12 +1076,12 @@ Note: If you are using the 15 skill legacy preset and previously updated to 2.0.
 
 ### Changes
 
-- The plugin has been renamed from AureliumSkills to AuraSkills. This means the data folder is now plugins/AuraSkills.
+- The plugin has been renamed from GraniteSkills to GraniteSkills. This means the data folder is now plugins/GraniteSkills.
   - Why? The new name is shorter, simpler, and more meaningful. The original plugin name didn't have a meaning when first made, and was pretty long to say and type.
-  - For plugins that hook into AureliumSkills, the renaming means compatibility with Beta versions won't break, and a new hook system can be implemented by developers with the brand new and improved API.
+  - For plugins that hook into GraniteSkills, the renaming means compatibility with Beta versions won't break, and a new hook system can be implemented by developers with the brand new and improved API.
   - Plugins will be able to support both Beta and 2.0 at the same time easily.
   - The new data folder allows migration to be implemented more easily, without overriding existing files. This means any problems from migration can be reverted.
-  - PlaceholderAPI placeholders now use the prefix %auraskills_. Old placeholders using %aureliumskills_ will still work, but you should gradually convert your placeholders over to the new prefix.
+  - PlaceholderAPI placeholders now use the prefix %graniteskills_. Old placeholders using %aureliumskills_ will still work, but you should gradually convert your placeholders over to the new prefix.
   - All permissions have been renamed and reorganized. Old ones will not work. See the permissions list for the up-to-date list.
 - Skill merging and removal
   - Because some skills were too slow to level up and had abilities that weren't very useful, some skills have been merged/removed by default. This brings the total skill count from 15 to 11.
@@ -1134,7 +1146,7 @@ Note: If you are using the 15 skill legacy preset and previously updated to 2.0.
 
 - Codebase structure
   - The codebase has been split into multiple modules to allow the api to be independent from implementation.
-  - The package for the plugin classes is now dev.aurelium.auraskills instead of com.archyx.aureliumskills.
+  - The package for the plugin classes is now dev.granite.graniteskills instead of com.archyx.aureliumskills.
 - API
   - The 2.0 releases adds a brand-new API that is much more capable and extensive than before. It also supports adding custom content (skills, stats, abilities).
 - The plugin is now licensed under GPL3. For one, this means that forks or modifications to the plugin that you distribute must also have their source-code available.

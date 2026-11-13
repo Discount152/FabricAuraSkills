@@ -28,7 +28,7 @@ tasks.withType<JavaCompile> {
 
 tasks {
     javadoc {
-        title = "AuraSkills API Bukkit (${project.version})"
+        title = "GraniteSkills API Bukkit (${project.version})"
         source = sourceSets.main.get().allSource + project(":api").sourceSets.main.get().allSource
         classpath = files(sourceSets.main.get().compileClasspath, project(":api").sourceSets.main.get().output)
         options {
@@ -75,14 +75,14 @@ if (project.properties.keys.containsAll(setOf("developerId", "developerUsername"
         }
 
         publications.create<MavenPublication>("mavenJava") {
-            groupId = "dev.aurelium"
-            artifactId = "auraskills-api-bukkit"
+            groupId = "dev.granite"
+            artifactId = "graniteskills-api-bukkit"
             version = project.version.toString()
 
             pom {
-                name.set("AuraSkills API Bukkit")
-                description.set("API for AuraSkills, the ultra-versatile RPG skills plugin for Minecraft")
-                url.set("https://wiki.aurelium.dev/auraskills")
+                name.set("GraniteSkills API Bukkit")
+                description.set("API for GraniteSkills, the ultra-versatile RPG skills plugin for Minecraft")
+                url.set("https://github.com/Discount152/FabricAuraSkills/tree/main/wiki")
                 inceptionYear.set("2020")
                 licenses {
                     license {
@@ -99,9 +99,9 @@ if (project.properties.keys.containsAll(setOf("developerId", "developerUsername"
                     }
                 }
                 scm {
-                    connection.set("scm:git:git://github.com/Archy-X/AuraSkills.git")
-                    developerConnection.set("scm:git:git://github.com/Archy-X/AuraSkills.git")
-                    url.set("https://github.com/Archy-X/AuraSkills/tree/master")
+                    connection.set("scm:git:git://github.com/Discount152/FabricAuraSkills.git")
+                    developerConnection.set("scm:git:git://github.com/Discount152/FabricAuraSkills.git")
+                    url.set("https://github.com/Discount152/FabricAuraSkills/tree/master")
                 }
             }
 

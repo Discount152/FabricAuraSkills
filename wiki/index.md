@@ -1,13 +1,13 @@
 ---
-description: Welcome to the AuraSkills wiki!
+description: Welcome to the GraniteSkills wiki!
 ---
 
-# AuraSkills
+# GraniteSkills
 
-**AuraSkills** (formerly **Aurelium Skills**) is a Minecraft plugin that adds [skills](skills/), [stats](stats/), [abilities](abilities.md), and other RPG-related features.
-Developed for the Spigot and Paper server platforms, the plugin can be downloaded for free on the official [plugin website](https://aurelium.dev/auraskills/download), [SpigotMC](https://www.spigotmc.org/resources/81069/), [Hangar](https://hangar.papermc.io/Archy/AuraSkills), and [Modrinth](https://modrinth.com/plugin/auraskills). The plugin is fully configurable and customizable, enabling use on a wide-range of server types from small SMPs to large, custom MMORPG networks.
+**Granite Skills** is a Minecraft plugin that adds [skills](skills/), [stats](stats/), [abilities](abilities.md), and other RPG-related features.
+It runs on Paper and, for dedicated servers, on Fabric for Minecraft 26.3. The plugin is fully configurable and customizable, enabling use on a wide range of server types from small SMPs to large, custom MMORPG networks.
 
-This wiki contains documentation on how to set up, configure, and use the plugin. Support from the developer is provided on the [Discord](https://discord.gg/Bh2EZfB) server, where users can also give suggestions, report bugs, and get announcements. AuraSkills is open-sourced on [GitHub](https://github.com/Archy-X/AuraSkills).
+This wiki contains documentation on how to set up, configure, and use the plugin. Granite Skills is open-sourced on [GitHub](https://github.com/Discount152/FabricAuraSkills).
 
 ## Overview
 
@@ -17,7 +17,7 @@ Players level up [skills](skills/) by gaining skill XP through general Minecraft
 
 > Main article: [Skills](skills/)
 
-There are 11 default skills included in AuraSkills which level up as players gain skill XP through various XP sources. By default, each skill has two [stats](stats/) that increase every 1 or 2 skill levels. Most skills also have 5 passive [abilities](abilities.md) that unlock the at first five levels and level up every 5 skill levels. Some skills have a [mana ability](mana-abilities.md), which is a special ability that must be activated by the player, costs mana, and has a cooldown.
+There are 11 default skills included in GraniteSkills which level up as players gain skill XP through various XP sources. By default, each skill has two [stats](stats/) that increase every 1 or 2 skill levels. Most skills also have 5 passive [abilities](abilities.md) that unlock the at first five levels and level up every 5 skill levels. Some skills have a [mana ability](mana-abilities.md), which is a special ability that must be activated by the player, costs mana, and has a cooldown.
 
 The 11 skills are Farming, Foraging, Mining, Fishing, Excavation, Archery, Defense, Fighting, Agility, Enchanting, and Alchemy. The existing 15 skills from Beta can be added back by loading the legacy preset.
 
@@ -27,7 +27,7 @@ The `skills.yml` file is where skills are configured, including enabling/disabli
 
 ## Configuration
 
-There are multiple configuration files in the `plugins/AuraSkills` directory that are used to configure the plugin.
+There are multiple configuration files in the `plugins/GraniteSkills` directory that are used to configure the plugin.
 
 ### Main Config
 
@@ -73,4 +73,4 @@ The `menus/` folder contains the menu files used to change the appearance of the
 
 > Main article: [API](api.md)
 
-AuraSkills provides an extensive API that allows developers to hook into the plugin and interact with users, listen to events, and add custom content.
+GraniteSkills provides an extensive API that allows developers to hook into the plugin and interact with users, listen to events, and add custom content.

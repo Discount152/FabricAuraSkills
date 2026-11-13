@@ -24,22 +24,22 @@ There are 9 stats by default, with the trait(s) they level up also shown:
 
 ## Configuration
 
-Stats and traits are configured in the `stats.yml` file. Each stat has a section named after its full Namespaced ID (prefixed with `auraskills/` for all default stats) in the `stats` section. Each trait has a similar section under `traits`. Below is an example stat section for Regeneration with comments explaining each option:
+Stats and traits are configured in the `stats.yml` file. Each stat has a section named after its full Namespaced ID (prefixed with `graniteskills/` for all default stats) in the `stats` section. Each trait has a similar section under `traits`. Below is an example stat section for Regeneration with comments explaining each option:
 
 ```yaml
-auraskills/regeneration:
+graniteskills/regeneration:
   # Whether the stat is enabled. Disabled stats will have no effect and
   # will be hidden from menus.
   enabled: true
   # A map of traits that this stat controls.
   traits:
-    auraskills/saturation_regen: # The trait for health regen at full hunger
+    graniteskills/saturation_regen: # The trait for health regen at full hunger
       # The increase in the trait per stat level. In this case, the player 
       # regenerates 0.008 more HP per Regeneration stat level.
       modifier: 0.008 
-    auraskills/hunger_regen:
+    graniteskills/hunger_regen:
       modifier: 0.008
-    auraskills/mana_regen:
+    graniteskills/mana_regen:
       modifier: 0.01
 ```
 
@@ -51,7 +51,7 @@ The traits section contains configurable options specific to each trait. These o
 
 * `hand_damage` - Whether damage from hitting with an empty hand should be affected.
 * `bow_damage` - Whether damage from bows and projectiles should be affected.
-* `display_damage_with_health_scaling` - If true, the damage numbers in the menus and damage holograms will be scaled based on the `action_bar_scaling` option in the `auraskills/hp` trait section.
+* `display_damage_with_health_scaling` - If true, the damage numbers in the menus and damage holograms will be scaled based on the `action_bar_scaling` option in the `graniteskills/hp` trait section.
 * `use_percent` - Whether the attack damage bonus should be applied as a percent increase of the base damage. If false, damage will be added as the flat trait value.
 
 #### Hp

@@ -1,24 +1,20 @@
-<h1 style="text-align:center;">Fabric AuraSkills</h1>
+<h1 style="text-align:center;">Granite Skills</h1>
 
 <p style="text-align:center;">
-Fabric dedicated-server port of the AuraSkills RPG skills system
+Standalone skills mod for Minecraft. Fabric dedicated servers use Minecraft 26.3. Mod id <code>graniteskills</code>.
 </p>
 
-[![GitHub Release](https://img.shields.io/github/v/release/Archy-X/AuraSkills?style=flat-square)](https://github.com/Archy-X/AuraSkills/releases/latest)
-[![Maven Central Version](https://img.shields.io/maven-central/v/dev.aurelium/auraskills-api-bukkit?style=flat-square&color=%238529F5)](https://central.sonatype.com/artifact/dev.aurelium/auraskills-api-bukkit)
-[![Spiget Downloads](https://img.shields.io/spiget/downloads/81069?style=flat-square)](https://www.spigotmc.org/resources/81069/)
+[![GitHub Release](https://img.shields.io/github/v/release/Discount152/FabricAuraSkills?style=flat-square)](https://github.com/Discount152/FabricAuraSkills/releases/latest)
 
 <p style="text-align: center;font-weight: bold;">
-  <a href="https://aurelium.dev/auraskills/download">Downloads</a>
+  <a href="https://github.com/Discount152/FabricAuraSkills">Source</a>
   &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-  <a href="https://wiki.aurelium.dev/auraskills">Wiki</a>
-  &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-  <a href="https://discord.gg/Bh2EZfB">Discord</a>
+  <a href="https://github.com/Discount152/FabricAuraSkills/tree/main/wiki">Wiki</a>
 </p>
 
 ## About
 
-**AuraSkills** (formerly **Aurelium Skills**) is a Minecraft plugin that adds skills, stats, abilities, and other
+**Granite Skills** is a Minecraft plugin that adds skills, stats, abilities, and other
 RPG-related features. The plugin is fully configurable and customizable, enabling usage on a wide range of server types.
 
 Features include:
@@ -31,21 +27,21 @@ Features include:
 - **Rewards** - Customize rewards given for leveling skills, such as running commands or giving items.
 - **Loot** - Create custom loot tables for fishing, blocks, and mobs.
 
-See the [official website](https://aurelium.dev/auraskills) and [wiki](https://wiki.aurelium.dev/auraskills) for a more
+See the [official website](https://github.com/Discount152/FabricAuraSkills) and [wiki](https://github.com/Discount152/FabricAuraSkills/tree/main/wiki) for a more
 complete list of features. The wiki also contains the list
-of [server requirements](https://wiki.aurelium.dev/auraskills/server-requirements) to run the plugin.
+of [server requirements](https://github.com/Discount152/FabricAuraSkills/tree/main/wiki/server-requirements) to run the plugin.
 
 ## Building
 
-AuraSkills uses Gradle for dependencies and building.
+GraniteSkills uses Gradle for dependencies and building.
 
 #### Compiling from source
 
 First, clone the project (requires Git to be installed):
 
 ```
-git clone https://github.com/Archy-X/AuraSkills.git
-cd AuraSkills/
+git clone https://github.com/Discount152/FabricAuraSkills.git
+cd GraniteSkills/
 ```
 
 Then build depending on your operating system:
@@ -66,10 +62,10 @@ The output jar can be found in the `build/libs` directory.
 
 ## API
 
-AuraSkills has an extensive developer API.
+GraniteSkills has an extensive developer API.
 
-Read the full API documentation on the [wiki](https://wiki.aurelium.dev/auraskills/api), or view
-the [Javadocs](https://docs.aurelium.dev/auraskills-api-bukkit/).
+Read the full API documentation on the [wiki](https://github.com/Discount152/FabricAuraSkills/tree/main/wiki/api), or view
+the [Javadocs](https://github.com/Discount152/FabricAuraSkills).
 
 Release versions are published to the Maven central repository. Snapshot versions require adding the Sonatype OSS
 repository.
@@ -87,8 +83,8 @@ repository.
 ```xml
 
 <dependency>
-    <groupId>dev.aurelium</groupId>
-    <artifactId>auraskills-api-bukkit</artifactId>
+    <groupId>dev.granite</groupId>
+    <artifactId>graniteskills-api-bukkit</artifactId>
     <version>2.3.5</version>
     <scope>provided</scope>
 </dependency>
@@ -105,7 +101,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'dev.aurelium:auraskills-api-bukkit:2.3.5'
+    compileOnly 'dev.granite:graniteskills-api-bukkit:2.3.5'
 }
 ```
 
@@ -118,7 +114,7 @@ repositories {
 }
 
 dependencies { 
-    compileOnly("dev.aurelium:auraskills-api-bukkit:2.3.5")
+    compileOnly("dev.granite:graniteskills-api-bukkit:2.3.5")
 }
 ```
 

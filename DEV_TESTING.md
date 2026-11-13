@@ -1,8 +1,8 @@
 # Local Fabric development and testing
 
-This guide is for **Fabric AuraSkills** in this repo (`FabricAuraSkills`). It uses **Fabric Loom** built into the `:fabric` Gradle project so you can run a **local dedicated server** and a **local game client** without copying jars to a real host.
+This guide is for **Granite Skills** in this repo (mod id `graniteskills`). It uses **Fabric Loom** built into the `:fabric` Gradle project so you can run a **local dedicated server** and a **local game client** without copying jars to a real host.
 
-**Open this folder as the Cursor / VS Code workspace root** (`FabricAuraSkills`) so paths and tasks match.
+**Open this folder as the Cursor / VS Code workspace root** (`FabricGraniteSkills`) so paths and tasks match.
 
 ---
 
@@ -10,12 +10,12 @@ This guide is for **Fabric AuraSkills** in this repo (`FabricAuraSkills`). It us
 
 | Item | Value (see `fabric/build.gradle.kts`) |
 |------|----------------------------------------|
-| Minecraft | `1.21.11` |
-| Yarn mappings | `1.21.11+build.4:v2` |
-| Fabric Loader | `0.18.4` |
-| Fabric API | `0.141.3+1.21.11` |
-| Java | **21** (Gradle toolchain) |
-| Loom | `1.13.6` |
+| Minecraft | `26.3` |
+| Mappings | Mojang names, built into the game (no Yarn) |
+| Fabric Loader | `0.20.1` |
+| Fabric API | `0.166.2+26.3` |
+| Java | **25** (Gradle toolchain) |
+| Loom | `1.20.0-alpha.31` |
 
 Use **`-PfabricOnly=true`** so Gradle only loads `api`, `common`, `slate-fabric`, and `fabric` (skips Bukkit and other subprojects). All commands below include it.
 
@@ -61,7 +61,7 @@ scripts\fabric-dev-server.bat
 
 **Option C — Cursor / VS Code:** `Terminal → Run Task…` → **Fabric: run local dedicated server**.
 
-The mod is on the runtime classpath automatically; you do **not** need to copy `FabricAuraSkills-*.jar` into `mods` for this workflow.
+The mod is on the runtime classpath automatically; you do **not** need to copy `GraniteSkills-*.jar` into `mods` for this workflow.
 
 Stop the server: type `stop` in the server console, or close the terminal (not as clean).
 
@@ -102,7 +102,7 @@ From repo root:
 
 Output jar:
 
-`fabric\build\libs\FabricAuraSkills-<version>.jar`
+`fabric\build\libs\GraniteSkills-<version>.jar`
 
 (`<version>` comes from `gradle.properties` → `projectVersion`.)
 
@@ -112,11 +112,11 @@ Or: **Fabric: build mod JAR** task, or `scripts\fabric-build.bat`.
 
 Each successful **`:fabric:build`** finishes by running **`:fabric:archiveFabricModJar`**, which copies the remapped mod to:
 
-**`fabric-mod-jar-history/FabricAuraSkills-<version>-<timestamp>.jar`**
+**`fabric-mod-jar-history/GraniteSkills-<version>-<timestamp>.jar`**
 
 Those files are **not** removed when you bump `projectVersion` or run another build. **`fabric-mod-jar-history/`** is the long-term archive; it is listed in `.gitignore` so jars stay local unless you commit them on purpose.
 
-**`:fabric:clean`** still deletes **`fabric/build/`** (Gradle’s normal behavior), but **before** that happens Gradle copies any existing **`fabric/build/libs/FabricAuraSkills-*.jar`** into **`fabric-mod-jar-history/`** as **`…-preclean-<timestamp>-<n>.jar`**, so you keep the previous remapped JAR for documentation / diff / rollback. Prefer **`:fabric:build`** without **`clean`** when you only need a fresh compile.
+**`:fabric:clean`** still deletes **`fabric/build/`** (Gradle’s normal behavior), but **before** that happens Gradle copies any existing **`fabric/build/libs/GraniteSkills-*.jar`** into **`fabric-mod-jar-history/`** as **`…-preclean-<timestamp>-<n>.jar`**, so you keep the previous JAR for documentation / diff / rollback. Prefer **`:fabric:build`** without **`clean`** when you only need a fresh compile.
 
 ---
 
@@ -169,14 +169,14 @@ All of this is **local** and listed in `.gitignore` as `fabric/run/` so worlds a
 
 ## Automated JiJ audit (release bundle)
 
-After **`remapJar`**, Gradle runs **`verifyFabricReleaseBundle`**: it opens the remapped **`FabricAuraSkills-*.jar`** and checks **`META-INF/jars/`** for:
+After the **`jar`** task, Gradle runs **`verifyFabricReleaseBundle`**: it opens **`GraniteSkills-*.jar`** and checks **`META-INF/jars/`** for:
 
 - **`api-*.jar`** and **`common-*.jar`** (must be embedded for one-jar installs)
 - **`configurate-core-4.1.2.jar`** and **`configurate-yaml-4.1.2.jar`**
 - **Polyglot** present
 - **No** `configurate-*-4.2*.jar` (avoids the server crash when another mod ships Configurate 4.1 core)
 
-It runs automatically as part of **`:fabric:build`**. To run only the audit (still builds the remapped jar first):
+It runs automatically as part of **`:fabric:build`**. To run only the audit (still builds the jar first):
 
 ```bat
 .\gradlew.bat -PfabricOnly=true :fabric:verifyFabricReleaseBundle
@@ -192,11 +192,11 @@ Cursor: **Tasks → Fabric: verify JiJ release bundle**.
 
 1. Stop any local `runServer`.
 2. Create **`fabric/run/mods/`** if it does not exist.
-3. Copy your production **`mods/*.jar`** into **`fabric/run/mods/`**, **except** do **not** put a second copy of **FabricAuraSkills** there — Loom already puts **your workspace mod** on the classpath. Two copies can confuse debugging.
+3. Copy your production **`mods/*.jar`** into **`fabric/run/mods/`**, **except** do **not** put a second copy of **FabricGraniteSkills** there — Loom already puts **your workspace mod** on the classpath. Two copies can confuse debugging.
 4. Optional: use a **fresh world** — delete **`fabric/run/world`** (or your `level-name` folder) so a bad test does not reuse broken state.
 5. Run **`.\gradlew.bat -PfabricOnly=true :fabric:runServer`** and watch **`fabric/run/logs/latest.log`** for `Done` and any `ERROR` lines.
 
-**Manual smoke checklist** (5–10 minutes after boot): join with `runClient`, run **`/auraskills`** (or tab-complete), gain XP in one skill, try **one** anvil operation, **one** brew takeout, **one** fish — enough to prove the main hooks still fire with the pack loaded.
+**Manual smoke checklist** (5–10 minutes after boot): join with `runClient`, run **`/graniteskills`** (or tab-complete), gain XP in one skill, try **one** anvil operation, **one** brew takeout, **one** fish — enough to prove the main hooks still fire with the pack loaded.
 
 ---
 

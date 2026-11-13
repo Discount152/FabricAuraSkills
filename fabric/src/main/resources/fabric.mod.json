@@ -1,24 +1,24 @@
 {
   "schemaVersion": 1,
-  "id": "auraskills",
+  "id": "graniteskills",
   "version": "${version}",
-  "name": "Fabric AuraSkills",
-  "description": "Fabric AuraSkills — dedicated server build for Minecraft 1.21.11 (skills, XP, storage, permissions). See fabric/FABRIC_QUICKSTART.md.",
-  "authors": ["Archyx (original)", "Fabric port"],
+  "name": "Granite Skills",
+  "description": "Granite Skills — standalone dedicated-server skills for Minecraft 26.3. Mod id graniteskills. See fabric/FABRIC_QUICKSTART.md.",
+  "authors": ["Granite Skills"],
   "license": "GPL-3.0",
   "environment": "*",
   "entrypoints": {
     "server": [
-      "dev.aurelium.auraskills.fabric.FabricAuraSkillsMod"
+      "dev.granite.graniteskills.fabric.FabricGraniteSkillsMod"
     ]
   },
   "mixins": [
-    "auraskills.mixins.json"
+    "graniteskills.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.18.4",
-    "minecraft": "~1.21.11",
-    "java": ">=21",
+    "fabricloader": ">=0.20.1",
+    "minecraft": "~26.3",
+    "java": ">=25",
     "fabric-api": "*",
     "fabric-permissions-api-v0": "*"
   }
