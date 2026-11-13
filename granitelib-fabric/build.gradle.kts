@@ -5,9 +5,14 @@ plugins {
     id("net.fabricmc.fabric-loom") version "1.19.4"
 }
 
-/** Fabric port of Slate — skeleton. Upstream Bukkit Slate lives in {@code vendor/Slate} (git submodule). */
-group = "dev.aurelium"
-version = rootProject.version
+val granitelibVersion: String =
+    requireNotNull(rootProject.findProperty("granitelibVersion") as? String) {
+        "root gradle.properties must define granitelibVersion"
+    }
+
+group = "dev.granitelib"
+version = granitelibVersion
+description = "Fabric menu and layout library. Granite Skills depends on it."
 
 java {
     toolchain {
@@ -17,7 +22,7 @@ java {
 }
 
 loom {
-    // Library module: no dev run configs required; :fabric consumes namedElements.
+    // Library module. Granite Skills depends on this project; no dev run configs here.
 }
 
 repositories {
@@ -52,11 +57,6 @@ tasks.withType<JavaCompile>().configureEach {
 tasks.named<Test>("test") {
     useJUnitPlatform()
 }
-
-val granitelibVersion: String =
-    requireNotNull(rootProject.findProperty("granitelibVersion") as? String) {
-        "root gradle.properties must define granitelibVersion (see granitelib standalone metadata)"
-    }
 
 tasks.processResources {
     inputs.property("version", granitelibVersion)

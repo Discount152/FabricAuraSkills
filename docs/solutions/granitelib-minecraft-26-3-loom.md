@@ -40,6 +40,6 @@ Toolchain that actually configures: Gradle 9.8.2, Java 25, Fabric Loader 0.20.1,
 JAVA_HOME=<jdk-25> ./gradlew -PfabricOnly=true :granitelib-fabric:build
 ```
 
-The remapped jar's `fabric.mod.json` must depend on `minecraft ~26.3` and `java >=25`. Gameplay
+The jar's `fabric.mod.json` must depend on `minecraft ~26.3` and `java >=25`. Granite Skills
 sources that still call `GraniteContainerMenus` with Yarn types (`ServerPlayerEntity`, `Text`,
 `SimpleInventory`, `SlotActionType`) will not compile until that module is on 26.3 as well.

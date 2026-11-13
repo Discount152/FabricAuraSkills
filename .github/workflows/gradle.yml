@@ -24,6 +24,6 @@ jobs:
       - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
         with:
           name: granitelib-fabric
-          path: slate-fabric/build/libs/granitelib-fabric-*.jar
+          path: granitelib-fabric/build/libs/granitelib-fabric-*.jar
       - name: Delete all summary content
         run: rm $GITHUB_STEP_SUMMARY

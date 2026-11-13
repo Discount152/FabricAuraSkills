@@ -3,14 +3,10 @@
   "id": "granitelib",
   "version": "${version}",
   "name": "GraniteLib",
-  "description": "A lightweight Fabric menu/layout framework used by FabricAuraSkills and future GraniteLib-powered mods.",
+  "description": "Fabric menu and layout library. Granite Skills depends on it.",
   "authors": [
     "Discount152"
   ],
-  "contact": {
-    "sources": "https://github.com/Discount152/FabricAuraSkills",
-    "issues": "https://github.com/Discount152/FabricAuraSkills/issues"
-  },
   "license": "GPL-3.0",
   "environment": "*",
   "entrypoints": {},
