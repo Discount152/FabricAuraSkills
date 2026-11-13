@@ -26,6 +26,7 @@ import dev.granite.graniteskills.common.message.MessageKey;
 import dev.granite.graniteskills.common.message.MessageProvider;
 import dev.granite.graniteskills.common.message.PlatformLogger;
 import dev.granite.graniteskills.common.message.type.CommandMessage;
+import dev.granite.graniteskills.common.migration.IdentityMigrator;
 import dev.granite.graniteskills.common.migration.MigrationManager;
 import dev.granite.graniteskills.common.modifier.ModifierManager;
 import dev.granite.graniteskills.common.ref.PlayerRef;
@@ -136,6 +137,7 @@ public final class FabricGraniteSkills implements GraniteSkillsPlugin {
             FabricGraniteSkillsMod.LOGGER.error("Could not create data folder: {}", dataFolder.getAbsolutePath());
         }
         logger = new FabricLogger(FabricGraniteSkillsMod.LOGGER);
+        IdentityMigrator.migrate(this);
         platformUtil = new FabricPlatformUtil();
         messageProvider = new FabricMessageProvider(this);
         messageProvider.loadMessages();

@@ -70,6 +70,7 @@ public class SqlStorageProvider extends StorageProvider {
     }
 
     public void attemptTableCreation() {
+        LegacySqlTables.migrate(plugin, pool);
         TableCreator tableCreator = new TableCreator(plugin, pool, TABLE_PREFIX);
         tableCreator.createTables();
     }

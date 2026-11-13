@@ -3,6 +3,7 @@ package dev.granite.graniteskills.bukkit.util;
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
 import dev.granite.graniteskills.api.event.loot.LootDropEvent;
 import dev.granite.graniteskills.api.item.ModifierType;
+import dev.granite.graniteskills.bukkit.item.BukkitLegacyItemMigrator;
 import dev.granite.graniteskills.common.util.text.TextUtil;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
@@ -109,6 +110,7 @@ public class ItemUtils {
     }
 
     public static ReadWriteNBT getRootCompound(ReadWriteNBT item) {
+        BukkitLegacyItemMigrator.adopt(item);
         ReadWriteNBT compound = item.getCompound("GraniteSkills");
         if (compound == null) {
             compound = item.getOrCreateCompound("GraniteSkills");
@@ -117,6 +119,7 @@ public class ItemUtils {
     }
 
     public static ReadWriteNBT getLegacyRootCompound(ReadWriteNBT item) {
+        BukkitLegacyItemMigrator.adopt(item);
         ReadWriteNBT compound = item.getCompound("GraniteSkills");
         if (compound == null) {
             compound = item.getOrCreateCompound("GraniteSkills");

@@ -1,4 +1,4 @@
-INSERT INTO auraskills_modifiers
+INSERT INTO graniteskills_modifiers
     (user_id, modifier_type, type_id, modifier_name, modifier_value, modifier_operation, expiration_time, remaining_duration, metadata)
 SELECT
     user_id,
@@ -22,5 +22,5 @@ SELECT
     NULL AS expiration_time,
     NULL AS remaining_duration,
     NULL AS metadata
-FROM auraskills_key_values
+FROM graniteskills_key_values
 WHERE data_id IN (1, 2);

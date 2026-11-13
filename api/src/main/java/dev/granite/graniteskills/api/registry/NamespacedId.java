@@ -11,9 +11,20 @@ public class NamespacedId {
     private final String key;
 
     private NamespacedId(String namespace, String key) {
-        this.namespace = namespace.toLowerCase(Locale.ROOT);
+        this.namespace = canonicalNamespace(namespace);
         this.originalKey = key;
         this.key = key.toLowerCase(Locale.ROOT);
+    }
+
+    /**
+     * Saved worlds used the auraskills and aureliumskills namespaces for the same built-in content.
+     */
+    private static String canonicalNamespace(String namespace) {
+        String lower = namespace.toLowerCase(Locale.ROOT);
+        if (lower.equals("auraskills") || lower.equals("aureliumskills")) {
+            return GRANITESKILLS;
+        }
+        return lower;
     }
 
     /**

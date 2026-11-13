@@ -1,4 +1,4 @@
-ALTER TABLE auraskills_users
+ALTER TABLE graniteskills_users
     ADD COLUMN last_updated TIMESTAMP
         NOT NULL
         DEFAULT CURRENT_TIMESTAMP

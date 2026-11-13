@@ -76,6 +76,7 @@ import dev.granite.graniteskills.common.menu.MenuHelper;
 import dev.granite.graniteskills.common.message.MessageKey;
 import dev.granite.graniteskills.common.message.PlatformLogger;
 import dev.granite.graniteskills.common.message.type.CommandMessage;
+import dev.granite.graniteskills.common.migration.IdentityMigrator;
 import dev.granite.graniteskills.common.migration.MigrationManager;
 import dev.granite.graniteskills.common.ref.PlayerRef;
 import dev.granite.graniteskills.common.reward.RewardManager;
@@ -196,6 +197,7 @@ public class GraniteSkills extends JavaPlugin implements GraniteSkillsPlugin {
         ApiBukkitRegistrationUtil.register(apiBukkit);
 
         logger = new BukkitLogger(this);
+        IdentityMigrator.migrate(this);
         platformUtil = new BukkitPlatformUtil();
         // Load messages
         messageProvider = new BukkitMessageProvider(this);
@@ -418,6 +420,7 @@ public class GraniteSkills extends JavaPlugin implements GraniteSkillsPlugin {
     private void registerPriorityEvents() {
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new PlayerJoinQuit(this), this);
+        pm.registerEvents(new LegacyItemListener(this), this);
     }
 
     private void registerEvents() {

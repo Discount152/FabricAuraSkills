@@ -41,12 +41,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Reads item stat/trait/multiplier/requirement data from {@link DataComponents#CUSTOM_DATA} (Paper PDC /
- * {@code PublicBukkitValues}) and legacy {@code GraniteSkills}/{@code GraniteSkills} NBT trees.
+ * {@code PublicBukkitValues}) and legacy {@code AuraSkills}/{@code AureliumSkills} NBT trees.
  */
 public final class FabricSkillsItemReader {
 
     private static final String PUBLIC_BUKKIT_VALUES = "PublicBukkitValues";
-    private static final String PLUGIN_NS = "graniteskills";
+    private static final String[] NAMESPACES = {"graniteskills", "auraskills", "aureliumskills"};
+    private static final String[] LEGACY_ROOTS = {"GraniteSkills", "AuraSkills", "AureliumSkills"};
 
     private FabricSkillsItemReader() {
     }
@@ -70,8 +71,27 @@ public final class FabricSkillsItemReader {
         return root.getCompound(PUBLIC_BUKKIT_VALUES).orElse(null);
     }
 
-    private static String pdcContainerKey(ModifierType type, SkillsItemMeta meta) {
-        return PLUGIN_NS + ":" + type.name().toLowerCase(Locale.ROOT) + "_" + meta.key;
+    private static @Nullable Tag pdcValue(CompoundTag pbv, ModifierType type, SkillsItemMeta meta) {
+        if (pbv == null) {
+            return null;
+        }
+        String suffix = ":" + type.name().toLowerCase(Locale.ROOT) + "_" + meta.key;
+        for (String namespace : NAMESPACES) {
+            String key = namespace + suffix;
+            if (pbv.contains(key)) {
+                return pbv.get(key);
+            }
+        }
+        return null;
+    }
+
+    private static String[] storedKeys(String field) {
+        return new String[]{
+                "graniteskills:" + field,
+                "auraskills:" + field,
+                "aureliumskills:" + field,
+                field
+        };
     }
 
     public enum SkillsItemMeta {
@@ -88,6 +108,7 @@ public final class FabricSkillsItemReader {
     }
 
     public static List<StatModifier> getStatModifiers(FabricGraniteSkills plugin, ItemStack stack, ModifierType type, boolean offhand) {
+        FabricLegacyItemMigrator.migrate(stack);
         List<StatModifier> out = new ArrayList<>();
         out.addAll(readStatModifiersPdc(plugin, stack, type, offhand));
         if (out.isEmpty()) {
@@ -97,12 +118,14 @@ public final class FabricSkillsItemReader {
     }
 
     public static List<TraitModifier> getTraitModifiers(FabricGraniteSkills plugin, ItemStack stack, ModifierType type, boolean offhand) {
+        FabricLegacyItemMigrator.migrate(stack);
         List<TraitModifier> out = new ArrayList<>();
         out.addAll(readTraitModifiersPdc(plugin, stack, type, offhand));
         return out;
     }
 
     public static List<Multiplier> getMultipliers(FabricGraniteSkills plugin, ItemStack stack, ModifierType type, boolean offhand) {
+        FabricLegacyItemMigrator.migrate(stack);
         List<Multiplier> out = new ArrayList<>();
         out.addAll(readMultipliersPdc(plugin, stack, type, offhand));
         if (out.isEmpty()) {
@@ -112,6 +135,7 @@ public final class FabricSkillsItemReader {
     }
 
     public static Map<Skill, Integer> getRequirements(FabricGraniteSkills plugin, ItemStack stack, ModifierType type) {
+        FabricLegacyItemMigrator.migrate(stack);
         Map<Skill, Integer> out = new ConcurrentHashMap<>();
         out.putAll(readRequirementsPdc(plugin, stack, type));
         if (out.isEmpty()) {
@@ -158,11 +182,11 @@ public final class FabricSkillsItemReader {
         if (pbv == null) {
             return List.of();
         }
-        String key = pdcContainerKey(type, SkillsItemMeta.MODIFIER);
-        if (!pbv.contains(key)) {
+        Tag raw = pdcValue(pbv, type, SkillsItemMeta.MODIFIER);
+        if (raw == null) {
             return List.of();
         }
-        return parseStatContainer(plugin, stack, pbv.get(key), type, offhand);
+        return parseStatContainer(plugin, stack, raw, type, offhand);
     }
 
     private static List<StatModifier> parseStatContainer(FabricGraniteSkills plugin, ItemStack stack, Tag raw, ModifierType type, boolean offhand) {
@@ -189,7 +213,7 @@ public final class FabricSkillsItemReader {
                 if (!(el instanceof CompoundTag c)) {
                     continue;
                 }
-                String statName = firstString(c, PLUGIN_NS + ":stat", "stat");
+                String statName = firstString(c, storedKeys("stat"));
                 if (statName == null) {
                     continue;
                 }
@@ -197,11 +221,11 @@ public final class FabricSkillsItemReader {
                 if (stat == null) {
                     continue;
                 }
-                double value = firstDouble(c, PLUGIN_NS + ":value", "value");
+                double value = firstDouble(c, storedKeys("value"));
                 if (value == 0.0) {
                     continue;
                 }
-                String opName = firstString(c, PLUGIN_NS + ":operation", "operation");
+                String opName = firstString(c, storedKeys("operation"));
                 Operation op = Operation.parse(opName);
                 StatModifier mod = new StatModifier(modifierName(stat, type, offhand, stack), stat, value, op);
                 mod.setNonPersistent();
@@ -213,7 +237,7 @@ public final class FabricSkillsItemReader {
 
     private static List<StatModifier> readStatModifiersLegacy(FabricGraniteSkills plugin, ItemStack stack, ModifierType type, boolean offhand) {
         List<StatModifier> list = new ArrayList<>();
-        for (String rootName : new String[]{"GraniteSkills"}) {
+        for (String rootName : LEGACY_ROOTS) {
             CompoundTag typeCompound = legacyModifiersTypeCompound(customDataRoot(stack), rootName, type);
             if (typeCompound == null) {
                 continue;
@@ -260,11 +284,11 @@ public final class FabricSkillsItemReader {
         if (pbv == null) {
             return List.of();
         }
-        String key = pdcContainerKey(type, SkillsItemMeta.TRAIT_MODIFIER);
-        if (!pbv.contains(key)) {
+        Tag raw = pdcValue(pbv, type, SkillsItemMeta.TRAIT_MODIFIER);
+        if (raw == null) {
             return List.of();
         }
-        return parseTraitContainer(plugin, stack, pbv.get(key), type, offhand);
+        return parseTraitContainer(plugin, stack, raw, type, offhand);
     }
 
     private static List<TraitModifier> parseTraitContainer(FabricGraniteSkills plugin, ItemStack stack, Tag raw, ModifierType type, boolean offhand) {
@@ -291,7 +315,7 @@ public final class FabricSkillsItemReader {
                 if (!(el instanceof CompoundTag c)) {
                     continue;
                 }
-                String traitName = firstString(c, PLUGIN_NS + ":trait", "trait");
+                String traitName = firstString(c, storedKeys("trait"));
                 if (traitName == null) {
                     continue;
                 }
@@ -299,11 +323,11 @@ public final class FabricSkillsItemReader {
                 if (trait == null) {
                     continue;
                 }
-                double value = firstDouble(c, PLUGIN_NS + ":value", "value");
+                double value = firstDouble(c, storedKeys("value"));
                 if (value == 0.0) {
                     continue;
                 }
-                String opName = firstString(c, PLUGIN_NS + ":operation", "operation");
+                String opName = firstString(c, storedKeys("operation"));
                 Operation op = Operation.parse(opName);
                 TraitModifier mod = new TraitModifier(traitModifierName(trait, type, offhand, stack), trait, value, op);
                 mod.setNonPersistent();
@@ -318,11 +342,7 @@ public final class FabricSkillsItemReader {
         if (pbv == null) {
             return List.of();
         }
-        String key = pdcContainerKey(type, SkillsItemMeta.MULTIPLIER);
-        if (!pbv.contains(key)) {
-            return List.of();
-        }
-        Tag raw = pbv.get(key);
+        Tag raw = pdcValue(pbv, type, SkillsItemMeta.MULTIPLIER);
         if (!(raw instanceof CompoundTag compound)) {
             return List.of();
         }
@@ -346,7 +366,7 @@ public final class FabricSkillsItemReader {
 
     private static List<Multiplier> readMultipliersLegacy(FabricGraniteSkills plugin, ItemStack stack, ModifierType type, boolean offhand) {
         List<Multiplier> list = new ArrayList<>();
-        for (String rootName : new String[]{"GraniteSkills"}) {
+        for (String rootName : LEGACY_ROOTS) {
             CompoundTag root = customDataRoot(stack);
             CompoundTag skillsRoot = root == null ? null : root.getCompound(rootName).orElse(null);
             if (skillsRoot == null) {
@@ -380,11 +400,7 @@ public final class FabricSkillsItemReader {
         if (pbv == null) {
             return map;
         }
-        String key = pdcContainerKey(type, SkillsItemMeta.REQUIREMENT);
-        if (!pbv.contains(key)) {
-            return map;
-        }
-        Tag raw = pbv.get(key);
+        Tag raw = pdcValue(pbv, type, SkillsItemMeta.REQUIREMENT);
         if (!(raw instanceof CompoundTag compound)) {
             return map;
         }
@@ -404,7 +420,7 @@ public final class FabricSkillsItemReader {
 
     private static Map<Skill, Integer> readRequirementsLegacy(FabricGraniteSkills plugin, ItemStack stack, ModifierType type) {
         Map<Skill, Integer> map = new ConcurrentHashMap<>();
-        for (String rootName : new String[]{"GraniteSkills"}) {
+        for (String rootName : LEGACY_ROOTS) {
             CompoundTag root = customDataRoot(stack);
             CompoundTag skillsRoot = root == null ? null : root.getCompound(rootName).orElse(null);
             if (skillsRoot == null) {
