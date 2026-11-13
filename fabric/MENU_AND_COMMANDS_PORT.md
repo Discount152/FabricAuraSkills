@@ -21,15 +21,15 @@ Work still lands in **multiple commits/PRs**; “one big push” means **one coo
 Slate is **not only a Maven jar** — it is an open-source project:
 
 - **https://github.com/Archy-X/Slate**  
-- Bukkit AuraSkills depends on **`dev.aurelium:slate:1.2.2`** (see `api-bukkit/build.gradle.kts`).
+- Bukkit GraniteSkills depends on **`dev.aurelium:slate:1.2.2`** (see `api-bukkit/build.gradle.kts`).
 
 **Porting Slate properly** means editing **that codebase** (or a fork of it), adding a **Fabric backend** (screen handlers, `ItemStack`, `Text`, scheduler, click events), and publishing something like **`dev.aurelium:slate-fabric`** — *or* vendoring the ported sources into this monorepo. Keeping the port **next to upstream Slate** reduces drift when Slate gets bugfixes.
 
 ---
 
-## What AuraSkills uses from Slate today (scope hint)
+## What GraniteSkills uses from Slate today (scope hint)
 
-AuraSkills Bukkit touches many Slate packages. A Fabric port must cover at least these **namespaces** (from `import dev.aurelium.slate…` usage in this repo):
+GraniteSkills Bukkit touches many Slate packages. A Fabric port must cover at least these **namespaces** (from `import dev.aurelium.slate…` usage in this repo):
 
 - **Core:** `dev.aurelium.slate.Slate`, `…menu.LoadedMenu`, `…menu.ActiveMenu`, `…builder.BuiltMenu`, `…builder.MenuBuilder`, `…builder.TemplateBuilder`, `…builder.ItemBuilder`
 - **Inventory / clicks:** `…inv.InventoryManager`, `…inv.SmartInventory`, `…inv.ClickableItem`, `…inv.content.*`, `…action.trigger.ClickTrigger`
@@ -46,19 +46,19 @@ That is **the real port surface** — not just “open a chest and set items.”
 
 - **Root alias:** `skills|sk|skill` (same replacement as `%skills_alias%` in `CommandRegistrar`).
 - **Mirror** `bukkit/.../CommandRegistrar.java` + every registered command class (`SkillsRootCommand`, `StatsCommand`, `SkillCommand`, `XpCommand`, …).
-- **Permissions:** keep the same strings as `plugin.yml` / LuckPerms (`auraskills.command.*`, `auraskills.skill.*`, …).
+- **Permissions:** keep the same strings as `plugin.yml` / LuckPerms (`graniteskills.command.*`, `graniteskills.skill.*`, …).
 - **Implementation:** **`acf-brigadier`** + Fabric registration bridge; enable ACF unstable APIs as required for Brigadier (same pattern as Paper’s `enableUnstableAPI("help")` / brigadier flags).
 
 ---
 
-## FabricAuraSkills integration (after Slate-Fabric exists)
+## FabricGraniteSkills integration (after Slate-Fabric exists)
 
 1. **Dependency:** `:fabric` depends on **`slate-fabric`** (or the published Maven coordinate).
 2. **Resources:** ship **`menus/*.yml`** inside the Fabric jar (copy from `bukkit/src/main/resources/menus/` via Gradle `processResources`, or move menus to **`common`** once both platforms read the same files).
-3. **Bootstrap:** on server start, construct **Fabric Slate** with the same options pattern as `MenuOptions` / `MenuRegistrar` on Bukkit (`AuraSkills.java` + `MenuRegistrar`).
+3. **Bootstrap:** on server start, construct **Fabric Slate** with the same options pattern as `MenuOptions` / `MenuRegistrar` on Bukkit (`GraniteSkills.java` + `MenuRegistrar`).
 4. **Replace stubs:**  
    - Replace **`FabricMenuHelper`** with a real implementation that delegates to Slate (same role as **`SlateMenuHelper`** on Bukkit).  
-   - Replace **`FabricAuraSkillsCommands`** piecemeal: root **`/skills`** tree from ACF; keep **`/auraskills`** only if you still want a dev alias, or delegate to the same handlers.
+   - Replace **`FabricGraniteSkillsCommands`** piecemeal: root **`/skills`** tree from ACF; keep **`/graniteskills`** only if you still want a dev alias, or delegate to the same handlers.
 5. **API:** port **`ApiMenuManager`** / Bukkit menu entry points that other code calls.
 
 ---
@@ -69,8 +69,8 @@ That is **the real port surface** — not just “open a chest and set items.”
 2. **Layer map:** Bukkit type → Fabric type (`Player` → `ServerPlayerEntity`, `Inventory` → `ScreenHandler` + syncId, `ItemStack` → MC registry stack, `Component` / MiniMessage → Adventure `Text` / Fabric `Text`).
 3. **Minimal vertical slice:** load **one** YAML menu (`skills`) end-to-end (open, click, close) on a dev server.
 4. **Fill Slate subsystems:** scheduler, inventory manager, click routing, templates, placeholders, paging.
-5. **Port AuraSkills-specific menu code** from `bukkit/.../menus/**` (context providers, `MenuRegistrar`, `UnclaimedItemsMenu`, etc.) to **`fabric/.../menus/**`**, calling the same Slate APIs now backed by Fabric.
-6. **Wire ACF Brigadier** and register the full command tree; migrate `/auraskills` subcommands or alias them.
+5. **Port GraniteSkills-specific menu code** from `bukkit/.../menus/**` (context providers, `MenuRegistrar`, `UnclaimedItemsMenu`, etc.) to **`fabric/.../menus/**`**, calling the same Slate APIs now backed by Fabric.
+6. **Wire ACF Brigadier** and register the full command tree; migrate `/graniteskills` subcommands or alias them.
 7. **Docs:** update **`fabric/PLAYER_GUIDE.md`**, **`fabric/PARITY_BACKLOG.md`**, **`fabric/FABRIC_QUICKSTART.md`**.
 
 ---
@@ -78,7 +78,7 @@ That is **the real port surface** — not just “open a chest and set items.”
 ## What we are *not* doing
 
 - **Path B** (custom YAML renderer without Slate) is **out of scope** for this initiative.
-- There is still **no** separate CurseForge “Slate for Fabric” mod to install; the port is **your code** (Slate + AuraSkills Fabric).
+- There is still **no** separate CurseForge “Slate for Fabric” mod to install; the port is **your code** (Slate + GraniteSkills Fabric).
 
 ---
 

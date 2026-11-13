@@ -1,5 +1,5 @@
 # ----------------------------
-# AuraSkills message file
+# Granite Skills message file
 # ----------------------------
 
 abilities:
@@ -510,7 +510,7 @@ commands:
   profile:
     skills: "Perfil de Habilidades Aurelius para <gold>{name}:\n<gray>UUID: <white>{uuid}\n<gray>Habilidades:{skill_entries}"
     skill_entry: "\n  <dark_aqua>{skill} <gray>- Nível: <white>{level}<gray>, XP: <white>{xp}"
-    stats: "Perfil de Habilidades Aurelium para <gold>{name}:\n<gray>UUID: <white>{uuid}\n<gray>Habilidades:{stat_entries}"
+    stats: "Perfil de Habilidades Granite para <gold>{name}:\n<gray>UUID: <white>{uuid}\n<gray>Habilidades:{stat_entries}"
     stat_entry: "\n  <dark_aqua>{stat} <gray>- Nível total: <white>{total_level}<gray>, Nível Base: <white>{base_level}<gray>, Nível modificado: <white>{modified_level}"
   rank:
     header: "<aqua><bold>Sua Classificação de Habilidade</bold>"
@@ -545,7 +545,7 @@ commands:
   updateleaderboards:
     already_updating: "<yellow>O Placar de Liderança está atualizando!"
     updated: "<green>Classificação atualizada!"
-  version: "<white>Você está usando AuraSkills na versão <aqua>{current_version}<white>. A última versão é <aqua>{latest_version}"
+  version: "<white>Você está usando Granite Skills na versão <aqua>{current_version}<white>. A última versão é <aqua>{latest_version}"
   xp:
     add: "<gray>Adicionado <aqua>{amount} {skill} <gray>XP ao jogador <gray>{player}"
     set: "<gray>Definido <aqua>{skill} <gray>XP do jogador <gray>{player} <gray>para {amount}"

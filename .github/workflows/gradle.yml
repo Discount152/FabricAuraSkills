@@ -23,7 +23,7 @@ jobs:
         with:
           name: GraniteSkills
           path: |
-            build/libs/AuraSkills-**.jar
+            build/libs/GraniteSkills-**.jar
             fabric/build/libs/GraniteSkills-**.jar
       - name: Delete all summary content
         run: rm $GITHUB_STEP_SUMMARY

@@ -4,11 +4,11 @@ description: Guide to the config.yml file
 
 # Main Config
 
-The `config.yml` is the main plugin configuration file found in the `plugins/AuraSkills` folder. It is used for general or miscellaneous config options related to storage/database, external plugin hooks, languages, action bar, boss bar, worlds/regions, modifiers, requirements, and more.
+The `config.yml` is the main plugin configuration file found in the `plugins/GraniteSkills` folder. It is used for general or miscellaneous config options related to storage/database, external plugin hooks, languages, action bar, boss bar, worlds/regions, modifiers, requirements, and more.
 
 Options for each [skill](../skills/) and stat were formerly here, but have been moved to their own `skills.yml` and `stats.yml` files.
 
-If an option you see in the config is missing, this page may not have been updated yet or the option may have been removed. You can find any config additions and changes in the full plugin [changelog](https://github.com/Archy-X/AureliumSkills/blob/master/Changelog.txt).
+If an option you see in the config is missing, this page may not have been updated yet or the option may have been removed. You can find any config additions and changes in the full plugin [changelog](https://github.com/Discount152/FabricAuraSkills/blob/master/Changelog.txt).
 
 Last Updated Version: `2.3.6`
 
@@ -96,7 +96,7 @@ Specific options for each hook are under the section with the plugin name below:
 * `enabled` - Whether the jobs system is enabled. Even if selection is disabled, this option must be enabled in order for source income to work. The Vault plugin and an economy plugin must be installed in order for income to be given.
 * `selection:`
   * `require_selection` - Whether players need to select skills as jobs through the level progression menu in order to earn income while gaining XP. If false, all skills will give income with XP.
-  * &#x20;`default_job_limit` - The default maximum number of jobs a player can have active at once. This limit can be changed per-player using the auraskills.jobs.limit.\[number] permission node.
+  * &#x20;`default_job_limit` - The default maximum number of jobs a player can have active at once. This limit can be changed per-player using the graniteskills.jobs.limit.\[number] permission node.
   * `disable_unselected_xp` - If true, players will be blocked from gaining XP in all skills besides the skills that are active jobs.
   * `cooldown_sec` - The number of seconds players have to wait to select a new job after selecting one.
 * `income:`
@@ -122,7 +122,7 @@ Jobs income can also be configured per-source in the [sources configuration](../
 `anti_afk:`
 
 * `enabled` - Whether the anti-AFK system is enabled. If false, all aspects of the system are disabled.
-* `logging_enabled` - Whether logging for failing anti-AFK checks is enabled. Logs will be sent to any online player with the auraskills.antiafk.notify permission (op by default).
+* `logging_enabled` - Whether logging for failing anti-AFK checks is enabled. Logs will be sent to any online player with the graniteskills.antiafk.notify permission (op by default).
 * `log_threshold` - An expression determining the count of identical conditions required for logging an event. The min\_count variable can be used in this expression to reference the min\_count in the checks section for a check type.
 * `checks:`
   * `[check_name]:`
@@ -288,7 +288,7 @@ Jobs income can also be configured per-source in the [sources configuration](../
 * `update_loot_tables` - Whether new loot items introduced in default configs should be automatically added when updating the plugin.
 * `directly_to_inventory` - If true, all bonus item drops from luck traits and loot will always add directly to the player's inventory instead of being dropped in the world. This option does not affect vanilla item drops.
 
-`check_for_updates` - Whether the plugin should check for new updates on startup and when a player with the `auraskills.checkupdates` permission joins
+`check_for_updates` - Whether the plugin should check for new updates on startup and when a player with the `graniteskills.checkupdates` permission joins
 
 ### Automatic backups
 

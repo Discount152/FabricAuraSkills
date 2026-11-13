@@ -78,7 +78,7 @@ Version Beta 1.3.19
   Changes:
     - Update Russian, Polish, and Simplified Chinese messages
   Bug Fixes:
-    - Fix AureliumAPI.addArmorMultiplier adding item multiplier instead of armor
+    - Fix Granite SkillsApi.addArmorMultiplier adding item multiplier instead of armor
     - Fix allow-over-max-mana set to false not working with Wise Effect
     - Fix errors with skull_meta.placeholder_uuid when PlaceholderAPI is not on the server
 
@@ -124,7 +124,7 @@ Version Beta 1.3.14
   Changes:
     - Add Dutch messages
   API Changes:
-    - The addXp methods in AureliumAPI will no longer grant XP for disabled skills
+    - The addXp methods in Granite SkillsApi will no longer grant XP for disabled skills
   Bug Fixes:
     - Fix mana ability raise sending empty chat messages
     - Fix NaN showing on rank item when leaderboard is empty
@@ -314,7 +314,7 @@ Version Beta 1.3.0
       - Supported actions:
         - Executing a command (either through the player or console)
         - Closing the menu
-        - Opening another Aurelium Skills menu
+        - Opening another Granite Skills menu
         - Going to the next page or previous page
       - Supported triggers (key in parenthesis):
         - Any click ('on_click')
@@ -332,7 +332,7 @@ Version Beta 1.3.0
           - action - The action type, can be 'open', 'close', 'next_page', or 'previous_page'
           - menu - The name of the menu to open (only required for the 'open' action)
           - properties - A subsection of properties used to define variables when opening a menu ('open' action only)
-            - A list of properties used to open each Aurelium Skills menu can be found in the wiki
+            - A list of properties used to open each Granite Skills menu can be found in the wiki
             - Custom types can be used as a property using the 'type:value' format (see wiki for list of types and values)
     - Custom menu items:
       - Completely new items can be added to any menu simply by creating a subsection in the items section
@@ -405,7 +405,7 @@ Version Beta 1.2.8
 
 Version Beta 1.2.7
   Bug Fixes:
-    - Fix Aurelium Skills action bar overriding other action bars (requires ProtocolLib)
+    - Fix Granite Skills action bar overriding other action bars (requires ProtocolLib)
     - Fix ItemListener memory leak
     - Fix Towny incompatibility
 
@@ -474,7 +474,7 @@ Version Beta 1.2.3
     - Update Polish messages
     - Update Russian messages
   API Changes:
-    - Add getPlugin method to more easily get AureliumSkills instance (not official API, use at own risk)
+    - Add getPlugin method to more easily get Granite Skills instance (not official API, use at own risk)
   Bug Fixes:
     - Fix sweet berry bush right click not checking for blocked situations
     - Fix glow berries XP dupe
@@ -584,7 +584,7 @@ Version Beta 1.2.0
     - New players will not join with full mana
     - Mana regen shown in stats menu will now include base mana regen
   API Changes:
-    - Add AureliumAPI#getManaRegen
+    - Add Granite SkillsApi#getManaRegen
   Bug Fixes:
     - Fix inconsistent wisdom experience multiplier with some plugins
     - Fix Healer and Forger abilities not working
@@ -641,7 +641,7 @@ Version Beta 1.1.1
     - Remove MythicMobs support:
       - MythicMobs has removed public access to their maven repository due to abuse
       - This makes it impossible for new users/machines and JitPack to build the plugin
-      - This is a necessary change to keep the plugin open source and the AureliumSkills API working
+      - This is a necessary change to keep the plugin open source and the Granite Skills API working
     - Update aureliumskills.* permission with new permissions
   Bug Fixes:
     - Fix mana ability cooldown_per_level not working
@@ -653,7 +653,7 @@ Version Beta 1.1.0
     - Add customizable rewards for leveling up skills (commands, permissions, stats, items, and money):
       - Rewards are configurable for each skill in the files in the rewards folder
       - Each rewards file name corresponds to the skill it defines rewards for (eg. farming.yml defines only Farming rewards)
-      - See the example rewards file for syntax help: https://github.com/Archy-X/AureliumSkills/blob/master/src/main/resources/rewards/example_rewards.yml
+      - See the example rewards file for syntax help: https://github.com/Discount152/FabricAuraSkills/blob/master/src/main/resources/rewards/example_rewards.yml
       - Rewards files have two sections:
         - The 'patterns' section defines rewards that repeat multiple times
           - Each reward must have a 'pattern' section that can have a 'start', 'interval', and 'stop'
@@ -667,7 +667,7 @@ Version Beta 1.1.0
           - Can optionally define a 'revert_command' and 'revert_executor' to execute when a player loses that level because of admin commands
           - Color codes will work using & unless escaped using \&
         - stat:
-          - Levels up an Aurelium Skill stat (health, strength, luck, etc.) defined in the 'stat' value
+          - Levels up an Granite Skills stat (health, strength, luck, etc.) defined in the 'stat' value
           - The 'value' defines how much the stat should increase by (defaults to 1)
           - You can remove or change the default stats for each skill
         - permission:
@@ -1035,7 +1035,7 @@ Version Alpha 1.6.0
     - Moved api events to a new event package (API BREAKAGE)
     - Changed item/armor modifier and requirement format to a nested NBT compound structure
       - Items with the legacy format will auto convert if held in a player's hand by default (set modifier.auto-convert-from-legacy to false to disable)
-      - All item data from this plugin is now stored inside the 'AureliumSkills' root tag
+      - All item data from this plugin is now stored inside the 'Granite Skills' root tag
     - Default config.yml changes:
       - 'boss-bar.enabled' is now true
       - 'action-bar.xp' and 'action-bar.maxed' are now false
@@ -1098,7 +1098,7 @@ Version Alpha 1.5.5
 
 Version Alpha 1.5.4
   New Features:
-    - Added 'skills resethealth' command that removes Aurelium Skills attribute modifiers from all offline players
+    - Added 'skills resethealth' command that removes Granite Skills attribute modifiers from all offline players
       - This command can only be run through console and does not affect online players
       - Useful for uninstalling the plugin without extra health or luck
   Bug Fixes:
@@ -1224,7 +1224,7 @@ Version Alpha 1.5.0
       - Universal color code and newline support
       - ACF, Action Bar, Leveler, prefix, and more messages supported
       - Integrated with new configurable menus
-      - Guide to the new system: https://github.com/Archy-X/AureliumSkills/wiki/Messages-Guide
+      - Guide to the new system: https://github.com/Discount152/FabricAuraSkills/wiki/Messages-Guide
     - Configurable Menus:
       - All menus are now fully customizable in the new menus.yml fil
       - Change any item material, position, display name, and lore format
@@ -1326,7 +1326,7 @@ Version Alpha 1.5.0
 Version Alpha 1.4.3
   New Features:
     - Added a basic API:
-      - AureliumAPI class for static methods related to mana, xp, and skill level
+      - Granite SkillsApi class for static methods related to mana, xp, and skill level
       - XpGainEvent - Called when xp is gained internally (cancelable)
       - SkillLevelUpEvent - Called when a skill levels up (not cancelable)
       - ManaRegenerateEvent - Called when a player's mana regenerates (cancelable)

@@ -1,6 +1,6 @@
-# Fabric AuraSkills — handoff packet
+# Fabric GraniteSkills — handoff packet
 
-> **26.3 update:** the shipping mod is **Granite Skills** on **Minecraft 26.3** (Loader 0.20.1, Fabric API 0.166.2+26.3, Java 25, Loom 1.20.0-alpha.31, Gradle 9.9.1, Mojang names). The mod id and Java packages stay `auraskills` / `dev.aurelium.auraskills` so Granitelib and existing `config/auraskills` data keep resolving. Sections below that still say 1.21.11 or Yarn describe the previous known-good tree, not the current toolchain.
+> **26.3 update:** the shipping mod is **Granite Skills** on **Minecraft 26.3** (Loader 0.20.1, Fabric API 0.166.2+26.3, Java 25, Loom 1.20.0-alpha.31, Gradle 9.9.1, Mojang names). The mod id and Java packages stay `graniteskills` / `dev.granite.graniteskills` so Granitelib and existing `config/graniteskills` data keep resolving. Sections below that still say 1.21.11 or Yarn describe the previous known-good tree, not the current toolchain.
 
 This document is the **authoritative handoff** for the experimental **Fabric dedicated-server** port in this repository. It records **what was built**, **how it is wired**, **how to build and run it**, **gaps vs the Paper plugin**, and **prioritized next work**.
 
@@ -15,14 +15,14 @@ This document is the **authoritative handoff** for the experimental **Fabric ded
 | Assumption | Detail |
 |------------|--------|
 | **Runtime** | Dedicated **Fabric** server, **Minecraft 1.21.11**, **Java 21**. |
-| **Distribution** | **Server-side mod** only (see `fabric.mod.json` server entrypoint); **vanilla clients** join without installing AuraSkills. |
+| **Distribution** | **Server-side mod** only (see `fabric.mod.json` server entrypoint); **vanilla clients** join without installing GraniteSkills. |
 | **Stack** | No Bukkit/Paper/Spigot at runtime. **Fabric API** + bundled **[fabric-permissions-api](https://github.com/lucko/fabric-permissions-api)** (JiJ); optional **LuckPerms Fabric** (or any provider) for real permission nodes. |
-| **Config** | Same YAML / `config.yml` family as Paper, rooted at `<server>/config/auraskills/` via `FabricLoader`. |
+| **Config** | Same YAML / `config.yml` family as Paper, rooted at `<server>/config/graniteskills/` via `FabricLoader`. |
 
 ### 0.2 Two success metrics (do not conflate them)
 
 1. **Shipping bar (Fabric-first):** Stable progression on a Fabric server — correct load/save, enforced permissions when a provider is present, core XP sources trustworthy, no silent data loss, exploit resistance **for the sources you actually ship**. Paper is **not** the release definition.
-2. **Reference axis (Paper):** The Bukkit module is the **feature inventory and behavioral baseline** for “what AuraSkills can do.” Use it to find gaps and tests, not as a mandate to clone every integration.
+2. **Reference axis (Paper):** The Bukkit module is the **feature inventory and behavioral baseline** for “what GraniteSkills can do.” Use it to find gaps and tests, not as a mandate to clone every integration.
 
 **One-line summary:** *Paper is the regression baseline and feature checklist; Fabric stability and server-only correctness are the release bar.*
 
@@ -31,10 +31,10 @@ This document is the **authoritative handoff** for the experimental **Fabric ded
 **Required before advertising the mod for serious public servers:**
 
 - Join / load / save paths validated; shutdown and crash behavior understood (see §0.5).
-- **Permissions:** Skill nodes (`auraskills.skill.<skill>`), generic `hasPermission`, and MVP commands use **fabric-permissions-api** (see §8). Operators tighten with LuckPerms; do **not** rely on “everyone true” for admin-only actions beyond documented defaults.
+- **Permissions:** Skill nodes (`graniteskills.skill.<skill>`), generic `hasPermission`, and MVP commands use **fabric-permissions-api** (see §8). Operators tighten with LuckPerms; do **not** rely on “everyone true” for admin-only actions beyond documented defaults.
 - Core XP sources you claim to support behave correctly (block break, entity kill, combat damage, statistics, jumping, fishing including `loot_pool` when skill loot tables are loaded).
 - Fishing mixin verified after each MC/Yarn bump.
-- Usable **admin / player command** surface: Fabric ships **`/auraskills version`**, **`/auraskills skills`**, **`/auraskills reload`**, **`/auraskills save`** (see `fabric/FABRIC_QUICKSTART.md`). Full Paper `/skills` ACF tree remains deferred.
+- Usable **admin / player command** surface: Fabric ships **`/graniteskills version`**, **`/graniteskills skills`**, **`/graniteskills reload`**, **`/graniteskills save`** (see `fabric/FABRIC_QUICKSTART.md`). Full Paper `/skills` ACF tree remains deferred.
 
 **Explicitly defer** unless a **named deployment** needs them: full Slate-style menus, full Paper soft-dependency stack (WorldGuard, Vault jobs, MythicMobs, …), full item/NBT modifier pipeline, fishing automation extras / open-water parity, full remaining mana-ability set (e.g. Terraform), **full Bukkit API event parity** on Fabric.
 
@@ -79,7 +79,7 @@ Reusing **`common`** saves time but inherits **Bukkit-first** seams. Every Fabri
 
 | Item | Detail |
 |------|--------|
-| **Upstream** | [Archy-X/AuraSkills](https://github.com/Archy-X/AuraSkills) — this tree is a fork/clone with an added **`fabric`** module. |
+| **Project** | [Discount152/FabricAuraSkills](https://github.com/Discount152/FabricAuraSkills) — Granite Skills, with the Fabric module in this tree. |
 | **Version** | `gradle.properties` → `projectVersion=2.3.12` (aligned with upstream release tagging intent). |
 | **Goal of the port** | Reuse **`api`** + **`common`** (shared logic, YAML, storage, leveling math) on **Fabric 1.21.11** with a **dedicated-server** mod, without rewriting the core plugin brain. |
 
@@ -88,10 +88,10 @@ Reusing **`common`** saves time but inherits **Bukkit-first** seams. Every Fabri
 | Module | Role |
 |--------|------|
 | `api` | Public API types (skills, sources, events, loot interfaces). |
-| `common` | Shared implementation: `AuraSkillsPlugin`, `LevelManager`, loaders, storage, rewards, etc. |
+| `common` | Shared implementation: `GraniteSkillsPlugin`, `LevelManager`, loaders, storage, rewards, etc. |
 | `bukkit` | Paper/Bukkit plugin: event listeners, levelers, loot, menus, traits, hooks. |
 | `api-bukkit` | Bukkit-facing API glue. |
-| `fabric` | Fabric Loom mod: `FabricAuraSkills` implements `AuraSkillsPlugin`, bridges Minecraft/Fabric to `common`. |
+| `fabric` | Fabric Loom mod: `FabricGraniteSkills` implements `GraniteSkillsPlugin`, bridges Minecraft/Fabric to `common`. |
 
 ---
 
@@ -143,7 +143,7 @@ Reusing **`common`** saves time but inherits **Bukkit-first** seams. Every Fabri
 
 **Note:** Builds may report **Gradle 9 deprecation** and a **Problems** report warning: *invocation of `Task.project` at execution time* (e.g. tied to `:fabric:processResources`). Non-fatal today; track for Gradle 10 / configuration cache.
 
-**Permissions library:** `fabric/build.gradle.kts` uses **`include(modImplementation("me.lucko:fabric-permissions-api:0.6.1"))`** so the API is **JiJ** in the AuraSkills jar; `fabric.mod.json` declares **`fabric-permissions-api-v0`**.
+**Permissions library:** `fabric/build.gradle.kts` uses **`include(modImplementation("me.lucko:fabric-permissions-api:0.6.1"))`** so the API is **JiJ** in the GraniteSkills jar; `fabric.mod.json` declares **`fabric-permissions-api-v0`**.
 
 ---
 
@@ -151,16 +151,16 @@ Reusing **`common`** saves time but inherits **Bukkit-first** seams. Every Fabri
 
 | Item | Value |
 |------|--------|
-| **Mod id** | `auraskills` |
-| **Entrypoint** | `fabric.mod.json` → `server`: `dev.aurelium.auraskills.fabric.FabricAuraSkillsMod` |
-| **Mixins** | `auraskills.mixins.json` → package `dev.aurelium.auraskills.fabric.mixin` — see §6.2 for XP-related entries; full list: `BlockEntityBrewingCleanupMixin`, `BrewingStandBlockEntityMixin`, `MobSpawnerLogicMixin`, `EnchantmentScreenHandlerMixin`, `FishingBobberEntityMixin`, `ForgingScreenHandlerMixin`, `ScreenHandlerBrewingTakeoutXpMixin`, `ScreenHandlerGrindstoneXpMixin`, `LivingEntityConsumeMixin`, `PotionEntityMixin`, `ServerWorldSpawnerMixin`, `ServerPlayerEntitySharpHookMixin` |
-| **Config / data folder** | `FabricLoader.getInstance().getConfigDir().resolve("auraskills")` → typically `<server>/config/auraskills/` |
+| **Mod id** | `graniteskills` |
+| **Entrypoint** | `fabric.mod.json` → `server`: `dev.granite.graniteskills.fabric.FabricGraniteSkillsMod` |
+| **Mixins** | `graniteskills.mixins.json` → package `dev.granite.graniteskills.fabric.mixin` — see §6.2 for XP-related entries; full list: `BlockEntityBrewingCleanupMixin`, `BrewingStandBlockEntityMixin`, `MobSpawnerLogicMixin`, `EnchantmentScreenHandlerMixin`, `FishingBobberEntityMixin`, `ForgingScreenHandlerMixin`, `ScreenHandlerBrewingTakeoutXpMixin`, `ScreenHandlerGrindstoneXpMixin`, `LivingEntityConsumeMixin`, `PotionEntityMixin`, `ServerWorldSpawnerMixin`, `ServerPlayerEntitySharpHookMixin` |
+| **Config / data folder** | `FabricLoader.getInstance().getConfigDir().resolve("graniteskills")` → typically `<server>/config/graniteskills/` |
 | **Resources** | `fabric` `main` resources include **`common/src/main/resources`** via `fabric/build.gradle.kts` `sourceSets { main { resources { srcDir(...) } } }` — default configs and messages ship from **common** jars/resources as on Paper. |
 | **Depends** | `fabric.mod.json`: `fabricloader >= 0.19.0`, `minecraft ~1.21.11`, `java >= 21`, `fabric-api *` |
 
 **Output JARs** (after `:fabric:build`):
 
-- `fabric/build/libs/GraniteSkills-<version>.jar` — install this on the Fabric **dedicated server** (plus Fabric API). The file was named `FabricAuraSkills-*.jar` on 1.21.11.
+- `fabric/build/libs/GraniteSkills-<version>.jar` — install this on the Fabric **dedicated server** (plus Fabric API). The file was named `FabricGraniteSkills-*.jar` on 1.21.11.
 
 ---
 
@@ -168,14 +168,14 @@ Reusing **`common`** saves time but inherits **Bukkit-first** seams. Every Fabri
 
 Understanding this order matters when debugging “XP not firing” or “API null”.
 
-### 5.1 `FabricAuraSkillsMod` (`fabric/.../FabricAuraSkillsMod.java`)
+### 5.1 `FabricGraniteSkillsMod` (`fabric/.../FabricGraniteSkillsMod.java`)
 
 1. **`onInitializeServer()`** (early, before full server tick loop semantics):
-   - `FabricAuraSkillsCommands.registerEarly()` — registers Brigadier `/auraskills version|skills`.
-   - **`ServerLifecycleEvents.SERVER_STARTING`**: constructs **`FabricAuraSkills(server)`**, `FabricAuraSkills.setInstance(plugin)`, `plugin.enable()`.
+   - `FabricGraniteSkillsCommands.registerEarly()` — registers Brigadier `/graniteskills version|skills`.
+   - **`ServerLifecycleEvents.SERVER_STARTING`**: constructs **`FabricGraniteSkills(server)`**, `FabricGraniteSkills.setInstance(plugin)`, `plugin.enable()`.
    - **`ServerLifecycleEvents.SERVER_STOPPING`**: `disable()` on instance.
 
-### 5.2 `FabricAuraSkills.enable()` (`fabric/.../FabricAuraSkills.java`)
+### 5.2 `FabricGraniteSkills.enable()` (`fabric/.../FabricGraniteSkills.java`)
 
 Synchronous initialization of **common** subsystems: logger, message provider, registries, **`FabricConfigProvider`**, storage, migrations, world manager, backup, XP requirements loader type, leaderboard, UI, rewards, **`FabricLevelManager`**, anti-AFK, then:
 
@@ -191,7 +191,7 @@ Then **`scheduler.executeSync(this::finishEnable)`** — **critical**: skills an
 4. Boss bar options load, rewards, **trait / ability / mana ability “registration”** (see §8 — traits/abilities still no-op; mana providers partially wired).
 5. Leaderboards, stat temp modifier task, log line summarizing enabled XP paths.
 
-**Invariant:** `FabricAuraSkills.getInstance()` is non-null **after** `SERVER_STARTING` enable completes; mixins that run during early world load must still tolerate null if called before that point (fishing mixin checks `plugin == null`).
+**Invariant:** `FabricGraniteSkills.getInstance()` is non-null **after** `SERVER_STARTING` enable completes; mixins that run during early world load must still tolerate null if called before that point (fishing mixin checks `plugin == null`).
 
 ---
 
@@ -199,7 +199,7 @@ Then **`scheduler.executeSync(this::finishEnable)`** — **critical**: skills an
 
 ### 6.1 Paper (`BukkitLevelManager.registerLevelers()`)
 
-**File:** `bukkit/src/main/java/dev/aurelium/auraskills/bukkit/level/BukkitLevelManager.java`
+**File:** `bukkit/src/main/java/dev/granite/graniteskills/bukkit/level/BukkitLevelManager.java`
 
 Registers these **`SourceLeveler`** listeners with Bukkit:
 
@@ -266,7 +266,7 @@ Fabric has no Bukkit fish event. The port hooks **vanilla** behavior inside **`F
 ### 7.3 `FabricFishingCatchHolder` (`fabric/.../FabricFishingCatchHolder.java`)
 
 - **`ThreadLocal<ItemStack>`** holds a **copy** of the pending catch stack between constructor args and stat increment.
-- **`set` / `take` / `clear`** are **`public static`** so the mixin package can call them (different package from `dev.aurelium.auraskills.fabric`).
+- **`set` / `take` / `clear`** are **`public static`** so the mixin package can call them (different package from `dev.granite.graniteskills.fabric`).
 
 ### 7.4 `FabricFishingXpHandler` (`fabric/.../FabricFishingXpHandler.java`)
 
@@ -287,7 +287,7 @@ Mirrors **`FishingLeveler`** logic conceptually:
 
 ### 7.6 Paper-only fishing extras (not on Fabric)
 
-- **`FishingLootHandler`** (extra drops, open water, etc.) — Bukkit `AuraSkills.registerEvents()` registers it; **no Fabric equivalent** documented.
+- **`FishingLootHandler`** (extra drops, open water, etc.) — Bukkit `GraniteSkills.registerEvents()` registers it; **no Fabric equivalent** documented.
 - Bukkit **`PlayerFishEvent.State.CAUGHT_FISH`** timing vs mixin-on-stat — should be equivalent for “caught item” XP but not byte-for-byte verified.
 
 ---
@@ -302,23 +302,23 @@ Mirrors **`FishingLeveler`** logic conceptually:
 | `FabricModifierManager` | Modifiers | No-op vs Paper item/armor modifiers |
 | `FabricMenuHelper` | Menus | Empty/stub — no Slate menus |
 | `FabricUiProvider` / `FabricBossBarManager` | UI | Minimal vs Paper |
-| `FabricUser.hasPermission` / `hasSkillPermission` | Permissions | Uses **fabric-permissions-api** (`Permissions.check`). **`hasSkillPermission`:** `auraskills.skill.<skill>` with **default `true` if unset** (so servers without LuckPerms still gain XP; deny via provider). **`hasPermission`:** default **`false` if unset**. **`canSelectJob`:** `auraskills.jobs.block.<skill key or id>` with default false. Install **LuckPerms Fabric** (recommended) for production. |
+| `FabricUser.hasPermission` / `hasSkillPermission` | Permissions | Uses **fabric-permissions-api** (`Permissions.check`). **`hasSkillPermission`:** `graniteskills.skill.<skill>` with **default `true` if unset** (so servers without LuckPerms still gain XP; deny via provider). **`hasPermission`:** default **`false` if unset**. **`canSelectJob`:** `graniteskills.jobs.block.<skill key or id>` with default false. Install **LuckPerms Fabric** (recommended) for production. |
 | `FabricTraitManager.registerTraitImplementations` | Traits | **Empty** — no HP, luck, movement, etc. from traits |
 | `FabricAbilityManager.registerAbilityImplementations` | Abilities | **Empty** |
 | `FabricManaAbilityManager.registerProviders` | Mana abilities | **Partial:** `FabricTimerCountdown`, `FabricReplenish`, `FabricSpeedMine`, `FabricLightningBlade`; Sharp Hook via mixin (not in this method) |
 | `FabricEventHandler` | Common events | Present for API wiring; Bukkit fires many explicit events Fabric does not |
 | `HookManager` | Soft-deps | Paper hooks (Vault, WG, PAPI, …) not registered on Fabric |
 
-**Paper `AuraSkills.registerEvents()`** (non-leveler) includes **`BlockLootHandler`**, **`FishingLootHandler`**, **`MobLootHandler`**, region listeners, armor, requirements, jobs, etc. — **largely absent on Fabric**. See `bukkit/.../AuraSkills.java` around `registerEvents()`.
+**Paper `GraniteSkills.registerEvents()`** (non-leveler) includes **`BlockLootHandler`**, **`FishingLootHandler`**, **`MobLootHandler`**, region listeners, armor, requirements, jobs, etc. — **largely absent on Fabric**. See `bukkit/.../GraniteSkills.java` around `registerEvents()`.
 
 ---
 
 ## 9. Commands
 
-**Fabric:** Brigadier under `fabric/.../FabricAuraSkillsCommands.java`:
+**Fabric:** Brigadier under `fabric/.../FabricGraniteSkillsCommands.java`:
 
-- `/auraskills version`
-- `/auraskills skills` (player-only, dumps skill levels)
+- `/graniteskills version`
+- `/graniteskills skills` (player-only, dumps skill levels)
 
 **Paper:** Full ACF command tree + menus (`bukkit/.../menus/MenuRegistrar.java`, etc.).
 
@@ -334,7 +334,7 @@ Performed successfully in a clean-cache audit:
 **Runtime checklist** (manual — not automated here):
 
 - Server starts with mod + Fabric API.
-- Config folder populates under `config/auraskills/`.
+- Config folder populates under `config/graniteskills/`.
 - Join, gain XP from a **known** source (e.g. break block, kill mob, fish).
 - After any **MC/Yarn** upgrade: re-test fishing and mixin load (watch log for mixin apply errors).
 
@@ -393,14 +393,14 @@ Use the phases below as a **backlog ordered by gameplay value on Fabric**, not a
 |-----------------|-------------|
 | `MenuRegistrar`, Slate menus | Port menus to a Fabric GUI library or vanilla-style screens; flesh out **`FabricMenuHelper`**. |
 | `BukkitUiProvider`, boss bar, action bar | Complete **`FabricUiProvider`** / **`FabricBossBarManager`** / **`FabricActionBarManager`** to match Paper options. |
-| ACF command tree | Port commands to Brigadier (or register a Fabric command library) beyond `/auraskills version|skills`. |
+| ACF command tree | Port commands to Brigadier (or register a Fabric command library) beyond `/graniteskills version|skills`. |
 
 ### Phase F — API and events
 
 | Goal | Notes |
 |------|--------|
 | Fire `EntityXpGainEvent`, `DamageXpGainEvent`, etc. from Fabric | **Low priority** until other mods consume these on Fabric. Paper fires from `BukkitLevelManager`; Fabric uses **`LevelManager.addXp`** without the same event surface. |
-| `AuraSkillsBukkit` / `api-bukkit` | Not applicable; ensure **`api`** surface is satisfied for mod consumers when/if needed. |
+| `GraniteSkillsBukkit` / `api-bukkit` | Not applicable; ensure **`api`** surface is satisfied for mod consumers when/if needed. |
 
 ### Phase G — Engineering hygiene
 
@@ -416,11 +416,11 @@ Use the phases below as a **backlog ordered by gameplay value on Fabric**, not a
 
 | Area | Path |
 |------|------|
-| Mod entry | `fabric/src/main/java/.../FabricAuraSkillsMod.java` |
-| Plugin core | `fabric/src/main/java/.../FabricAuraSkills.java` |
+| Mod entry | `fabric/src/main/java/.../FabricGraniteSkillsMod.java` |
+| Plugin core | `fabric/src/main/java/.../FabricGraniteSkills.java` |
 | Level / XP registration | `fabric/src/main/java/.../FabricLevelManager.java` |
 | Fishing mixin | `fabric/src/main/java/.../mixin/FishingBobberEntityMixin.java` |
-| Mixin config | `fabric/src/main/resources/auraskills.mixins.json` |
+| Mixin config | `fabric/src/main/resources/graniteskills.mixins.json` |
 | Mod metadata | `fabric/src/main/resources/fabric.mod.json` |
 | Build | `fabric/build.gradle.kts` |
 | Parity shortlist | `fabric/PARITY_BACKLOG.md` |

@@ -31,7 +31,7 @@ java {
 
 loom {
     mods {
-        register("auraskills") {
+        register("graniteskills") {
             sourceSet("main")
         }
     }

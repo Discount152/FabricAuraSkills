@@ -1,10 +1,10 @@
 ---
-description: How to migrate from AureliumSkills Beta 1.3 to AuraSkills 2.0
+description: How to migrate from GraniteSkills Beta 1.3 to GraniteSkills 2.0
 ---
 
 # Migration
 
-With the 2.0 update, the plugin itself has been renamed from AureliumSkills to AuraSkills. This means that the name of the plugin folder is now `/AuraSkills` instead of `/AureliumSkills`.
+With the 2.0 update, the plugin itself has been renamed from GraniteSkills to GraniteSkills. This means that the name of the plugin folder is now `/GraniteSkills` instead of `/GraniteSkills`.
 
 ::: info
 Don't know what's new in 2.0? Read the [release notes](release-notes/2.0.md).
@@ -12,10 +12,10 @@ Don't know what's new in 2.0? Read the [release notes](release-notes/2.0.md).
 
 While it is recommended to start fresh to get the improved default configs, you can migrate old config options to the new folder automatically. However, not everything will be migrated, so manual work will still be required depending on how much you modified the configs.
 
-If you want to migrate, keep your `/AureliumSkills` folder when running the new jar for the first time, so that when the files in `/AuraSkills` are generated, it can use the files in the old folder to migrate from.
+If you want to migrate, keep your `/GraniteSkills` folder when running the new jar for the first time, so that when the files in `/GraniteSkills` are generated, it can use the files in the old folder to migrate from.
 
 ::: danger
-Backup your `/AureliumSkills` folder and your database (if using MySQL for data storage) before migrating.
+Backup your `/GraniteSkills` folder and your database (if using MySQL for data storage) before migrating.
 :::
 
 ## Should you migrate?
@@ -24,14 +24,14 @@ If you are planning on starting a new season/world/server, you do not need to mi
 
 ## What will break
 
-* Compatibilty with plugins that hooked into AureliumSkills before, since the plugin renaming means those plugins will no longer enable their hooks. There are many breaking API changes, so these hooks will have to be recoded anyway. Check with any plugins that hooked into AureliumSkills to see if there is an updated version with AuraSkills support.
+* Compatibilty with plugins that hooked into GraniteSkills before, since the plugin renaming means those plugins will no longer enable their hooks. There are many breaking API changes, so these hooks will have to be recoded anyway. Check with any plugins that hooked into GraniteSkills to see if there is an updated version with GraniteSkills support.
 * Your previous permissions for the plugin set into plugins like LuckPerms won't work, since permission nodes have been renamed.
 
 ## What will not migrate
 
 * Messages (significant format changes)
 * Menus (significant format changes)
-* PlaceholderAPI placeholders for %aureliumskills\_...% will still work for now, but you should change them to %auraskills\_...% eventually
+* PlaceholderAPI placeholders for %aureliumskills\_...% will still work for now, but you should change them to %graniteskills\_...% eventually
 * Custom XP sources added in the custom section of the old sources\_config.yml
 * Items registered in the item registry using `/sk item register` will be reset. You will have to re-register your items for them to work in rewards/loot because of NBT format changes to modifiers.
 
@@ -51,6 +51,6 @@ In the default configs, the number of skills has been reduced from 15 to 11. How
 
 * Delete the skills.yml, abilities.yml, menus folder, rewards folder, and sources folder to let them regenerate. If you modified rewards, abilities\_config.yml, or the sources\_config.yml in Beta, you will have to manually add your changes back.
 * Run the following commands in the console which set every user's skill level for the merged skills to the higher out of the two previous skills. Make sure no players are online when you run this.
-  * `skills storage mergeskills auraskills/endurance auraskills/agility`
-  * `skills storage mergeskills auraskills/healing auraskills/alchemy`
-  * `skills storage mergeskills auraskills/forging auraskills/enchanting`
+  * `skills storage mergeskills graniteskills/endurance graniteskills/agility`
+  * `skills storage mergeskills graniteskills/healing graniteskills/alchemy`
+  * `skills storage mergeskills graniteskills/forging graniteskills/enchanting`

@@ -1,8 +1,8 @@
 # Local Fabric development and testing
 
-This guide is for **Granite Skills** in this repo (mod id `auraskills`). It uses **Fabric Loom** built into the `:fabric` Gradle project so you can run a **local dedicated server** and a **local game client** without copying jars to a real host.
+This guide is for **Granite Skills** in this repo (mod id `graniteskills`). It uses **Fabric Loom** built into the `:fabric` Gradle project so you can run a **local dedicated server** and a **local game client** without copying jars to a real host.
 
-**Open this folder as the Cursor / VS Code workspace root** (`FabricAuraSkills`) so paths and tasks match.
+**Open this folder as the Cursor / VS Code workspace root** (`FabricGraniteSkills`) so paths and tasks match.
 
 ---
 
@@ -192,11 +192,11 @@ Cursor: **Tasks → Fabric: verify JiJ release bundle**.
 
 1. Stop any local `runServer`.
 2. Create **`fabric/run/mods/`** if it does not exist.
-3. Copy your production **`mods/*.jar`** into **`fabric/run/mods/`**, **except** do **not** put a second copy of **FabricAuraSkills** there — Loom already puts **your workspace mod** on the classpath. Two copies can confuse debugging.
+3. Copy your production **`mods/*.jar`** into **`fabric/run/mods/`**, **except** do **not** put a second copy of **FabricGraniteSkills** there — Loom already puts **your workspace mod** on the classpath. Two copies can confuse debugging.
 4. Optional: use a **fresh world** — delete **`fabric/run/world`** (or your `level-name` folder) so a bad test does not reuse broken state.
 5. Run **`.\gradlew.bat -PfabricOnly=true :fabric:runServer`** and watch **`fabric/run/logs/latest.log`** for `Done` and any `ERROR` lines.
 
-**Manual smoke checklist** (5–10 minutes after boot): join with `runClient`, run **`/auraskills`** (or tab-complete), gain XP in one skill, try **one** anvil operation, **one** brew takeout, **one** fish — enough to prove the main hooks still fire with the pack loaded.
+**Manual smoke checklist** (5–10 minutes after boot): join with `runClient`, run **`/graniteskills`** (or tab-complete), gain XP in one skill, try **one** anvil operation, **one** brew takeout, **one** fish — enough to prove the main hooks still fire with the pack loaded.
 
 ---
 

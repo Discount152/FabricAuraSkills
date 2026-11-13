@@ -1,22 +1,22 @@
 ---
-description: Plugins that AuraSkills supports or support AuraSkills
+description: Plugins that GraniteSkills supports or support GraniteSkills
 ---
 
 # Compatible Plugins
 
 ## Introduction
 
-This is a quick overview about the plugins that are compatible with AuraSkills. There are three main categories:
+This is a quick overview about the plugins that are compatible with GraniteSkills. There are three main categories:
 
-* Plugins that are supported by AuraSkills itself
-* Plugins that hook into AuraSkills through its API
-* Add-ons that are made specifically to work AuraSkills or extend its functionality
+* Plugins that are supported by GraniteSkills itself
+* Plugins that hook into GraniteSkills through its API
+* Add-ons that are made specifically to work GraniteSkills or extend its functionality
 
 ::: info
-There may be even more plugins that are compatible with AuraSkills. These are just the ones that we know of.
+There may be even more plugins that are compatible with GraniteSkills. These are just the ones that we know of.
 :::
 
-## Plugins that AuraSkills hooks into
+## Plugins that GraniteSkills hooks into
 
 ### Vault
 
@@ -34,7 +34,7 @@ Grant [permission as rewards](rewards.md#permission-rewards-permission). Optiona
 
 ### PlaceholderAPI
 
-AuraSkills provides a lot of placeholders through PlaceholderAPI. You can view the full list [here](placeholders.md).
+GraniteSkills provides a lot of placeholders through PlaceholderAPI. You can view the full list [here](placeholders.md).
 
 ### DecentHolograms and HolographicDisplays
 
@@ -42,7 +42,7 @@ AuraSkills provides a lot of placeholders through PlaceholderAPI. You can view t
 
 ### ProtocolLib
 
-Allows the plugin to detect when other plugins try to use the action bar. When this happens, AuraSkills will pause its own action bar so other plugins can show messages there is well.
+Allows the plugin to detect when other plugins try to use the action bar. When this happens, GraniteSkills will pause its own action bar so other plugins can show messages there is well.
 
 ### Towny
 
@@ -50,12 +50,12 @@ Terraform ability won't break blocks in other people's towns.
 
 ### MythicMobs
 
-Experience can be given with the `giveSkillXP` mechanic that AuraSkills provides. Lets say you have boss and you want to give fighting skill XP for the player who kills the boss. You can do something like this in your mob Skills config section:
+Experience can be given with the `giveSkillXP` mechanic that GraniteSkills provides. Lets say you have boss and you want to give fighting skill XP for the player who kills the boss. You can do something like this in your mob Skills config section:
 
 ```yaml
 Skills:
   # xp argument supports placeholder math.
-  # s (skill) argument can be any AuraSkills skill namespaced ID.
+  # s (skill) argument can be any GraniteSkills skill namespaced ID.
   - giveSkillXP{s=fighting;xp=1000} @trigger ~onDeath
 ```
 
@@ -65,7 +65,7 @@ We can't provide more support than this. If you are not sure about how Mythic tr
 
 ### MythicCrucible
 
-When you are using MythicCrucible as your primary item plugin, you could use the `takeMana` mechanic and the `hasMana` condition, that AuraSkills provides to use in mythic scripting language.
+When you are using MythicCrucible as your primary item plugin, you could use the `takeMana` mechanic and the `hasMana` condition, that GraniteSkills provides to use in mythic scripting language.
 
 Example of creating a damage skill that uses mana:
 
@@ -137,15 +137,15 @@ as sources.
 
 Detect and add block to placed blocks from Slimefuns Block placer to prevent XP dupes.
 
-## Known plugins that hook into AuraSkills
+## Known plugins that hook into GraniteSkills
 
 ### [MMOItems](https://www.spigotmc.org/resources/mmoitems.39267/)
 
-You can set your `preferred_rpg_provder` in MMOItems to `AURA_SKILLS`. This way you can create items that are using mana from this plugin. You can also make your items give AuraSkills stats and mana to players, or restrict their usage by skill levels. For a more detailed guide on how to set this up please refer to the official [MMOItems wiki](https://gitlab.com/phoenix-dvpmt/mmoitems/-/wikis/Supported%20Plugins#aureliumskills).
+You can set your `preferred_rpg_provder` in MMOItems to `AURA_SKILLS`. This way you can create items that are using mana from this plugin. You can also make your items give GraniteSkills stats and mana to players, or restrict their usage by skill levels. For a more detailed guide on how to set this up please refer to the official [MMOItems wiki](https://gitlab.com/phoenix-dvpmt/mmoitems/-/wikis/Supported%20Plugins#aureliumskills).
 
 ### [CustomFishing](https://polymart.org/resource/customfishing.2723)
 
-You can give skill xp when fishing up something in CustomFishing and you can buff fishing rods and minigames based on skill levels or by using other AuraSkills placeholders.
+You can give skill xp when fishing up something in CustomFishing and you can buff fishing rods and minigames based on skill levels or by using other GraniteSkills placeholders.
 
 Here is a **minimal** example how to give fishing skill XP when you catch a fish:
 
@@ -157,7 +157,7 @@ tuna_fish_golden_star:
       aurelium_xp:
         type: plugin-exp
         value:
-          plugin: AuraSkills
+          plugin: GraniteSkills
           exp: 400
           target: fishing
 ```
@@ -168,7 +168,7 @@ For additional information check out CustomFishings wiki and their Discord suppo
 
 Eco plugins are using the Libreforge yaml scripting language to create effects, conditions and other thing in every Eco plugin like EcoItems, EcoPets, Talismans etc.
 
-Eco provides some useful effects and conditions to integrate with AuraSkills:
+Eco provides some useful effects and conditions to integrate with GraniteSkills:
 
 * [add\_stat](https://plugins.auxilor.io/effects/all-effects/add_stat#permanent-effect)
 * [skill\_xp\_multiplier](https://plugins.auxilor.io/effects/all-effects/skill_xp_multiplier#permanent-effect)
@@ -182,37 +182,37 @@ These minions can give skill XP after they produced some products. There isn't r
 
 ### [Aurora plugins](https://modrinth.com/user/erik_sz)
 
-Aurora plugins, like AuroraLevels, AuroraCollections, and AuroraQuests are hooking into AuraSkills to provide auto-correcting stat rewards. This is useful if you want to spice up your RPG experience while you don't have to worry about nerfing/buffing the stat rewards later on.&#x20;
+Aurora plugins, like AuroraLevels, AuroraCollections, and AuroraQuests are hooking into GraniteSkills to provide auto-correcting stat rewards. This is useful if you want to spice up your RPG experience while you don't have to worry about nerfing/buffing the stat rewards later on.&#x20;
 
 ### [TreeAssist](https://www.spigotmc.org/resources/treeassist.67436/)
 
-Can give AuraSkills foraging skill XP when chopping down trees.
+Can give GraniteSkills foraging skill XP when chopping down trees.
 
 ### [ExecutableItems](https://www.spigotmc.org/resources/83070/)
 
 Can require mana to let players use the items. Use [requiredMana](https://docs.ssomar.com/executableitems/configurations/activator-configuration/activators-features#requiredmana) for this to work.
 
-### [UltraBoomerangs](https://www.spigotmc.org/resources/ultraboomerangs-create-custom-unqiue-boomerangs-mcmmo-auraskills-support.113150/)
+### [UltraBoomerangs](https://www.spigotmc.org/resources/ultraboomerangs-create-custom-unqiue-boomerangs-mcmmo-graniteskills-support.113150/)
 
-Earn AuraSkills XP when killing mobs with a boomerang.
+Earn GraniteSkills XP when killing mobs with a boomerang.
 
 ## Official add-ons
 
-### [AuraMobs](https://www.spigotmc.org/resources/auramobs-a-mob-levels-add-on-for-auraskills.94168/)
+### [AuraMobs](https://www.spigotmc.org/resources/auramobs-a-mob-levels-add-on-for-graniteskills.94168/)
 
-Level your mobs based on player sum/average skill levels to make them harder to defeat. Increase their health and attack damage to complete the true RPG experience AuraSkills can provide. Fully integrated with AuraSkills XP gain and mob drop tables.&#x20;
+Level your mobs based on player sum/average skill levels to make them harder to defeat. Increase their health and attack damage to complete the true RPG experience GraniteSkills can provide. Fully integrated with GraniteSkills XP gain and mob drop tables.&#x20;
 
 ## Unofficial add-ons
 
-### [Level restrict](https://github.com/Fly1337/AuraSkillsLevelRestrict/releases)
+### [Level restrict](https://github.com/Fly1337/GraniteSkillsLevelRestrict/releases)
 
 By using this addon, you can prevent block breaking until the player reaches a specific skill level. This behavior is highly configurable.&#x20;
 
 ### [CannonsRPG](https://hangar.papermc.io/Intybyte/CannonsRPG)
 
-A Cannons and AuraSkills addon that allows players to level up and unlock skills related to firing cannons.
+A Cannons and GraniteSkills addon that allows players to level up and unlock skills related to firing cannons.
 
-### [Random Enchanted Rewards](https://modrinth.com/plugin/random-enchanted-rewards-for-auraskills)
+### [Random Enchanted Rewards](https://modrinth.com/plugin/random-enchanted-rewards-for-graniteskills)
 
 Rewards players with randomly enchanted items as they level up their skills.
 

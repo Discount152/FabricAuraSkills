@@ -4,7 +4,7 @@ description: Guide to skills and the skills.yml file
 
 # Skills
 
-**Skills** are measures of a player's experience or progress in different aspects of the game. As the main feature of AuraSkills, all other features are connected or related to skills. All information about skills is viewed in the skills menu using `/skills`. Each skill has a set of sources: specific tasks or actions used to gain XP in that skill. Players level up by reaching the XP requirement for the next level, which increases with higher skill levels.
+**Skills** are measures of a player's experience or progress in different aspects of the game. As the main feature of GraniteSkills, all other features are connected or related to skills. All information about skills is viewed in the skills menu using `/skills`. Each skill has a set of sources: specific tasks or actions used to gain XP in that skill. Players level up by reaching the XP requirement for the next level, which increases with higher skill levels.
 
 Upon reaching a new skill level, players can be rewarded with:
 
@@ -40,17 +40,17 @@ There are 4 skills present in Beta that were merged or removed in default config
 
 ## Configuration
 
-Skills are configured in the `skills.yml` file. Each skill has a section named after its full Namespaced ID (prefixed with `auraskills/` for all default skills). Below is an example skill section for Farming with comments explaining each option:
+Skills are configured in the `skills.yml` file. Each skill has a section named after its full Namespaced ID (prefixed with `graniteskills/` for all default skills). Below is an example skill section for Farming with comments explaining each option:
 
 ```yaml
-auraskills/farming: # The Namespaced ID of the skill
+graniteskills/farming: # The Namespaced ID of the skill
   abilities: # The list of abilities the skill levels up
-    - auraskills/bountiful_harvest
-    - auraskills/farmer
-    - auraskills/scythe_master
-    - auraskills/geneticist
-    - auraskills/triple_harvest
-  mana_ability: auraskills/replenish # The mana ability of the skill (optional)
+    - graniteskills/bountiful_harvest
+    - graniteskills/farmer
+    - graniteskills/scythe_master
+    - graniteskills/geneticist
+    - graniteskills/triple_harvest
+  mana_ability: graniteskills/replenish # The mana ability of the skill (optional)
   options: # Configurable options for the skill, see below for details on each option
     enabled: true
     max_level: 97
@@ -73,7 +73,7 @@ The `mana_ability` key is the name (full Namespaced ID) of the mana ability of t
 * `enabled` - Whether the skill and all its connected features should be enabled. If set to false, players cannot gain XP in the skill, use the abilities or mana abilities, and the skill will be hidden from menus. Disabling a skill will not reset player levels, so re-enabling a skill will retain previously gained levels.
 * `max_level` - The maximum attainable level of a skill. Lowering this level will not decrease player levels that are already higher than the new max level.
 * `check_cancelled` - Whether source levelers should ignore cancelled events when giving XP. This should not be changed unless you have a specific compatibility issue that requires it.
-* `check_multiplier_permissions` - Whether permission-based multipliers (`auraskills.multiplier.*`) should work. If you do not use permission multipliers, setting this to false may improve performance.
+* `check_multiplier_permissions` - Whether permission-based multipliers (`graniteskills.multiplier.*`) should work. If you do not use permission multipliers, setting this to false may improve performance.
 
 #### Archery and fighting options
 

@@ -14,7 +14,7 @@ dependencies {
 }
 
 allprojects {
-    group = "dev.aurelium.auraskills"
+    group = "dev.granite.graniteskills"
     version = project.property("projectVersion") as String
     description = "Advanced skills, stats, and abilties plugin"
 
@@ -41,7 +41,7 @@ jreleaser {
         setActive("ALWAYS")
 
         artifact {
-            setPath("build/libs/AuraSkills-${gradleProject.property("projectVersion")}.jar")
+            setPath("build/libs/GraniteSkills-${gradleProject.property("projectVersion")}.jar")
         }
     }
 
@@ -81,8 +81,8 @@ jreleaser {
     release {
         github {
             skipRelease = false
-            repoOwner = "Archy-X"
-            name = "AuraSkills"
+            repoOwner = "Discount152"
+            name = "FabricAuraSkills"
             tagName = gradleProject.property("projectVersion").toString()
             releaseName = gradleProject.property("projectVersion").toString()
             token = (gradleProject.findProperty("jreleaserGithubToken") ?: "").toString()

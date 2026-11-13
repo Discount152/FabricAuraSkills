@@ -29,7 +29,7 @@ Any instances of the placeholders `{xp_unit}`, `{mana_unit}`, and `{hp_unit}` ar
 
 ## Adding translations
 
-If there isn't a message file for your language, or messages in your language are incomplete, check if it exists on [Crowdin](https://crowdin.com/project/aureliumskills). You can directly translate messages one-by-one there or uploading your completed messages files. If your language isn't listed there, ask on [Discord](https://discord.gg/Bh2EZfB) for it to be added.
+If there isn't a message file for your language, or messages in your language are incomplete, add a `messages_<language>.yml` file next to the English messages and open a pull request.
 
 <div align="center">
 

@@ -1,18 +1,16 @@
 # +----------------------------------------------------------------------------+ #
-# |                           AuraSkills Main Config                           | #
+# |                           Granite Skills Main Config                       | #
 # |                                                                            | #
-# |                    Discord: https://discord.gg/Bh2EZfB                     | #
-# |             Source Code: https://github.com/Archy-X/AuraSkills             | #
-# |      Config Guide: https://wiki.aurelium.dev/auraskills/main-config        | #
+# |      Source: https://github.com/Discount152/FabricAuraSkills               | #
+# |      Guide:  https://github.com/Discount152/FabricAuraSkills/tree/main/wiki | #
 # +----------------------------------------------------------------------------+ #
-# Plugin made by Archy
 
 sql:
   enabled: false
   type: mysql
   host: localhost
   port: 3306
-  database: auraskills
+  database: graniteskills
   username: root
   password: pass
   load_delay: 0

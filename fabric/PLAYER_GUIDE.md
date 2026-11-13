@@ -1,6 +1,6 @@
-# Fabric AuraSkills — full player guide (simple language)
+# Fabric GraniteSkills — full player guide (simple language)
 
-This guide is for **people playing on a Minecraft Java server** that has **Fabric AuraSkills** installed. It explains what the mod does, what you will see, and what you can type. It matches **this Fabric port** (dedicated server). Some things differ from the original Paper plugin; those are called out at the end.
+This guide is for **people playing on a Minecraft Java server** that has **Fabric GraniteSkills** installed. It explains what the mod does, what you will see, and what you can type. It matches **this Fabric port** (dedicated server). Some things differ from the original Paper plugin; those are called out at the end.
 
 ---
 
@@ -10,13 +10,13 @@ This guide is for **people playing on a Minecraft Java server** that has **Fabri
 - A normal **Fabric** or **vanilla** client is usually fine: this build registers **server-side** logic. If the server owner asks you to install a matching client mod, follow their instructions.
 - You must be able to **join the multiplayer server** like any other world.
 
-You do **not** need to download AuraSkills yourself unless the server tells you to.
+You do **not** need to download GraniteSkills yourself unless the server tells you to.
 
 ---
 
 ## 2. What this mod does (in one paragraph)
 
-**Fabric AuraSkills** adds **skills** (like Farming, Mining, Fighting). You earn **XP** by playing Minecraft (mining, fighting, fishing, brewing, and more—whatever the server configured). When you have enough XP in a skill, that skill **levels up**. Higher levels unlock **passive abilities**, **stat bonuses**, and **mana abilities** (special moves that cost **mana**). Your progress is **saved on the server** so it comes back when you log in again.
+**Fabric GraniteSkills** adds **skills** (like Farming, Mining, Fighting). You earn **XP** by playing Minecraft (mining, fighting, fishing, brewing, and more—whatever the server configured). When you have enough XP in a skill, that skill **levels up**. Higher levels unlock **passive abilities**, **stat bonuses**, and **mana abilities** (special moves that cost **mana**). Your progress is **saved on the server** so it comes back when you log in again.
 
 ---
 
@@ -49,7 +49,7 @@ These are the skill ids the server uses (lowercase in permissions and commands):
 ## 4. What happens the first time you join
 
 1. The server **creates or loads** your profile in the background.
-2. If the server uses **file storage** (usual default), your data lives under the server folder in **`config/auraskills/userdata/<your-uuid>.yml`**. You never need to open this file as a player; it is for backups and admins.
+2. If the server uses **file storage** (usual default), your data lives under the server folder in **`config/graniteskills/userdata/<your-uuid>.yml`**. You never need to open this file as a player; it is for backups and admins.
 3. If the server uses **MySQL** (optional), data is in a database instead; you still just play normally.
 4. There is **no forced tutorial screen** in this Fabric port. You learn by playing and by reading this guide (or the server’s own rules).
 
@@ -57,7 +57,7 @@ These are the skill ids the server uses (lowercase in permissions and commands):
 
 ## 5. How you earn skill XP (player view)
 
-Think in categories. The server awards XP when the game events match the server’s **source** lists (YAML under `config/auraskills/sources/` on the server).
+Think in categories. The server awards XP when the game events match the server’s **source** lists (YAML under `config/graniteskills/sources/` on the server).
 
 **Typical examples (only if the server left defaults on):**
 
@@ -131,32 +131,32 @@ The server can put **skill requirements** on gear (for example “Mining 20 requ
 
 Harvest blocks like **sweet berry bushes**, **cave vines**, and **bee nests** may have extra checks similar to the original plugin.
 
-If you think a message is wrong, tell staff the **exact item** and **skill levels** from `/auraskills skills`.
+If you think a message is wrong, tell staff the **exact item** and **skill levels** from `/graniteskills skills`.
 
 ---
 
 ## 10. Commands you can type (players)
 
-All commands start with **`/auraskills`**. Type them in the **chat box** while you are on the server.
+All commands start with **`/graniteskills`**. Type them in the **chat box** while you are on the server.
 
-### `/auraskills skills`
+### `/graniteskills skills`
 
 - **Who can use it:** any player the permission system allows (default **allowed** if the server did not change LuckPerms).
 - **What it does:** prints one line listing **each skill** and your **current level** (for example `mining L12`).
 - **If it says “Players only”:** you ran it from the **console** or a **command block**. It only works for **real player accounts**.
 
-### `/auraskills version`
+### `/graniteskills version`
 
 - **Who can use it:** usually everyone (default **allowed**).
-- **What it does:** shows the **mod name** and the **folder path** where AuraSkills stores data on the server (admins care about this more than players).
+- **What it does:** shows the **mod name** and the **folder path** where GraniteSkills stores data on the server (admins care about this more than players).
 
-### `/auraskills reload` and `/auraskills save`
+### `/graniteskills reload` and `/graniteskills save`
 
 - **Who can use it:** almost always **staff only**. Default permission is **deny** until an admin grants it in LuckPerms.
 - **What they do:** reload config files from disk, or save all **currently online** players to disk.
 - **If you are not staff:** do not worry about these.
 
-**There is no `/skills` menu command tree** on this Fabric port like the Paper plugin. Players get **`/auraskills skills`** as the simple text summary.
+**There is no `/skills` menu command tree** on this Fabric port like the Paper plugin. Players get **`/graniteskills skills`** as the simple text summary.
 
 ---
 
@@ -166,25 +166,25 @@ Servers often use **LuckPerms Fabric**. These nodes matter:
 
 | Permission pattern | Default if not set | Meaning |
 |--------------------|-------------------|---------|
-| `auraskills.skill.<skillname>` | **Allow** | Example: `auraskills.skill.mining`. If an admin sets this to **deny**, you earn **no XP** for that skill. |
-| `auraskills.command.version` | **Allow** | `/auraskills version` |
-| `auraskills.command.skills` | **Allow** | `/auraskills skills` |
-| `auraskills.command.reload` | **Deny** until granted | `/auraskills reload` |
-| `auraskills.command.save` | **Deny** until granted | `/auraskills save` |
+| `graniteskills.skill.<skillname>` | **Allow** | Example: `graniteskills.skill.mining`. If an admin sets this to **deny**, you earn **no XP** for that skill. |
+| `graniteskills.command.version` | **Allow** | `/graniteskills version` |
+| `graniteskills.command.skills` | **Allow** | `/graniteskills skills` |
+| `graniteskills.command.reload` | **Deny** until granted | `/graniteskills reload` |
+| `graniteskills.command.save` | **Deny** until granted | `/graniteskills save` |
 
 Skill names in nodes are **lowercase** (`farming`, `mining`, …).
 
-**Jobs:** if the server turns **jobs** on, extra nodes like `auraskills.jobs.block.<id>` can exist. Follow the server’s job guide; defaults vary.
+**Jobs:** if the server turns **jobs** on, extra nodes like `graniteskills.jobs.block.<id>` can exist. Follow the server’s job guide; defaults vary.
 
 ---
 
 ## 12. Where your data lives (so you are not surprised)
 
-- **Server folder → `config/auraskills/`** holds all AuraSkills **settings and messages**.
-- **Player progress (file mode):** `config/auraskills/userdata/<uuid>.yml` **per player**.
-- **Backups:** the server may zip or copy `config/auraskills/` on a schedule. That is admin work, not something you trigger in-game.
+- **Server folder → `config/graniteskills/`** holds all GraniteSkills **settings and messages**.
+- **Player progress (file mode):** `config/graniteskills/userdata/<uuid>.yml` **per player**.
+- **Backups:** the server may zip or copy `config/graniteskills/` on a schedule. That is admin work, not something you trigger in-game.
 
-If the server **resets a world** but keeps `config/auraskills/userdata`, you **keep your skills**. If an admin deletes your `uuid.yml` file, you **lose progress** for file storage mode.
+If the server **resets a world** but keeps `config/graniteskills/userdata`, you **keep your skills**. If an admin deletes your `uuid.yml` file, you **lose progress** for file storage mode.
 
 ---
 
@@ -202,14 +202,14 @@ When in doubt, follow the server’s **rules page**, not this guide.
 
 Read this so you do not think the server is “broken”:
 
-- **No big inventory menu** from Slate for `/skills` like Paper; use **`/auraskills skills`** and chat messages.
+- **No big inventory menu** from Slate for `/skills` like Paper; use **`/graniteskills skills`** and chat messages.
 - **Boss bar XP display** is **not** implemented; XP feedback is mainly **action bar / chat** depending on config.
 - **Level-up “title”** may appear as **chat text**, not a cinematic title.
 - **Economy / Vault / WorldGuard / PlaceholderAPI** style hooks from Paper are **not** present here; jobs payouts tied to Vault will not work the same unless the server added something else.
 - **Item modifiers / custom NBT items** from the full Paper item pipeline are **not** ported; do not expect every item lore line from a Paper server to behave identically.
 
 For a shorter admin checklist, see **`fabric/FABRIC_QUICKSTART.md`**. For deep config keys, the official wiki is still helpful for **YAML shape**, but always trust the files actually on **your** server:  
-https://wiki.aurelium.dev/auraskills
+https://github.com/Discount152/FabricAuraSkills/tree/main/wiki
 
 ---
 
@@ -221,7 +221,7 @@ https://wiki.aurelium.dev/auraskills
 | A mana ability never triggers | Check tool, skill level, mana bar, cooldown; read server’s `mana_abilities.yml` notes if staff share them. |
 | You cannot equip an item | Read the red message; grind the skill it names. |
 | You changed servers | Skills do not travel unless the new server **imports** your data. |
-| Staff changed configs | They must run **`/auraskills reload`** (or restart) before new numbers apply. |
+| Staff changed configs | They must run **`/graniteskills reload`** (or restart) before new numbers apply. |
 
 ---
 

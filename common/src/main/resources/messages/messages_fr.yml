@@ -1,5 +1,5 @@
 # ----------------------------
-# AuraSkills message file
+# Granite Skills message file
 # ----------------------------
 
 abilities:
@@ -508,9 +508,9 @@ commands:
       deleted: Fichiers supprimés
       skipped: Fichiers ignorés
   profile:
-    skills: "Profil de compétences Aurelium pour <gold>{name}:\n<gray>UUID : <white>{uuid}\n<gray>Compétences :{skill_entries}"
+    skills: "Profil de compétences Granite pour <gold>{name}:\n<gray>UUID : <white>{uuid}\n<gray>Compétences :{skill_entries}"
     skill_entry: "\n  <dark_aqua>{skill} <gray>- Niveau : <white>{level}<gray>, XP : <white>{xp}"
-    stats: "Profil de compétences Aurelium pour <gold>{name}:\n<gray>UUID : <white>{uuid}\n<gray>Compétences :{stat_entries}"
+    stats: "Profil de compétences Granite pour <gold>{name}:\n<gray>UUID : <white>{uuid}\n<gray>Compétences :{stat_entries}"
     stat_entry: "\n  <dark_aqua>{stat} <gray>- Niveau Total : <white>{total_level}<gray>, Ancien Niveau : <white>{base_level}<gray>, Nouveau Niveau : <white>{modified_level}"
   rank:
     header: "<aqua><bold>Vos classements de compétences"
@@ -545,7 +545,7 @@ commands:
   updateleaderboards:
     already_updating: "<yellow>Le classement est déjà en train d'etre mis à jour!"
     updated: "<green>Classement mis à jour!"
-  version: "<white>Vous êtes sur la version <aqua>{current_version}<white> d'AuraSkills. La dernière version est <aqua>{latest_version}"
+  version: "<white>Vous êtes sur la version <aqua>{current_version}<white> d'Granite Skills. La dernière version est <aqua>{latest_version}"
   xp:
     add: "<aqua>{amount} <gray>XP de <aqua>{skill} ont été ajoutée au joueur {player}"
     set: "<gray>XP de <aqua>{skill} <gray>pour le joueur {player} <gray>défini sur {amount}"

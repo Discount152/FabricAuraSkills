@@ -1,4 +1,4 @@
-# Fabric AuraSkills — parity backlog (phase B)
+# Fabric GraniteSkills — parity backlog (phase B)
 
 For the **full handoff** (product goals, deployment assumptions, bootstrap order, Gradle `fabricOnly`, fishing mixin details, file index, and phased roadmap), see **`FABRIC_PORT_HANDOFF.md`** in the repository root.
 
@@ -11,7 +11,7 @@ This document tracks Paper/plugin behavior that is intentionally **not** impleme
 - **WorldGuard / regions** — no region flags or placed-block tracking; `check_replace` and similar behaviors from Paper are not replicated.
 - **Vault / economy hooks** — `EconomyHook` is never registered; jobs income and economy-tied rewards need a Fabric-specific hook later.
 - **PlaceholderAPI** — not applicable on Fabric as-is.
-- **LuckPerms / permissions** — **`fabric-permissions-api` is bundled (JiJ).** `FabricUser` uses `Permissions.check` (skill nodes `auraskills.skill.<name>` default **allow** if unset; arbitrary permission strings default **deny** if unset). **`/auraskills version|skills`** use `auraskills.command.version` / `auraskills.command.skills` (default **allow** if unset). For production, install **LuckPerms Fabric** (or another provider) to manage nodes.
+- **LuckPerms / permissions** — **`fabric-permissions-api` is bundled (JiJ).** `FabricUser` uses `Permissions.check` (skill nodes `graniteskills.skill.<name>` default **allow** if unset; arbitrary permission strings default **deny** if unset). **`/graniteskills version|skills`** use `graniteskills.command.version` / `graniteskills.command.skills` (default **allow** if unset). For production, install **LuckPerms Fabric** (or another provider) to manage nodes.
 - **ProtocolLib** — no protocol-level action bar overrides.
 - **MythicMobs, Slimefun, Towny, Nexo, hologram plugins** — not integrated (defer unless needed).
 
@@ -46,11 +46,11 @@ This document tracks Paper/plugin behavior that is intentionally **not** impleme
 
 ## Commands
 
-- **ACF / full Paper `/skills` command tree** — not ported. Fabric exposes **`/auraskills version`**, **`/auraskills skills`**, **`/auraskills reload`** (config + YAML data + online trait refresh), and **`/auraskills save`** (flush loaded profiles). Grant **`auraskills.command.reload`** / **`auraskills.command.save`** in LuckPerms (default **deny**).
+- **ACF / full Paper `/skills` command tree** — not ported. Fabric exposes **`/graniteskills version`**, **`/graniteskills skills`**, **`/graniteskills reload`** (config + YAML data + online trait refresh), and **`/graniteskills save`** (flush loaded profiles). Grant **`graniteskills.command.reload`** / **`graniteskills.command.save`** in LuckPerms (default **deny**).
 
 ## API surface
 
-- **`AuraSkillsBukkit` / `api-bukkit`** — not registered on Fabric; Bukkit events are not fired. Granitelib and other Fabric mods listen through `dev.aurelium.auraskills.fabric.FabricSkillsListeners` (user load, skill level-up, XP gain). Mod id, packages, `config/auraskills`, permission nodes, and NBT roots stay `auraskills` / `AuraSkills`.
+- **`GraniteSkillsBukkit` / `api-bukkit`** — not registered on Fabric; Bukkit events are not fired. Granitelib and other Fabric mods listen through `dev.granite.graniteskills.fabric.FabricSkillsListeners` (user load, skill level-up, XP gain). Mod id, packages, `config/graniteskills`, permission nodes, and NBT roots stay `graniteskills` / `GraniteSkills`.
 
 ## Build note
 

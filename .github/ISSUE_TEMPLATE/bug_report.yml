@@ -1,13 +1,11 @@
 name: Bug Report
 description: Report bugs and issues
 labels: ["bug"]
-assignees:
-  - Archy-X
 body:
   - type: markdown
     attributes:
       value: |
-        Before reporting a bug, please make sure you are on the latest version of AuraSkills.
+        Before reporting a bug, please make sure you are on the latest version of GraniteSkills.
   - type: input
     id: server-version
     attributes:
@@ -45,9 +43,9 @@ body:
       label: Agreements
       description: Before submitting, please agree to the following.
       options:
-        - label: I am running the latest version of AuraSkills
+        - label: I am running the latest version of GraniteSkills
           required: true
-        - label: I am not using an unsupported server software (https://wiki.aurelium.dev/auraskills/incompatibilities)
+        - label: I am not using an unsupported server software (https://github.com/Discount152/FabricAuraSkills/tree/main/wiki/incompatibilities)
           required: true
-        - label: My version of Minecraft is supported by AuraSkills
+        - label: My version of Minecraft is supported by GraniteSkills
           required: true
