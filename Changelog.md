@@ -8,6 +8,10 @@ Changelog for versions since 2.0.0.
 
 - Retarget the Fabric dedicated-server build to Minecraft 26.3 (Java 25, Fabric Loader 0.20.1, Fabric API 0.166.2+26.3, Mojang names)
 - Rename the player-facing mod to Granite Skills. The mod id stays `auraskills`, and `/auraskills` still works. `/graniteskills` is an alias
+- Fabric gameplay that previously registered and did nothing now runs: agility (light fall, jumper, sugar rush, fleeting, thunder fall), endurance (anti-hunger, meal steal, recovery, golden heal), healing (revival, life essence, golden heart), fishing grappler, farming (geneticist, growth aura), enchanting (XP convert, XP warrior, lucky table, enchanted strength), forging (skill mender, anvil master), and alchemy (life steal, wise effect)
+- Fabric anti-AFK checks, XP boss bar, and entity fishing loot
+- `FabricSkillsListeners` so another Fabric mod (Granitelib) can observe user load, level-up, and XP gain without Bukkit events
+- GitHub build and checkstyle run on Java 25, which Loom 1.20 requires
 
 ## 2.3.12
 

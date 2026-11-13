@@ -7,10 +7,10 @@ import dev.aurelium.auraskills.api.loot.LootPool;
 import dev.aurelium.auraskills.api.loot.LootTable;
 import dev.aurelium.auraskills.api.skill.Skill;
 import dev.aurelium.auraskills.api.source.SkillSource;
-import dev.aurelium.auraskills.common.config.Option;
 import dev.aurelium.auraskills.api.source.XpSource;
 import dev.aurelium.auraskills.api.source.type.FishingXpSource;
 import dev.aurelium.auraskills.common.commands.CommandExecutor;
+import dev.aurelium.auraskills.common.config.Option;
 import dev.aurelium.auraskills.common.loot.AbstractLootHandler;
 import dev.aurelium.auraskills.common.loot.CommandLoot;
 import dev.aurelium.auraskills.common.loot.SourceContext;
@@ -21,24 +21,29 @@ import dev.aurelium.auraskills.common.util.text.TextUtil;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.FabricUser;
 import dev.aurelium.auraskills.fabric.FabricXpHandlerUtil;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Prediction;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.projectile.FishingHook;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Prediction;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.projectile.FishingHook;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.Vec3;
 
 /**
  * Fabric counterpart to Bukkit {@link dev.aurelium.auraskills.bukkit.loot.handler.FishingLootHandler}: rolls bonus loot
  * from {@code loot/fishing.yml} pools (rare / epic with Treasure Hunter / Epic Catch, open-water option, command loot).
- * Entity loot entries are skipped until {@link FabricUnsupportedEntityLootParser} is replaced.
+ * Entity loot entries spawn the configured entity at the bobber.
  */
 public final class FabricFishingLootHandler extends AbstractLootHandler {
 
@@ -106,6 +111,8 @@ public final class FabricFishingLootHandler extends AbstractLootHandler {
                 h.giveFishingItemLoot(player, bobber, itemLoot, source, skill);
             } else if (selected instanceof CommandLoot commandLoot) {
                 h.giveFishingCommandLoot(player, bobber, commandLoot, source, skill);
+            } else if (selected instanceof FabricEntityLoot entityLoot) {
+                h.giveFishingEntityLoot(player, bobber, entityLoot, source, skill);
             }
             break;
         }
@@ -208,6 +215,33 @@ public final class FabricFishingLootHandler extends AbstractLootHandler {
             } else {
                 plugin.runPlayerCommand(user, finalCommand);
             }
+        }
+        attemptSendMessage(player, loot);
+        giveLootXp(player, loot, source, skill);
+    }
+
+    private void giveFishingEntityLoot(ServerPlayer player, FishingHook bobber, FabricEntityLoot loot,
+            XpSource source, Skill skill) {
+        if (!(player.level() instanceof ServerLevel level)) {
+            return;
+        }
+        String raw = loot.getEntityId();
+        Identifier id = Identifier.parse(raw.indexOf(':') >= 0 ? raw : "minecraft:" + raw);
+        EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.getOptional(id).orElse(null);
+        if (type == null) {
+            return;
+        }
+        Entity spawned = type.create(level, EntitySpawnReason.TRIGGERED);
+        if (spawned == null) {
+            return;
+        }
+        spawned.snapTo(bobber.getX(), bobber.getY(), bobber.getZ(), player.getYRot(), 0f);
+        if (!level.addFreshEntity(spawned)) {
+            return;
+        }
+        Entity hooked = bobber.getHookedIn();
+        if (hooked instanceof ItemEntity itemEntity) {
+            itemEntity.setItem(ItemStack.EMPTY);
         }
         attemptSendMessage(player, loot);
         giveLootXp(player, loot, source, skill);

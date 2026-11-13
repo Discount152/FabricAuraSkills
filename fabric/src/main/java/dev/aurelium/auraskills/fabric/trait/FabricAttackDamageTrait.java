@@ -4,8 +4,9 @@ import dev.aurelium.auraskills.api.trait.Trait;
 import dev.aurelium.auraskills.api.trait.Traits;
 import dev.aurelium.auraskills.api.util.NumberUtil;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
-import java.util.Locale;
 import net.minecraft.server.level.ServerPlayer;
+
+import java.util.Locale;
 
 /**
  * Menu/base display only; damage math runs in {@link dev.aurelium.auraskills.fabric.damage.FabricAttackDamageApplier}.

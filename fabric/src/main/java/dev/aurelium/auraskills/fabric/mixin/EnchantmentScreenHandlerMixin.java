@@ -15,10 +15,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class EnchantmentScreenHandlerMixin {
 
     @Unique
-    private ItemStack auraskills$enchantItemBefore = ItemStack.EMPTY;
+    private ItemStack auraskillsEnchantItemBefore = ItemStack.EMPTY;
 
     @Unique
-    private int auraskills$xpLevelBefore;
+    private int auraskillsXpLevelBefore;
 
     @Inject(method = "clickMenuButton", at = @At("HEAD"))
     private void auraskills$enchantHead(Player player, int id, CallbackInfoReturnable<Boolean> cir) {
@@ -26,8 +26,8 @@ public abstract class EnchantmentScreenHandlerMixin {
             return;
         }
         EnchantmentMenu self = (EnchantmentMenu) (Object) this;
-        auraskills$enchantItemBefore = self.getSlot(0).getItem().copy();
-        auraskills$xpLevelBefore = player.experienceLevel;
+        auraskillsEnchantItemBefore = self.getSlot(0).getItem().copy();
+        auraskillsXpLevelBefore = player.experienceLevel;
     }
 
     @Inject(method = "clickMenuButton", at = @At("RETURN"))
@@ -43,9 +43,9 @@ public abstract class EnchantmentScreenHandlerMixin {
                 return;
             }
             FabricEnchantingXpHandler.onEnchantSuccess(sp, (EnchantmentMenu) (Object) this, id,
-                    auraskills$enchantItemBefore, auraskills$xpLevelBefore);
+                    auraskillsEnchantItemBefore, auraskillsXpLevelBefore);
         } finally {
-            auraskills$enchantItemBefore = ItemStack.EMPTY;
+            auraskillsEnchantItemBefore = ItemStack.EMPTY;
         }
     }
 }

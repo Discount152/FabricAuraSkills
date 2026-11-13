@@ -4,17 +4,19 @@ import dev.aurelium.auraskills.api.skill.Skill;
 import dev.aurelium.auraskills.common.ui.ActionBarManager;
 import dev.aurelium.auraskills.common.ui.UiProvider;
 import dev.aurelium.auraskills.common.user.User;
-import java.text.NumberFormat;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+
+import java.text.NumberFormat;
 
 public final class FabricUiProvider implements UiProvider {
 
     private final ActionBarManager actionBarManager;
-    private final FabricBossBarManager bossBarManager = new FabricBossBarManager();
+    private final FabricBossBarManager bossBarManager;
 
     public FabricUiProvider(FabricAuraSkills plugin) {
         this.actionBarManager = new FabricActionBarManager(plugin, this);
+        this.bossBarManager = new FabricBossBarManager(plugin);
     }
 
     public FabricBossBarManager getBossBarManager() {
@@ -46,7 +48,7 @@ public final class FabricUiProvider implements UiProvider {
 
     @Override
     public void sendXpBossBar(User user, Skill skill, double currentXp, double levelXp, double xpGained, int level, boolean maxed, double income) {
-        // MVP: boss bar XP not shown on Fabric.
+        bossBarManager.send(user, skill, currentXp, levelXp, xpGained, level, maxed, income);
     }
 
     @Override

@@ -5,6 +5,7 @@ import dev.aurelium.auraskills.common.storage.sql.SqlStorageProvider;
 import dev.aurelium.auraskills.common.user.User;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.server.level.ServerPlayer;
+
 import java.util.concurrent.TimeUnit;
 
 public final class FabricPlayerLifecycle {

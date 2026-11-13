@@ -17,12 +17,12 @@ This document tracks Paper/plugin behavior that is intentionally **not** impleme
 
 ## Anti-exploit / balance
 
-- **Exploit resistance** for supported XP sources should be tracked alongside feature parity (farming loops, spawner/tagging, stat/jump/damage spam, fishing automation). `AntiAfkManager` is registered from `common` but does not cover all cases.
+- **Exploit resistance** for supported XP sources should be tracked alongside feature parity (farming loops, spawner/tagging, stat/jump/damage spam, fishing automation). Fabric polls the same check types as Paper (`block_a` through `fishing_a`) from `FabricAntiAfkManager` before XP is granted. `check_replace` / placed-block tracking is still absent.
 
 ## Menus and UI
 
 - **Slate / inventory menus** — **In progress (Path A):** full **Slate** port to Fabric + Paper-parity **command tree**; see **`fabric/MENU_AND_COMMANDS_PORT.md`**. Until shipped, `FabricMenuHelper` remains a stub.
-- **Boss bar XP** — stubbed; action bar / title behavior is minimal compared to Paper.
+- **Boss bar XP** — `FabricBossBarManager` shows the configured single bar (color, progress, stay time). Per-skill mode, income formatting beyond the message placeholders, and Adventure boss-bar audiences are not ported. Action bar / title behavior is still thinner than Paper.
 
 ## Gameplay / sources
 
@@ -33,7 +33,7 @@ This document tracks Paper/plugin behavior that is intentionally **not** impleme
 - **Entity `DAMAGE` trigger** — Fabric awards XP for player melee/projectile hits; **spawner_multiplier** applies. **Bleed DoT** is attributed to the bleed applier via `FabricBleedListener` ThreadLocal for generic damage XP (no NBT persistence across restarts).
 - **Statistic sources** — `FabricStatisticXpHandler` supports **`Stats.CUSTOM`** ids (e.g. `walk_one_cm`) and typed keys **`mined/<block>`**, **`used/<item>`**, **`broken/<item>`**, **`picked_up/<item>`**, **`custom/<id>`** (registry ids or `minecraft:` paths). Mob-kills / damage-dealt style stats are not mapped yet.
 - **Jumping** — tick-based jump detection mirrors Paper’s velocity checks; edge cases may differ from `PlayerMoveEvent`.
-- **Fishing** — mixin on `FishingBobberEntity#use` awards XP when `Stats.FISH_CAUGHT` increments; matches `sources/fishing.yml` by **material**, **fishing_junk** / **fishing_treasure** category, item meta, and **`loot_pool`** when the skill loot table is available (`FabricLootItemMatcher` matches pool templates with item-type or full stack equality). No `FishingLootHandler` extra drops or open-water checks.
+- **Fishing** — mixin on `FishingHook#retrieve` awards XP when `Stats.FISH_CAUGHT` increments; matches `sources/fishing.yml` by **material**, **fishing_junk** / **fishing_treasure** category, item meta, and **`loot_pool`**. `FabricFishingLootHandler` rolls item, command, and entity loot (entity entries spawn at the bobber). Open-water checks follow the loot option when configured.
 - **Other levelers** — **on Fabric:** item consume, potion splash, anvil, **grindstone** (`ScreenHandlerGrindstoneXpMixin` on `ScreenHandler.onSlotClick`, grindstone-only); **enchanting table** (`EnchantmentScreenHandlerMixin` → `FabricEnchantingXpHandler`); **brewing** **`BREW`** / **`TAKEOUT`** (see above + `FabricBrewingOwnerTracker`). **Mana abilities** registered in `FabricManaAbilityManager`: **Terraform**, **Charged Shot**, `FabricTimerCountdown`, **Absorption**, **Replenish**, **Speed Mine**, **Treecapitator**, **Lightning Blade**, **Sharp Hook** (see mixin / handler Javadoc). **`ignore_interact`:** `FabricManaAbilityItemTags` (`PublicBukkitValues` byte/int). No Bukkit `ManaAbilityActivateEvent` API on Fabric.
 
 ## Worlds and dimensions
@@ -50,7 +50,7 @@ This document tracks Paper/plugin behavior that is intentionally **not** impleme
 
 ## API surface
 
-- **`AuraSkillsBukkit` / `api-bukkit`** — not registered on Fabric; anything depending on Bukkit-specific API will not run.
+- **`AuraSkillsBukkit` / `api-bukkit`** — not registered on Fabric; Bukkit events are not fired. Granitelib and other Fabric mods listen through `dev.aurelium.auraskills.fabric.FabricSkillsListeners` (user load, skill level-up, XP gain). Mod id, packages, `config/auraskills`, permission nodes, and NBT roots stay `auraskills` / `AuraSkills`.
 
 ## Build note
 

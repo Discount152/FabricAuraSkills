@@ -5,10 +5,10 @@ import dev.aurelium.auraskills.common.ability.AbilityManager;
 import dev.aurelium.auraskills.common.config.Option;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.ability.FabricAbilityImpl;
-import dev.aurelium.auraskills.fabric.ability.FabricBleedListener;
 import dev.aurelium.auraskills.fabric.ability.FabricAgilityAbilities;
 import dev.aurelium.auraskills.fabric.ability.FabricAlchemyAbilities;
 import dev.aurelium.auraskills.fabric.ability.FabricArcheryAbilities;
+import dev.aurelium.auraskills.fabric.ability.FabricBleedListener;
 import dev.aurelium.auraskills.fabric.ability.FabricDamagePipelineContributor;
 import dev.aurelium.auraskills.fabric.ability.FabricDefenseAbilities;
 import dev.aurelium.auraskills.fabric.ability.FabricEnchantingAbilities;
@@ -17,14 +17,15 @@ import dev.aurelium.auraskills.fabric.ability.FabricExcavationAbilities;
 import dev.aurelium.auraskills.fabric.ability.FabricFarmingAbilities;
 import dev.aurelium.auraskills.fabric.ability.FabricFightingAbilities;
 import dev.aurelium.auraskills.fabric.ability.FabricFishingAbilities;
-import dev.aurelium.auraskills.fabric.ability.FabricForgingAbilities;
 import dev.aurelium.auraskills.fabric.ability.FabricForagingAbilities;
+import dev.aurelium.auraskills.fabric.ability.FabricForgingAbilities;
 import dev.aurelium.auraskills.fabric.ability.FabricHealingAbilities;
 import dev.aurelium.auraskills.fabric.ability.FabricMiningAbilities;
 import dev.aurelium.auraskills.fabric.damage.FabricDamageMeta;
+import net.minecraft.server.level.ServerPlayer;
+
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.server.level.ServerPlayer;
 
 public final class FabricAbilityManager extends AbilityManager {
 

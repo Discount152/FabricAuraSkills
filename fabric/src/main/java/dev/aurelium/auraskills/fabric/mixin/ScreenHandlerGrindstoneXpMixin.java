@@ -21,30 +21,30 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class ScreenHandlerGrindstoneXpMixin {
 
     @Unique
-    private boolean auraskills$grindstoneTrackingOutputClick;
+    private boolean auraskillsGrindstoneTrackingOutputClick;
 
     @Unique
-    private ItemStack auraskills$outputBeforeClick = ItemStack.EMPTY;
+    private ItemStack auraskillsOutputBeforeClick = ItemStack.EMPTY;
 
     @Unique
-    private ItemStack auraskills$input1Before = ItemStack.EMPTY;
+    private ItemStack auraskillsInput1Before = ItemStack.EMPTY;
 
     @Unique
-    private ItemStack auraskills$input2Before = ItemStack.EMPTY;
+    private ItemStack auraskillsInput2Before = ItemStack.EMPTY;
 
     @Inject(method = "clicked", at = @At("HEAD"))
     private void auraskills$grindstoneCapture(int slotIndex, int button, ContainerInput actionType, Player player, CallbackInfo ci) {
         if (!((Object) this instanceof GrindstoneMenu self)) {
             return;
         }
-        auraskills$grindstoneTrackingOutputClick = false;
+        auraskillsGrindstoneTrackingOutputClick = false;
         if (slotIndex != GrindstoneMenu.RESULT_SLOT) {
             return;
         }
-        auraskills$grindstoneTrackingOutputClick = true;
-        auraskills$outputBeforeClick = self.getSlot(GrindstoneMenu.RESULT_SLOT).getItem().copy();
-        auraskills$input1Before = self.getSlot(GrindstoneMenu.INPUT_SLOT).getItem().copy();
-        auraskills$input2Before = self.getSlot(GrindstoneMenu.ADDITIONAL_SLOT).getItem().copy();
+        auraskillsGrindstoneTrackingOutputClick = true;
+        auraskillsOutputBeforeClick = self.getSlot(GrindstoneMenu.RESULT_SLOT).getItem().copy();
+        auraskillsInput1Before = self.getSlot(GrindstoneMenu.INPUT_SLOT).getItem().copy();
+        auraskillsInput2Before = self.getSlot(GrindstoneMenu.ADDITIONAL_SLOT).getItem().copy();
     }
 
     @Inject(method = "clicked", at = @At("RETURN"))
@@ -53,7 +53,7 @@ public abstract class ScreenHandlerGrindstoneXpMixin {
             return;
         }
         try {
-            if (!auraskills$grindstoneTrackingOutputClick) {
+            if (!auraskillsGrindstoneTrackingOutputClick) {
                 return;
             }
             if (!(player instanceof ServerPlayer sp) || player.level().isClientSide()) {
@@ -63,18 +63,18 @@ public abstract class ScreenHandlerGrindstoneXpMixin {
                 return;
             }
             ItemStack after = self.getSlot(GrindstoneMenu.RESULT_SLOT).getItem();
-            if (auraskills$outputBeforeClick.isEmpty()) {
+            if (auraskillsOutputBeforeClick.isEmpty()) {
                 return;
             }
-            if (!ItemStack.isSameItemSameComponents(auraskills$outputBeforeClick, after)
-                    || after.getCount() < auraskills$outputBeforeClick.getCount()) {
-                FabricGrindstoneXpHandler.onGrindstoneTake(sp, self, auraskills$input1Before, auraskills$input2Before);
+            if (!ItemStack.isSameItemSameComponents(auraskillsOutputBeforeClick, after)
+                    || after.getCount() < auraskillsOutputBeforeClick.getCount()) {
+                FabricGrindstoneXpHandler.onGrindstoneTake(sp, self, auraskillsInput1Before, auraskillsInput2Before);
             }
         } finally {
-            auraskills$grindstoneTrackingOutputClick = false;
-            auraskills$outputBeforeClick = ItemStack.EMPTY;
-            auraskills$input1Before = ItemStack.EMPTY;
-            auraskills$input2Before = ItemStack.EMPTY;
+            auraskillsGrindstoneTrackingOutputClick = false;
+            auraskillsOutputBeforeClick = ItemStack.EMPTY;
+            auraskillsInput1Before = ItemStack.EMPTY;
+            auraskillsInput2Before = ItemStack.EMPTY;
         }
     }
 }

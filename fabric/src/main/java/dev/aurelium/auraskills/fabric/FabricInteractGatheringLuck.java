@@ -6,15 +6,12 @@ import dev.aurelium.auraskills.api.trait.Trait;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.ability.FabricMiningAbilities;
 import dev.aurelium.auraskills.fabric.trait.FabricGatheringLuckTraits;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.Prediction;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -23,6 +20,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Ports Bukkit {@link dev.aurelium.auraskills.bukkit.source.BlockLeveler#applyBlockLuck} for

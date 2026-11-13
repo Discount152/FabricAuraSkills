@@ -25,6 +25,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -113,7 +114,10 @@ public final class FabricCombatXpHandler {
                 return;
             }
         }
-        plugin.getLevelManager().addXp(user, skill, dx, xp);
+        Entity damager = source.getEntity();
+        Object identity = damager == null ? null : damager.getUUID();
+        double xpToAdd = xp;
+        FabricXpContext.run(identity, () -> plugin.getLevelManager().addXp(user, skill, dx, xpToAdd));
         playerDamageCooldownUntil.put(player.getUUID(), System.currentTimeMillis());
     }
 
@@ -168,7 +172,7 @@ public final class FabricCombatXpHandler {
             }
         }
         double xp = xpPortion * ex.getXp() * FabricSpawnerMobTracker.xpMultiplier(victim, skill);
-        plugin.getLevelManager().addXp(user, skill, ex, xp);
+        FabricXpContext.run(victim.getUUID(), () -> plugin.getLevelManager().addXp(user, skill, ex, xp));
     }
 
     private boolean hasAnyEntityDamageTrigger() {

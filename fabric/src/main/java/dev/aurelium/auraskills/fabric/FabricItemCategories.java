@@ -1,11 +1,12 @@
 package dev.aurelium.auraskills.fabric;
 
 import dev.aurelium.auraskills.api.item.ItemCategory;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.ItemStack;
+
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.item.ItemStack;
 
 /**
  * Approximates Bukkit {@code BukkitItemRegistry#getItemCategories} using registry item ids.

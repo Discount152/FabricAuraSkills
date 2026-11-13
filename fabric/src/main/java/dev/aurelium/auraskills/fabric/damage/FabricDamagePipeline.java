@@ -7,6 +7,9 @@ import dev.aurelium.auraskills.fabric.FabricAbilityManager;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.FabricDamageCauseMapper;
 import dev.aurelium.auraskills.fabric.FabricUser;
+import dev.aurelium.auraskills.fabric.ability.FabricAgilityAbilities;
+import dev.aurelium.auraskills.fabric.ability.FabricEnduranceAbilities;
+import dev.aurelium.auraskills.fabric.ability.FabricHealingAbilities;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -58,6 +61,13 @@ public final class FabricDamagePipeline {
 
         Entity directAttacker = source.getEntity();
         DamageType skillsType = FabricDamageTypeResolver.resolve(directAttacker, attackingPlayer);
+        if (targetPlayer != null) {
+            amount = FabricAgilityAbilities.adjustFall(plugin, targetPlayer, source, amount);
+            amount *= FabricHealingAbilities.goldenHeartMultiplier(targetPlayer);
+            if (attackingPlayer != null && FabricDamageCauseMapper.toApiCause(source) == DamageCause.ENTITY_ATTACK) {
+                FabricEnduranceAbilities.onPlayerMelee(attackingPlayer, targetPlayer);
+            }
+        }
 
         FabricDamageMeta meta = new FabricDamageMeta(directAttacker, target, skillsType, source, amount, "vanilla");
 

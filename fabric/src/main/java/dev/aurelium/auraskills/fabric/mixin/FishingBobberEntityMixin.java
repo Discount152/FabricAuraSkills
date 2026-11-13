@@ -3,9 +3,12 @@ package dev.aurelium.auraskills.fabric.mixin;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.FabricFishingCatchHolder;
 import dev.aurelium.auraskills.fabric.FabricFishingXpHandler;
+import dev.aurelium.auraskills.fabric.ability.FabricFishingAbilities;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stat;
 import net.minecraft.stats.Stats;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.item.ItemStack;
@@ -60,6 +63,18 @@ public abstract class FishingBobberEntityMixin {
             return;
         }
         FabricFishingXpHandler.onFishCaughtStat(FabricAuraSkills.getInstance(), (FishingHook) (Object) this, serverPlayer);
+    }
+
+    @Inject(method = "retrieve", at = @At("HEAD"))
+    private void auraskills$grappler(ItemStack usedItem, CallbackInfoReturnable<Integer> cir) {
+        FishingHook hook = (FishingHook) (Object) this;
+        Entity hooked = hook.getHookedIn();
+        if (hooked == null || hooked instanceof ItemEntity) {
+            return;
+        }
+        if (hook.getPlayerOwner() instanceof ServerPlayer player) {
+            FabricFishingAbilities.onGrapple(FabricAuraSkills.getInstance(), player, hooked);
+        }
     }
 
     @Inject(method = "retrieve", at = @At("RETURN"))

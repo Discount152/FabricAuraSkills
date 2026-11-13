@@ -31,6 +31,8 @@ public final class FabricEnchantingXpHandler {
         if (after.isEmpty()) {
             return;
         }
+        dev.aurelium.auraskills.fabric.ability.FabricEnchantingAbilities.tryLuckyTable(
+                plugin, player, handler, stackBeforeEnchant);
         SkillSource<EnchantingXpSource> skillSource = findSource(plugin, stackBeforeEnchant);
         if (skillSource == null) {
             return;

@@ -2,36 +2,59 @@ package dev.aurelium.auraskills.fabric;
 
 import dev.aurelium.auraskills.api.skill.Skill;
 import dev.aurelium.auraskills.api.source.XpSource;
-import dev.aurelium.auraskills.api.trait.Trait;
 import dev.aurelium.auraskills.common.event.EventHandler;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.common.util.data.Pair;
+import dev.aurelium.auraskills.fabric.ability.FabricEnchantingAbilities;
+import dev.aurelium.auraskills.fabric.ability.FabricForgingAbilities;
 import dev.aurelium.auraskills.fabric.trait.FabricGatheringLuckTraits;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * MVP: does not fire Bukkit-style API events. Always allows XP with the computed amount.
+ * Fires the Fabric listener bus used by Granitelib, then the built-in ability side effects.
  */
 public final class FabricEventHandler implements EventHandler {
 
     @Override
     public void callUserLoadEvent(User user) {
+        for (FabricSkillsListeners.Listener listener : FabricSkillsListeners.listeners()) {
+            listener.onUserLoad(user);
+        }
     }
 
     @Override
     public void callSkillLevelUpEvent(User user, Skill skill, int level) {
         FabricAuraSkills plugin = FabricAuraSkills.getInstance();
-        if (plugin == null) {
-            return;
+        if (plugin != null) {
+            var luckTrait = FabricGatheringLuckTraits.traitForSkill(skill);
+            if (luckTrait != null) {
+                plugin.getStatManager().reload(user, luckTrait);
+            }
         }
-        Trait luckTrait = FabricGatheringLuckTraits.traitForSkill(skill);
-        if (luckTrait != null) {
-            plugin.getStatManager().reload(user, luckTrait);
+        for (FabricSkillsListeners.Listener listener : FabricSkillsListeners.listeners()) {
+            listener.onSkillLevelUp(user, skill, level);
         }
     }
 
     @Override
     public Pair<Boolean, Double> callXpGainEvent(User user, Skill skill, @Nullable XpSource source, double amount) {
-        return new Pair<>(false, amount);
+        boolean cancelled = false;
+        FabricAuraSkills plugin = FabricAuraSkills.getInstance();
+        if (plugin != null && plugin.getAntiAfkManager() instanceof FabricAntiAfkManager antiAfk
+                && antiAfk.shouldCancel(user, source)) {
+            cancelled = true;
+        }
+        for (FabricSkillsListeners.Listener listener : FabricSkillsListeners.listeners()) {
+            Pair<Boolean, Double> next = listener.onXpGain(user, skill, source, amount);
+            if (next != null) {
+                cancelled = next.first();
+                amount = next.second();
+            }
+        }
+        if (!cancelled && plugin != null) {
+            FabricEnchantingAbilities.onSkillXp(plugin, user, amount);
+            FabricForgingAbilities.onSkillXp(plugin, user, amount);
+        }
+        return new Pair<>(cancelled, amount);
     }
 }

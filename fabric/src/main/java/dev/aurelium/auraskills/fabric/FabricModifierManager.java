@@ -8,10 +8,11 @@ import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.item.FabricItemModifierSchedules;
 import dev.aurelium.auraskills.fabric.item.FabricItemStateManager;
 import dev.aurelium.auraskills.fabric.item.FabricUserEquipment;
-import java.util.Set;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
+
+import java.util.Set;
 
 public final class FabricModifierManager implements ModifierManager {
 

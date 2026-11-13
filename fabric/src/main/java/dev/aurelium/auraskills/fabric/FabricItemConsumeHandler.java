@@ -5,6 +5,8 @@ import dev.aurelium.auraskills.api.source.SkillSource;
 import dev.aurelium.auraskills.api.source.type.ItemConsumeXpSource;
 import dev.aurelium.auraskills.common.source.SourceTypes;
 import dev.aurelium.auraskills.common.user.User;
+import dev.aurelium.auraskills.fabric.ability.FabricAgilityAbilities;
+import dev.aurelium.auraskills.fabric.ability.FabricFarmingAbilities;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
@@ -21,6 +23,8 @@ public final class FabricItemConsumeHandler {
         if (plugin == null || consumedStack.isEmpty()) {
             return;
         }
+        FabricAgilityAbilities.onConsume(plugin, player, consumedStack);
+        FabricFarmingAbilities.onConsume(plugin, player, consumedStack);
         SkillSource<ItemConsumeXpSource> match = null;
         for (SkillSource<ItemConsumeXpSource> entry : plugin.getSkillManager().getSourcesOfType(ItemConsumeXpSource.class)) {
             Skill skill = entry.skill();

@@ -4,8 +4,9 @@ import dev.aurelium.auraskills.api.trait.Trait;
 import dev.aurelium.auraskills.api.trait.Traits;
 import dev.aurelium.auraskills.api.util.NumberUtil;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
-import java.util.Locale;
 import net.minecraft.server.level.ServerPlayer;
+
+import java.util.Locale;
 
 public final class FabricCritDamageTrait extends FabricTraitImpl {
 

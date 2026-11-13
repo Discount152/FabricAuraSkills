@@ -1,7 +1,8 @@
 package dev.aurelium.auraskills.fabric.requirement;
 
-import java.util.List;
 import net.minecraft.resources.Identifier;
+
+import java.util.List;
 
 /**
  * Parsed {@code requirement.blocks.list} entry (Bukkit {@code BlockRequirement}).

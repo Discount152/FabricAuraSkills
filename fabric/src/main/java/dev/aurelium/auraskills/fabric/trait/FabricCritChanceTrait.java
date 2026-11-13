@@ -5,9 +5,10 @@ import dev.aurelium.auraskills.api.trait.Traits;
 import dev.aurelium.auraskills.api.util.NumberUtil;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
+import net.minecraft.server.level.ServerPlayer;
+
 import java.util.Locale;
 import java.util.Random;
-import net.minecraft.server.level.ServerPlayer;
 
 public final class FabricCritChanceTrait extends FabricTraitImpl {
 

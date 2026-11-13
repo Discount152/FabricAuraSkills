@@ -7,11 +7,11 @@ import dev.aurelium.auraskills.common.AuraSkillsPlugin;
 import dev.aurelium.auraskills.common.source.SourceMenuItems;
 import dev.aurelium.auraskills.fabric.item.FabricConfigurateItemParser;
 import dev.aurelium.auraskills.fabric.item.FabricItemRegistry;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.spongepowered.configurate.ConfigurationNode;
 
 import java.util.Objects;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 public final class FabricSourceMenuItems extends SourceMenuItems<ItemStack> {
 

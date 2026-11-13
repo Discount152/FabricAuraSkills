@@ -8,7 +8,6 @@ import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.common.util.math.RomanNumber;
 import dev.aurelium.auraskills.common.util.text.TextUtil;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
-import dev.aurelium.auraskills.fabric.FabricUser;
 import dev.aurelium.auraskills.fabric.item.FabricSkillsItemReader;
 import dev.aurelium.auraskills.fabric.trait.FabricTraitWorlds;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
@@ -30,6 +29,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
+
 import java.util.Locale;
 import java.util.Map;
 

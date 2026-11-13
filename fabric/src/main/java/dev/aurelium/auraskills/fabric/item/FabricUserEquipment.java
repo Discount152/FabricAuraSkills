@@ -1,11 +1,11 @@
 package dev.aurelium.auraskills.fabric.item;
 
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumMap;
 import java.util.Set;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.ItemStack;
 
 /**
  * Tracks last-known equipment stacks for item modifier application (Bukkit {@code UserEquipment}).

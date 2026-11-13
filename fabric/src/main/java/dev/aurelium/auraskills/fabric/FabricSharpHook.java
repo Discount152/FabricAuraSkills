@@ -8,7 +8,6 @@ import dev.aurelium.auraskills.common.mana.ManaAbilityData;
 import dev.aurelium.auraskills.common.message.type.ManaAbilityMessage;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.common.util.text.TextUtil;
-import java.util.Locale;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -20,6 +19,8 @@ import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+
+import java.util.Locale;
 
 /**
  * Fabric port of Bukkit {@link dev.aurelium.auraskills.bukkit.skills.fishing.SharpHook}: left-click with a fishing rod

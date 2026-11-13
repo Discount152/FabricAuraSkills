@@ -11,6 +11,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+
 import java.util.Arrays;
 
 public final class FabricEntityKillHandler {
@@ -62,7 +63,12 @@ public final class FabricEntityKillHandler {
                         continue;
                     }
                     double xp = FabricSpawnerMobTracker.xpMultiplier(entity, skill) * source.getXp();
-                    plugin.getLevelManager().addXp(user, skill, source, xp);
+                    FabricXpContext.run(entity.getUUID(), () -> plugin.getLevelManager().addXp(user, skill, source, xp));
+                    dev.aurelium.auraskills.fabric.ability.FabricAlchemyAbilities.onKill(plugin, player, entity);
+                    if (entity.level() instanceof ServerLevel level) {
+                        dev.aurelium.auraskills.fabric.ability.FabricEnchantingAbilities.onKill(
+                                plugin, player, entity.getExperienceReward(level, player));
+                    }
                     return;
                 }
             } finally {

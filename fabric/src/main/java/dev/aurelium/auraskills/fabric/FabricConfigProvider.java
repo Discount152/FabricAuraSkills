@@ -4,7 +4,6 @@ import dev.aurelium.auraskills.common.config.ConfigProvider;
 import org.spongepowered.configurate.ConfigurationNode;
 
 import java.util.Collections;
-import java.util.Map;
 
 public final class FabricConfigProvider extends ConfigProvider {
 

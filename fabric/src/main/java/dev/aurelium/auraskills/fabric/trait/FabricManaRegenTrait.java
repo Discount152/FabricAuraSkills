@@ -7,9 +7,10 @@ import dev.aurelium.auraskills.api.util.NumberUtil;
 import dev.aurelium.auraskills.common.scheduler.TaskRunnable;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
+import net.minecraft.server.level.ServerPlayer;
+
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
-import net.minecraft.server.level.ServerPlayer;
 
 public final class FabricManaRegenTrait extends FabricTraitImpl {
 

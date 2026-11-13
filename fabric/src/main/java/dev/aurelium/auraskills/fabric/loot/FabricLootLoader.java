@@ -4,7 +4,6 @@ import dev.aurelium.auraskills.api.loot.LootParser;
 import dev.aurelium.auraskills.common.AuraSkillsPlugin;
 import dev.aurelium.auraskills.common.loot.CommandLootParser;
 import dev.aurelium.auraskills.common.loot.LootLoader;
-import dev.aurelium.auraskills.common.loot.LootManager;
 import dev.aurelium.auraskills.common.loot.LootType;
 
 public final class FabricLootLoader extends LootLoader {
@@ -21,7 +20,7 @@ public final class FabricLootLoader extends LootLoader {
         return switch (type) {
             case ITEM -> new FabricItemLootParser(manager);
             case COMMAND -> new CommandLootParser();
-            case ENTITY -> new FabricUnsupportedEntityLootParser();
+            case ENTITY -> new FabricEntityLootParser();
         };
     }
 }

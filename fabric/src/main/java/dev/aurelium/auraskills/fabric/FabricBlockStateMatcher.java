@@ -1,12 +1,13 @@
 package dev.aurelium.auraskills.fabric;
 
 import dev.aurelium.auraskills.api.source.type.BlockXpSource;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.properties.Property;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Matches {@link BlockXpSource#getStates()} and state-based XP multipliers (Paper {@code BlockLeveler} / {@code BlockLevelerHelper}).

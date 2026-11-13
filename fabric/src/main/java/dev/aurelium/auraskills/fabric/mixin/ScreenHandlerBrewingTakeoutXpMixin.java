@@ -21,13 +21,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class ScreenHandlerBrewingTakeoutXpMixin {
 
     @Unique
-    private boolean auraskills$brewingTakeoutTracking;
+    private boolean auraskillsBrewingTakeoutTracking;
 
     @Unique
-    private int auraskills$brewingTakeoutSlot = -1;
+    private int auraskillsBrewingTakeoutSlot = -1;
 
     @Unique
-    private ItemStack auraskills$brewingTakeoutBefore = ItemStack.EMPTY;
+    private ItemStack auraskillsBrewingTakeoutBefore = ItemStack.EMPTY;
 
     @Inject(method = "clicked", at = @At("HEAD"))
     private void auraskills$brewingTakeoutHead(
@@ -35,39 +35,39 @@ public abstract class ScreenHandlerBrewingTakeoutXpMixin {
         if (!((Object) this instanceof BrewingStandMenu handler)) {
             return;
         }
-        auraskills$brewingTakeoutTracking = false;
-        auraskills$brewingTakeoutSlot = -1;
-        auraskills$brewingTakeoutBefore = ItemStack.EMPTY;
+        auraskillsBrewingTakeoutTracking = false;
+        auraskillsBrewingTakeoutSlot = -1;
+        auraskillsBrewingTakeoutBefore = ItemStack.EMPTY;
         if (slotIndex < 0 || slotIndex > 2) {
             return;
         }
         if (!(player instanceof ServerPlayer) || player.level().isClientSide()) {
             return;
         }
-        auraskills$brewingTakeoutTracking = true;
-        auraskills$brewingTakeoutSlot = slotIndex;
-        auraskills$brewingTakeoutBefore = handler.getSlot(slotIndex).getItem().copy();
+        auraskillsBrewingTakeoutTracking = true;
+        auraskillsBrewingTakeoutSlot = slotIndex;
+        auraskillsBrewingTakeoutBefore = handler.getSlot(slotIndex).getItem().copy();
     }
 
     @Inject(method = "clicked", at = @At("RETURN"))
     private void auraskills$brewingTakeoutReturn(
             int slotIndex, int button, ContainerInput actionType, Player player, CallbackInfo ci) {
         try {
-            if (!auraskills$brewingTakeoutTracking || !(player instanceof ServerPlayer sp)) {
+            if (!auraskillsBrewingTakeoutTracking || !(player instanceof ServerPlayer sp)) {
                 return;
             }
             if (!((Object) this instanceof BrewingStandMenu handler)) {
                 return;
             }
-            if (slotIndex != auraskills$brewingTakeoutSlot) {
+            if (slotIndex != auraskillsBrewingTakeoutSlot) {
                 return;
             }
             FabricBrewingXpHandler.onPotionSlotClickFinish(
-                    sp, handler, slotIndex, actionType, auraskills$brewingTakeoutBefore);
+                    sp, handler, slotIndex, actionType, auraskillsBrewingTakeoutBefore);
         } finally {
-            auraskills$brewingTakeoutTracking = false;
-            auraskills$brewingTakeoutSlot = -1;
-            auraskills$brewingTakeoutBefore = ItemStack.EMPTY;
+            auraskillsBrewingTakeoutTracking = false;
+            auraskillsBrewingTakeoutSlot = -1;
+            auraskillsBrewingTakeoutBefore = ItemStack.EMPTY;
         }
     }
 }

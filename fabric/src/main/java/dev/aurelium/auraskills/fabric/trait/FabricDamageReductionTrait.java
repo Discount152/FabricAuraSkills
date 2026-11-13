@@ -8,10 +8,10 @@ import dev.aurelium.auraskills.api.trait.Traits;
 import dev.aurelium.auraskills.api.util.NumberUtil;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.damage.FabricDamageReductionApplier;
+import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
-import net.minecraft.server.level.ServerPlayer;
 
 /**
  * Menu/base display and formula reset; reduction math runs in {@link FabricDamageReductionApplier}.

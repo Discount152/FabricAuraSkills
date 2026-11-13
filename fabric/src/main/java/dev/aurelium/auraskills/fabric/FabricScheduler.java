@@ -1,8 +1,8 @@
 package dev.aurelium.auraskills.fabric;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import dev.aurelium.auraskills.common.scheduler.Scheduler;
 import dev.aurelium.auraskills.common.scheduler.ScheduledTask;
+import dev.aurelium.auraskills.common.scheduler.Scheduler;
 import dev.aurelium.auraskills.common.scheduler.Task;
 import dev.aurelium.auraskills.common.scheduler.TaskRunnable;
 import dev.aurelium.auraskills.common.scheduler.TaskStatus;

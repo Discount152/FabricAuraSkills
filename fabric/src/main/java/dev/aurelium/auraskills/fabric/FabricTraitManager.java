@@ -17,6 +17,8 @@ import dev.aurelium.auraskills.fabric.trait.FabricManaRegenTrait;
 import dev.aurelium.auraskills.fabric.trait.FabricMaxManaTrait;
 import dev.aurelium.auraskills.fabric.trait.FabricMovementSpeedTrait;
 import dev.aurelium.auraskills.fabric.trait.FabricTraitHandler;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.NumberFormat;
@@ -24,8 +26,6 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 
 public final class FabricTraitManager extends TraitManager {
 
