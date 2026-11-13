@@ -1,21 +1,20 @@
 package dev.aurelium.auraskills.fabric;
 
 import dev.aurelium.auraskills.common.ref.LocationRef;
-import net.minecraft.server.network.ServerPlayerEntity;
-
 import java.util.Optional;
+import net.minecraft.server.level.ServerPlayer;
 
 public final class FabricLocationRef implements LocationRef {
 
-    private final ServerPlayerEntity player;
+    private final ServerPlayer player;
 
-    public FabricLocationRef(ServerPlayerEntity player) {
+    public FabricLocationRef(ServerPlayer player) {
         this.player = player;
     }
 
     @Override
     public Object get() {
-        return player.getEntityWorld();
+        return player.level();
     }
 
     @Override

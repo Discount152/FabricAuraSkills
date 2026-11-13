@@ -16,21 +16,20 @@ import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.PlayerConfigEntry;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.world.World;
-
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.NameAndId;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
 import java.util.Locale;
 import java.util.Map;
 
@@ -47,10 +46,10 @@ public final class FabricRequirementHandlers {
 
     public static void register(FabricAuraSkills plugin) {
         ServerPlayConnectionEvents.DISCONNECT.register((handler, server) ->
-                plugin.getFabricRequirementManager().getErrorMessageTimer().remove(handler.player.getUuid()));
+                plugin.getFabricRequirementManager().getErrorMessageTimer().remove(handler.player.getUUID()));
 
         PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) -> {
-            if (world.isClient() || !(player instanceof ServerPlayerEntity sp) || !(world instanceof ServerWorld)) {
+            if (world.isClientSide() || !(player instanceof ServerPlayer sp) || !(world instanceof ServerLevel)) {
                 return true;
             }
             if (FabricTraitWorlds.isInDisabledWorld(plugin, sp)) {
@@ -60,89 +59,89 @@ public final class FabricRequirementHandlers {
                 return true;
             }
             if (plugin.configBoolean(Option.REQUIREMENT_ITEM_PREVENT_TOOL_USE)) {
-                ItemStack main = sp.getMainHandStack();
+                ItemStack main = sp.getMainHandItem();
                 if (!main.isEmpty() && !FabricSkillsItemReader.meetsRequirements(plugin, sp, main, ModifierType.ITEM)) {
                     sendItemRequirementDenied(plugin, sp, main);
                     return false;
                 }
             }
-            if (!checkBlock(plugin, sp, Registries.BLOCK.getId(state.getBlock()), BlockContext.BREAK)) {
+            if (!checkBlock(plugin, sp, BuiltInRegistries.BLOCK.getKey(state.getBlock()), BlockContext.BREAK)) {
                 return false;
             }
             return true;
         });
 
-        UseBlockCallback.EVENT.register((PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) -> {
-            if (world.isClient() || !(player instanceof ServerPlayerEntity sp) || !(world instanceof ServerWorld sw)) {
-                return ActionResult.PASS;
+        UseBlockCallback.EVENT.register((Player player, Level world, InteractionHand hand, BlockHitResult hitResult) -> {
+            if (world.isClientSide() || !(player instanceof ServerPlayer sp) || !(world instanceof ServerLevel sw)) {
+                return InteractionResult.PASS;
             }
             if (FabricTraitWorlds.isInDisabledWorld(plugin, sp)) {
-                return ActionResult.PASS;
+                return InteractionResult.PASS;
             }
             if (!plugin.configBoolean(Option.REQUIREMENT_ENABLED)) {
-                return ActionResult.PASS;
+                return InteractionResult.PASS;
             }
-            ItemStack stack = sp.getStackInHand(hand);
+            ItemStack stack = sp.getItemInHand(hand);
             if (!(stack.getItem() instanceof BlockItem)) {
-                return ActionResult.PASS;
+                return InteractionResult.PASS;
             }
-            ItemPlacementContext ctx = new ItemPlacementContext(sw, sp, hand, stack, hitResult);
+            BlockPlaceContext ctx = new BlockPlaceContext(sw, sp, hand, stack, hitResult);
             if (!ctx.canPlace()) {
-                return ActionResult.PASS;
+                return InteractionResult.PASS;
             }
             if (plugin.configBoolean(Option.REQUIREMENT_ITEM_PREVENT_BLOCK_PLACE)
                     && !FabricSkillsItemReader.meetsRequirements(plugin, sp, stack, ModifierType.ITEM)) {
                 sendItemRequirementDenied(plugin, sp, stack);
-                return ActionResult.FAIL;
+                return InteractionResult.FAIL;
             }
             BlockItem blockItem = (BlockItem) stack.getItem();
-            Identifier placedId = Registries.BLOCK.getId(blockItem.getBlock());
+            Identifier placedId = BuiltInRegistries.BLOCK.getKey(blockItem.getBlock());
             if (!checkBlock(plugin, sp, placedId, BlockContext.PLACE)) {
-                return ActionResult.FAIL;
+                return InteractionResult.FAIL;
             }
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         });
 
-        UseItemCallback.EVENT.register((PlayerEntity player, World world, Hand hand) -> {
-            if (world.isClient() || !(player instanceof ServerPlayerEntity sp)) {
-                return ActionResult.PASS;
+        UseItemCallback.EVENT.register((Player player, Level world, InteractionHand hand) -> {
+            if (world.isClientSide() || !(player instanceof ServerPlayer sp)) {
+                return InteractionResult.PASS;
             }
             if (FabricTraitWorlds.isInDisabledWorld(plugin, sp)) {
-                return ActionResult.PASS;
+                return InteractionResult.PASS;
             }
             if (!plugin.configBoolean(Option.REQUIREMENT_ENABLED) || !plugin.configBoolean(Option.REQUIREMENT_ITEM_PREVENT_INTERACT)) {
-                return ActionResult.PASS;
+                return InteractionResult.PASS;
             }
-            ItemStack stack = sp.getStackInHand(hand);
+            ItemStack stack = sp.getItemInHand(hand);
             if (stack.isEmpty()) {
-                return ActionResult.PASS;
+                return InteractionResult.PASS;
             }
             if (!FabricSkillsItemReader.meetsRequirements(plugin, sp, stack, ModifierType.ITEM)) {
                 sendItemRequirementDenied(plugin, sp, stack);
-                return ActionResult.FAIL;
+                return InteractionResult.FAIL;
             }
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         });
 
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
-            if (world.isClient() || !(player instanceof ServerPlayerEntity sp)) {
-                return ActionResult.PASS;
+            if (world.isClientSide() || !(player instanceof ServerPlayer sp)) {
+                return InteractionResult.PASS;
             }
             if (FabricTraitWorlds.isInDisabledWorld(plugin, sp)) {
-                return ActionResult.PASS;
+                return InteractionResult.PASS;
             }
             if (!plugin.configBoolean(Option.REQUIREMENT_ENABLED) || !plugin.configBoolean(Option.REQUIREMENT_ITEM_PREVENT_WEAPON_USE)) {
-                return ActionResult.PASS;
+                return InteractionResult.PASS;
             }
-            ItemStack stack = sp.getStackInHand(Hand.MAIN_HAND);
+            ItemStack stack = sp.getItemInHand(InteractionHand.MAIN_HAND);
             if (stack.isEmpty()) {
-                return ActionResult.PASS;
+                return InteractionResult.PASS;
             }
             if (!FabricSkillsItemReader.meetsRequirements(plugin, sp, stack, ModifierType.ITEM)) {
                 sendItemRequirementDenied(plugin, sp, stack);
-                return ActionResult.FAIL;
+                return InteractionResult.FAIL;
             }
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         });
     }
 
@@ -153,16 +152,16 @@ public final class FabricRequirementHandlers {
     /**
      * @return false if the action must be denied
      */
-    public static boolean checkBlock(FabricAuraSkills plugin, ServerPlayerEntity player, Identifier blockId, BlockContext ctx) {
+    public static boolean checkBlock(FabricAuraSkills plugin, ServerPlayer player, Identifier blockId, BlockContext ctx) {
         if (!plugin.configBoolean(Option.REQUIREMENT_BLOCKS_ENABLED)) {
             return true;
         }
-        if (player.getAbilities().creativeMode && plugin.configBoolean(Option.REQUIREMENT_BLOCKS_BYPASS_IN_CREATIVE_MODE)) {
+        if (player.getAbilities().instabuild && plugin.configBoolean(Option.REQUIREMENT_BLOCKS_BYPASS_IN_CREATIVE_MODE)) {
             return true;
         }
         if (plugin.configBoolean(Option.REQUIREMENT_BLOCKS_BYPASS_IF_OP)) {
-            MinecraftServer server = player.getEntityWorld().getServer();
-            if (server != null && server.getPlayerManager().isOperator(new PlayerConfigEntry(player.getGameProfile()))) {
+            MinecraftServer server = player.level().getServer();
+            if (server != null && server.getPlayerList().isOp(new NameAndId(player.getGameProfile()))) {
                 return true;
             }
         }
@@ -189,7 +188,7 @@ public final class FabricRequirementHandlers {
             if (!node.check(player)) {
                 String message = node.getDenyMessage();
                 if (message != null && !message.isEmpty()) {
-                    User user = plugin.getUserManager().getUser(player.getUuid());
+                    User user = plugin.getUserManager().getUser(player.getUUID());
                     user.sendMessage(message);
                 }
                 return false;
@@ -198,14 +197,14 @@ public final class FabricRequirementHandlers {
         return true;
     }
 
-    public static void sendItemRequirementDenied(FabricAuraSkills plugin, ServerPlayerEntity player, ItemStack item) {
+    public static void sendItemRequirementDenied(FabricAuraSkills plugin, ServerPlayer player, ItemStack item) {
         FabricRequirementManager manager = plugin.getFabricRequirementManager();
         if (manager == null) {
             return;
         }
-        User user = plugin.getUserManager().getUser(player.getUuid());
+        User user = plugin.getUserManager().getUser(player.getUUID());
         Locale locale = user.getLocale();
-        Integer timer = manager.getErrorMessageTimer().get(player.getUuid());
+        Integer timer = manager.getErrorMessageTimer().get(player.getUUID());
         if (timer != null && timer != 0) {
             return;
         }
@@ -217,7 +216,7 @@ public final class FabricRequirementHandlers {
         }
         if (!plugin.configBoolean(Option.REQUIREMENT_OVERRIDE_GLOBAL) || requirementMap.isEmpty()) {
             for (FabricGlobalRequirement global : manager.getGlobalRequirementsType(ModifierType.ITEM)) {
-                Identifier heldId = Registries.ITEM.getId(item.getItem());
+                Identifier heldId = BuiltInRegistries.ITEM.getKey(item.getItem());
                 if (!global.itemId().equals(heldId)) {
                     continue;
                 }
@@ -232,13 +231,13 @@ public final class FabricRequirementHandlers {
         }
         user.sendMessage(plugin.getPrefix(locale) + TextUtil.replace(plugin.getMsg(CommandMessage.ITEM_REQUIREMENT_USE, locale),
                 "{requirements}", requirementsString.toString()));
-        manager.getErrorMessageTimer().put(player.getUuid(), 8);
+        manager.getErrorMessageTimer().put(player.getUUID(), 8);
     }
 
     /**
      * @return false if the shot must be cancelled (Bukkit {@code EntityShootBowEvent} cancel).
      */
-    public static boolean allowProjectileWeaponShot(FabricAuraSkills plugin, ServerPlayerEntity shooter, ItemStack weaponStack) {
+    public static boolean allowProjectileWeaponShot(FabricAuraSkills plugin, ServerPlayer shooter, ItemStack weaponStack) {
         if (FabricTraitWorlds.isInDisabledWorld(plugin, shooter)) {
             return true;
         }

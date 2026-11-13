@@ -1,5 +1,7 @@
 # Fabric AuraSkills — handoff packet
 
+> **26.3 update:** the shipping mod is **Granite Skills** on **Minecraft 26.3** (Loader 0.20.1, Fabric API 0.166.2+26.3, Java 25, Loom 1.20.0-alpha.31, Gradle 9.9.1, Mojang names). The mod id and Java packages stay `auraskills` / `dev.aurelium.auraskills` so Granitelib and existing `config/auraskills` data keep resolving. Sections below that still say 1.21.11 or Yarn describe the previous known-good tree, not the current toolchain.
+
 This document is the **authoritative handoff** for the experimental **Fabric dedicated-server** port in this repository. It records **what was built**, **how it is wired**, **how to build and run it**, **gaps vs the Paper plugin**, and **prioritized next work**.
 
 **Companion doc:** `fabric/PARITY_BACKLOG.md` (shorter, checklist-style gaps). This handoff goes deeper on process, file locations, and sequencing.
@@ -158,7 +160,7 @@ Reusing **`common`** saves time but inherits **Bukkit-first** seams. Every Fabri
 
 **Output JARs** (after `:fabric:build`):
 
-- `fabric/build/libs/FabricAuraSkills-<version>.jar` — install this on the Fabric **dedicated server** (plus Fabric API).
+- `fabric/build/libs/GraniteSkills-<version>.jar` — install this on the Fabric **dedicated server** (plus Fabric API). The file was named `FabricAuraSkills-*.jar` on 1.21.11.
 
 ---
 

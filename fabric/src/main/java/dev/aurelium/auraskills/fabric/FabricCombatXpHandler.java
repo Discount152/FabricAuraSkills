@@ -13,19 +13,18 @@ import dev.aurelium.auraskills.common.source.SourceTypes;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.ability.FabricBleedListener;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.EntityAttributeInstance;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.registry.Registries;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -51,21 +50,21 @@ public final class FabricCombatXpHandler {
     }
 
     private void onAfterDamage(LivingEntity entity, DamageSource source, float baseDamageTaken, float damageTaken, boolean blocked) {
-        if (!(entity.getEntityWorld() instanceof ServerWorld world) || world.isClient()) {
+        if (!(entity.level() instanceof ServerLevel world) || world.isClientSide()) {
             return;
         }
-        if (entity instanceof ServerPlayerEntity player) {
+        if (entity instanceof ServerPlayer player) {
             handlePlayerDamaged(player, source, baseDamageTaken, damageTaken, blocked);
         } else {
             handleNonPlayerDamaged(entity, source, damageTaken);
         }
     }
 
-    private void handlePlayerDamaged(ServerPlayerEntity player, DamageSource source, float baseDamageTaken, float damageTaken, boolean blocked) {
+    private void handlePlayerDamaged(ServerPlayer player, DamageSource source, float baseDamageTaken, float damageTaken, boolean blocked) {
         if (!plugin.getSkillManager().isSourceEnabled(SourceTypes.DAMAGE)) {
             return;
         }
-        if (plugin.configBoolean(Option.DISABLE_IN_CREATIVE_MODE) && player.getAbilities().creativeMode) {
+        if (plugin.configBoolean(Option.DISABLE_IN_CREATIVE_MODE) && player.getAbilities().instabuild) {
             return;
         }
         DamageCause skillsCause = FabricDamageCauseMapper.toApiCause(source);
@@ -83,7 +82,7 @@ public final class FabricCombatXpHandler {
                 && (blocked || player.isBlocking())) {
             return;
         }
-        long last = playerDamageCooldownUntil.getOrDefault(player.getUuid(), 0L);
+        long last = playerDamageCooldownUntil.getOrDefault(player.getUUID(), 0L);
         int cd = dx.getCooldownMs();
         if (cd > 0 && last + cd > System.currentTimeMillis()) {
             return;
@@ -91,7 +90,7 @@ public final class FabricCombatXpHandler {
         if (isSelfInflicted(source, player)) {
             return;
         }
-        User user = plugin.getUserManager().getUser(player.getUuid());
+        User user = plugin.getUserManager().getUser(player.getUUID());
         if (!user.hasSkillPermission(skill)) {
             return;
         }
@@ -115,7 +114,7 @@ public final class FabricCombatXpHandler {
             }
         }
         plugin.getLevelManager().addXp(user, skill, dx, xp);
-        playerDamageCooldownUntil.put(player.getUuid(), System.currentTimeMillis());
+        playerDamageCooldownUntil.put(player.getUUID(), System.currentTimeMillis());
     }
 
     private void handleNonPlayerDamaged(LivingEntity victim, DamageSource source, float damageTaken) {
@@ -125,13 +124,13 @@ public final class FabricCombatXpHandler {
         if (!hasAnyEntityDamageTrigger()) {
             return;
         }
-        if (victim instanceof ArmorStandEntity || damageTaken <= 0f) {
+        if (victim instanceof ArmorStand || damageTaken <= 0f) {
             return;
         }
         UUID bleedUser = FabricBleedListener.peekBleedAttackerUuid();
-        ServerPlayerEntity player = resolvePlayerAttacker(source);
+        ServerPlayer player = resolvePlayerAttacker(source);
         if (player == null && bleedUser != null) {
-            player = plugin.getServer().getPlayerManager().getPlayer(bleedUser);
+            player = plugin.getServer().getPlayerList().getPlayer(bleedUser);
         }
         EntityDamagers eventDamager = classifyPlayerEventDamager(source);
         if (eventDamager == null && bleedUser != null && player != null) {
@@ -140,7 +139,7 @@ public final class FabricCombatXpHandler {
         if (player == null || eventDamager == null) {
             return;
         }
-        if (plugin.configBoolean(Option.DISABLE_IN_CREATIVE_MODE) && player.getAbilities().creativeMode) {
+        if (plugin.configBoolean(Option.DISABLE_IN_CREATIVE_MODE) && player.getAbilities().instabuild) {
             return;
         }
         DamageCause skillsCause = FabricDamageCauseMapper.toApiCause(source);
@@ -153,7 +152,7 @@ public final class FabricCombatXpHandler {
         if (!skill.isEnabled()) {
             return;
         }
-        User user = plugin.getUserManager().getUser(player.getUuid());
+        User user = plugin.getUserManager().getUser(player.getUUID());
         if (!user.hasSkillPermission(skill)) {
             return;
         }
@@ -163,7 +162,7 @@ public final class FabricCombatXpHandler {
         }
         double xpPortion = damageTaken;
         if (ex.scaleXpWithHealth()) {
-            EntityAttributeInstance max = victim.getAttributeInstance(EntityAttributes.MAX_HEALTH);
+            AttributeInstance max = victim.getAttribute(Attributes.MAX_HEALTH);
             if (max != null && max.getValue() > 0) {
                 xpPortion = damageTaken / max.getValue();
             }
@@ -264,7 +263,7 @@ public final class FabricCombatXpHandler {
     }
 
     private boolean damagerMatches(DamageXpSource source, Entity damager, String name) {
-        if (source.includeProjectiles() && damager instanceof ProjectileEntity projectile) {
+        if (source.includeProjectiles() && damager instanceof Projectile projectile) {
             return projectileSourceMatches(projectile.getOwner(), name);
         }
         return entityDamagerMatches(damager, name);
@@ -272,12 +271,12 @@ public final class FabricCombatXpHandler {
 
     private static boolean entityDamagerMatches(Entity damager, String name) {
         if ("mob".equalsIgnoreCase(name)) {
-            return damager instanceof MobEntity;
+            return damager instanceof Mob;
         }
         if ("player".equalsIgnoreCase(name)) {
-            return damager instanceof PlayerEntity;
+            return damager instanceof Player;
         }
-        String path = Registries.ENTITY_TYPE.getId(damager.getType()).getPath();
+        String path = BuiltInRegistries.ENTITY_TYPE.getKey(damager.getType()).getPath();
         return path.equalsIgnoreCase(name);
     }
 
@@ -286,70 +285,70 @@ public final class FabricCombatXpHandler {
             return false;
         }
         if ("mob".equalsIgnoreCase(name)) {
-            return projectileSource instanceof MobEntity;
+            return projectileSource instanceof Mob;
         }
         if ("player".equalsIgnoreCase(name)) {
-            return projectileSource instanceof PlayerEntity;
+            return projectileSource instanceof Player;
         }
         if (projectileSource instanceof LivingEntity living) {
-            return Registries.ENTITY_TYPE.getId(living.getType()).getPath().equalsIgnoreCase(name);
+            return BuiltInRegistries.ENTITY_TYPE.getKey(living.getType()).getPath().equalsIgnoreCase(name);
         }
         return false;
     }
 
     private static Entity getDirectDamager(DamageSource source) {
-        Entity s = source.getSource();
+        Entity s = source.getDirectEntity();
         if (s != null) {
             return s;
         }
-        return source.getAttacker();
+        return source.getEntity();
     }
 
-    private static boolean isSelfInflicted(DamageSource source, ServerPlayerEntity victim) {
-        Entity attacker = source.getAttacker();
-        if (attacker instanceof PlayerEntity p && p.getUuid().equals(victim.getUuid())) {
+    private static boolean isSelfInflicted(DamageSource source, ServerPlayer victim) {
+        Entity attacker = source.getEntity();
+        if (attacker instanceof Player p && p.getUUID().equals(victim.getUUID())) {
             return true;
         }
-        Entity direct = source.getSource();
-        if (direct instanceof ProjectileEntity proj) {
+        Entity direct = source.getDirectEntity();
+        if (direct instanceof Projectile proj) {
             Entity owner = proj.getOwner();
-            if (owner != null && owner.getUuid().equals(victim.getUuid())) {
+            if (owner != null && owner.getUUID().equals(victim.getUUID())) {
                 return true;
             }
         }
         return false;
     }
 
-    private static ServerPlayerEntity resolvePlayerAttacker(DamageSource source) {
-        Entity direct = source.getSource();
-        if (direct instanceof ServerPlayerEntity sp) {
+    private static ServerPlayer resolvePlayerAttacker(DamageSource source) {
+        Entity direct = source.getDirectEntity();
+        if (direct instanceof ServerPlayer sp) {
             return sp;
         }
-        if (direct instanceof ProjectileEntity proj) {
+        if (direct instanceof Projectile proj) {
             Entity owner = proj.getOwner();
-            if (owner instanceof ServerPlayerEntity sp) {
+            if (owner instanceof ServerPlayer sp) {
                 return sp;
             }
         }
-        Entity attacker = source.getAttacker();
-        if (attacker instanceof ServerPlayerEntity sp) {
+        Entity attacker = source.getEntity();
+        if (attacker instanceof ServerPlayer sp) {
             return sp;
         }
         return null;
     }
 
     private static EntityDamagers classifyPlayerEventDamager(DamageSource source) {
-        Entity direct = source.getSource();
-        if (direct instanceof ServerPlayerEntity) {
+        Entity direct = source.getDirectEntity();
+        if (direct instanceof ServerPlayer) {
             DamageCause c = FabricDamageCauseMapper.toApiCause(source);
             if (c == DamageCause.ENTITY_ATTACK || c == DamageCause.ENTITY_SWEEP_ATTACK) {
                 return EntityDamagers.PLAYER;
             }
             return null;
         }
-        if (direct instanceof ProjectileEntity) {
-            Entity owner = ((ProjectileEntity) direct).getOwner();
-            if (owner instanceof ServerPlayerEntity) {
+        if (direct instanceof Projectile) {
+            Entity owner = ((Projectile) direct).getOwner();
+            if (owner instanceof ServerPlayer) {
                 return EntityDamagers.PROJECTILE;
             }
         }
@@ -366,7 +365,7 @@ public final class FabricCombatXpHandler {
                 }
             }
         }
-        String entityPath = Registries.ENTITY_TYPE.getId(entity.getType()).getPath();
+        String entityPath = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).getPath();
         for (SkillSource<EntityXpSource> entry : filtered) {
             EntityXpSource source = entry.source();
             String configured = plugin.getPlatformUtil().convertEntityName(source.getEntity().toLowerCase(Locale.ROOT));

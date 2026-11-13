@@ -7,26 +7,24 @@ import dev.aurelium.auraskills.fabric.FabricAbilityManager;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.FabricDamageCauseMapper;
 import dev.aurelium.auraskills.fabric.FabricUser;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.Projectile;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Ports Bukkit {@link dev.aurelium.auraskills.bukkit.damage.DamageHandler} + {@link dev.aurelium.auraskills.bukkit.listeners.CriticalHandler}
- * attack/defense trait stages for incoming {@link LivingEntity#damage} calls.
+ * attack/defense trait stages for incoming {@link LivingEntity#hurtServer} calls.
  */
 public final class FabricDamagePipeline {
 
     private FabricDamagePipeline() {
     }
 
-    public static float modifyIncomingDamage(ServerWorld world, LivingEntity target, DamageSource source, float amount) {
+    public static float modifyIncomingDamage(ServerLevel world, LivingEntity target, DamageSource source, float amount) {
         if (amount <= 0f) {
             return amount;
         }
@@ -35,8 +33,8 @@ public final class FabricDamagePipeline {
             return amount;
         }
 
-        ServerPlayerEntity attackingPlayer = resolveAttackingPlayer(source);
-        ServerPlayerEntity targetPlayer = target instanceof ServerPlayerEntity sp ? sp : null;
+        ServerPlayer attackingPlayer = resolveAttackingPlayer(source);
+        ServerPlayer targetPlayer = target instanceof ServerPlayer sp ? sp : null;
 
         if (attackingPlayer == null && targetPlayer == null) {
             return amount;
@@ -58,7 +56,7 @@ public final class FabricDamagePipeline {
             }
         }
 
-        Entity directAttacker = source.getAttacker();
+        Entity directAttacker = source.getEntity();
         DamageType skillsType = FabricDamageTypeResolver.resolve(directAttacker, attackingPlayer);
 
         FabricDamageMeta meta = new FabricDamageMeta(directAttacker, target, skillsType, source, amount, "vanilla");
@@ -93,14 +91,14 @@ public final class FabricDamagePipeline {
         return resolveAttackingPlayer(source) != null;
     }
 
-    private static @Nullable ServerPlayerEntity resolveAttackingPlayer(DamageSource source) {
-        Entity direct = source.getAttacker();
-        if (direct instanceof ServerPlayerEntity sp) {
+    private static @Nullable ServerPlayer resolveAttackingPlayer(DamageSource source) {
+        Entity direct = source.getEntity();
+        if (direct instanceof ServerPlayer sp) {
             return sp;
         }
-        if (direct instanceof ProjectileEntity projectile) {
+        if (direct instanceof Projectile projectile) {
             Entity owner = projectile.getOwner();
-            if (owner instanceof ServerPlayerEntity sp) {
+            if (owner instanceof ServerPlayer sp) {
                 return sp;
             }
         }

@@ -4,16 +4,15 @@ import dev.aurelium.auraskills.api.trait.Trait;
 import dev.aurelium.auraskills.api.trait.Traits;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
-import net.minecraft.entity.attribute.EntityAttributeInstance;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
-
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 
 /**
  * Ports Bukkit {@code HpTrait} attribute logic. Client heart scaling ({@code setHealthScale}) is not used on Fabric.
@@ -21,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class FabricHpTrait extends FabricTraitImpl {
 
     private static final double THRESHOLD = 0.1;
-    private static final Identifier MODIFIER_ID = Identifier.of("auraskills", "hp_trait");
+    private static final Identifier MODIFIER_ID = Identifier.fromNamespaceAndPath("auraskills", "hp_trait");
 
     private final Map<UUID, Double> worldChangeHealth = new ConcurrentHashMap<>();
 
@@ -30,33 +29,33 @@ public final class FabricHpTrait extends FabricTraitImpl {
     }
 
     @Override
-    public double getBaseLevel(ServerPlayerEntity player, Trait trait) {
-        EntityAttributeInstance attribute = player.getAttributeInstance(EntityAttributes.MAX_HEALTH);
+    public double getBaseLevel(ServerPlayer player, Trait trait) {
+        AttributeInstance attribute = player.getAttribute(Attributes.MAX_HEALTH);
         if (attribute == null) {
             return 0.0;
         }
         double current = attribute.getValue();
-        EntityAttributeModifier ours = attribute.getModifier(MODIFIER_ID);
+        AttributeModifier ours = attribute.getModifier(MODIFIER_ID);
         if (ours != null) {
-            current -= ours.value();
+            current -= ours.amount();
         }
         return current;
     }
 
     @Override
-    protected void reload(ServerPlayerEntity player, Trait trait) {
-        plugin.getScheduler().executeSync(() -> setHealth(player, plugin.getUserManager().getUser(player.getUuid())));
+    protected void reload(ServerPlayer player, Trait trait) {
+        plugin.getScheduler().executeSync(() -> setHealth(player, plugin.getUserManager().getUser(player.getUUID())));
     }
 
     @Override
-    protected void onWorldChanged(ServerPlayerEntity player, ServerWorld from, ServerWorld to, Trait trait) {
+    protected void onWorldChanged(ServerPlayer player, ServerLevel from, ServerLevel to, Trait trait) {
         if (!trait.equals(Traits.HP) || !Traits.HP.isEnabled()) {
             return;
         }
-        User user = plugin.getUserManager().getUser(player.getUuid());
+        User user = plugin.getUserManager().getUser(player.getUUID());
         if (FabricTraitWorlds.isInDisabledWorld(plugin, player)
                 && !FabricTraitWorlds.isDisabledWorld(plugin, from)) {
-            worldChangeHealth.put(player.getUuid(), (double) player.getHealth());
+            worldChangeHealth.put(player.getUUID(), (double) player.getHealth());
         }
         int delay = Traits.HP.optionInt("update_delay");
         if (delay > 0) {
@@ -67,18 +66,18 @@ public final class FabricHpTrait extends FabricTraitImpl {
         }
     }
 
-    private void applyWorldChange(ServerPlayerEntity player, User user, ServerWorld from, ServerWorld to) {
+    private void applyWorldChange(ServerPlayer player, User user, ServerLevel from, ServerLevel to) {
         setHealth(player, user);
         var wm = plugin.getWorldManager();
         String fromName = FabricTraitWorlds.worldName(from);
         if (!wm.isDisabledWorld(fromName) || FabricTraitWorlds.isInDisabledWorld(plugin, player)) {
             return;
         }
-        UUID id = player.getUuid();
+        UUID id = player.getUUID();
         if (!worldChangeHealth.containsKey(id)) {
             return;
         }
-        EntityAttributeInstance attribute = player.getAttributeInstance(EntityAttributes.MAX_HEALTH);
+        AttributeInstance attribute = player.getAttribute(Attributes.MAX_HEALTH);
         double maxHealth = attribute == null ? 20.0 : attribute.getValue();
         double newHealth = worldChangeHealth.get(id);
         if (newHealth > maxHealth) {
@@ -88,18 +87,18 @@ public final class FabricHpTrait extends FabricTraitImpl {
         worldChangeHealth.remove(id);
     }
 
-    private void setHealth(ServerPlayerEntity player, User user) {
+    private void setHealth(ServerPlayer player, User user) {
         Trait trait = Traits.HP;
         double modifier = user.getBonusTraitLevel(trait);
-        EntityAttributeInstance attribute = player.getAttributeInstance(EntityAttributes.MAX_HEALTH);
+        AttributeInstance attribute = player.getAttribute(Attributes.MAX_HEALTH);
         if (attribute == null) {
             return;
         }
         double originalMax = attribute.getValue();
-        EntityAttributeModifier existing = attribute.getModifier(MODIFIER_ID);
+        AttributeModifier existing = attribute.getModifier(MODIFIER_ID);
         boolean hasChange = true;
         if (existing != null) {
-            if (Math.abs(originalMax - (originalMax - existing.value() + modifier)) <= THRESHOLD) {
+            if (Math.abs(originalMax - (originalMax - existing.amount() + modifier)) <= THRESHOLD) {
                 hasChange = false;
             }
             if (hasChange) {
@@ -119,10 +118,10 @@ public final class FabricHpTrait extends FabricTraitImpl {
         if (!hasChange && existing != null) {
             return;
         }
-        attribute.addPersistentModifier(new EntityAttributeModifier(
+        attribute.addPermanentModifier(new AttributeModifier(
                 MODIFIER_ID,
                 modifier,
-                EntityAttributeModifier.Operation.ADD_VALUE));
+                AttributeModifier.Operation.ADD_VALUE));
         if (player.getHealth() > attribute.getValue()) {
             player.setHealth((float) attribute.getValue());
         }

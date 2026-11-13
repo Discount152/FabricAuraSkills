@@ -5,20 +5,20 @@ import dev.aurelium.auraskills.api.source.SkillSource;
 import dev.aurelium.auraskills.api.source.type.PotionSplashXpSource;
 import dev.aurelium.auraskills.common.source.SourceTypes;
 import dev.aurelium.auraskills.common.user.User;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.PotionContentsComponent;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.projectile.thrown.PotionEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.AbstractThrownPotion;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.alchemy.PotionContents;
 
 public final class FabricPotionSplashHandler {
 
     private FabricPotionSplashHandler() {
     }
 
-    public static void onPotionCollision(PotionEntity potion) {
-        if (potion.getEntityWorld().isClient()) {
+    public static void onPotionCollision(AbstractThrownPotion potion) {
+        if (potion.level().isClientSide()) {
             return;
         }
         FabricAuraSkills plugin = FabricAuraSkills.getInstance();
@@ -26,11 +26,11 @@ public final class FabricPotionSplashHandler {
             return;
         }
         Entity owner = potion.getOwner();
-        if (!(owner instanceof ServerPlayerEntity player)) {
+        if (!(owner instanceof ServerPlayer player)) {
             return;
         }
-        ItemStack stack = potion.getStack();
-        PotionContentsComponent contents = stack.get(DataComponentTypes.POTION_CONTENTS);
+        ItemStack stack = potion.getItem();
+        PotionContents contents = stack.get(DataComponents.POTION_CONTENTS);
         if (contents != null && contents.potion().isEmpty() && contents.customEffects().isEmpty()) {
             return;
         }
@@ -43,7 +43,7 @@ public final class FabricPotionSplashHandler {
         if (FabricXpHandlerUtil.shouldBlockXp(plugin, player, skill, SourceTypes.POTION_SPLASH)) {
             return;
         }
-        User user = plugin.getUserManager().getUser(player.getUuid());
+        User user = plugin.getUserManager().getUser(player.getUUID());
         plugin.getLevelManager().addXp(user, skill, source, source.getXp());
     }
 

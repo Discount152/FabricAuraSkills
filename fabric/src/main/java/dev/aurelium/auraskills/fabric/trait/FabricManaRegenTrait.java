@@ -7,10 +7,9 @@ import dev.aurelium.auraskills.api.util.NumberUtil;
 import dev.aurelium.auraskills.common.scheduler.TaskRunnable;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
-import net.minecraft.server.network.ServerPlayerEntity;
-
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
+import net.minecraft.server.level.ServerPlayer;
 
 public final class FabricManaRegenTrait extends FabricTraitImpl {
 
@@ -20,7 +19,7 @@ public final class FabricManaRegenTrait extends FabricTraitImpl {
     }
 
     @Override
-    public double getBaseLevel(ServerPlayerEntity player, Trait trait) {
+    public double getBaseLevel(ServerPlayer player, Trait trait) {
         return Traits.MANA_REGEN.optionDouble("base");
     }
 
@@ -36,8 +35,8 @@ public final class FabricManaRegenTrait extends FabricTraitImpl {
                 if (!Traits.MANA_REGEN.isEnabled()) {
                     return;
                 }
-                for (ServerPlayerEntity player : plugin.getServer().getPlayerManager().getPlayerList()) {
-                    User user = plugin.getUserManager().getUser(player.getUuid());
+                for (ServerPlayer player : plugin.getServer().getPlayerList().getPlayers()) {
+                    User user = plugin.getUserManager().getUser(player.getUUID());
                     double originalMana = user.getMana();
                     double maxMana = user.getMaxMana();
                     if (originalMana >= maxMana) {

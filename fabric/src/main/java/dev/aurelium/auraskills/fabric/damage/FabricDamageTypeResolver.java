@@ -1,30 +1,30 @@
 package dev.aurelium.auraskills.fabric.damage;
 
 import dev.aurelium.auraskills.api.damage.DamageType;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.item.ItemStack;
 
 public final class FabricDamageTypeResolver {
 
     private FabricDamageTypeResolver() {
     }
 
-    public static DamageType resolve(Entity directAttacker, PlayerEntity attackingPlayer) {
+    public static DamageType resolve(Entity directAttacker, Player attackingPlayer) {
         if (attackingPlayer == null) {
             return DamageType.OTHER;
         }
-        if (directAttacker instanceof ProjectileEntity) {
+        if (directAttacker instanceof Projectile) {
             return DamageType.BOW;
         }
-        ItemStack main = attackingPlayer.getMainHandStack();
+        ItemStack main = attackingPlayer.getMainHandItem();
         if (main.isEmpty()) {
             return DamageType.HAND;
         }
-        Identifier id = Registries.ITEM.getId(main.getItem());
+        Identifier id = BuiltInRegistries.ITEM.getKey(main.getItem());
         String path = id.getPath();
         if (path.contains("trident")) {
             return DamageType.BOW;

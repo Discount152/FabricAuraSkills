@@ -9,12 +9,12 @@ import dev.aurelium.auraskills.api.trait.TraitModifier;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.FabricUser;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.network.ServerPlayerEntity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Fabric counterpart of Bukkit {@code ItemStateManager}: swap item modifiers when equipment changes.
@@ -27,18 +27,18 @@ public final class FabricItemStateManager {
         this.plugin = plugin;
     }
 
-    public void changeItemInSlot(User userObj, ServerPlayerEntity player, @NotNull ItemStack afterItem, EquipmentSlot slot) {
+    public void changeItemInSlot(User userObj, ServerPlayer player, @NotNull ItemStack afterItem, EquipmentSlot slot) {
         changeItemInSlot(userObj, player, afterItem, slot, true, false, false);
     }
 
-    public Set<ReloadableIdentifier> changeItemInSlot(User userObj, ServerPlayerEntity player, @NotNull ItemStack afterItem,
+    public Set<ReloadableIdentifier> changeItemInSlot(User userObj, ServerPlayer player, @NotNull ItemStack afterItem,
             EquipmentSlot slot, boolean reloadIds, boolean force, boolean modify) {
         if (!(userObj instanceof FabricUser user)) {
             return Set.of();
         }
         FabricUserEquipment equipment = user.getFabricEquipment();
         ItemStack beforeItem = equipment.getSlot(slot);
-        if (!force && ItemStack.areEqual(afterItem, beforeItem)) {
+        if (!force && ItemStack.matches(afterItem, beforeItem)) {
             return Set.of();
         }
 
@@ -67,7 +67,7 @@ public final class FabricItemStateManager {
         }
     }
 
-    private Set<ReloadableIdentifier> removeItem(ItemStack item, FabricUser user, ServerPlayerEntity player,
+    private Set<ReloadableIdentifier> removeItem(ItemStack item, FabricUser user, ServerPlayer player,
             EquipmentSlot slot, ModifierType modType, boolean offhand) {
         Set<ReloadableIdentifier> toReload = Sets.newConcurrentHashSet();
         for (StatModifier modifier : FabricSkillsItemReader.getStatModifiers(plugin, item, modType, offhand)) {
@@ -84,7 +84,7 @@ public final class FabricItemStateManager {
         return toReload;
     }
 
-    private Set<ReloadableIdentifier> addItem(ItemStack item, FabricUser user, ServerPlayerEntity player,
+    private Set<ReloadableIdentifier> addItem(ItemStack item, FabricUser user, ServerPlayer player,
             EquipmentSlot slot, ModifierType modType, boolean offhand) {
         Set<ReloadableIdentifier> toReload = Sets.newConcurrentHashSet();
         if (!FabricSkillsItemReader.meetsRequirements(plugin, player, item, modType)) {

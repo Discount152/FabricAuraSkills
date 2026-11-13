@@ -2,9 +2,9 @@ package dev.aurelium.auraskills.fabric.trait;
 
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.FabricUser;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
 
 public final class FabricTraitWorlds {
 
@@ -12,20 +12,20 @@ public final class FabricTraitWorlds {
     }
 
     /**
-     * Same mapping as {@link FabricUser#worldNameCompat(ServerPlayerEntity)} for an arbitrary world.
+     * Same mapping as {@link FabricUser#worldNameCompat(ServerPlayer)} for an arbitrary world.
      */
-    public static String worldName(ServerWorld world) {
-        if (world.getRegistryKey().equals(World.OVERWORLD)) {
+    public static String worldName(ServerLevel world) {
+        if (world.dimension().equals(Level.OVERWORLD)) {
             return "world";
         }
-        return world.getRegistryKey().getValue().getPath();
+        return world.dimension().identifier().getPath();
     }
 
-    public static boolean isInDisabledWorld(FabricAuraSkills plugin, ServerPlayerEntity player) {
+    public static boolean isInDisabledWorld(FabricAuraSkills plugin, ServerPlayer player) {
         return plugin.getWorldManager().isDisabledWorld(FabricUser.worldNameCompat(player));
     }
 
-    public static boolean isDisabledWorld(FabricAuraSkills plugin, ServerWorld world) {
+    public static boolean isDisabledWorld(FabricAuraSkills plugin, ServerLevel world) {
         return plugin.getWorldManager().isDisabledWorld(worldName(world));
     }
 }

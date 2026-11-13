@@ -5,10 +5,9 @@ import dev.aurelium.auraskills.api.trait.Traits;
 import dev.aurelium.auraskills.api.util.NumberUtil;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
-import net.minecraft.server.network.ServerPlayerEntity;
-
 import java.util.Locale;
 import java.util.Random;
+import net.minecraft.server.level.ServerPlayer;
 
 public final class FabricCritChanceTrait extends FabricTraitImpl {
 
@@ -19,7 +18,7 @@ public final class FabricCritChanceTrait extends FabricTraitImpl {
     }
 
     @Override
-    public double getBaseLevel(ServerPlayerEntity player, Trait trait) {
+    public double getBaseLevel(ServerPlayer player, Trait trait) {
         return Traits.CRIT_CHANCE.optionDouble("base");
     }
 

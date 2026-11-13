@@ -4,11 +4,11 @@ import dev.aurelium.auraskills.common.config.Option;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.common.loot.CustomItemParser;
 import dev.aurelium.auraskills.common.loot.LootManager;
-import net.minecraft.item.ItemStack;
 import org.spongepowered.configurate.ConfigurationNode;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.world.item.ItemStack;
 
 public final class FabricLootManager extends LootManager {
 

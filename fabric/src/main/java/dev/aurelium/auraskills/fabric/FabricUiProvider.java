@@ -4,10 +4,9 @@ import dev.aurelium.auraskills.api.skill.Skill;
 import dev.aurelium.auraskills.common.ui.ActionBarManager;
 import dev.aurelium.auraskills.common.ui.UiProvider;
 import dev.aurelium.auraskills.common.user.User;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-
 import java.text.NumberFormat;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 
 public final class FabricUiProvider implements UiProvider {
 
@@ -38,11 +37,11 @@ public final class FabricUiProvider implements UiProvider {
 
     @Override
     public void sendActionBar(User user, String message) {
-        ServerPlayerEntity player = FabricUser.getPlayer(user);
+        ServerPlayer player = FabricUser.getPlayer(user);
         if (player == null || message.isEmpty()) {
             return;
         }
-        player.sendMessage(Text.literal(message), true);
+        player.sendOverlayMessage(Component.literal(message));
     }
 
     @Override
@@ -52,10 +51,10 @@ public final class FabricUiProvider implements UiProvider {
 
     @Override
     public void sendTitle(User user, String title, String subtitle, int fadeIn, int stay, int fadeOut) {
-        ServerPlayerEntity player = FabricUser.getPlayer(user);
+        ServerPlayer player = FabricUser.getPlayer(user);
         if (player == null) {
             return;
         }
-        player.sendMessage(Text.literal(title), false);
+        player.sendSystemMessage(Component.literal(title));
     }
 }

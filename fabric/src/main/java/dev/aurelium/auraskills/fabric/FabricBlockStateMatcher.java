@@ -1,13 +1,12 @@
 package dev.aurelium.auraskills.fabric;
 
 import dev.aurelium.auraskills.api.source.type.BlockXpSource;
-import net.minecraft.block.BlockState;
-import net.minecraft.state.property.IntProperty;
-import net.minecraft.state.property.Property;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.block.state.properties.Property;
 
 /**
  * Matches {@link BlockXpSource#getStates()} and state-based XP multipliers (Paper {@code BlockLeveler} / {@code BlockLevelerHelper}).
@@ -50,13 +49,13 @@ public final class FabricBlockStateMatcher {
         if (!source.hasStateMultiplier()) {
             return 1.0;
         }
-        for (Property<?> prop : state.getBlock().getStateManager().getProperties()) {
-            if (!state.contains(prop)) {
+        for (Property<?> prop : state.getBlock().getStateDefinition().getProperties()) {
+            if (!state.hasProperty(prop)) {
                 continue;
             }
             String n = prop.getName();
-            if (("age".equals(n) || "pickles".equals(n)) && prop instanceof IntProperty ip) {
-                return source.getStateMultiplier(n, state.get(ip));
+            if (("age".equals(n) || "pickles".equals(n)) && prop instanceof IntegerProperty ip) {
+                return source.getStateMultiplier(n, state.getValue(ip));
             }
         }
         return source.getStateMultiplier("placeholder", 1.0);
@@ -64,10 +63,8 @@ public final class FabricBlockStateMatcher {
 
     private static Map<String, Object> blockStateToMap(BlockState state) {
         Map<String, Object> map = new HashMap<>();
-        for (Map.Entry<Property<?>, Comparable<?>> e : state.getEntries().entrySet()) {
-            Property<?> prop = e.getKey();
-            Comparable<?> c = e.getValue();
-            map.put(prop.getName(), comparableToConfigValue(c));
+        for (Property.Value<?> value : state.getValues().toList()) {
+            map.put(value.property().getName(), comparableToConfigValue(value.value()));
         }
         return map;
     }
@@ -80,7 +77,7 @@ public final class FabricBlockStateMatcher {
             return i;
         }
         if (c instanceof Enum<?> en) {
-            return en instanceof net.minecraft.util.StringIdentifiable sid ? sid.asString() : en.name().toLowerCase();
+            return en instanceof net.minecraft.util.StringRepresentable sid ? sid.getSerializedName() : en.name().toLowerCase();
         }
         return c.toString();
     }

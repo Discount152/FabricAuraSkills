@@ -5,10 +5,10 @@ import dev.aurelium.auraskills.common.config.Option;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.FabricUser;
 import dev.aurelium.auraskills.fabric.item.FabricSkillsItemReader;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityArmorRequirementMixin {
 
-    @Inject(method = "equipStack", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "setItemSlot", at = @At("HEAD"), cancellable = true)
     private void auraskills$cancelArmorIfRequirementsFail(EquipmentSlot slot, ItemStack stack, CallbackInfo ci) {
         if (stack.isEmpty()) {
             return;
@@ -30,7 +30,7 @@ public abstract class LivingEntityArmorRequirementMixin {
             return;
         }
         LivingEntity self = (LivingEntity) (Object) this;
-        if (!(self instanceof ServerPlayerEntity player)) {
+        if (!(self instanceof ServerPlayer player)) {
             return;
         }
         FabricAuraSkills plugin = FabricAuraSkills.getInstance();

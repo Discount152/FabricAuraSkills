@@ -6,11 +6,10 @@ import dev.aurelium.auraskills.api.source.type.BlockXpSource;
 import dev.aurelium.auraskills.common.source.SourceTypes;
 import dev.aurelium.auraskills.common.user.User;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
-import net.minecraft.block.BlockState;
-import net.minecraft.registry.Registries;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.block.state.BlockState;
 import java.util.List;
 
 public final class FabricBlockBreakHandler {
@@ -20,7 +19,7 @@ public final class FabricBlockBreakHandler {
 
     public static void register(FabricAuraSkills plugin) {
         PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, blockEntity) -> {
-            if (world.isClient() || !(player instanceof ServerPlayerEntity sp) || !(world instanceof ServerWorld sw)) {
+            if (world.isClientSide() || !(player instanceof ServerPlayer sp) || !(world instanceof ServerLevel sw)) {
                 return;
             }
             SkillSource<BlockXpSource> match = findBreakSource(plugin, state);
@@ -32,7 +31,7 @@ public final class FabricBlockBreakHandler {
             if (FabricXpHandlerUtil.shouldBlockXp(plugin, sp, skill, SourceTypes.BLOCK)) {
                 return;
             }
-            User user = plugin.getUserManager().getUser(sp.getUuid());
+            User user = plugin.getUserManager().getUser(sp.getUUID());
             double blocksMult = FabricBlockLevelerHelper.getBlocksBroken(sw, pos, xpSource, plugin);
             double mult = blocksMult * FabricBlockStateMatcher.getStateMultiplier(state, xpSource);
             plugin.getLevelManager().addXp(user, skill, xpSource, xpSource.getXp() * mult);
@@ -41,7 +40,7 @@ public final class FabricBlockBreakHandler {
     }
 
     private static SkillSource<BlockXpSource> findBreakSource(FabricAuraSkills plugin, BlockState state) {
-        String path = Registries.BLOCK.getId(state.getBlock()).getPath();
+        String path = BuiltInRegistries.BLOCK.getKey(state.getBlock()).getPath();
         for (SkillSource<BlockXpSource> entry : plugin.getSkillManager().getSourcesOfType(BlockXpSource.class)) {
             BlockXpSource source = entry.source();
             if (!List.of(source.getTriggers()).contains(BlockXpSource.BlockTriggers.BREAK)) {

@@ -2,12 +2,11 @@ package dev.aurelium.auraskills.fabric;
 
 import dev.aurelium.auraskills.api.skill.Skill;
 import dev.aurelium.auraskills.api.skill.Skills;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 
 /**
  * Tracks mobs spawned from vanilla mob spawners so XP can use {@code spawner_multiplier}
@@ -28,15 +27,15 @@ public final class FabricSpawnerMobTracker {
                 && Skills.ARCHERY.optionDouble("spawner_multiplier", 1) == 1.0) {
             return;
         }
-        SPAWNER_MOBS.add(entity.getUuid());
+        SPAWNER_MOBS.add(entity.getUUID());
     }
 
     public static void clear(Entity entity) {
-        SPAWNER_MOBS.remove(entity.getUuid());
+        SPAWNER_MOBS.remove(entity.getUUID());
     }
 
     public static boolean isSpawnerSpawned(Entity entity) {
-        return SPAWNER_MOBS.contains(entity.getUuid());
+        return SPAWNER_MOBS.contains(entity.getUUID());
     }
 
     /**

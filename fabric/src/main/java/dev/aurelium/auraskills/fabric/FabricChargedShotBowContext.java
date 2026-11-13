@@ -1,11 +1,11 @@
 package dev.aurelium.auraskills.fabric;
 
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Holds bow draw strength between {@link net.minecraft.item.BowItem#onStoppedUsing} and
- * {@link net.minecraft.item.BowItem#shoot} on the server thread (same as Bukkit
+ * Holds bow draw strength between {@link net.minecraft.world.item.BowItem#releaseUsing} and
+ * {@link net.minecraft.world.item.BowItem#shootProjectile} on the server thread (same as Bukkit
  * {@code EntityShootBowEvent} timing).
  */
 final class FabricChargedShotBowContext {
@@ -15,14 +15,14 @@ final class FabricChargedShotBowContext {
     private FabricChargedShotBowContext() {
     }
 
-    static void set(ServerPlayerEntity player, float pullProgress) {
+    static void set(ServerPlayer player, float pullProgress) {
         TL.set(new Context(player, pullProgress));
     }
 
     /**
      * If the current thread-local context matches {@code shooter}, removes and returns it; otherwise returns null.
      */
-    static @Nullable Context takeIfShooterMatches(net.minecraft.entity.LivingEntity shooter) {
+    static @Nullable Context takeIfShooterMatches(net.minecraft.world.entity.LivingEntity shooter) {
         Context c = TL.get();
         if (c == null || c.player != shooter) {
             return null;
@@ -35,6 +35,6 @@ final class FabricChargedShotBowContext {
         TL.remove();
     }
 
-    record Context(ServerPlayerEntity player, float pullProgress) {
+    record Context(ServerPlayer player, float pullProgress) {
     }
 }

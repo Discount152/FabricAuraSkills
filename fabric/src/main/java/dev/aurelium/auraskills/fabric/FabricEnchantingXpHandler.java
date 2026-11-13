@@ -5,13 +5,13 @@ import dev.aurelium.auraskills.api.source.SkillSource;
 import dev.aurelium.auraskills.api.source.type.EnchantingXpSource;
 import dev.aurelium.auraskills.common.source.SourceTypes;
 import dev.aurelium.auraskills.common.user.User;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.ItemEnchantmentsComponent;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.screen.EnchantmentScreenHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.inventory.EnchantmentMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 
 public final class FabricEnchantingXpHandler {
 
@@ -21,13 +21,13 @@ public final class FabricEnchantingXpHandler {
     private FabricEnchantingXpHandler() {
     }
 
-    public static void onEnchantSuccess(ServerPlayerEntity player, EnchantmentScreenHandler handler, int buttonId,
+    public static void onEnchantSuccess(ServerPlayer player, EnchantmentMenu handler, int buttonId,
             ItemStack stackBeforeEnchant, int xpLevelBefore) {
         FabricAuraSkills plugin = FabricAuraSkills.getInstance();
         if (plugin == null) {
             return;
         }
-        ItemStack after = handler.getSlot(0).getStack();
+        ItemStack after = handler.getSlot(0).getItem();
         if (after.isEmpty()) {
             return;
         }
@@ -54,7 +54,7 @@ public final class FabricEnchantingXpHandler {
         if (xp <= 0) {
             return;
         }
-        User user = plugin.getUserManager().getUser(player.getUuid());
+        User user = plugin.getUserManager().getUser(player.getUUID());
         plugin.getLevelManager().addXp(user, skill, source, xp);
     }
 
@@ -69,20 +69,20 @@ public final class FabricEnchantingXpHandler {
     }
 
     private static int sumAddedEnchantLevels(ItemStack before, ItemStack after) {
-        return diffEnchantComponent(before, after, DataComponentTypes.ENCHANTMENTS)
-                + diffEnchantComponent(before, after, DataComponentTypes.STORED_ENCHANTMENTS);
+        return diffEnchantComponent(before, after, DataComponents.ENCHANTMENTS)
+                + diffEnchantComponent(before, after, DataComponents.STORED_ENCHANTMENTS);
     }
 
     private static int diffEnchantComponent(ItemStack before, ItemStack after,
-            net.minecraft.component.ComponentType<ItemEnchantmentsComponent> type) {
-        ItemEnchantmentsComponent a = after.get(type);
+            net.minecraft.core.component.DataComponentType<ItemEnchantments> type) {
+        ItemEnchantments a = after.get(type);
         if (a == null || a.isEmpty()) {
             return 0;
         }
-        ItemEnchantmentsComponent b = before.get(type);
+        ItemEnchantments b = before.get(type);
         int sum = 0;
-        for (var e : a.getEnchantmentEntries()) {
-            RegistryEntry<Enchantment> ench = e.getKey();
+        for (var e : a.entrySet()) {
+            Holder<Enchantment> ench = e.getKey();
             int afterLv = e.getIntValue();
             int beforeLv = b != null ? b.getLevel(ench) : 0;
             sum += Math.max(0, afterLv - beforeLv);

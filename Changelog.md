@@ -2,6 +2,13 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.18
+
+### New Features
+
+- Retarget the Fabric dedicated-server build to Minecraft 26.3 (Java 25, Fabric Loader 0.20.1, Fabric API 0.166.2+26.3, Mojang names)
+- Rename the player-facing mod to Granite Skills. The mod id stays `auraskills`, and `/auraskills` still works. `/graniteskills` is an alias
+
 ## 2.3.12
 
 ### New Features

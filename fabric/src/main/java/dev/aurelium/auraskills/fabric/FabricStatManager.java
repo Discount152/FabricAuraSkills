@@ -7,7 +7,7 @@ import dev.aurelium.auraskills.common.AuraSkillsPlugin;
 import dev.aurelium.auraskills.common.stat.StatManager;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.trait.FabricTraitHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 
 public final class FabricStatManager extends StatManager {
 
@@ -17,7 +17,7 @@ public final class FabricStatManager extends StatManager {
 
     @Override
     public <T extends ReloadableIdentifier> void reload(User user, T type) {
-        ServerPlayerEntity player = FabricUser.getPlayer(user);
+        ServerPlayer player = FabricUser.getPlayer(user);
         if (player == null) {
             return;
         }
@@ -30,7 +30,7 @@ public final class FabricStatManager extends StatManager {
 
     @Override
     public void reloadAllTraits(User user) {
-        ServerPlayerEntity player = FabricUser.getPlayer(user);
+        ServerPlayer player = FabricUser.getPlayer(user);
         if (player == null) {
             return;
         }
@@ -42,7 +42,7 @@ public final class FabricStatManager extends StatManager {
         }
     }
 
-    private void reloadStat(User user, ServerPlayerEntity player, Stat stat) {
+    private void reloadStat(User user, ServerPlayer player, Stat stat) {
         if (!stat.isEnabled()) {
             return;
         }
@@ -51,7 +51,7 @@ public final class FabricStatManager extends StatManager {
         }
     }
 
-    private void reloadTrait(User user, ServerPlayerEntity player, Trait trait) {
+    private void reloadTrait(User user, ServerPlayer player, Trait trait) {
         FabricTraitHandler traitImpl = ((FabricTraitManager) plugin.getTraitManager()).getTraitImpl(trait);
         if (traitImpl == null) {
             return;

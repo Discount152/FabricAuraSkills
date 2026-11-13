@@ -1,17 +1,17 @@
 package dev.aurelium.auraskills.fabric.mixin;
 
 import dev.aurelium.auraskills.fabric.FabricEnchantingXpHandler;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.EnchantmentScreenHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.EnchantmentMenu;
+import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(EnchantmentScreenHandler.class)
+@Mixin(EnchantmentMenu.class)
 public abstract class EnchantmentScreenHandlerMixin {
 
     @Unique
@@ -20,29 +20,29 @@ public abstract class EnchantmentScreenHandlerMixin {
     @Unique
     private int auraskills$xpLevelBefore;
 
-    @Inject(method = "onButtonClick", at = @At("HEAD"))
-    private void auraskills$enchantHead(PlayerEntity player, int id, CallbackInfoReturnable<Boolean> cir) {
+    @Inject(method = "clickMenuButton", at = @At("HEAD"))
+    private void auraskills$enchantHead(Player player, int id, CallbackInfoReturnable<Boolean> cir) {
         if (id < 0 || id > 2) {
             return;
         }
-        EnchantmentScreenHandler self = (EnchantmentScreenHandler) (Object) this;
-        auraskills$enchantItemBefore = self.getSlot(0).getStack().copy();
+        EnchantmentMenu self = (EnchantmentMenu) (Object) this;
+        auraskills$enchantItemBefore = self.getSlot(0).getItem().copy();
         auraskills$xpLevelBefore = player.experienceLevel;
     }
 
-    @Inject(method = "onButtonClick", at = @At("RETURN"))
-    private void auraskills$enchantReturn(PlayerEntity player, int id, CallbackInfoReturnable<Boolean> cir) {
+    @Inject(method = "clickMenuButton", at = @At("RETURN"))
+    private void auraskills$enchantReturn(Player player, int id, CallbackInfoReturnable<Boolean> cir) {
         try {
             if (!cir.getReturnValue()) {
                 return;
             }
-            if (player.getEntityWorld().isClient() || !(player instanceof ServerPlayerEntity sp)) {
+            if (player.level().isClientSide() || !(player instanceof ServerPlayer sp)) {
                 return;
             }
             if (id < 0 || id > 2) {
                 return;
             }
-            FabricEnchantingXpHandler.onEnchantSuccess(sp, (EnchantmentScreenHandler) (Object) this, id,
+            FabricEnchantingXpHandler.onEnchantSuccess(sp, (EnchantmentMenu) (Object) this, id,
                     auraskills$enchantItemBefore, auraskills$xpLevelBefore);
         } finally {
             auraskills$enchantItemBefore = ItemStack.EMPTY;

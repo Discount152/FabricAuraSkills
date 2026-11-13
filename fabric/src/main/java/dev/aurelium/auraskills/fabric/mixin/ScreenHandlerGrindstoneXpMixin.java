@@ -1,12 +1,12 @@
 package dev.aurelium.auraskills.fabric.mixin;
 
 import dev.aurelium.auraskills.fabric.FabricGrindstoneXpHandler;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.GrindstoneScreenHandler;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.slot.SlotActionType;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerInput;
+import net.minecraft.world.inventory.GrindstoneMenu;
+import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -14,10 +14,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
- * Grindstone does not declare {@code onSlotClick} in its class file (inherited from {@link ScreenHandler}),
- * so Loom cannot target it on {@link GrindstoneScreenHandler} directly. Filter here.
+ * Grindstone does not declare {@code onSlotClick} in its class file (inherited from {@link AbstractContainerMenu}),
+ * so Loom cannot target it on {@link GrindstoneMenu} directly. Filter here.
  */
-@Mixin(ScreenHandler.class)
+@Mixin(AbstractContainerMenu.class)
 public abstract class ScreenHandlerGrindstoneXpMixin {
 
     @Unique
@@ -32,41 +32,41 @@ public abstract class ScreenHandlerGrindstoneXpMixin {
     @Unique
     private ItemStack auraskills$input2Before = ItemStack.EMPTY;
 
-    @Inject(method = "onSlotClick", at = @At("HEAD"))
-    private void auraskills$grindstoneCapture(int slotIndex, int button, SlotActionType actionType, PlayerEntity player, CallbackInfo ci) {
-        if (!((Object) this instanceof GrindstoneScreenHandler self)) {
+    @Inject(method = "clicked", at = @At("HEAD"))
+    private void auraskills$grindstoneCapture(int slotIndex, int button, ContainerInput actionType, Player player, CallbackInfo ci) {
+        if (!((Object) this instanceof GrindstoneMenu self)) {
             return;
         }
         auraskills$grindstoneTrackingOutputClick = false;
-        if (slotIndex != GrindstoneScreenHandler.OUTPUT_ID) {
+        if (slotIndex != GrindstoneMenu.RESULT_SLOT) {
             return;
         }
         auraskills$grindstoneTrackingOutputClick = true;
-        auraskills$outputBeforeClick = self.getSlot(GrindstoneScreenHandler.OUTPUT_ID).getStack().copy();
-        auraskills$input1Before = self.getSlot(GrindstoneScreenHandler.INPUT_1_ID).getStack().copy();
-        auraskills$input2Before = self.getSlot(GrindstoneScreenHandler.INPUT_2_ID).getStack().copy();
+        auraskills$outputBeforeClick = self.getSlot(GrindstoneMenu.RESULT_SLOT).getItem().copy();
+        auraskills$input1Before = self.getSlot(GrindstoneMenu.INPUT_SLOT).getItem().copy();
+        auraskills$input2Before = self.getSlot(GrindstoneMenu.ADDITIONAL_SLOT).getItem().copy();
     }
 
-    @Inject(method = "onSlotClick", at = @At("RETURN"))
-    private void auraskills$grindstoneAward(int slotIndex, int button, SlotActionType actionType, PlayerEntity player, CallbackInfo ci) {
-        if (!((Object) this instanceof GrindstoneScreenHandler self)) {
+    @Inject(method = "clicked", at = @At("RETURN"))
+    private void auraskills$grindstoneAward(int slotIndex, int button, ContainerInput actionType, Player player, CallbackInfo ci) {
+        if (!((Object) this instanceof GrindstoneMenu self)) {
             return;
         }
         try {
             if (!auraskills$grindstoneTrackingOutputClick) {
                 return;
             }
-            if (!(player instanceof ServerPlayerEntity sp) || player.getEntityWorld().isClient()) {
+            if (!(player instanceof ServerPlayer sp) || player.level().isClientSide()) {
                 return;
             }
-            if (slotIndex != GrindstoneScreenHandler.OUTPUT_ID) {
+            if (slotIndex != GrindstoneMenu.RESULT_SLOT) {
                 return;
             }
-            ItemStack after = self.getSlot(GrindstoneScreenHandler.OUTPUT_ID).getStack();
+            ItemStack after = self.getSlot(GrindstoneMenu.RESULT_SLOT).getItem();
             if (auraskills$outputBeforeClick.isEmpty()) {
                 return;
             }
-            if (!ItemStack.areItemsAndComponentsEqual(auraskills$outputBeforeClick, after)
+            if (!ItemStack.isSameItemSameComponents(auraskills$outputBeforeClick, after)
                     || after.getCount() < auraskills$outputBeforeClick.getCount()) {
                 FabricGrindstoneXpHandler.onGrindstoneTake(sp, self, auraskills$input1Before, auraskills$input2Before);
             }

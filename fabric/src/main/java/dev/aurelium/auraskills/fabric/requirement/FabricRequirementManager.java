@@ -8,8 +8,6 @@ import dev.aurelium.auraskills.api.stat.Stat;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.common.config.ConfigurateLoader;
 import dev.aurelium.auraskills.common.scheduler.TaskRunnable;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializerCollection;
@@ -25,6 +23,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 
 /**
  * Loads {@code config.yml} global skill requirements and block requirement lists
@@ -63,7 +63,7 @@ public final class FabricRequirementManager {
                         continue;
                     }
                     Identifier itemId = parseMaterialAsItemId(splitText[0]);
-                    if (itemId == null || !Registries.ITEM.containsId(itemId)) {
+                    if (itemId == null || !BuiltInRegistries.ITEM.containsKey(itemId)) {
                         plugin.logger().warn("Unknown material/item for global requirement: " + splitText[0]);
                         continue;
                     }
@@ -107,7 +107,7 @@ public final class FabricRequirementManager {
             for (ConfigurationNode blockNode : blockNodes) {
                 String materialKey = blockNode.node("material").getString("");
                 Identifier blockId = parseBlockMaterialId(materialKey);
-                if (blockId == null || !Registries.BLOCK.containsId(blockId)) {
+                if (blockId == null || !BuiltInRegistries.BLOCK.containsKey(blockId)) {
                     plugin.logger().warn("Unknown block for requirement.blocks.list material: " + materialKey);
                     continue;
                 }
@@ -205,8 +205,8 @@ public final class FabricRequirementManager {
             return null;
         }
         String upper = raw.toUpperCase(Locale.ROOT);
-        Identifier id = Identifier.ofVanilla(upper.toLowerCase(Locale.ROOT));
-        if (Registries.BLOCK.containsId(id)) {
+        Identifier id = Identifier.withDefaultNamespace(upper.toLowerCase(Locale.ROOT));
+        if (BuiltInRegistries.BLOCK.containsKey(id)) {
             return id;
         }
         return Identifier.tryParse(raw.toLowerCase(Locale.ROOT));
@@ -217,8 +217,8 @@ public final class FabricRequirementManager {
      */
     private static @org.jetbrains.annotations.Nullable Identifier parseMaterialAsItemId(String raw) {
         String upper = raw.toUpperCase(Locale.ROOT);
-        Identifier id = Identifier.ofVanilla(upper.toLowerCase(Locale.ROOT));
-        if (Registries.ITEM.containsId(id)) {
+        Identifier id = Identifier.withDefaultNamespace(upper.toLowerCase(Locale.ROOT));
+        if (BuiltInRegistries.ITEM.containsKey(id)) {
             return id;
         }
         return Identifier.tryParse(raw.toLowerCase(Locale.ROOT));

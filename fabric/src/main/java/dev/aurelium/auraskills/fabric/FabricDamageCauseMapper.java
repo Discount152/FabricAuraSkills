@@ -1,8 +1,8 @@
 package dev.aurelium.auraskills.fabric;
 
 import dev.aurelium.auraskills.api.source.type.DamageXpSource.DamageCause;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.registry.RegistryKey;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.damagesource.DamageSource;
 
 /**
  * Maps Minecraft {@link DamageSource} types to AuraSkills {@link DamageCause} (Bukkit-compatible names).
@@ -13,8 +13,8 @@ public final class FabricDamageCauseMapper {
     }
 
     public static DamageCause toApiCause(DamageSource source) {
-        return source.getTypeRegistryEntry().getKey()
-                .map(RegistryKey::getValue)
+        return source.typeHolder().unwrapKey()
+                .map(ResourceKey::identifier)
                 .map(id -> mapPath(id.getPath()))
                 .orElse(DamageCause.CUSTOM);
     }

@@ -10,20 +10,20 @@ import dev.aurelium.auraskills.common.message.type.ManaAbilityMessage;
 import dev.aurelium.auraskills.common.scheduler.TaskRunnable;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.common.util.text.TextUtil;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.item.Items;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.item.Items;
 
 /**
  * Fabric port of Bukkit {@link dev.aurelium.auraskills.bukkit.skills.archery.ChargedShot}: optional toggle (left-click
@@ -44,15 +44,15 @@ public final class FabricChargedShot {
         tickToggleCooldown(plugin);
     }
 
-    public static float modifyDamageFromChargedProjectile(ServerWorld world, DamageSource source, float amount) {
-        if (world.isClient()) {
+    public static float modifyDamageFromChargedProjectile(ServerLevel world, DamageSource source, float amount) {
+        if (world.isClientSide()) {
             return amount;
         }
-        Entity projEntity = source.getSource();
-        if (!(projEntity instanceof ProjectileEntity)) {
+        Entity projEntity = source.getDirectEntity();
+        if (!(projEntity instanceof Projectile)) {
             return amount;
         }
-        UUID id = projEntity.getUuid();
+        UUID id = projEntity.getUUID();
         Double mult = PROJECTILE_DAMAGE_MULTIPLIER.get(id);
         if (mult == null) {
             return amount;
@@ -60,18 +60,18 @@ public final class FabricChargedShot {
         return amount * mult.floatValue();
     }
 
-    public static void onBowStoppedUsingHead(net.minecraft.item.ItemStack stack, net.minecraft.world.World world,
+    public static void onBowStoppedUsingHead(net.minecraft.world.item.ItemStack stack, net.minecraft.world.level.Level world,
             LivingEntity user, int remainingUseTicks) {
-        if (world.isClient() || !(user instanceof ServerPlayerEntity sp)) {
+        if (world.isClientSide() || !(user instanceof ServerPlayer sp)) {
             return;
         }
-        if (!stack.isOf(Items.BOW) || FabricManaAbilityItemTags.shouldIgnoreInteract(stack)) {
+        if (!stack.is(Items.BOW) || FabricManaAbilityItemTags.shouldIgnoreInteract(stack)) {
             return;
         }
-        net.minecraft.item.BowItem bow = (net.minecraft.item.BowItem) stack.getItem();
-        int max = bow.getMaxUseTime(stack, user);
+        net.minecraft.world.item.BowItem bow = (net.minecraft.world.item.BowItem) stack.getItem();
+        int max = bow.getUseDuration(stack, user);
         int drawnTicks = max - remainingUseTicks;
-        float pull = net.minecraft.item.BowItem.getPullProgress(drawnTicks);
+        float pull = net.minecraft.world.item.BowItem.getPowerForTime(drawnTicks);
         FabricChargedShotBowContext.set(sp, pull);
     }
 
@@ -79,7 +79,7 @@ public final class FabricChargedShot {
         FabricChargedShotBowContext.clear();
     }
 
-    public static void onBowShotProjectile(LivingEntity shooter, ProjectileEntity projectile) {
+    public static void onBowShotProjectile(LivingEntity shooter, Projectile projectile) {
         FabricAuraSkills plugin = FabricAuraSkills.getInstance();
         if (plugin == null) {
             return;
@@ -91,23 +91,23 @@ public final class FabricChargedShot {
         tryActivateOnProjectile(plugin, ctx.player(), ctx.pullProgress(), projectile);
     }
 
-    public static void onSwingMainHandBow(FabricAuraSkills plugin, ServerPlayerEntity player) {
+    public static void onSwingMainHandBow(FabricAuraSkills plugin, ServerPlayer player) {
         if (isDisabled()) {
             return;
         }
         if (MANA.optionBoolean("always_enabled", false)) {
             return;
         }
-        if (!player.getMainHandStack().isOf(Items.BOW)) {
+        if (!player.getMainHandItem().is(Items.BOW)) {
             return;
         }
-        if (FabricManaAbilityItemTags.shouldIgnoreInteract(player.getMainHandStack())) {
+        if (FabricManaAbilityItemTags.shouldIgnoreInteract(player.getMainHandItem())) {
             return;
         }
         if (failsChecks(plugin, player)) {
             return;
         }
-        User user = plugin.getUserManager().getUser(player.getUuid());
+        User user = plugin.getUserManager().getUser(player.getUUID());
         AbilityData abilityData = user.getAbilityData(MANA);
         if (abilityData.getInt("toggle_cooldown") != 0) {
             return;
@@ -123,15 +123,15 @@ public final class FabricChargedShot {
         abilityData.setData("toggle_cooldown", 8);
     }
 
-    private static void tryActivateOnProjectile(FabricAuraSkills plugin, ServerPlayerEntity player, float pull,
-            ProjectileEntity projectile) {
+    private static void tryActivateOnProjectile(FabricAuraSkills plugin, ServerPlayer player, float pull,
+            Projectile projectile) {
         if (isDisabled()) {
             return;
         }
         if (failsChecks(plugin, player)) {
             return;
         }
-        User user = plugin.getUserManager().getUser(player.getUuid());
+        User user = plugin.getUserManager().getUser(player.getUUID());
         AbilityData ad = user.getAbilityData(MANA);
         if (!ad.getBoolean("enabled") && !MANA.optionBoolean("always_enabled", false)) {
             return;
@@ -159,12 +159,12 @@ public final class FabricChargedShot {
         double manaConsumed = plugin.configBoolean(Option.MANA_ENABLED) ? manaCost : 0.0;
         double damagePercent = manaConsumed * MANA.getValue(user.getManaAbilityLevel(MANA));
         double multiplier = 1.0 + damagePercent / 100.0;
-        PROJECTILE_DAMAGE_MULTIPLIER.put(projectile.getUuid(), multiplier);
+        PROJECTILE_DAMAGE_MULTIPLIER.put(projectile.getUUID(), multiplier);
 
         if (MANA.optionBoolean("enable_sound", true)) {
-            if (player.getEntityWorld() instanceof ServerWorld sw) {
+            if (player.level() instanceof ServerLevel sw) {
                 sw.playSound(null, player.getX(), player.getY(), player.getZ(),
-                        SoundEvents.ENTITY_EVOKER_CAST_SPELL, SoundCategory.PLAYERS, 0.5f, 1.0f);
+                        SoundEvents.EVOKER_CAST_SPELL, SoundSource.PLAYERS, 0.5f, 1.0f);
             }
         }
 
@@ -209,11 +209,11 @@ public final class FabricChargedShot {
         }, 3 * 50L, 5 * 50L, TimeUnit.MILLISECONDS);
     }
 
-    private static boolean failsChecks(FabricAuraSkills plugin, ServerPlayerEntity player) {
-        if (!plugin.getUserManager().hasUser(player.getUuid())) {
+    private static boolean failsChecks(FabricAuraSkills plugin, ServerPlayer player) {
+        if (!plugin.getUserManager().hasUser(player.getUUID())) {
             return true;
         }
-        User user = plugin.getUserManager().getUser(player.getUuid());
+        User user = plugin.getUserManager().getUser(player.getUUID());
         if (user.getManaAbilityLevel(MANA) <= 0) {
             return true;
         }
@@ -224,7 +224,7 @@ public final class FabricChargedShot {
         if (!user.hasSkillPermission(MANA.getSkill())) {
             return true;
         }
-        return plugin.configBoolean(Option.DISABLE_IN_CREATIVE_MODE) && player.getAbilities().creativeMode;
+        return plugin.configBoolean(Option.DISABLE_IN_CREATIVE_MODE) && player.getAbilities().instabuild;
     }
 
     private static boolean insufficientMana(FabricAuraSkills plugin, User user, double manaCost) {

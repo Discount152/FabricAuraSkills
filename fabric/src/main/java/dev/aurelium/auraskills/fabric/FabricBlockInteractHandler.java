@@ -6,20 +6,19 @@ import dev.aurelium.auraskills.api.source.type.BlockXpSource;
 import dev.aurelium.auraskills.common.source.SourceTypes;
 import dev.aurelium.auraskills.common.user.User;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.minecraft.block.BeehiveBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.LeveledCauldronBlock;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.registry.Registries;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.BeehiveBlock;
+import net.minecraft.world.level.block.LayeredCauldronBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -38,15 +37,15 @@ public final class FabricBlockInteractHandler {
 
     public static void register(FabricAuraSkills plugin) {
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
-            if (world.isClient() || !(player instanceof ServerPlayerEntity sp) || !(world instanceof ServerWorld sw)) {
-                return ActionResult.PASS;
+            if (world.isClientSide() || !(player instanceof ServerPlayer sp) || !(world instanceof ServerLevel sw)) {
+                return InteractionResult.PASS;
             }
             onUseBlock(plugin, sp, sw, hand, hitResult);
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         });
     }
 
-    private static void onUseBlock(FabricAuraSkills plugin, ServerPlayerEntity sp, ServerWorld sw, Hand hand,
+    private static void onUseBlock(FabricAuraSkills plugin, ServerPlayer sp, ServerLevel sw, InteractionHand hand,
             BlockHitResult hitResult) {
         BlockPos pos = hitResult.getBlockPos();
         BlockState state = sw.getBlockState(pos);
@@ -64,7 +63,7 @@ public final class FabricBlockInteractHandler {
             return;
         }
 
-        ItemStack stack = sp.getStackInHand(hand);
+        ItemStack stack = sp.getItemInHand(hand);
         if (collecting && !passesCollectItemChecks(state, stack)) {
             return;
         }
@@ -78,19 +77,19 @@ public final class FabricBlockInteractHandler {
         double interactMultiplier = FabricBlockLevelerHelper.getBlocksBroken(sw, pos, xpSource, plugin)
                 * FabricBlockStateMatcher.getStateMultiplier(state, xpSource);
 
-        UUID playerId = sp.getUuid();
-        Identifier blockIdBefore = Registries.BLOCK.getId(state.getBlock());
+        UUID playerId = sp.getUUID();
+        Identifier blockIdBefore = BuiltInRegistries.BLOCK.getKey(state.getBlock());
         BlockXpSource.BlockXpSourceState[] after = xpSource.getAfterStates();
         boolean delayedAfter = after != null && after.length > 0;
 
         Runnable grant = () -> {
-            ServerPlayerEntity p = sw.getServer().getPlayerManager().getPlayer(playerId);
+            ServerPlayer p = sw.getServer().getPlayerList().getPlayer(playerId);
             if (p == null) {
                 return;
             }
             User u = plugin.getUserManager().getUser(playerId);
             BlockState now = sw.getBlockState(pos);
-            if (!Registries.BLOCK.getId(now.getBlock()).equals(blockIdBefore)) {
+            if (!BuiltInRegistries.BLOCK.getKey(now.getBlock()).equals(blockIdBefore)) {
                 return;
             }
             if (delayedAfter) {
@@ -108,7 +107,7 @@ public final class FabricBlockInteractHandler {
 
     private static SkillSource<BlockXpSource> findSource(FabricAuraSkills plugin, BlockState state,
             BlockXpSource.BlockTriggers trigger) {
-        String path = Registries.BLOCK.getId(state.getBlock()).getPath();
+        String path = BuiltInRegistries.BLOCK.getKey(state.getBlock()).getPath();
         for (SkillSource<BlockXpSource> entry : plugin.getSkillManager().getSourcesOfType(BlockXpSource.class)) {
             BlockXpSource source = entry.source();
             if (!List.of(source.getTriggers()).contains(trigger)) {
@@ -142,14 +141,14 @@ public final class FabricBlockInteractHandler {
         if (stack.isEmpty()) {
             return false;
         }
-        String path = Registries.BLOCK.getId(state.getBlock()).getPath();
+        String path = BuiltInRegistries.BLOCK.getKey(state.getBlock()).getPath();
 
-        boolean collectWithShears = stack.isOf(Items.SHEARS)
+        boolean collectWithShears = stack.is(Items.SHEARS)
                 && (path.equals("beehive") || path.equals("bee_nest"));
-        boolean collectWithBottles = stack.isOf(Items.GLASS_BOTTLE)
+        boolean collectWithBottles = stack.is(Items.GLASS_BOTTLE)
                 && (path.equals("beehive") || path.equals("bee_nest")
                 || path.equals("cauldron") || path.equals("water_cauldron"));
-        boolean collectWithBuckets = stack.isOf(Items.BUCKET)
+        boolean collectWithBuckets = stack.is(Items.BUCKET)
                 && (path.equals("cauldron") || path.equals("water_cauldron")
                 || path.equals("lava_cauldron") || path.equals("powder_snow_cauldron"));
 
@@ -158,20 +157,20 @@ public final class FabricBlockInteractHandler {
         }
 
         if (state.getBlock() instanceof BeehiveBlock) {
-            int honey = state.get(BeehiveBlock.HONEY_LEVEL);
+            int honey = state.getValue(BeehiveBlock.HONEY_LEVEL);
             return honey >= 5;
         }
 
-        if (state.getBlock() instanceof LeveledCauldronBlock) {
-            int level = state.get(LeveledCauldronBlock.LEVEL);
-            int maxLevel = LeveledCauldronBlock.MAX_LEVEL;
-            if (stack.isOf(Items.GLASS_BOTTLE)) {
+        if (state.getBlock() instanceof LayeredCauldronBlock) {
+            int level = state.getValue(LayeredCauldronBlock.LEVEL);
+            int maxLevel = LayeredCauldronBlock.MAX_FILL_LEVEL;
+            if (stack.is(Items.GLASS_BOTTLE)) {
                 if (level == 0) {
                     return false;
                 }
                 return true;
             }
-            if (stack.isOf(Items.BUCKET)) {
+            if (stack.is(Items.BUCKET)) {
                 return level >= maxLevel;
             }
         }

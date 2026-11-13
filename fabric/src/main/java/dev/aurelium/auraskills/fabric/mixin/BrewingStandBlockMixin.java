@@ -1,15 +1,15 @@
 package dev.aurelium.auraskills.fabric.mixin;
 
 import dev.aurelium.auraskills.fabric.FabricBrewingOwnerTracker;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.BrewingStandBlock;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BrewingStandBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -21,17 +21,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(BrewingStandBlock.class)
 public abstract class BrewingStandBlockMixin {
 
-    @Inject(method = "onUse", at = @At("HEAD"))
+    @Inject(method = "useWithoutItem", at = @At("HEAD"))
     private void auraskills$claimBrewingOwner(
             BlockState state,
-            World world,
+            Level world,
             BlockPos pos,
-            PlayerEntity player,
+            Player player,
             BlockHitResult hit,
-            CallbackInfoReturnable<ActionResult> cir) {
-        if (world.isClient() || !(world instanceof ServerWorld sw) || !(player instanceof ServerPlayerEntity sp)) {
+            CallbackInfoReturnable<InteractionResult> cir) {
+        if (world.isClientSide() || !(world instanceof ServerLevel sw) || !(player instanceof ServerPlayer sp)) {
             return;
         }
-        FabricBrewingOwnerTracker.claimIfAbsent(sw, pos, sp.getUuid());
+        FabricBrewingOwnerTracker.claimIfAbsent(sw, pos, sp.getUUID());
     }
 }

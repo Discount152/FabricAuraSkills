@@ -10,14 +10,13 @@ import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.FabricDamageCauseMapper;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.registry.tag.ItemTags;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.decoration.ArmorStand;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
@@ -28,8 +27,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Fabric port of Bukkit {@link dev.aurelium.auraskills.bukkit.skills.fighting.FightingAbilities#bleedListener} and
- * {@code scheduleBleedTicks}. Proc requires {@link DamageSource#getSource()} to be the attacking player (melee sword),
- * matching {@code EntityDamageByEntityEvent} with a player damager. Tick damage uses {@link ServerWorld#getDamageSources()
+ * {@code scheduleBleedTicks}. Proc requires {@link DamageSource#getDirectEntity()} to be the attacking player (melee sword),
+ * matching {@code EntityDamageByEntityEvent} with a player damager. Tick damage uses {@link ServerLevel#damageSources()
  * #generic()} so bleed DoT does not re-trigger this listener.
  */
 public final class FabricBleedListener {
@@ -75,26 +74,26 @@ public final class FabricBleedListener {
 
     private static void onAfterDamage(FabricAuraSkills plugin, LivingEntity entity, DamageSource source,
             float damageTaken, boolean blocked) {
-        if (!(entity.getEntityWorld() instanceof ServerWorld world) || world.isClient()) {
+        if (!(entity.level() instanceof ServerLevel world) || world.isClientSide()) {
             return;
         }
-        if (entity instanceof ArmorStandEntity || blocked || damageTaken <= 0f || !entity.isAlive()) {
+        if (entity instanceof ArmorStand || blocked || damageTaken <= 0f || !entity.isAlive()) {
             return;
         }
-        if (!(source.getSource() instanceof ServerPlayerEntity attacker)) {
+        if (!(source.getDirectEntity() instanceof ServerPlayer attacker)) {
             return;
         }
         if (FabricDamageCauseMapper.toApiCause(source) == DamageCause.THORNS) {
             return;
         }
-        if (!attacker.getMainHandStack().isIn(ItemTags.SWORDS)) {
+        if (!attacker.getMainHandItem().is(ItemTags.SWORDS)) {
             return;
         }
         FabricFightingAbilities impl = plugin.getAbilityManager().getAbilityImpl(FabricFightingAbilities.class);
         if (impl.isBleedDisabledOrFails(attacker)) {
             return;
         }
-        User user = plugin.getUserManager().getUser(attacker.getUuid());
+        User user = plugin.getUserManager().getUser(attacker.getUUID());
         if (!impl.rollBleed(user)) {
             return;
         }
@@ -103,7 +102,7 @@ public final class FabricBleedListener {
 
     private static void applyOrStackBleed(FabricAuraSkills plugin, LivingEntity victim,
             User attackerUser, Ability ability) {
-        UUID id = victim.getUuid();
+        UUID id = victim.getUUID();
         if (!BLEED_TICKS.containsKey(id)) {
             int baseTicks = ability.optionInt("base_ticks", 3);
             BLEED_TICKS.put(id, baseTicks);
@@ -112,9 +111,9 @@ public final class FabricBleedListener {
                 plugin.getAbilityManager().sendAbilityMessage(attackerUser,
                         plugin.getMsg(AbilityMessage.BLEED_ENEMY_BLEEDING, locale));
             }
-            if (victim instanceof ServerPlayerEntity victimPlayer) {
+            if (victim instanceof ServerPlayer victimPlayer) {
                 if (ability.optionBoolean("enable_self_message", true)) {
-                    User victimUser = plugin.getUserManager().getUser(victimPlayer.getUuid());
+                    User victimUser = plugin.getUserManager().getUser(victimPlayer.getUUID());
                     Locale locale = victimUser.getLocale();
                     plugin.getAbilityManager().sendAbilityMessage(victimUser,
                             plugin.getMsg(AbilityMessage.BLEED_SELF_BLEEDING, locale));
@@ -134,7 +133,7 @@ public final class FabricBleedListener {
 
     private static void startBleedTickerIfNeeded(FabricAuraSkills plugin, LivingEntity entity, User attackerUser,
             Ability ability) {
-        UUID id = entity.getUuid();
+        UUID id = entity.getUUID();
         if (BLEED_TASKS.containsKey(id)) {
             return;
         }
@@ -158,15 +157,15 @@ public final class FabricBleedListener {
                     cancelBleedFully(plugin, id, entity, ability, true);
                     return;
                 }
-                if (!(entity.getEntityWorld() instanceof ServerWorld sw)) {
+                if (!(entity.level() instanceof ServerLevel sw)) {
                     cancelBleedFully(plugin, id, entity, ability, false);
                     return;
                 }
                 double damage = ability.getSecondaryValue(attackerUser.getAbilityLevel(ability));
                 float healthBefore = entity.getHealth();
-                DamageSource dot = sw.getDamageSources().generic();
-                runWithBleedAttribution(attackerUser, () -> entity.damage(sw, dot, (float) damage));
-                entity.timeUntilRegen = 0;
+                DamageSource dot = sw.damageSources().generic();
+                runWithBleedAttribution(attackerUser, () -> entity.hurtServer(sw, dot, (float) damage));
+                entity.setInvulnerableTime(0);
                 float healthAfter = entity.getHealth();
                 if (healthAfter != healthBefore) {
                     spawnBleedParticles(entity, ability, sw);
@@ -189,9 +188,9 @@ public final class FabricBleedListener {
             t.cancel();
         }
         BLEED_TICKS.remove(id);
-        if (sendStopToVictimPlayer && entity instanceof ServerPlayerEntity victimPlayer) {
+        if (sendStopToVictimPlayer && entity instanceof ServerPlayer victimPlayer) {
             if (ability.optionBoolean("enable_stop_message", true)) {
-                User victimUser = plugin.getUserManager().getUser(victimPlayer.getUuid());
+                User victimUser = plugin.getUserManager().getUser(victimPlayer.getUUID());
                 Locale locale = victimUser.getLocale();
                 plugin.getAbilityManager().sendAbilityMessage(victimUser,
                         plugin.getMsg(AbilityMessage.BLEED_STOP, locale));
@@ -199,13 +198,13 @@ public final class FabricBleedListener {
         }
     }
 
-    private static void spawnBleedParticles(LivingEntity entity, Ability ability, ServerWorld world) {
+    private static void spawnBleedParticles(LivingEntity entity, Ability ability, ServerLevel world) {
         if (!ability.optionBoolean("show_particles", true)) {
             return;
         }
         double x = entity.getX();
-        double y = entity.getY() + entity.getHeight() * 0.6;
+        double y = entity.getY() + entity.getBbHeight() * 0.6;
         double z = entity.getZ();
-        world.spawnParticles(ParticleTypes.DAMAGE_INDICATOR, x, y, z, 30, 0.25, 0.5, 0.25, 0.12);
+        world.sendParticles(ParticleTypes.DAMAGE_INDICATOR, x, y, z, 30, 0.25, 0.5, 0.25, 0.12);
     }
 }

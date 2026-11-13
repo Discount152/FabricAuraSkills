@@ -6,11 +6,10 @@ import dev.aurelium.auraskills.common.scheduler.TaskRunnable;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.FabricUser;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
-
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -29,9 +28,9 @@ public final class FabricItemModifierSchedules {
             @Override
             public void run() {
                 MinecraftServer server = plugin.getServer();
-                for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
-                    User user = plugin.getUserManager().getUser(player.getUuid());
-                    ItemStack main = player.getMainHandStack();
+                for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+                    User user = plugin.getUserManager().getUser(player.getUUID());
+                    ItemStack main = player.getMainHandItem();
                     stateManager.changeItemInSlot(user, player, main, EquipmentSlot.MAINHAND);
                 }
             }
@@ -42,9 +41,9 @@ public final class FabricItemModifierSchedules {
                 @Override
                 public void run() {
                     MinecraftServer server = plugin.getServer();
-                    for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
-                        User user = plugin.getUserManager().getUser(player.getUuid());
-                        ItemStack off = player.getOffHandStack();
+                    for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+                        User user = plugin.getUserManager().getUser(player.getUUID());
+                        ItemStack off = player.getOffhandItem();
                         stateManager.changeItemInSlot(user, player, off, EquipmentSlot.OFFHAND);
                     }
                 }
@@ -57,14 +56,14 @@ public final class FabricItemModifierSchedules {
                 @Override
                 public void run() {
                     MinecraftServer server = plugin.getServer();
-                    for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
-                        User user = plugin.getUserManager().getUser(player.getUuid());
+                    for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+                        User user = plugin.getUserManager().getUser(player.getUUID());
                         Set<ReloadableIdentifier> toReload = new HashSet<>();
                         for (EquipmentSlot slot : FabricUserEquipment.TRACKED) {
                             if (slot == EquipmentSlot.MAINHAND || slot == EquipmentSlot.OFFHAND) {
                                 continue;
                             }
-                            ItemStack wearing = player.getEquippedStack(slot);
+                            ItemStack wearing = player.getItemBySlot(slot);
                             toReload.addAll(stateManager.changeItemInSlot(user, player, wearing, slot, false, false, false));
                         }
                         stateManager.reloadIdentifiers(user, toReload);

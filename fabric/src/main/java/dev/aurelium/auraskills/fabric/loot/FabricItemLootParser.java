@@ -8,7 +8,7 @@ import dev.aurelium.auraskills.api.loot.LootRequirements;
 import dev.aurelium.auraskills.common.api.implementation.ApiConfigNode;
 import dev.aurelium.auraskills.common.loot.ItemSupplier;
 import dev.aurelium.auraskills.fabric.item.FabricConfigurateItemParser;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import org.spongepowered.configurate.ConfigurationNode;
 
 public final class FabricItemLootParser implements LootParser {

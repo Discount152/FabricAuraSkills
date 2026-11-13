@@ -58,5 +58,5 @@ This document tracks Paper/plugin behavior that is intentionally **not** impleme
   **`./gradlew -PfabricOnly=true :fabric:compileJava`** or **`./gradlew -PfabricOnly=true :fabric:build`**.  
   `run-fabric-compile.cmd` passes `-PfabricOnly=true` and sets `GRADLE_USER_HOME` to `D:\gradle` when you use that layout.
 - **Full multiplatform** (default `settings.gradle.kts`): **`./gradlew :fabric:build`** — includes `bukkit` and `api-bukkit`.
-- The `fabric` module uses Fabric Loom **1.13.x** for Minecraft **1.21.11** with **Yarn 1.21.11+build.4**.
+- The `fabric` module uses Fabric Loom **1.20.0-alpha.31** for Minecraft **26.3** (unobfuscated Mojang names, Java 25). Set `fabric.loom.disableObfuscation=true`.
 - If Gradle fails with **`ExternalDependencyInstrumentingArtifactTransform`** / **`Failed to create Jar file ... instrumented-`**, run **`fix-gradle-transforms-cache.cmd`** from the repo root (or delete `%USERPROFILE%\.gradle\caches\8.14.2\transforms` yourself), then rebuild.

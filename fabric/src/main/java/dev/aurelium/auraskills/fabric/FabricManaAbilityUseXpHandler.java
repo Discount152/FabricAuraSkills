@@ -6,7 +6,7 @@ import dev.aurelium.auraskills.api.source.SkillSource;
 import dev.aurelium.auraskills.api.source.type.ManaAbilityUseXpSource;
 import dev.aurelium.auraskills.common.source.SourceTypes;
 import dev.aurelium.auraskills.common.user.User;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -23,7 +23,7 @@ public final class FabricManaAbilityUseXpHandler {
     /**
      * @param manaUsed mana amount consumed for this activation (Paper uses {@code event.getManaUsed()})
      */
-    public static void onManaAbilityActivated(ServerPlayerEntity player, ManaAbility manaAbility, double manaUsed) {
+    public static void onManaAbilityActivated(ServerPlayer player, ManaAbility manaAbility, double manaUsed) {
         FabricAuraSkills plugin = FabricAuraSkills.getInstance();
         if (plugin == null || manaUsed <= 0) {
             return;
@@ -37,7 +37,7 @@ public final class FabricManaAbilityUseXpHandler {
         if (FabricXpHandlerUtil.shouldBlockXp(plugin, player, skill, SourceTypes.MANA_ABILITY_USE)) {
             return;
         }
-        User user = plugin.getUserManager().getUser(player.getUuid());
+        User user = plugin.getUserManager().getUser(player.getUUID());
         plugin.getLevelManager().addXp(user, skill, source, source.getXp() * manaUsed);
     }
 

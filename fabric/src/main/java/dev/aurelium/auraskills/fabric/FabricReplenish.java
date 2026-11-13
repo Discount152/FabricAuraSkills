@@ -12,47 +12,47 @@ import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.block.AbstractSignBlock;
-import net.minecraft.block.AnvilBlock;
-import net.minecraft.block.BarrelBlock;
-import net.minecraft.block.BeaconBlock;
-import net.minecraft.block.BedBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ButtonBlock;
-import net.minecraft.block.CartographyTableBlock;
-import net.minecraft.block.ChestBlock;
-import net.minecraft.block.CraftingTableBlock;
-import net.minecraft.block.CropBlock;
-import net.minecraft.block.DoorBlock;
-import net.minecraft.block.EnchantingTableBlock;
-import net.minecraft.block.EnderChestBlock;
-import net.minecraft.block.FenceGateBlock;
-import net.minecraft.block.GrindstoneBlock;
-import net.minecraft.block.LeverBlock;
-import net.minecraft.block.LoomBlock;
-import net.minecraft.block.NetherWartBlock;
-import net.minecraft.block.NoteBlock;
-import net.minecraft.block.ShulkerBoxBlock;
-import net.minecraft.block.SmithingTableBlock;
-import net.minecraft.block.StonecutterBlock;
-import net.minecraft.block.TrapdoorBlock;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.LootableContainerBlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.registry.tag.ItemTags;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.AnvilBlock;
+import net.minecraft.world.level.block.BarrelBlock;
+import net.minecraft.world.level.block.BeaconBlock;
+import net.minecraft.world.level.block.BedBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.ButtonBlock;
+import net.minecraft.world.level.block.CartographyTableBlock;
+import net.minecraft.world.level.block.ChestBlock;
+import net.minecraft.world.level.block.CraftingTableBlock;
+import net.minecraft.world.level.block.CropBlock;
+import net.minecraft.world.level.block.DoorBlock;
+import net.minecraft.world.level.block.EnchantingTableBlock;
+import net.minecraft.world.level.block.EnderChestBlock;
+import net.minecraft.world.level.block.FenceGateBlock;
+import net.minecraft.world.level.block.GrindstoneBlock;
+import net.minecraft.world.level.block.LeverBlock;
+import net.minecraft.world.level.block.LoomBlock;
+import net.minecraft.world.level.block.NetherWartBlock;
+import net.minecraft.world.level.block.NoteBlock;
+import net.minecraft.world.level.block.ShulkerBoxBlock;
+import net.minecraft.world.level.block.SignBlock;
+import net.minecraft.world.level.block.SmithingTableBlock;
+import net.minecraft.world.level.block.StonecutterBlock;
+import net.minecraft.world.level.block.TrapDoorBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
@@ -78,20 +78,20 @@ public final class FabricReplenish {
         registerReadyListeners(plugin);
         registerBreakHandlers(plugin);
         ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
-            PENDING_MATURE_REPLANT.remove(handler.player.getUuid());
+            PENDING_MATURE_REPLANT.remove(handler.player.getUUID());
             stopIfActive(plugin, handler.player);
         });
     }
 
     private static void registerBreakHandlers(FabricAuraSkills plugin) {
         PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) -> {
-            if (world.isClient() || !(player instanceof ServerPlayerEntity sp)) {
+            if (world.isClientSide() || !(player instanceof ServerPlayer sp)) {
                 return true;
             }
             if (!isReplenishCrop(state)) {
                 return true;
             }
-            User user = plugin.getUserManager().getUser(sp.getUuid());
+            User user = plugin.getUserManager().getUser(sp.getUUID());
             if (failsReplenishContext(plugin, sp, user)) {
                 return true;
             }
@@ -111,7 +111,7 @@ public final class FabricReplenish {
             }
 
             if (isFullyGrown(state)) {
-                PENDING_MATURE_REPLANT.add(sp.getUuid());
+                PENDING_MATURE_REPLANT.add(sp.getUUID());
                 return true;
             }
             if (MANA.optionBoolean("prevent_unripe_break", true)) {
@@ -121,11 +121,11 @@ public final class FabricReplenish {
         });
 
         PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, blockEntity) -> {
-            if (world.isClient() || !(player instanceof ServerPlayerEntity sp) || !(world instanceof ServerWorld)) {
+            if (world.isClientSide() || !(player instanceof ServerPlayer sp) || !(world instanceof ServerLevel)) {
                 return;
             }
-            ServerWorld sw = (ServerWorld) world;
-            if (!PENDING_MATURE_REPLANT.remove(sp.getUuid())) {
+            ServerLevel sw = (ServerLevel) world;
+            if (!PENDING_MATURE_REPLANT.remove(sp.getUUID())) {
                 return;
             }
             if (!isReplenishCrop(state) || !isFullyGrown(state)) {
@@ -134,65 +134,65 @@ public final class FabricReplenish {
             Block cropBlock = state.getBlock();
             int delayTicks = MANA.optionInt("replant_delay", 4);
             long delayMs = delayTicks * 50L;
-            plugin.getScheduler().scheduleSync(() -> replantAt(sw, pos.toImmutable(), cropBlock), delayMs, TimeUnit.MILLISECONDS);
+            plugin.getScheduler().scheduleSync(() -> replantAt(sw, pos.immutable(), cropBlock), delayMs, TimeUnit.MILLISECONDS);
         });
     }
 
-    private static void replantAt(ServerWorld world, BlockPos pos, Block cropBlock) {
+    private static void replantAt(ServerLevel world, BlockPos pos, Block cropBlock) {
         if (!world.getBlockState(pos).isAir()) {
             return;
         }
-        BlockState below = world.getBlockState(pos.down());
+        BlockState below = world.getBlockState(pos.below());
         BlockState toPlace;
-        if (cropBlock == net.minecraft.block.Blocks.NETHER_WART) {
-            if (!below.isOf(net.minecraft.block.Blocks.SOUL_SAND)) {
+        if (cropBlock == net.minecraft.world.level.block.Blocks.NETHER_WART) {
+            if (!below.is(net.minecraft.world.level.block.Blocks.SOUL_SAND)) {
                 return;
             }
-            toPlace = net.minecraft.block.Blocks.NETHER_WART.getDefaultState();
+            toPlace = net.minecraft.world.level.block.Blocks.NETHER_WART.defaultBlockState();
         } else {
-            if (!below.isOf(net.minecraft.block.Blocks.FARMLAND)) {
+            if (!below.is(net.minecraft.world.level.block.Blocks.FARMLAND)) {
                 return;
             }
             if (cropBlock instanceof CropBlock crop) {
-                toPlace = crop.getDefaultState();
+                toPlace = crop.defaultBlockState();
             } else {
-                toPlace = cropBlock.getDefaultState();
+                toPlace = cropBlock.defaultBlockState();
             }
         }
-        world.setBlockState(pos, toPlace, Block.NOTIFY_ALL);
+        world.setBlock(pos, toPlace, Block.UPDATE_ALL);
         if (MANA.optionBoolean("show_particles", true)) {
             double x = pos.getX() + 0.5;
             double y = pos.getY() + 0.2;
             double z = pos.getZ() + 0.5;
-            world.spawnParticles(ParticleTypes.HAPPY_VILLAGER, x, y, z, 8, 0.25, 0.0, 0.25, 0.02);
+            world.sendParticles(ParticleTypes.HAPPY_VILLAGER, x, y, z, 8, 0.25, 0.0, 0.25, 0.02);
         }
     }
 
     private static void registerReadyListeners(FabricAuraSkills plugin) {
-        UseBlockCallback.EVENT.register((PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) -> {
-            if (world.isClient() || !(player instanceof ServerPlayerEntity sp) || !(world instanceof ServerWorld sw)) {
-                return ActionResult.PASS;
+        UseBlockCallback.EVENT.register((Player player, Level world, InteractionHand hand, BlockHitResult hitResult) -> {
+            if (world.isClientSide() || !(player instanceof ServerPlayer sp) || !(world instanceof ServerLevel sw)) {
+                return InteractionResult.PASS;
             }
-            if (hand != Hand.MAIN_HAND) {
-                return ActionResult.PASS;
+            if (hand != InteractionHand.MAIN_HAND) {
+                return InteractionResult.PASS;
             }
             tryReadyOnInteract(plugin, sp, sw, hitResult.getBlockPos(), sw.getBlockState(hitResult.getBlockPos()));
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         });
 
-        UseItemCallback.EVENT.register((PlayerEntity player, World world, Hand hand) -> {
-            if (world.isClient() || !(player instanceof ServerPlayerEntity sp)) {
-                return ActionResult.PASS;
+        UseItemCallback.EVENT.register((Player player, Level world, InteractionHand hand) -> {
+            if (world.isClientSide() || !(player instanceof ServerPlayer sp)) {
+                return InteractionResult.PASS;
             }
-            if (hand != Hand.MAIN_HAND) {
-                return ActionResult.PASS;
+            if (hand != InteractionHand.MAIN_HAND) {
+                return InteractionResult.PASS;
             }
             tryReadyOnInteract(plugin, sp, null, null, null);
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         });
     }
 
-    private static void tryReadyOnInteract(FabricAuraSkills plugin, ServerPlayerEntity player, @Nullable ServerWorld world,
+    private static void tryReadyOnInteract(FabricAuraSkills plugin, ServerPlayer player, @Nullable ServerLevel world,
             @Nullable BlockPos pos, @Nullable BlockState stateAtPos) {
         if (isDisabled(plugin)) {
             return;
@@ -200,7 +200,7 @@ public final class FabricReplenish {
         if (!holdingHoe(player)) {
             return;
         }
-        User user = plugin.getUserManager().getUser(player.getUuid());
+        User user = plugin.getUserManager().getUser(player.getUUID());
         if (failsReplenishContext(plugin, player, user)) {
             return;
         }
@@ -238,13 +238,13 @@ public final class FabricReplenish {
         }
     }
 
-    private static void scheduleUnready(FabricAuraSkills plugin, ServerPlayerEntity player, Locale locale, ManaAbilityData data) {
+    private static void scheduleUnready(FabricAuraSkills plugin, ServerPlayer player, Locale locale, ManaAbilityData data) {
         int readyDurationTicks = 80;
         plugin.getScheduler().scheduleSync(() -> {
-            if (!plugin.getUserManager().hasUser(player.getUuid())) {
+            if (!plugin.getUserManager().hasUser(player.getUUID())) {
                 return;
             }
-            User user = plugin.getUserManager().getUser(player.getUuid());
+            User user = plugin.getUserManager().getUser(player.getUUID());
             ManaAbilityData d = user.getManaAbilityData(MANA);
             if (!d.isActivated() && d.isReady()) {
                 d.setReady(false);
@@ -253,8 +253,8 @@ public final class FabricReplenish {
         }, readyDurationTicks * 50L, TimeUnit.MILLISECONDS);
     }
 
-    private static boolean isAllowReady(FabricAuraSkills plugin, ServerPlayerEntity player, @Nullable ServerWorld world, @Nullable BlockPos pos) {
-        if (MANA.optionBoolean("require_sneak", false) && !player.isSneaking()) {
+    private static boolean isAllowReady(FabricAuraSkills plugin, ServerPlayer player, @Nullable ServerLevel world, @Nullable BlockPos pos) {
+        if (MANA.optionBoolean("require_sneak", false) && !player.isShiftKeyDown()) {
             return false;
         }
         if (world != null && pos != null) {
@@ -266,25 +266,25 @@ public final class FabricReplenish {
         if (plugin.getWorldManager().isDisabledWorld(w)) {
             return false;
         }
-        User user = plugin.getUserManager().getUser(player.getUuid());
+        User user = plugin.getUserManager().getUser(player.getUUID());
         return user.hasSkillPermission(MANA.getSkill());
     }
 
-    private static boolean isBlockPlace(ServerPlayerEntity player, ServerWorld world, BlockPos pos) {
+    private static boolean isBlockPlace(ServerPlayer player, ServerLevel world, BlockPos pos) {
         if (!MANA.optionBoolean("check_offhand", true)) {
             return false;
         }
-        ItemStack off = player.getOffHandStack();
+        ItemStack off = player.getOffhandItem();
         if (off.isEmpty()) {
             return false;
         }
-        if (player.isSneaking() && MANA.optionBoolean("sneak_offhand_bypass", true)) {
+        if (player.isShiftKeyDown() && MANA.optionBoolean("sneak_offhand_bypass", true)) {
             return false;
         }
         return off.getItem() instanceof BlockItem;
     }
 
-    private static boolean checkActivation(FabricAuraSkills plugin, ServerPlayerEntity player, User user) {
+    private static boolean checkActivation(FabricAuraSkills plugin, ServerPlayer player, User user) {
         ManaAbilityData data = user.getManaAbilityData(MANA);
         if (!data.isReady() || data.isActivated()) {
             return false;
@@ -296,9 +296,9 @@ public final class FabricReplenish {
         }
 
         data.setActivated(true);
-        if (player.getEntityWorld() instanceof ServerWorld soundWorld) {
+        if (player.level() instanceof ServerLevel soundWorld) {
             soundWorld.playSound(null, player.getX(), player.getY(), player.getZ(),
-                    SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0f, 1.0f);
+                    SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 1.0f, 1.0f);
         }
         double manaUsed = consumeMana(plugin, player, user, manaCost);
         FabricManaAbilityUseXpHandler.onManaAbilityActivated(player, MANA, manaUsed);
@@ -311,11 +311,11 @@ public final class FabricReplenish {
         return true;
     }
 
-    private static void stop(FabricAuraSkills plugin, ServerPlayerEntity player) {
-        if (!plugin.getUserManager().hasUser(player.getUuid())) {
+    private static void stop(FabricAuraSkills plugin, ServerPlayer player) {
+        if (!plugin.getUserManager().hasUser(player.getUUID())) {
             return;
         }
-        User user = plugin.getUserManager().getUser(player.getUuid());
+        User user = plugin.getUserManager().getUser(player.getUUID());
         ManaAbilityData data = user.getManaAbilityData(MANA);
         if (!data.isActivated()) {
             return;
@@ -326,17 +326,17 @@ public final class FabricReplenish {
         user.sendMessage(plugin.getMsg(ManaAbilityMessage.REPLENISH_END, user.getLocale()));
     }
 
-    private static void stopIfActive(FabricAuraSkills plugin, ServerPlayerEntity player) {
-        if (!plugin.getUserManager().hasUser(player.getUuid())) {
+    private static void stopIfActive(FabricAuraSkills plugin, ServerPlayer player) {
+        if (!plugin.getUserManager().hasUser(player.getUUID())) {
             return;
         }
-        ManaAbilityData data = plugin.getUserManager().getUser(player.getUuid()).getManaAbilityData(MANA);
+        ManaAbilityData data = plugin.getUserManager().getUser(player.getUUID()).getManaAbilityData(MANA);
         if (data.isActivated()) {
             stop(plugin, player);
         }
     }
 
-    private static double consumeMana(FabricAuraSkills plugin, ServerPlayerEntity player, User user, double manaCost) {
+    private static double consumeMana(FabricAuraSkills plugin, ServerPlayer player, User user, double manaCost) {
         double manaConsumed;
         if (plugin.configBoolean(Option.MANA_ENABLED)) {
             manaConsumed = manaCost;
@@ -358,8 +358,8 @@ public final class FabricReplenish {
         return true;
     }
 
-    private static boolean failsReplenishContext(FabricAuraSkills plugin, ServerPlayerEntity player, User user) {
-        if (plugin.configBoolean(Option.DISABLE_IN_CREATIVE_MODE) && player.getAbilities().creativeMode) {
+    private static boolean failsReplenishContext(FabricAuraSkills plugin, ServerPlayer player, User user) {
+        if (plugin.configBoolean(Option.DISABLE_IN_CREATIVE_MODE) && player.getAbilities().instabuild) {
             return true;
         }
         if (!user.hasSkillPermission(MANA.getSkill())) {
@@ -373,47 +373,47 @@ public final class FabricReplenish {
         return !MANA.isEnabled() || !MANA.getSkill().isEnabled();
     }
 
-    private static boolean holdingHoe(ServerPlayerEntity player) {
-        return player.getMainHandStack().isIn(ItemTags.HOES);
+    private static boolean holdingHoe(ServerPlayer player) {
+        return player.getMainHandItem().is(ItemTags.HOES);
     }
 
     private static boolean isReplenishCrop(BlockState state) {
         Block b = state.getBlock();
-        return b == net.minecraft.block.Blocks.WHEAT
-                || b == net.minecraft.block.Blocks.CARROTS
-                || b == net.minecraft.block.Blocks.POTATOES
-                || b == net.minecraft.block.Blocks.BEETROOTS
-                || b == net.minecraft.block.Blocks.NETHER_WART;
+        return b == net.minecraft.world.level.block.Blocks.WHEAT
+                || b == net.minecraft.world.level.block.Blocks.CARROTS
+                || b == net.minecraft.world.level.block.Blocks.POTATOES
+                || b == net.minecraft.world.level.block.Blocks.BEETROOTS
+                || b == net.minecraft.world.level.block.Blocks.NETHER_WART;
     }
 
     private static boolean isFullyGrown(BlockState state) {
         Block b = state.getBlock();
         if (b instanceof CropBlock crop) {
-            return crop.isMature(state);
+            return crop.isMaxAge(state);
         }
         if (b instanceof NetherWartBlock) {
-            int age = state.get(NetherWartBlock.AGE);
+            int age = state.getValue(NetherWartBlock.AGE);
             return age >= NetherWartBlock.MAX_AGE;
         }
         return false;
     }
 
     private static boolean isExcludedDirtFarmland(BlockState state) {
-        return state.isOf(net.minecraft.block.Blocks.DIRT)
-                || state.isOf(net.minecraft.block.Blocks.GRASS_BLOCK)
-                || state.isOf(net.minecraft.block.Blocks.COARSE_DIRT)
-                || state.isOf(net.minecraft.block.Blocks.DIRT_PATH)
-                || state.isOf(net.minecraft.block.Blocks.FARMLAND);
+        return state.is(net.minecraft.world.level.block.Blocks.DIRT)
+                || state.is(net.minecraft.world.level.block.Blocks.GRASS_BLOCK)
+                || state.is(net.minecraft.world.level.block.Blocks.COARSE_DIRT)
+                || state.is(net.minecraft.world.level.block.Blocks.DIRT_PATH)
+                || state.is(net.minecraft.world.level.block.Blocks.FARMLAND);
     }
 
-    static boolean blocksReadiedActivate(BlockState state, ServerWorld world, BlockPos pos) {
+    static boolean blocksReadiedActivate(BlockState state, ServerLevel world, BlockPos pos) {
         Block block = state.getBlock();
         if (block instanceof ButtonBlock
                 || block instanceof LeverBlock
                 || block instanceof BedBlock
-                || block instanceof AbstractSignBlock
+                || block instanceof SignBlock
                 || block instanceof FenceGateBlock
-                || block instanceof TrapdoorBlock
+                || block instanceof TrapDoorBlock
                 || block instanceof DoorBlock
                 || block instanceof NoteBlock
                 || block instanceof CraftingTableBlock
@@ -432,6 +432,6 @@ public final class FabricReplenish {
             return true;
         }
         BlockEntity be = world.getBlockEntity(pos);
-        return be instanceof LootableContainerBlockEntity;
+        return be instanceof RandomizableContainerBlockEntity;
     }
 }

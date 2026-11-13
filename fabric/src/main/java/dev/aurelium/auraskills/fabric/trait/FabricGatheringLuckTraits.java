@@ -13,10 +13,10 @@ import dev.aurelium.auraskills.common.source.SourceTag;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.ability.FabricAbilityContext;
-import net.minecraft.server.network.ServerPlayerEntity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
+import net.minecraft.server.level.ServerPlayer;
 
 /**
  * Ports Bukkit {@link dev.aurelium.auraskills.bukkit.trait.GatheringLuckTraits} reload wiring so luck traits gain
@@ -34,7 +34,7 @@ public final class FabricGatheringLuckTraits extends FabricTraitImpl {
     }
 
     @Override
-    public double getBaseLevel(ServerPlayerEntity player, Trait trait) {
+    public double getBaseLevel(ServerPlayer player, Trait trait) {
         return 0;
     }
 
@@ -44,8 +44,8 @@ public final class FabricGatheringLuckTraits extends FabricTraitImpl {
     }
 
     @Override
-    protected void reload(ServerPlayerEntity player, Trait trait) {
-        User user = plugin.getUserManager().getUser(player.getUuid());
+    protected void reload(ServerPlayer player, Trait trait) {
+        User user = plugin.getUserManager().getUser(player.getUUID());
         Ability ability = abilityForTrait(trait);
         if (ability == null) {
             return;

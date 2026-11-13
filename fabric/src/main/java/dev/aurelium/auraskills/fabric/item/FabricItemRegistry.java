@@ -10,11 +10,6 @@ import dev.aurelium.auraskills.common.util.file.FileUtil;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.FabricSourceMenuItems;
 import dev.aurelium.auraskills.fabric.FabricUser;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.BasicConfigurationNode;
 import org.spongepowered.configurate.ConfigurationNode;
@@ -26,6 +21,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 
 public final class FabricItemRegistry implements ItemRegistry {
 
@@ -155,7 +155,7 @@ public final class FabricItemRegistry implements ItemRegistry {
 
     @Override
     public void giveItem(User user, NamespacedId key, int amount) {
-        ServerPlayerEntity player = FabricUser.getPlayer(user);
+        ServerPlayer player = FabricUser.getPlayer(user);
         if (player == null) {
             return;
         }
@@ -171,7 +171,7 @@ public final class FabricItemRegistry implements ItemRegistry {
             if (leftover != null && !leftover.isEmpty()) {
                 user.getUnclaimedItems().add(new KeyIntPair(key.toString(), leftover.getCount()));
                 String msg = plugin.getPrefix(user.getLocale()) + plugin.getMsg(LevelerMessage.UNCLAIMED_ITEM, user.getLocale());
-                player.sendMessage(Text.literal(msg), false);
+                player.sendSystemMessage(Component.literal(msg));
             }
         });
     }
@@ -191,11 +191,11 @@ public final class FabricItemRegistry implements ItemRegistry {
         if (item == null || item.isEmpty()) {
             return null;
         }
-        if (item.contains(DataComponentTypes.ITEM_NAME)) {
-            Text name = item.get(DataComponentTypes.ITEM_NAME);
+        if (item.has(DataComponents.ITEM_NAME)) {
+            Component name = item.get(DataComponents.ITEM_NAME);
             return name == null ? null : name.getString();
         }
-        return Registries.ITEM.getId(item.getItem()).getPath().toLowerCase(Locale.ROOT).replace('_', ' ');
+        return BuiltInRegistries.ITEM.getKey(item.getItem()).getPath().toLowerCase(Locale.ROOT).replace('_', ' ');
     }
 
     @Override

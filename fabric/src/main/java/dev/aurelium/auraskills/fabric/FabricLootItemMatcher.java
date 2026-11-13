@@ -10,17 +10,17 @@ import dev.aurelium.auraskills.api.skill.Skill;
 import dev.aurelium.auraskills.common.util.text.TextUtil;
 import dev.aurelium.auraskills.fabric.loot.FabricItemLoot;
 import dev.aurelium.auraskills.fabric.loot.FabricLootTemplateSupplier;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.CustomModelDataComponent;
-import net.minecraft.component.type.LoreComponent;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
-import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomModelData;
+import net.minecraft.world.item.component.ItemLore;
 
 final class FabricLootItemMatcher {
 
@@ -55,7 +55,7 @@ final class FabricLootItemMatcher {
                 if (template == null || template.isEmpty()) {
                     continue;
                 }
-                if (ItemStack.areItemsEqual(stack, template) || ItemStack.areEqual(stack, template)) {
+                if (ItemStack.isSameItem(stack, template) || ItemStack.matches(stack, template)) {
                     return true;
                 }
             }
@@ -69,7 +69,7 @@ final class FabricLootItemMatcher {
         if (stack.isEmpty()) {
             return false;
         }
-        String typeKey = Registries.ITEM.getId(stack.getItem()).getPath();
+        String typeKey = BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath();
         if (materials != null && !TextUtil.contains(materials, typeKey)) {
             return false;
         }
@@ -97,9 +97,9 @@ final class FabricLootItemMatcher {
             return false;
         }
         if (!filterMeta.ignoreCustomModelData()) {
-            var cmd = stack.get(DataComponentTypes.CUSTOM_MODEL_DATA);
+            var cmd = stack.get(DataComponents.CUSTOM_MODEL_DATA);
             if (filterMeta.hasCustomModelData()) {
-                if (cmd == null || cmd.equals(CustomModelDataComponent.DEFAULT)) {
+                if (cmd == null || cmd.equals(CustomModelData.EMPTY)) {
                     return false;
                 }
                 if (filterMeta.customModelData() != Integer.MIN_VALUE) {
@@ -109,13 +109,13 @@ final class FabricLootItemMatcher {
                     }
                 }
             } else {
-                if (cmd != null && !cmd.equals(CustomModelDataComponent.DEFAULT)) {
+                if (cmd != null && !cmd.equals(CustomModelData.EMPTY)) {
                     return false;
                 }
             }
         }
         if (filterMeta.displayName() != null) {
-            Text custom = stack.get(DataComponentTypes.CUSTOM_NAME);
+            Component custom = stack.get(DataComponents.CUSTOM_NAME);
             if (custom == null) {
                 return false;
             }
@@ -125,11 +125,11 @@ final class FabricLootItemMatcher {
         }
         List<String> filterLore = filterMeta.lore();
         if (filterLore != null && !filterLore.isEmpty()) {
-            LoreComponent lore = stack.get(DataComponentTypes.LORE);
+            ItemLore lore = stack.get(DataComponents.LORE);
             if (lore == null) {
                 return false;
             }
-            List<Text> lines = lore.lines();
+            List<Component> lines = lore.lines();
             if (lines.size() != filterLore.size()) {
                 return false;
             }

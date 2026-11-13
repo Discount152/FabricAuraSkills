@@ -2,11 +2,11 @@ package dev.aurelium.auraskills.fabric;
 
 import dev.aurelium.auraskills.api.source.type.BlockXpSource;
 import dev.aurelium.auraskills.common.config.Option;
-import net.minecraft.block.BlockState;
-import net.minecraft.registry.Registries;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * Mirrors Bukkit {@link dev.aurelium.auraskills.bukkit.source.BlockLevelerHelper#getBlocksBroken} for interact (and
@@ -20,9 +20,9 @@ public final class FabricBlockLevelerHelper {
     private FabricBlockLevelerHelper() {
     }
 
-    public static int getBlocksBroken(ServerWorld world, BlockPos pos, BlockXpSource source, FabricAuraSkills plugin) {
+    public static int getBlocksBroken(ServerLevel world, BlockPos pos, BlockXpSource source, FabricAuraSkills plugin) {
         BlockState state = world.getBlockState(pos);
-        String path = Registries.BLOCK.getId(state.getBlock()).getPath();
+        String path = BuiltInRegistries.BLOCK.getKey(state.getBlock()).getPath();
         boolean checkReplace = plugin.configBoolean(Option.CHECK_BLOCK_REPLACE_ENABLED);
 
         if ("sugar_cane".equals(path)) {
@@ -34,9 +34,9 @@ public final class FabricBlockLevelerHelper {
         return 1;
     }
 
-    private static int sugarCaneColumn(ServerWorld world, BlockPos pos, boolean checkReplace) {
+    private static int sugarCaneColumn(ServerLevel world, BlockPos pos, boolean checkReplace) {
         int num = 1;
-        BlockPos.Mutable m = pos.mutableCopy().move(Direction.UP);
+        BlockPos.MutableBlockPos m = pos.mutable().move(Direction.UP);
         if (!isSugarCane(world, m)) {
             return num;
         }
@@ -50,25 +50,25 @@ public final class FabricBlockLevelerHelper {
         return num;
     }
 
-    private static boolean isSugarCane(ServerWorld world, BlockPos pos) {
-        return "sugar_cane".equals(Registries.BLOCK.getId(world.getBlockState(pos).getBlock()).getPath());
+    private static boolean isSugarCane(ServerLevel world, BlockPos pos) {
+        return "sugar_cane".equals(BuiltInRegistries.BLOCK.getKey(world.getBlockState(pos).getBlock()).getPath());
     }
 
-    private static int tallPlantColumn(ServerWorld world, BlockPos pos, BlockXpSource source, boolean checkReplace) {
+    private static int tallPlantColumn(ServerLevel world, BlockPos pos, BlockXpSource source, boolean checkReplace) {
         int num = 1;
         if (checkReplace && isPlaced(world, pos)) {
-            BlockPos up = pos.up();
+            BlockPos up = pos.above();
             if (!blockMatchesSource(world, up, source) || isPlaced(world, up)) {
                 return 0;
             }
             num = 0;
         }
-        return num + countMatchingColumnAbove(world, pos.up(), source, checkReplace);
+        return num + countMatchingColumnAbove(world, pos.above(), source, checkReplace);
     }
 
-    private static int countMatchingColumnAbove(ServerWorld world, BlockPos start, BlockXpSource source,
+    private static int countMatchingColumnAbove(ServerLevel world, BlockPos start, BlockXpSource source,
             boolean checkReplace) {
-        BlockPos.Mutable m = start.mutableCopy();
+        BlockPos.MutableBlockPos m = start.mutable();
         int num = 0;
         for (int i = 0; i < MAX_TALL_SCAN; i++) {
             if (!blockMatchesSource(world, m, source)) {
@@ -83,8 +83,8 @@ public final class FabricBlockLevelerHelper {
         return num;
     }
 
-    private static boolean blockMatchesSource(ServerWorld world, BlockPos pos, BlockXpSource source) {
-        String path = Registries.BLOCK.getId(world.getBlockState(pos).getBlock()).getPath();
+    private static boolean blockMatchesSource(ServerLevel world, BlockPos pos, BlockXpSource source) {
+        String path = BuiltInRegistries.BLOCK.getKey(world.getBlockState(pos).getBlock()).getPath();
         for (String blockName : source.getBlocks()) {
             if (blockName != null && blockName.equalsIgnoreCase(path)) {
                 return true;
@@ -93,7 +93,7 @@ public final class FabricBlockLevelerHelper {
         return false;
     }
 
-    private static boolean isPlaced(ServerWorld world, BlockPos pos) {
+    private static boolean isPlaced(ServerLevel world, BlockPos pos) {
         return false;
     }
 }

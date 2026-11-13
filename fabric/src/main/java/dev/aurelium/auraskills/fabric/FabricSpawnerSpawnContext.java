@@ -1,8 +1,8 @@
 package dev.aurelium.auraskills.fabric;
 
 /**
- * Marks the server thread while {@link net.minecraft.block.spawner.MobSpawnerLogic#updateSpawns}
- * is running so {@link net.minecraft.server.world.ServerWorld#spawnEntity} can tag spawner mobs.
+ * Marks the server thread while {@link net.minecraft.world.level.BaseSpawner#delay}
+ * is running so {@link net.minecraft.server.level.ServerLevel#addFreshEntity} can tag spawner mobs.
  */
 public final class FabricSpawnerSpawnContext {
 

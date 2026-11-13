@@ -1,7 +1,7 @@
 package dev.aurelium.auraskills.fabric.requirement;
 
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 
 public abstract class FabricRequirementNode {
 
@@ -13,7 +13,7 @@ public abstract class FabricRequirementNode {
         this.denyMessage = denyMessage != null ? denyMessage : "";
     }
 
-    public abstract boolean check(ServerPlayerEntity player);
+    public abstract boolean check(ServerPlayer player);
 
     public String getDenyMessage() {
         return denyMessage;

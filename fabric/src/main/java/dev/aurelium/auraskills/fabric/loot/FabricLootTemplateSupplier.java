@@ -2,7 +2,7 @@ package dev.aurelium.auraskills.fabric.loot;
 
 import dev.aurelium.auraskills.common.loot.ItemSupplier;
 import dev.aurelium.auraskills.common.ref.ItemRef;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 /**

@@ -1,12 +1,12 @@
 package dev.aurelium.auraskills.fabric.mixin;
 
 import dev.aurelium.auraskills.fabric.FabricBrewingXpHandler;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.BrewingStandScreenHandler;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.slot.SlotActionType;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.BrewingStandMenu;
+import net.minecraft.world.inventory.ContainerInput;
+import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -15,9 +15,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
  * {@code TAKEOUT} brewing XP when a potion is taken from slots 0–2 (Paper {@code BrewingLeveler#onTakePotionOut}).
- * Targets {@link ScreenHandler#onSlotClick} like {@link ScreenHandlerGrindstoneXpMixin}.
+ * Targets {@link AbstractContainerMenu#clicked} like {@link ScreenHandlerGrindstoneXpMixin}.
  */
-@Mixin(ScreenHandler.class)
+@Mixin(AbstractContainerMenu.class)
 public abstract class ScreenHandlerBrewingTakeoutXpMixin {
 
     @Unique
@@ -29,10 +29,10 @@ public abstract class ScreenHandlerBrewingTakeoutXpMixin {
     @Unique
     private ItemStack auraskills$brewingTakeoutBefore = ItemStack.EMPTY;
 
-    @Inject(method = "onSlotClick", at = @At("HEAD"))
+    @Inject(method = "clicked", at = @At("HEAD"))
     private void auraskills$brewingTakeoutHead(
-            int slotIndex, int button, SlotActionType actionType, PlayerEntity player, CallbackInfo ci) {
-        if (!((Object) this instanceof BrewingStandScreenHandler handler)) {
+            int slotIndex, int button, ContainerInput actionType, Player player, CallbackInfo ci) {
+        if (!((Object) this instanceof BrewingStandMenu handler)) {
             return;
         }
         auraskills$brewingTakeoutTracking = false;
@@ -41,22 +41,22 @@ public abstract class ScreenHandlerBrewingTakeoutXpMixin {
         if (slotIndex < 0 || slotIndex > 2) {
             return;
         }
-        if (!(player instanceof ServerPlayerEntity) || player.getEntityWorld().isClient()) {
+        if (!(player instanceof ServerPlayer) || player.level().isClientSide()) {
             return;
         }
         auraskills$brewingTakeoutTracking = true;
         auraskills$brewingTakeoutSlot = slotIndex;
-        auraskills$brewingTakeoutBefore = handler.getSlot(slotIndex).getStack().copy();
+        auraskills$brewingTakeoutBefore = handler.getSlot(slotIndex).getItem().copy();
     }
 
-    @Inject(method = "onSlotClick", at = @At("RETURN"))
+    @Inject(method = "clicked", at = @At("RETURN"))
     private void auraskills$brewingTakeoutReturn(
-            int slotIndex, int button, SlotActionType actionType, PlayerEntity player, CallbackInfo ci) {
+            int slotIndex, int button, ContainerInput actionType, Player player, CallbackInfo ci) {
         try {
-            if (!auraskills$brewingTakeoutTracking || !(player instanceof ServerPlayerEntity sp)) {
+            if (!auraskills$brewingTakeoutTracking || !(player instanceof ServerPlayer sp)) {
                 return;
             }
-            if (!((Object) this instanceof BrewingStandScreenHandler handler)) {
+            if (!((Object) this instanceof BrewingStandMenu handler)) {
                 return;
             }
             if (slotIndex != auraskills$brewingTakeoutSlot) {

@@ -5,10 +5,9 @@ import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.item.FabricUserEquipment;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.kyori.adventure.text.Component;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,10 +17,10 @@ import java.util.UUID;
 public final class FabricUser extends User {
 
     private final FabricAuraSkills plugin;
-    private final @Nullable ServerPlayerEntity player;
+    private final @Nullable ServerPlayer player;
     private final FabricUserEquipment fabricEquipment = FabricUserEquipment.empty();
 
-    public FabricUser(UUID uuid, @Nullable ServerPlayerEntity player, FabricAuraSkills plugin) {
+    public FabricUser(UUID uuid, @Nullable ServerPlayer player, FabricAuraSkills plugin) {
         super(uuid, plugin);
         this.player = player;
         this.plugin = plugin;
@@ -31,7 +30,7 @@ public final class FabricUser extends User {
         return fabricEquipment;
     }
 
-    public static @Nullable ServerPlayerEntity getPlayer(User user) {
+    public static @Nullable ServerPlayer getPlayer(User user) {
         if (user instanceof FabricUser fu) {
             return fu.player;
         }
@@ -41,14 +40,14 @@ public final class FabricUser extends User {
     /**
      * Maps dimension keys to Bukkit-style world names where possible for config compatibility.
      */
-    public static String worldNameCompat(ServerPlayerEntity player) {
-        if (!(player.getEntityWorld() instanceof ServerWorld world)) {
+    public static String worldNameCompat(ServerPlayer player) {
+        if (!(player.level() instanceof ServerLevel world)) {
             return "world";
         }
-        if (world.getRegistryKey().equals(World.OVERWORLD)) {
+        if (world.dimension().equals(Level.OVERWORLD)) {
             return "world";
         }
-        return world.getRegistryKey().getValue().getPath();
+        return world.dimension().identifier().getPath();
     }
 
     @Override
@@ -56,7 +55,7 @@ public final class FabricUser extends User {
         if (player != null) {
             return player.getName().getString();
         }
-        ServerPlayerEntity online = plugin.getServer().getPlayerManager().getPlayer(uuid);
+        ServerPlayer online = plugin.getServer().getPlayerList().getPlayer(uuid);
         if (online != null) {
             return online.getName().getString();
         }
@@ -66,7 +65,7 @@ public final class FabricUser extends User {
     @Override
     public void sendMessage(String message) {
         if (player != null) {
-            player.sendMessage(Text.literal(message), false);
+            player.sendSystemMessage(net.minecraft.network.chat.Component.literal(message));
         }
     }
 
@@ -78,7 +77,7 @@ public final class FabricUser extends User {
         if (plugin.getMessageProvider().componentToString(component).isEmpty()) {
             return;
         }
-        player.sendMessage(Text.literal(plugin.getMessageProvider().componentToString(component)), false);
+        player.sendSystemMessage(net.minecraft.network.chat.Component.literal(plugin.getMessageProvider().componentToString(component)));
     }
 
     @Override
@@ -88,7 +87,7 @@ public final class FabricUser extends User {
 
     @Override
     public boolean hasSkillPermission(Skill skill) {
-        ServerPlayerEntity p = resolvePlayer();
+        ServerPlayer p = resolvePlayer();
         if (p == null) {
             return true;
         }
@@ -116,7 +115,7 @@ public final class FabricUser extends User {
 
     @Override
     public boolean hasPermission(String permission) {
-        ServerPlayerEntity p = resolvePlayer();
+        ServerPlayer p = resolvePlayer();
         if (p == null) {
             return false;
         }
@@ -125,7 +124,7 @@ public final class FabricUser extends User {
 
     @Override
     public boolean canSelectJob(@NotNull Skill skill) {
-        ServerPlayerEntity p = resolvePlayer();
+        ServerPlayer p = resolvePlayer();
         if (p == null) {
             return true;
         }
@@ -140,10 +139,10 @@ public final class FabricUser extends User {
         return true;
     }
 
-    private @Nullable ServerPlayerEntity resolvePlayer() {
+    private @Nullable ServerPlayer resolvePlayer() {
         if (player != null) {
             return player;
         }
-        return plugin.getServer().getPlayerManager().getPlayer(uuid);
+        return plugin.getServer().getPlayerList().getPlayer(uuid);
     }
 }

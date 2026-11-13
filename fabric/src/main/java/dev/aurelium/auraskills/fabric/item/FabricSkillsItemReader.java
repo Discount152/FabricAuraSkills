@@ -17,20 +17,6 @@ import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.FabricUser;
 import dev.aurelium.auraskills.fabric.requirement.FabricGlobalRequirement;
 import dev.aurelium.auraskills.fabric.requirement.FabricRequirementManager;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtDouble;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtInt;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.nbt.NbtString;
-import net.minecraft.registry.Registries;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -38,9 +24,23 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.DoubleTag;
+import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.CustomData;
 
 /**
- * Reads item stat/trait/multiplier/requirement data from {@link DataComponentTypes#CUSTOM_DATA} (Paper PDC /
+ * Reads item stat/trait/multiplier/requirement data from {@link DataComponents#CUSTOM_DATA} (Paper PDC /
  * {@code PublicBukkitValues}) and legacy {@code AuraSkills}/{@code AureliumSkills} NBT trees.
  */
 public final class FabricSkillsItemReader {
@@ -51,19 +51,19 @@ public final class FabricSkillsItemReader {
     private FabricSkillsItemReader() {
     }
 
-    private static @Nullable NbtCompound customDataRoot(ItemStack stack) {
+    private static @Nullable CompoundTag customDataRoot(ItemStack stack) {
         if (stack.isEmpty()) {
             return null;
         }
-        NbtComponent comp = stack.get(DataComponentTypes.CUSTOM_DATA);
+        CustomData comp = stack.get(DataComponents.CUSTOM_DATA);
         if (comp == null) {
             return null;
         }
-        return comp.copyNbt();
+        return comp.copyTag();
     }
 
-    private static @Nullable NbtCompound publicBukkitValues(ItemStack stack) {
-        NbtCompound root = customDataRoot(stack);
+    private static @Nullable CompoundTag publicBukkitValues(ItemStack stack) {
+        CompoundTag root = customDataRoot(stack);
         if (root == null || !root.contains(PUBLIC_BUKKIT_VALUES)) {
             return null;
         }
@@ -120,11 +120,11 @@ public final class FabricSkillsItemReader {
         return out;
     }
 
-    public static boolean meetsRequirements(FabricAuraSkills plugin, ServerPlayerEntity player, ItemStack stack, ModifierType type) {
+    public static boolean meetsRequirements(FabricAuraSkills plugin, ServerPlayer player, ItemStack stack, ModifierType type) {
         if (!plugin.configBoolean(Option.REQUIREMENT_ENABLED)) {
             return true;
         }
-        User u = plugin.getUserManager().getUser(player.getUuid());
+        User u = plugin.getUserManager().getUser(player.getUUID());
         if (!(u instanceof FabricUser user)) {
             return true;
         }
@@ -132,7 +132,7 @@ public final class FabricSkillsItemReader {
         if (!plugin.configBoolean(Option.REQUIREMENT_OVERRIDE_GLOBAL) || itemReq.isEmpty()) {
             FabricRequirementManager rm = plugin.getFabricRequirementManager();
             if (rm != null) {
-                Identifier heldId = Registries.ITEM.getId(stack.getItem());
+                Identifier heldId = BuiltInRegistries.ITEM.getKey(stack.getItem());
                 for (FabricGlobalRequirement global : rm.getGlobalRequirementsType(type)) {
                     if (!global.itemId().equals(heldId)) {
                         continue;
@@ -154,7 +154,7 @@ public final class FabricSkillsItemReader {
     }
 
     private static List<StatModifier> readStatModifiersPdc(FabricAuraSkills plugin, ItemStack stack, ModifierType type, boolean offhand) {
-        NbtCompound pbv = publicBukkitValues(stack);
+        CompoundTag pbv = publicBukkitValues(stack);
         if (pbv == null) {
             return List.of();
         }
@@ -165,12 +165,12 @@ public final class FabricSkillsItemReader {
         return parseStatContainer(plugin, stack, pbv.get(key), type, offhand);
     }
 
-    private static List<StatModifier> parseStatContainer(FabricAuraSkills plugin, ItemStack stack, NbtElement raw, ModifierType type, boolean offhand) {
+    private static List<StatModifier> parseStatContainer(FabricAuraSkills plugin, ItemStack stack, Tag raw, ModifierType type, boolean offhand) {
         List<StatModifier> list = new ArrayList<>();
-        if (raw instanceof NbtCompound compound) {
-            for (String k : compound.getKeys()) {
-                NbtElement el = compound.get(k);
-                if (!(el instanceof NbtDouble d)) {
+        if (raw instanceof CompoundTag compound) {
+            for (String k : compound.keySet()) {
+                Tag el = compound.get(k);
+                if (!(el instanceof DoubleTag d)) {
                     continue;
                 }
                 if (d.doubleValue() == 0.0) {
@@ -184,9 +184,9 @@ public final class FabricSkillsItemReader {
                 mod.setNonPersistent();
                 list.add(mod);
             }
-        } else if (raw instanceof NbtList nbtList) {
-            for (NbtElement el : nbtList) {
-                if (!(el instanceof NbtCompound c)) {
+        } else if (raw instanceof ListTag nbtList) {
+            for (Tag el : nbtList) {
+                if (!(el instanceof CompoundTag c)) {
                     continue;
                 }
                 String statName = firstString(c, PLUGIN_NS + ":stat", "stat");
@@ -214,16 +214,16 @@ public final class FabricSkillsItemReader {
     private static List<StatModifier> readStatModifiersLegacy(FabricAuraSkills plugin, ItemStack stack, ModifierType type, boolean offhand) {
         List<StatModifier> list = new ArrayList<>();
         for (String rootName : new String[]{"AuraSkills", "AureliumSkills"}) {
-            NbtCompound typeCompound = legacyModifiersTypeCompound(customDataRoot(stack), rootName, type);
+            CompoundTag typeCompound = legacyModifiersTypeCompound(customDataRoot(stack), rootName, type);
             if (typeCompound == null) {
                 continue;
             }
-            for (String k : typeCompound.getKeys()) {
-                NbtElement el = typeCompound.get(k);
-                if (!(el instanceof NbtDouble d) && !(el instanceof NbtInt)) {
+            for (String k : typeCompound.keySet()) {
+                Tag el = typeCompound.get(k);
+                if (!(el instanceof DoubleTag d) && !(el instanceof IntTag)) {
                     continue;
                 }
-                double val = el instanceof NbtDouble dd ? dd.doubleValue() : ((NbtInt) el).intValue();
+                double val = el instanceof DoubleTag dd ? dd.doubleValue() : ((IntTag) el).intValue();
                 if (val == 0.0) {
                     continue;
                 }
@@ -239,15 +239,15 @@ public final class FabricSkillsItemReader {
         return list;
     }
 
-    private static @Nullable NbtCompound legacyModifiersTypeCompound(@Nullable NbtCompound customRoot, String rootName, ModifierType type) {
+    private static @Nullable CompoundTag legacyModifiersTypeCompound(@Nullable CompoundTag customRoot, String rootName, ModifierType type) {
         if (customRoot == null) {
             return null;
         }
-        NbtCompound root = customRoot.getCompound(rootName).orElse(null);
+        CompoundTag root = customRoot.getCompound(rootName).orElse(null);
         if (root == null) {
             return null;
         }
-        NbtCompound mods = root.getCompound("Modifiers").orElse(null);
+        CompoundTag mods = root.getCompound("Modifiers").orElse(null);
         if (mods == null) {
             return null;
         }
@@ -256,7 +256,7 @@ public final class FabricSkillsItemReader {
     }
 
     private static List<TraitModifier> readTraitModifiersPdc(FabricAuraSkills plugin, ItemStack stack, ModifierType type, boolean offhand) {
-        NbtCompound pbv = publicBukkitValues(stack);
+        CompoundTag pbv = publicBukkitValues(stack);
         if (pbv == null) {
             return List.of();
         }
@@ -267,12 +267,12 @@ public final class FabricSkillsItemReader {
         return parseTraitContainer(plugin, stack, pbv.get(key), type, offhand);
     }
 
-    private static List<TraitModifier> parseTraitContainer(FabricAuraSkills plugin, ItemStack stack, NbtElement raw, ModifierType type, boolean offhand) {
+    private static List<TraitModifier> parseTraitContainer(FabricAuraSkills plugin, ItemStack stack, Tag raw, ModifierType type, boolean offhand) {
         List<TraitModifier> list = new ArrayList<>();
-        if (raw instanceof NbtCompound compound) {
-            for (String k : compound.getKeys()) {
-                NbtElement el = compound.get(k);
-                if (!(el instanceof NbtDouble d)) {
+        if (raw instanceof CompoundTag compound) {
+            for (String k : compound.keySet()) {
+                Tag el = compound.get(k);
+                if (!(el instanceof DoubleTag d)) {
                     continue;
                 }
                 if (d.doubleValue() == 0.0) {
@@ -286,9 +286,9 @@ public final class FabricSkillsItemReader {
                 mod.setNonPersistent();
                 list.add(mod);
             }
-        } else if (raw instanceof NbtList nbtList) {
-            for (NbtElement el : nbtList) {
-                if (!(el instanceof NbtCompound c)) {
+        } else if (raw instanceof ListTag nbtList) {
+            for (Tag el : nbtList) {
+                if (!(el instanceof CompoundTag c)) {
                     continue;
                 }
                 String traitName = firstString(c, PLUGIN_NS + ":trait", "trait");
@@ -314,7 +314,7 @@ public final class FabricSkillsItemReader {
     }
 
     private static List<Multiplier> readMultipliersPdc(FabricAuraSkills plugin, ItemStack stack, ModifierType type, boolean offhand) {
-        NbtCompound pbv = publicBukkitValues(stack);
+        CompoundTag pbv = publicBukkitValues(stack);
         if (pbv == null) {
             return List.of();
         }
@@ -322,14 +322,14 @@ public final class FabricSkillsItemReader {
         if (!pbv.contains(key)) {
             return List.of();
         }
-        NbtElement raw = pbv.get(key);
-        if (!(raw instanceof NbtCompound compound)) {
+        Tag raw = pbv.get(key);
+        if (!(raw instanceof CompoundTag compound)) {
             return List.of();
         }
         List<Multiplier> list = new ArrayList<>();
-        for (String k : compound.getKeys()) {
-            NbtElement el = compound.get(k);
-            if (!(el instanceof NbtDouble d)) {
+        for (String k : compound.keySet()) {
+            Tag el = compound.get(k);
+            if (!(el instanceof DoubleTag d)) {
                 continue;
             }
             if (d.doubleValue() == 0.0) {
@@ -347,23 +347,23 @@ public final class FabricSkillsItemReader {
     private static List<Multiplier> readMultipliersLegacy(FabricAuraSkills plugin, ItemStack stack, ModifierType type, boolean offhand) {
         List<Multiplier> list = new ArrayList<>();
         for (String rootName : new String[]{"AuraSkills", "AureliumSkills"}) {
-            NbtCompound root = customDataRoot(stack);
-            NbtCompound skillsRoot = root == null ? null : root.getCompound(rootName).orElse(null);
+            CompoundTag root = customDataRoot(stack);
+            CompoundTag skillsRoot = root == null ? null : root.getCompound(rootName).orElse(null);
             if (skillsRoot == null) {
                 continue;
             }
-            NbtCompound mult = skillsRoot.getCompound("Multipliers").orElse(null);
+            CompoundTag mult = skillsRoot.getCompound("Multipliers").orElse(null);
             if (mult == null) {
                 continue;
             }
             String cap = TextUtil.capitalize(type.name().toLowerCase(Locale.ROOT));
-            NbtCompound typeCompound = mult.getCompound(cap).orElse(null);
+            CompoundTag typeCompound = mult.getCompound(cap).orElse(null);
             if (typeCompound == null) {
                 continue;
             }
-            for (String k : typeCompound.getKeys()) {
-                NbtElement el = typeCompound.get(k);
-                double val = el instanceof NbtDouble d ? d.doubleValue() : el instanceof NbtInt i ? i.intValue() : 0.0;
+            for (String k : typeCompound.keySet()) {
+                Tag el = typeCompound.get(k);
+                double val = el instanceof DoubleTag d ? d.doubleValue() : el instanceof IntTag i ? i.intValue() : 0.0;
                 if (val == 0.0) {
                     continue;
                 }
@@ -376,7 +376,7 @@ public final class FabricSkillsItemReader {
 
     private static Map<Skill, Integer> readRequirementsPdc(FabricAuraSkills plugin, ItemStack stack, ModifierType type) {
         Map<Skill, Integer> map = new ConcurrentHashMap<>();
-        NbtCompound pbv = publicBukkitValues(stack);
+        CompoundTag pbv = publicBukkitValues(stack);
         if (pbv == null) {
             return map;
         }
@@ -384,13 +384,13 @@ public final class FabricSkillsItemReader {
         if (!pbv.contains(key)) {
             return map;
         }
-        NbtElement raw = pbv.get(key);
-        if (!(raw instanceof NbtCompound compound)) {
+        Tag raw = pbv.get(key);
+        if (!(raw instanceof CompoundTag compound)) {
             return map;
         }
-        for (String k : compound.getKeys()) {
-            NbtElement el = compound.get(k);
-            int level = el instanceof NbtInt i ? i.intValue() : el instanceof NbtDouble d ? (int) d.doubleValue() : 0;
+        for (String k : compound.keySet()) {
+            Tag el = compound.get(k);
+            int level = el instanceof IntTag i ? i.intValue() : el instanceof DoubleTag d ? (int) d.doubleValue() : 0;
             if (level == 0) {
                 continue;
             }
@@ -405,23 +405,23 @@ public final class FabricSkillsItemReader {
     private static Map<Skill, Integer> readRequirementsLegacy(FabricAuraSkills plugin, ItemStack stack, ModifierType type) {
         Map<Skill, Integer> map = new ConcurrentHashMap<>();
         for (String rootName : new String[]{"AuraSkills", "AureliumSkills"}) {
-            NbtCompound root = customDataRoot(stack);
-            NbtCompound skillsRoot = root == null ? null : root.getCompound(rootName).orElse(null);
+            CompoundTag root = customDataRoot(stack);
+            CompoundTag skillsRoot = root == null ? null : root.getCompound(rootName).orElse(null);
             if (skillsRoot == null) {
                 continue;
             }
-            NbtCompound req = skillsRoot.getCompound("Requirements").orElse(null);
+            CompoundTag req = skillsRoot.getCompound("Requirements").orElse(null);
             if (req == null) {
                 continue;
             }
             String cap = TextUtil.capitalize(type.name().toLowerCase(Locale.ROOT));
-            NbtCompound typeCompound = req.getCompound(cap).orElse(null);
+            CompoundTag typeCompound = req.getCompound(cap).orElse(null);
             if (typeCompound == null) {
                 continue;
             }
-            for (String k : typeCompound.getKeys()) {
-                NbtElement el = typeCompound.get(k);
-                int level = el instanceof NbtInt i ? i.intValue() : el instanceof NbtDouble d ? (int) d.doubleValue() : 0;
+            for (String k : typeCompound.keySet()) {
+                Tag el = typeCompound.get(k);
+                int level = el instanceof IntTag i ? i.intValue() : el instanceof DoubleTag d ? (int) d.doubleValue() : 0;
                 if (level == 0) {
                     continue;
                 }
@@ -456,25 +456,25 @@ public final class FabricSkillsItemReader {
         return i >= 0 ? rawKey.substring(i + 1) : rawKey;
     }
 
-    private static @Nullable String firstString(NbtCompound c, String... keys) {
+    private static @Nullable String firstString(CompoundTag c, String... keys) {
         for (String k : keys) {
-            if (c.contains(k) && c.get(k) instanceof NbtString s) {
+            if (c.contains(k) && c.get(k) instanceof StringTag s) {
                 return s.value();
             }
         }
         return null;
     }
 
-    private static double firstDouble(NbtCompound c, String... keys) {
+    private static double firstDouble(CompoundTag c, String... keys) {
         for (String k : keys) {
             if (!c.contains(k)) {
                 continue;
             }
-            NbtElement el = c.get(k);
-            if (el instanceof NbtDouble d) {
+            Tag el = c.get(k);
+            if (el instanceof DoubleTag d) {
                 return d.doubleValue();
             }
-            if (el instanceof NbtInt i) {
+            if (el instanceof IntTag i) {
                 return i.intValue();
             }
         }
@@ -513,8 +513,8 @@ public final class FabricSkillsItemReader {
         if (stack.isEmpty()) {
             return "Helmet";
         }
-        String path = Registries.ITEM.getId(stack.getItem()).getPath();
-        if (path.contains("chestplate") || stack.isOf(Items.ELYTRA)) {
+        String path = BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath();
+        if (path.contains("chestplate") || stack.is(Items.ELYTRA)) {
             return "Chestplate";
         }
         if (path.contains("leggings")) {

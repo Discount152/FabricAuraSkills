@@ -3,8 +3,8 @@ package dev.aurelium.auraskills.fabric;
 import dev.aurelium.auraskills.common.level.LevelManager;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.requirement.FabricRequirementHandlers;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundEvents;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import org.jetbrains.annotations.NotNull;
 
 public final class FabricLevelManager extends LevelManager {
@@ -37,10 +37,10 @@ public final class FabricLevelManager extends LevelManager {
 
     @Override
     public void playLevelUpSound(@NotNull User user) {
-        ServerPlayerEntity player = FabricUser.getPlayer(user);
+        ServerPlayer player = FabricUser.getPlayer(user);
         if (player == null) {
             return;
         }
-        player.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, 1.0f, 0.5f);
+        player.playSound(SoundEvents.PLAYER_LEVELUP, 1.0f, 0.5f);
     }
 }

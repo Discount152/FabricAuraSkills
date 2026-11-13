@@ -4,19 +4,19 @@ import dev.aurelium.auraskills.api.trait.Trait;
 import dev.aurelium.auraskills.api.trait.Traits;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
-import net.minecraft.entity.attribute.EntityAttributeInstance;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 
 /**
- * Ports Bukkit movement trait using a {@link EntityAttributes#MOVEMENT_SPEED} modifier (walk-speed API is not mirrored).
+ * Ports Bukkit movement trait using a {@link Attributes#MOVEMENT_SPEED} modifier (walk-speed API is not mirrored).
  */
 public final class FabricMovementSpeedTrait extends FabricTraitImpl {
 
-    private static final Identifier MODIFIER_ID = Identifier.of("auraskills", "movement_speed_trait");
+    private static final Identifier MODIFIER_ID = Identifier.fromNamespaceAndPath("auraskills", "movement_speed_trait");
     private static final double RATIO = 500.0;
 
     public FabricMovementSpeedTrait(FabricAuraSkills plugin) {
@@ -24,34 +24,34 @@ public final class FabricMovementSpeedTrait extends FabricTraitImpl {
     }
 
     @Override
-    public double getBaseLevel(ServerPlayerEntity player, Trait trait) {
-        EntityAttributeInstance inst = player.getAttributeInstance(EntityAttributes.MOVEMENT_SPEED);
+    public double getBaseLevel(ServerPlayer player, Trait trait) {
+        AttributeInstance inst = player.getAttribute(Attributes.MOVEMENT_SPEED);
         if (inst == null) {
             return 100;
         }
         double total = inst.getValue();
-        EntityAttributeModifier ours = inst.getModifier(MODIFIER_ID);
-        double removed = ours != null ? ours.value() : 0.0;
+        AttributeModifier ours = inst.getModifier(MODIFIER_ID);
+        double removed = ours != null ? ours.amount() : 0.0;
         double attributeRatio = 1000.0;
         double baseValue = total - removed;
         return baseValue * attributeRatio;
     }
 
     @Override
-    protected void reload(ServerPlayerEntity player, Trait trait) {
+    protected void reload(ServerPlayer player, Trait trait) {
         plugin.getScheduler().executeSync(() -> applyMovementSpeed(player, trait));
     }
 
     @Override
-    protected void onWorldChanged(ServerPlayerEntity player, ServerWorld from, ServerWorld to, Trait trait) {
+    protected void onWorldChanged(ServerPlayer player, ServerLevel from, ServerLevel to, Trait trait) {
         if (!trait.equals(Traits.MOVEMENT_SPEED)) {
             return;
         }
         applyMovementSpeed(player, trait);
     }
 
-    private void applyMovementSpeed(ServerPlayerEntity player, Trait trait) {
-        EntityAttributeInstance attribute = player.getAttributeInstance(EntityAttributes.MOVEMENT_SPEED);
+    private void applyMovementSpeed(ServerPlayer player, Trait trait) {
+        AttributeInstance attribute = player.getAttribute(Attributes.MOVEMENT_SPEED);
         if (attribute == null) {
             return;
         }
@@ -62,7 +62,7 @@ public final class FabricMovementSpeedTrait extends FabricTraitImpl {
         if (FabricTraitWorlds.isInDisabledWorld(plugin, player)) {
             return;
         }
-        User user = plugin.getUserManager().getUser(player.getUuid());
+        User user = plugin.getUserManager().getUser(player.getUUID());
         double add = user.getBonusTraitLevel(trait) / RATIO;
         double max = trait.optionDouble("max") / RATIO;
         double base = attribute.getValue();
@@ -73,9 +73,9 @@ public final class FabricMovementSpeedTrait extends FabricTraitImpl {
         if (add <= 0) {
             return;
         }
-        attribute.addPersistentModifier(new EntityAttributeModifier(
+        attribute.addPermanentModifier(new AttributeModifier(
                 MODIFIER_ID,
                 add,
-                EntityAttributeModifier.Operation.ADD_VALUE));
+                AttributeModifier.Operation.ADD_VALUE));
     }
 }

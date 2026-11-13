@@ -9,27 +9,27 @@ import dev.aurelium.auraskills.api.source.type.AnvilXpSource;
 import dev.aurelium.auraskills.common.source.SourceTypes;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.common.util.text.TextUtil;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.AnvilScreenHandler;
-import net.minecraft.screen.ForgingScreenHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.inventory.AnvilMenu;
+import net.minecraft.world.inventory.ItemCombinerMenu;
+import net.minecraft.world.item.ItemStack;
 
 public final class FabricAnvilXpHandler {
 
     private FabricAnvilXpHandler() {
     }
 
-    public static void onTakeOutput(ServerPlayerEntity player, ForgingScreenHandler handler) {
-        if (!(handler instanceof AnvilScreenHandler)) {
+    public static void onTakeOutput(ServerPlayer player, ItemCombinerMenu handler) {
+        if (!(handler instanceof AnvilMenu)) {
             return;
         }
-        AnvilScreenHandler anvil = (AnvilScreenHandler) handler;
+        AnvilMenu anvil = (AnvilMenu) handler;
         FabricAuraSkills plugin = FabricAuraSkills.getInstance();
         if (plugin == null) {
             return;
         }
-        ItemStack left = handler.getSlot(0).getStack();
-        ItemStack right = handler.getSlot(1).getStack();
+        ItemStack left = handler.getSlot(0).getItem();
+        ItemStack right = handler.getSlot(1).getItem();
         if (left.isEmpty()) {
             return;
         }
@@ -42,9 +42,9 @@ public final class FabricAnvilXpHandler {
         if (FabricXpHandlerUtil.shouldBlockXp(plugin, player, skill, SourceTypes.ANVIL)) {
             return;
         }
-        int repairCost = anvil.getLevelCost();
+        int repairCost = anvil.getCost();
         double multiplier = getRepairCostMultiplier(plugin, source, skill, repairCost);
-        User user = plugin.getUserManager().getUser(player.getUuid());
+        User user = plugin.getUserManager().getUser(player.getUUID());
         plugin.getLevelManager().addXp(user, skill, source, multiplier * source.getXp());
     }
 

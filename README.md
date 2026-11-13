@@ -1,7 +1,7 @@
-<h1 style="text-align:center;">Fabric AuraSkills</h1>
+<h1 style="text-align:center;">Granite Skills</h1>
 
 <p style="text-align:center;">
-Fabric dedicated-server port of the AuraSkills RPG skills system
+Fabric dedicated-server skills mod for Minecraft 26.3. Formerly Fabric AuraSkills. The mod id remains <code>auraskills</code> so existing worlds and Granitelib keep resolving.
 </p>
 
 [![GitHub Release](https://img.shields.io/github/v/release/Archy-X/AuraSkills?style=flat-square)](https://github.com/Archy-X/AuraSkills/releases/latest)

@@ -2,10 +2,10 @@ package dev.aurelium.auraskills.fabric.mixin;
 
 import dev.aurelium.auraskills.fabric.FabricBrewingOwnerTracker;
 import dev.aurelium.auraskills.fabric.FabricBrewingTakeoutTracker;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BrewingStandBlockEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -17,16 +17,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(BlockEntity.class)
 public abstract class BlockEntityBrewingCleanupMixin {
 
-    @Inject(method = "markRemoved", at = @At("HEAD"))
+    @Inject(method = "setRemoved", at = @At("HEAD"))
     private void auraskills$clearBrewingTakeoutTracker(CallbackInfo ci) {
         BlockEntity self = (BlockEntity) (Object) this;
         if (!(self instanceof BrewingStandBlockEntity)) {
             return;
         }
-        World world = self.getWorld();
-        if (world instanceof ServerWorld sw) {
-            FabricBrewingTakeoutTracker.remove(sw, self.getPos());
-            FabricBrewingOwnerTracker.remove(sw, self.getPos());
+        Level world = self.getLevel();
+        if (world instanceof ServerLevel sw) {
+            FabricBrewingTakeoutTracker.remove(sw, self.getBlockPos());
+            FabricBrewingOwnerTracker.remove(sw, self.getBlockPos());
         }
     }
 }

@@ -1,24 +1,24 @@
 package dev.aurelium.auraskills.fabric.mixin;
 
 import dev.aurelium.auraskills.fabric.FabricSpawnerSpawnContext;
-import net.minecraft.block.spawner.MobSpawnerLogic;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BaseSpawner;
+import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(MobSpawnerLogic.class)
+@Mixin(BaseSpawner.class)
 public abstract class MobSpawnerLogicMixin {
 
-    @Inject(method = "updateSpawns", at = @At("HEAD"))
-    private void auraskills$spawnerContextEnter(World world, BlockPos pos, CallbackInfo ci) {
+    @Inject(method = "delay", at = @At("HEAD"))
+    private void auraskills$spawnerContextEnter(Level world, BlockPos pos, CallbackInfo ci) {
         FabricSpawnerSpawnContext.enter();
     }
 
-    @Inject(method = "updateSpawns", at = @At("TAIL"))
-    private void auraskills$spawnerContextExit(World world, BlockPos pos, CallbackInfo ci) {
+    @Inject(method = "delay", at = @At("TAIL"))
+    private void auraskills$spawnerContextExit(Level world, BlockPos pos, CallbackInfo ci) {
         FabricSpawnerSpawnContext.exit();
     }
 }

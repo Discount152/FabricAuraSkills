@@ -6,7 +6,7 @@ import dev.aurelium.auraskills.api.damage.DamageType;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.damage.FabricDamageMeta;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 
 public final class FabricFarmingAbilities extends FabricAbilityImpl implements FabricDamagePipelineContributor {
 
@@ -15,15 +15,15 @@ public final class FabricFarmingAbilities extends FabricAbilityImpl implements F
     }
 
     @Override
-    public void contributeAttackDamage(FabricAuraSkills plugin, FabricDamageMeta meta, ServerPlayerEntity attacker) {
+    public void contributeAttackDamage(FabricAuraSkills plugin, FabricDamageMeta meta, ServerPlayer attacker) {
         if (meta.getDamageType() != DamageType.HOE) {
             return;
         }
-        User user = plugin.getUserManager().getUser(attacker.getUuid());
+        User user = plugin.getUserManager().getUser(attacker.getUUID());
         meta.addAttackModifier(scytheMaster(attacker, user));
     }
 
-    private DamageModifier scytheMaster(ServerPlayerEntity player, User user) {
+    private DamageModifier scytheMaster(ServerPlayer player, User user) {
         var ability = Abilities.SCYTHE_MASTER;
         if (isDisabled(ability) || failsChecks(player, ability)) {
             return DamageModifier.none();

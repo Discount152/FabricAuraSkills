@@ -12,18 +12,17 @@ import dev.aurelium.auraskills.common.util.text.TextUtil;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.damage.FabricDamageMeta;
 import dev.aurelium.auraskills.fabric.damage.FabricDamagePipeline;
-import net.minecraft.entity.Entity;
-import net.minecraft.registry.tag.ItemTags;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.Vec3d;
-
 import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 
 public final class FabricFightingAbilities extends FabricAbilityImpl implements FabricDamagePipelineContributor {
 
@@ -56,8 +55,8 @@ public final class FabricFightingAbilities extends FabricAbilityImpl implements 
      * Called from {@code ServerPlayerEntityParrySwingMixin} when the client swings the main hand (Fabric analogue of
      * Bukkit {@code PlayerInteractEvent} left-click readiness).
      */
-    public static void onMainHandSwing(FabricAuraSkills plugin, ServerPlayerEntity player, Hand hand) {
-        if (plugin == null || hand != Hand.MAIN_HAND) {
+    public static void onMainHandSwing(FabricAuraSkills plugin, ServerPlayer player, InteractionHand hand) {
+        if (plugin == null || hand != InteractionHand.MAIN_HAND) {
             return;
         }
         FabricFightingAbilities self = plugin.getAbilityManager().getAbilityImpl(FabricFightingAbilities.class);
@@ -65,46 +64,46 @@ public final class FabricFightingAbilities extends FabricAbilityImpl implements 
     }
 
     @Override
-    public void contributeAttackDamage(FabricAuraSkills plugin, FabricDamageMeta meta, ServerPlayerEntity attacker) {
+    public void contributeAttackDamage(FabricAuraSkills plugin, FabricDamageMeta meta, ServerPlayer attacker) {
         if (meta.getDamageType() != DamageType.SWORD) {
             return;
         }
-        User user = plugin.getUserManager().getUser(attacker.getUuid());
+        User user = plugin.getUserManager().getUser(attacker.getUUID());
         meta.addAttackModifier(swordMaster(attacker, user));
         meta.addAttackModifier(firstStrike(plugin, attacker, user));
     }
 
     @Override
-    public void contributeDefenseDamage(FabricAuraSkills plugin, FabricDamageMeta meta, ServerPlayerEntity victim) {
+    public void contributeDefenseDamage(FabricAuraSkills plugin, FabricDamageMeta meta, ServerPlayer victim) {
         if (!FabricDamagePipeline.hasAttackingPlayer(meta.getMcSource())) {
             return;
         }
-        User user = plugin.getUserManager().getUser(victim.getUuid());
+        User user = plugin.getUserManager().getUser(victim.getUUID());
         meta.addDefenseModifier(handleParry(plugin, meta, victim, user));
     }
 
-    private void parryReadyOnSwing(ServerPlayerEntity player) {
+    private void parryReadyOnSwing(ServerPlayer player) {
         var ability = Abilities.PARRY;
         if (isDisabled(ability)) {
             return;
         }
-        if (!player.getMainHandStack().isIn(ItemTags.SWORDS)) {
+        if (!player.getMainHandItem().is(ItemTags.SWORDS)) {
             return;
         }
         if (failsChecks(player, ability)) {
             return;
         }
-        User user = plugin.getUserManager().getUser(player.getUuid());
+        User user = plugin.getUserManager().getUser(player.getUUID());
         if (user.metadataBoolean(PARRY_READY_KEY)) {
             return;
         }
-        Vec3d facing = player.getRotationVec(1.0f);
+        Vec3 facing = player.getViewVector(1.0f);
         user.getMetadata().put(PARRY_READY_KEY, true);
         user.getMetadata().put(PARRY_VECTOR_KEY, facing);
         scheduleParryUnready(user);
     }
 
-    private DamageModifier handleParry(FabricAuraSkills plugin, FabricDamageMeta meta, ServerPlayerEntity player, User user) {
+    private DamageModifier handleParry(FabricAuraSkills plugin, FabricDamageMeta meta, ServerPlayer player, User user) {
         var ability = Abilities.PARRY;
         if (isDisabled(ability) || failsChecks(player, ability)) {
             return DamageModifier.none();
@@ -124,32 +123,32 @@ public final class FabricFightingAbilities extends FabricAbilityImpl implements 
         Locale locale = user.getLocale();
         plugin.getUiProvider().sendActionBar(user, plugin.getMsg(AbilityMessage.PARRY_PARRIED, locale));
         plugin.getUiProvider().getActionBarManager().setPaused(user, 1500, TimeUnit.MILLISECONDS);
-        if (ability.optionBoolean("enable_sound", true) && player.getEntityWorld() instanceof ServerWorld world) {
+        if (ability.optionBoolean("enable_sound", true) && player.level() instanceof ServerLevel world) {
             world.playSound(null, player.getX(), player.getY(), player.getZ(),
-                    SoundEvents.ITEM_TRIDENT_RETURN, SoundCategory.PLAYERS, 1.0f, 1.4f);
+                    SoundEvents.TRIDENT_RETURN, SoundSource.PLAYERS, 1.0f, 1.4f);
         }
 
-        Vec3d velBefore = player.getVelocity();
-        plugin.getScheduler().scheduleSync(() -> player.setVelocity(velBefore), 50L, TimeUnit.MILLISECONDS);
+        Vec3 velBefore = player.getDeltaMovement();
+        plugin.getScheduler().scheduleSync(() -> player.setDeltaMovement(velBefore), 50L, TimeUnit.MILLISECONDS);
 
         return new DamageModifier((1.0 - value / 100.0) - 1.0, DamageModifier.Operation.MULTIPLY);
     }
 
-    private boolean isFacingCloseEnough(User user, ServerPlayerEntity player, Entity damager) {
-        Vec3d playerPos = new Vec3d(player.getX(), player.getY(), player.getZ());
-        Vec3d damagerPos = new Vec3d(damager.getX(), damager.getY(), damager.getZ());
-        Vec3d playerToDamager = damagerPos.subtract(playerPos);
-        if (playerToDamager.lengthSquared() < 1.0e-8) {
+    private boolean isFacingCloseEnough(User user, ServerPlayer player, Entity damager) {
+        Vec3 playerPos = new Vec3(player.getX(), player.getY(), player.getZ());
+        Vec3 damagerPos = new Vec3(damager.getX(), damager.getY(), damager.getZ());
+        Vec3 playerToDamager = damagerPos.subtract(playerPos);
+        if (playerToDamager.lengthSqr() < 1.0e-8) {
             return false;
         }
         playerToDamager = playerToDamager.normalize();
 
         Object facingObj = user.getMetadata().get(PARRY_VECTOR_KEY);
-        if (!(facingObj instanceof Vec3d facing)) {
+        if (!(facingObj instanceof Vec3 facing)) {
             return false;
         }
 
-        return playerToDamager.dotProduct(facing) >= 0.7;
+        return playerToDamager.dot(facing) >= 0.7;
     }
 
     private void scheduleParryUnready(User user) {
@@ -160,7 +159,7 @@ public final class FabricFightingAbilities extends FabricAbilityImpl implements 
         }, delayMs, TimeUnit.MILLISECONDS);
     }
 
-    private DamageModifier swordMaster(ServerPlayerEntity player, User user) {
+    private DamageModifier swordMaster(ServerPlayer player, User user) {
         var ability = Abilities.SWORD_MASTER;
         if (isDisabled(ability) || failsChecks(player, ability)) {
             return DamageModifier.none();
@@ -171,12 +170,12 @@ public final class FabricFightingAbilities extends FabricAbilityImpl implements 
         return new DamageModifier(getValue(ability, user) / 100.0, DamageModifier.Operation.ADD_COMBINED);
     }
 
-    private DamageModifier firstStrike(FabricAuraSkills plugin, ServerPlayerEntity player, User user) {
+    private DamageModifier firstStrike(FabricAuraSkills plugin, ServerPlayer player, User user) {
         var ability = Abilities.FIRST_STRIKE;
         if (isDisabled(ability) || failsChecks(player, ability)) {
             return DamageModifier.none();
         }
-        if (Boolean.TRUE.equals(firstStrikeActive.get(player.getUuid()))) {
+        if (Boolean.TRUE.equals(firstStrikeActive.get(player.getUUID()))) {
             return DamageModifier.none();
         }
         if (user.getAbilityLevel(ability) <= 0) {
@@ -186,7 +185,7 @@ public final class FabricFightingAbilities extends FabricAbilityImpl implements 
         if (ability.optionBoolean("enable_message", true)) {
             plugin.getAbilityManager().sendAbilityMessage(user, plugin.getMsg(AbilityMessage.FIRST_STRIKE_DEALT, locale));
         }
-        firstStrikeActive.put(player.getUuid(), true);
+        firstStrikeActive.put(player.getUUID(), true);
         AbilityData abilityData = user.getAbilityData(ability);
         if (abilityData.containsKey("counter")) {
             abilityData.setData("counter", abilityData.getInt("counter") + 1);
@@ -197,7 +196,7 @@ public final class FabricFightingAbilities extends FabricAbilityImpl implements 
         long cooldownMs = ability.optionInt("cooldown_ticks", 6000) * 50L;
         plugin.getScheduler().scheduleSync(() -> {
             if (user.getAbilityData(ability).containsKey("counter") && user.getAbilityData(ability).getInt("counter") == id) {
-                firstStrikeActive.remove(player.getUuid());
+                firstStrikeActive.remove(player.getUUID());
             }
         }, cooldownMs, TimeUnit.MILLISECONDS);
 
@@ -206,7 +205,7 @@ public final class FabricFightingAbilities extends FabricAbilityImpl implements 
     }
 
     /** Used by {@link FabricBleedListener}. */
-    boolean isBleedDisabledOrFails(ServerPlayerEntity attacker) {
+    boolean isBleedDisabledOrFails(ServerPlayer attacker) {
         var ability = Abilities.BLEED;
         return isDisabled(ability) || failsChecks(attacker, ability);
     }

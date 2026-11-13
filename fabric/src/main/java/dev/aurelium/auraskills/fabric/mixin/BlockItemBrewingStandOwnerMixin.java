@@ -1,12 +1,12 @@
 package dev.aurelium.auraskills.fabric.mixin;
 
 import dev.aurelium.auraskills.fabric.FabricBrewingOwnerTracker;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.ActionResult;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.Blocks;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -19,21 +19,21 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class BlockItemBrewingStandOwnerMixin {
 
     @Inject(method = "place", at = @At("RETURN"))
-    private void auraskills$brewingStandPlaced(ItemPlacementContext context, CallbackInfoReturnable<ActionResult> cir) {
-        ActionResult result = cir.getReturnValue();
-        if (!result.isAccepted()) {
+    private void auraskills$brewingStandPlaced(BlockPlaceContext context, CallbackInfoReturnable<InteractionResult> cir) {
+        InteractionResult result = cir.getReturnValue();
+        if (!result.consumesAction()) {
             return;
         }
         BlockItem self = (BlockItem) (Object) this;
         if (!self.getBlock().equals(Blocks.BREWING_STAND)) {
             return;
         }
-        if (!(context.getWorld() instanceof ServerWorld sw)) {
+        if (!(context.getLevel() instanceof ServerLevel sw)) {
             return;
         }
-        if (!(context.getPlayer() instanceof ServerPlayerEntity sp)) {
+        if (!(context.getPlayer() instanceof ServerPlayer sp)) {
             return;
         }
-        FabricBrewingOwnerTracker.setOwner(sw, context.getBlockPos(), sp.getUuid());
+        FabricBrewingOwnerTracker.setOwner(sw, context.getClickedPos(), sp.getUUID());
     }
 }

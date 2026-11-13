@@ -15,22 +15,22 @@ import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.tag.ItemTags;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayDeque;
@@ -64,7 +64,7 @@ public final class FabricTerraform {
 
     private static void registerBreakChain(FabricAuraSkills plugin) {
         PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) -> {
-            if (world.isClient() || !(player instanceof ServerPlayerEntity sp) || !(world instanceof ServerWorld sw)) {
+            if (world.isClientSide() || !(player instanceof ServerPlayer sp) || !(world instanceof ServerLevel sw)) {
                 return true;
             }
             if (IN_TERRAFORM_CHAIN.get()) {
@@ -73,7 +73,7 @@ public final class FabricTerraform {
             if (isDisabled()) {
                 return true;
             }
-            User user = plugin.getUserManager().getUser(sp.getUuid());
+            User user = plugin.getUserManager().getUser(sp.getUUID());
             if (failsChecks(plugin, sp, user)) {
                 return true;
             }
@@ -101,11 +101,11 @@ public final class FabricTerraform {
         });
     }
 
-    private static void runTerraformBreak(ServerPlayerEntity player, ServerWorld world,
+    private static void runTerraformBreak(ServerPlayer player, ServerLevel world,
             BlockPos start, BlockState startState) {
         var targetBlock = startState.getBlock();
         var queue = new ArrayDeque<BlockPos>();
-        queue.add(start.toImmutable());
+        queue.add(start.immutable());
 
         int maxCount = MANA.optionInt("max_blocks", 61);
         if (MANA.optionBoolean("max_limit_durability", false)) {
@@ -118,15 +118,15 @@ public final class FabricTerraform {
             while (!queue.isEmpty() && count < maxCount) {
                 BlockPos p = queue.poll();
                 BlockState st = world.getBlockState(p);
-                if (!st.isOf(targetBlock)) {
+                if (!st.is(targetBlock)) {
                     continue;
                 }
-                if (!player.interactionManager.tryBreakBlock(p)) {
+                if (!player.gameMode.destroyBlock(p)) {
                     continue;
                 }
                 count++;
                 for (Direction dir : HORIZONTAL) {
-                    queue.add(p.offset(dir));
+                    queue.add(p.relative(dir));
                 }
             }
         } finally {
@@ -136,32 +136,32 @@ public final class FabricTerraform {
         applyDurabilityMultiplierDamage(player, count, MANA.optionDouble("durability_multiplier", 0));
     }
 
-    private static int getHoldingToolDurabilityLimit(ServerPlayerEntity player, int limit) {
-        ItemStack item = player.getMainHandStack();
-        if (item.isEmpty() || !item.isDamageable()) {
+    private static int getHoldingToolDurabilityLimit(ServerPlayer player, int limit) {
+        ItemStack item = player.getMainHandItem();
+        if (item.isEmpty() || !item.isDamageableItem()) {
             return limit;
         }
-        int remaining = item.getMaxDamage() - item.getDamage();
+        int remaining = item.getMaxDamage() - item.getDamageValue();
         return Math.min(limit, remaining);
     }
 
-    private static void applyDurabilityMultiplierDamage(ServerPlayerEntity player, int blocksBroken, double multiplier) {
+    private static void applyDurabilityMultiplierDamage(ServerPlayer player, int blocksBroken, double multiplier) {
         if (multiplier <= 0 || blocksBroken <= 0) {
             return;
         }
-        ItemStack item = player.getMainHandStack();
-        if (item.isEmpty() || !item.isDamageable()) {
+        ItemStack item = player.getMainHandItem();
+        if (item.isEmpty() || !item.isDamageableItem()) {
             return;
         }
         int taken = (int) (blocksBroken * multiplier);
         if (taken <= 0) {
             return;
         }
-        item.damage(taken, player, EquipmentSlot.MAINHAND);
+        item.hurtAndBreak(taken, player, EquipmentSlot.MAINHAND);
     }
 
     private static @Nullable SkillSource<BlockXpSource> findTerraformBreakSource(FabricAuraSkills plugin, BlockState state) {
-        String path = Registries.BLOCK.getId(state.getBlock()).getPath();
+        String path = BuiltInRegistries.BLOCK.getKey(state.getBlock()).getPath();
         for (SkillSource<BlockXpSource> entry : plugin.getSkillManager().getSourcesOfType(BlockXpSource.class)) {
             BlockXpSource source = entry.source();
             if (!List.of(source.getTriggers()).contains(BlockXpSource.BlockTriggers.BREAK)) {
@@ -189,30 +189,30 @@ public final class FabricTerraform {
     }
 
     private static void registerReadyListeners(FabricAuraSkills plugin) {
-        UseBlockCallback.EVENT.register((PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) -> {
-            if (world.isClient() || !(player instanceof ServerPlayerEntity sp) || !(world instanceof ServerWorld sw)) {
-                return ActionResult.PASS;
+        UseBlockCallback.EVENT.register((Player player, Level world, InteractionHand hand, BlockHitResult hitResult) -> {
+            if (world.isClientSide() || !(player instanceof ServerPlayer sp) || !(world instanceof ServerLevel sw)) {
+                return InteractionResult.PASS;
             }
-            if (hand != Hand.MAIN_HAND) {
-                return ActionResult.PASS;
+            if (hand != InteractionHand.MAIN_HAND) {
+                return InteractionResult.PASS;
             }
             tryReady(plugin, sp, sw, hitResult.getBlockPos(), sw.getBlockState(hitResult.getBlockPos()));
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         });
 
-        UseItemCallback.EVENT.register((PlayerEntity player, World world, Hand hand) -> {
-            if (world.isClient() || !(player instanceof ServerPlayerEntity sp)) {
-                return ActionResult.PASS;
+        UseItemCallback.EVENT.register((Player player, Level world, InteractionHand hand) -> {
+            if (world.isClientSide() || !(player instanceof ServerPlayer sp)) {
+                return InteractionResult.PASS;
             }
-            if (hand != Hand.MAIN_HAND) {
-                return ActionResult.PASS;
+            if (hand != InteractionHand.MAIN_HAND) {
+                return InteractionResult.PASS;
             }
             tryReady(plugin, sp, null, null, null);
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         });
     }
 
-    private static void tryReady(FabricAuraSkills plugin, ServerPlayerEntity player, @Nullable ServerWorld world,
+    private static void tryReady(FabricAuraSkills plugin, ServerPlayer player, @Nullable ServerLevel world,
             @Nullable BlockPos pos, @Nullable BlockState stateAtPos) {
         if (isDisabled()) {
             return;
@@ -220,7 +220,7 @@ public final class FabricTerraform {
         if (!holdingShovel(player)) {
             return;
         }
-        User user = plugin.getUserManager().getUser(player.getUuid());
+        User user = plugin.getUserManager().getUser(player.getUUID());
         if (user.getManaAbilityLevel(MANA) <= 0) {
             return;
         }
@@ -252,13 +252,13 @@ public final class FabricTerraform {
         }
     }
 
-    private static void scheduleUnready(FabricAuraSkills plugin, ServerPlayerEntity player, Locale locale, ManaAbilityData data) {
+    private static void scheduleUnready(FabricAuraSkills plugin, ServerPlayer player, Locale locale, ManaAbilityData data) {
         int readyDurationTicks = 80;
         plugin.getScheduler().scheduleSync(() -> {
-            if (!plugin.getUserManager().hasUser(player.getUuid())) {
+            if (!plugin.getUserManager().hasUser(player.getUUID())) {
                 return;
             }
-            User user = plugin.getUserManager().getUser(player.getUuid());
+            User user = plugin.getUserManager().getUser(player.getUUID());
             ManaAbilityData d = user.getManaAbilityData(MANA);
             if (!d.isActivated() && d.isReady()) {
                 d.setReady(false);
@@ -267,9 +267,9 @@ public final class FabricTerraform {
         }, readyDurationTicks * 50L, TimeUnit.MILLISECONDS);
     }
 
-    private static boolean isAllowReady(FabricAuraSkills plugin, ServerPlayerEntity player, @Nullable ServerWorld world,
+    private static boolean isAllowReady(FabricAuraSkills plugin, ServerPlayer player, @Nullable ServerLevel world,
             @Nullable BlockPos pos) {
-        if (MANA.optionBoolean("require_sneak", false) && !player.isSneaking()) {
+        if (MANA.optionBoolean("require_sneak", false) && !player.isShiftKeyDown()) {
             return false;
         }
         if (world != null && pos != null && isBlockPlace(player, world, pos)) {
@@ -279,25 +279,25 @@ public final class FabricTerraform {
         if (plugin.getWorldManager().isDisabledWorld(w)) {
             return false;
         }
-        User user = plugin.getUserManager().getUser(player.getUuid());
+        User user = plugin.getUserManager().getUser(player.getUUID());
         return user.hasSkillPermission(MANA.getSkill());
     }
 
-    private static boolean isBlockPlace(ServerPlayerEntity player, ServerWorld world, BlockPos pos) {
+    private static boolean isBlockPlace(ServerPlayer player, ServerLevel world, BlockPos pos) {
         if (!MANA.optionBoolean("check_offhand", true)) {
             return false;
         }
-        ItemStack off = player.getOffHandStack();
+        ItemStack off = player.getOffhandItem();
         if (off.isEmpty()) {
             return false;
         }
-        if (player.isSneaking() && MANA.optionBoolean("sneak_offhand_bypass", true)) {
+        if (player.isShiftKeyDown() && MANA.optionBoolean("sneak_offhand_bypass", true)) {
             return false;
         }
-        return off.getItem() instanceof net.minecraft.item.BlockItem;
+        return off.getItem() instanceof net.minecraft.world.item.BlockItem;
     }
 
-    private static boolean tryActivate(FabricAuraSkills plugin, ServerPlayerEntity player, User user) {
+    private static boolean tryActivate(FabricAuraSkills plugin, ServerPlayer player, User user) {
         ManaAbilityData data = user.getManaAbilityData(MANA);
         if (!data.isReady() || data.isActivated()) {
             return false;
@@ -309,9 +309,9 @@ public final class FabricTerraform {
         }
 
         data.setActivated(true);
-        if (player.getEntityWorld() instanceof ServerWorld soundWorld) {
+        if (player.level() instanceof ServerLevel soundWorld) {
             soundWorld.playSound(null, player.getX(), player.getY(), player.getZ(),
-                    SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0f, 1.0f);
+                    SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 1.0f, 1.0f);
         }
         double manaUsed = consumeMana(plugin, player, user, manaCost);
         FabricManaAbilityUseXpHandler.onManaAbilityActivated(player, MANA, manaUsed);
@@ -324,11 +324,11 @@ public final class FabricTerraform {
         return true;
     }
 
-    private static void stop(FabricAuraSkills plugin, ServerPlayerEntity player) {
-        if (!plugin.getUserManager().hasUser(player.getUuid())) {
+    private static void stop(FabricAuraSkills plugin, ServerPlayer player) {
+        if (!plugin.getUserManager().hasUser(player.getUUID())) {
             return;
         }
-        User user = plugin.getUserManager().getUser(player.getUuid());
+        User user = plugin.getUserManager().getUser(player.getUUID());
         ManaAbilityData data = user.getManaAbilityData(MANA);
         if (!data.isActivated()) {
             return;
@@ -339,16 +339,16 @@ public final class FabricTerraform {
         user.sendMessage(plugin.getMsg(ManaAbilityMessage.TERRAFORM_END, user.getLocale()));
     }
 
-    private static void stopIfActive(FabricAuraSkills plugin, ServerPlayerEntity player) {
-        if (!plugin.getUserManager().hasUser(player.getUuid())) {
+    private static void stopIfActive(FabricAuraSkills plugin, ServerPlayer player) {
+        if (!plugin.getUserManager().hasUser(player.getUUID())) {
             return;
         }
-        if (plugin.getUserManager().getUser(player.getUuid()).getManaAbilityData(MANA).isActivated()) {
+        if (plugin.getUserManager().getUser(player.getUUID()).getManaAbilityData(MANA).isActivated()) {
             stop(plugin, player);
         }
     }
 
-    private static double consumeMana(FabricAuraSkills plugin, ServerPlayerEntity player, User user, double manaCost) {
+    private static double consumeMana(FabricAuraSkills plugin, ServerPlayer player, User user, double manaCost) {
         double manaConsumed;
         if (plugin.configBoolean(Option.MANA_ENABLED)) {
             manaConsumed = manaCost;
@@ -370,7 +370,7 @@ public final class FabricTerraform {
         return true;
     }
 
-    private static boolean failsChecks(FabricAuraSkills plugin, ServerPlayerEntity player, User user) {
+    private static boolean failsChecks(FabricAuraSkills plugin, ServerPlayer player, User user) {
         if (user.getManaAbilityLevel(MANA) <= 0) {
             return true;
         }
@@ -381,7 +381,7 @@ public final class FabricTerraform {
         if (!user.hasSkillPermission(MANA.getSkill())) {
             return true;
         }
-        if (plugin.configBoolean(Option.DISABLE_IN_CREATIVE_MODE) && player.getAbilities().creativeMode) {
+        if (plugin.configBoolean(Option.DISABLE_IN_CREATIVE_MODE) && player.getAbilities().instabuild) {
             return true;
         }
         return false;
@@ -391,7 +391,7 @@ public final class FabricTerraform {
         return !MANA.isEnabled() || !MANA.getSkill().isEnabled();
     }
 
-    private static boolean holdingShovel(ServerPlayerEntity player) {
-        return player.getMainHandStack().isIn(ItemTags.SHOVELS);
+    private static boolean holdingShovel(ServerPlayer player) {
+        return player.getMainHandItem().is(ItemTags.SHOVELS);
     }
 }

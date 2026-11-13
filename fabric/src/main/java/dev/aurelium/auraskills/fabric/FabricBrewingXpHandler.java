@@ -11,13 +11,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.BrewingStandScreenHandler;
-import net.minecraft.screen.slot.SlotActionType;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.inventory.BrewingStandMenu;
+import net.minecraft.world.inventory.ContainerInput;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 public final class FabricBrewingXpHandler {
@@ -41,9 +41,9 @@ public final class FabricBrewingXpHandler {
     }
 
     /**
-     * Start of {@link net.minecraft.block.entity.BrewingStandBlockEntity#craft}: branch on first YAML row matching the ingredient (Paper {@code BrewingLeveler#onBrew}).
+     * Start of {@link net.minecraft.world.level.block.entity.BrewingStandBlockEntity#doBrew}: branch on first YAML row matching the ingredient (Paper {@code BrewingLeveler#onBrew}).
      */
-    public static void onCraftHead(ServerWorld world, BlockPos pos, DefaultedList<ItemStack> slots) {
+    public static void onCraftHead(ServerLevel world, BlockPos pos, NonNullList<ItemStack> slots) {
         PENDING_TAKEOUT.remove();
         FabricAuraSkills plugin = FabricAuraSkills.getInstance();
         if (plugin == null) {
@@ -62,14 +62,14 @@ public final class FabricBrewingXpHandler {
             awardBrewXp(plugin, world, pos, first);
         } else if (trigger == BrewTriggers.TAKEOUT) {
             ItemStack[] before = new ItemStack[] {slots.get(0).copy(), slots.get(1).copy(), slots.get(2).copy()};
-            PENDING_TAKEOUT.set(new BrewCraftPending(pos.toImmutable(), ingredient.copy(), before));
+            PENDING_TAKEOUT.set(new BrewCraftPending(pos.immutable(), ingredient.copy(), before));
         }
     }
 
     /**
      * End of {@code craft}: record bottle-slot changes for {@code TAKEOUT} sources.
      */
-    public static void onCraftReturn(ServerWorld world, BlockPos pos, DefaultedList<ItemStack> slots) {
+    public static void onCraftReturn(ServerLevel world, BlockPos pos, NonNullList<ItemStack> slots) {
         BrewCraftPending pending = PENDING_TAKEOUT.get();
         PENDING_TAKEOUT.remove();
         if (pending == null || !pending.pos.equals(pos)) {
@@ -84,10 +84,10 @@ public final class FabricBrewingXpHandler {
      * When a player takes a potion from slots 0–2 (Paper {@code BrewingLeveler#onTakePotionOut}).
      */
     public static void onPotionSlotClickFinish(
-            ServerPlayerEntity player,
-            BrewingStandScreenHandler handler,
+            ServerPlayer player,
+            BrewingStandMenu handler,
             int slotIndex,
-            SlotActionType actionType,
+            ContainerInput actionType,
             ItemStack stackBeforeClick) {
         if (slotIndex < 0 || slotIndex > 2) {
             return;
@@ -95,14 +95,14 @@ public final class FabricBrewingXpHandler {
         if (!isTakeoutClickAction(actionType)) {
             return;
         }
-        if (!(player.getEntityWorld() instanceof ServerWorld world) || world.isClient()) {
+        if (!(player.level() instanceof ServerLevel world) || world.isClientSide()) {
             return;
         }
-        if (!(handler.getSlot(slotIndex).inventory instanceof net.minecraft.block.entity.BrewingStandBlockEntity be)) {
+        if (!(handler.getSlot(slotIndex).container instanceof net.minecraft.world.level.block.entity.BrewingStandBlockEntity be)) {
             return;
         }
-        BlockPos pos = be.getPos();
-        ItemStack after = handler.getSlot(slotIndex).getStack();
+        BlockPos pos = be.getBlockPos();
+        ItemStack after = handler.getSlot(slotIndex).getItem();
         if (stackBeforeClick.isEmpty() || !itemRemovedOrReduced(stackBeforeClick, after)) {
             return;
         }
@@ -140,29 +140,29 @@ public final class FabricBrewingXpHandler {
             totalXpMap.merge(skill, source.getXp(), Double::sum);
         }
 
-        User user = plugin.getUserManager().getUser(player.getUuid());
+        User user = plugin.getUserManager().getUser(player.getUUID());
         for (Skill skill : totalXpMap.keySet()) {
             plugin.getLevelManager().addXp(user, skill, sources.getFirst().source(), totalXpMap.getOrDefault(skill, 0.0));
         }
     }
 
-    private static boolean isTakeoutClickAction(SlotActionType actionType) {
-        return actionType == SlotActionType.PICKUP
-                || actionType == SlotActionType.QUICK_MOVE
-                || actionType == SlotActionType.SWAP
-                || actionType == SlotActionType.PICKUP_ALL;
+    private static boolean isTakeoutClickAction(ContainerInput actionType) {
+        return actionType == ContainerInput.PICKUP
+                || actionType == ContainerInput.QUICK_MOVE
+                || actionType == ContainerInput.SWAP
+                || actionType == ContainerInput.PICKUP_ALL;
     }
 
     private static boolean itemRemovedOrReduced(ItemStack before, ItemStack after) {
         if (after.isEmpty()) {
             return true;
         }
-        return after.getCount() < before.getCount() || !ItemStack.areEqual(before, after);
+        return after.getCount() < before.getCount() || !ItemStack.matches(before, after);
     }
 
     private static void awardBrewXp(
-            FabricAuraSkills plugin, ServerWorld world, BlockPos pos, SkillSource<BrewingXpSource> entry) {
-        ServerPlayerEntity brewer = resolveBrewXpPlayer(world, pos);
+            FabricAuraSkills plugin, ServerLevel world, BlockPos pos, SkillSource<BrewingXpSource> entry) {
+        ServerPlayer brewer = resolveBrewXpPlayer(world, pos);
         if (brewer == null) {
             return;
         }
@@ -171,7 +171,7 @@ public final class FabricBrewingXpHandler {
         if (FabricXpHandlerUtil.shouldBlockXp(plugin, brewer, skill, SourceTypes.BREWING)) {
             return;
         }
-        User user = plugin.getUserManager().getUser(brewer.getUuid());
+        User user = plugin.getUserManager().getUser(brewer.getUUID());
         plugin.getLevelManager().addXp(user, skill, source, source.getXp());
     }
 
@@ -190,12 +190,12 @@ public final class FabricBrewingXpHandler {
      * Bukkit {@code BrewingLeveler#onBrew}: requires {@code skillsBrewingStandOwner} — only the tracked owner receives
      * XP (hopper/automatic brew when owner is offline awards nothing).
      */
-    private static @Nullable ServerPlayerEntity resolveBrewXpPlayer(ServerWorld world, BlockPos pos) {
+    private static @Nullable ServerPlayer resolveBrewXpPlayer(ServerLevel world, BlockPos pos) {
         UUID ownerId = FabricBrewingOwnerTracker.getOwner(world, pos);
         if (ownerId == null) {
             return null;
         }
-        return world.getServer().getPlayerManager().getPlayer(ownerId);
+        return world.getServer().getPlayerList().getPlayer(ownerId);
     }
 
 }

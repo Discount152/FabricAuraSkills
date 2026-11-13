@@ -1,32 +1,39 @@
 package dev.aurelium.auraskills.fabric.mixin;
 
 import dev.aurelium.auraskills.fabric.FabricBrewingXpHandler;
-import net.minecraft.block.entity.BrewingStandBlockEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+/**
+ * 26.3 moved potion results into a private {@code doBrew(ServerLevel, BlockPos, BrewingStandBlockEntity)}.
+ */
 @Mixin(BrewingStandBlockEntity.class)
 public abstract class BrewingStandBlockEntityMixin {
 
-    @Inject(method = "craft", at = @At("HEAD"))
-    private static void auraskills$brewHead(World world, BlockPos pos, DefaultedList<net.minecraft.item.ItemStack> slots, CallbackInfo ci) {
-        if (world.isClient() || !(world instanceof ServerWorld sw)) {
-            return;
-        }
-        FabricBrewingXpHandler.onCraftHead(sw, pos, slots);
+    @Shadow
+    protected abstract NonNullList<ItemStack> getItems();
+
+    @Inject(
+            method = "doBrew(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/entity/BrewingStandBlockEntity;)V",
+            at = @At("HEAD")
+    )
+    private static void auraskills$brewHead(ServerLevel world, BlockPos pos, BrewingStandBlockEntity stand, CallbackInfo ci) {
+        FabricBrewingXpHandler.onCraftHead(world, pos, ((BrewingStandBlockEntityMixin) (Object) stand).getItems());
     }
 
-    @Inject(method = "craft", at = @At("RETURN"))
-    private static void auraskills$brewReturn(World world, BlockPos pos, DefaultedList<net.minecraft.item.ItemStack> slots, CallbackInfo ci) {
-        if (world.isClient() || !(world instanceof ServerWorld sw)) {
-            return;
-        }
-        FabricBrewingXpHandler.onCraftReturn(sw, pos, slots);
+    @Inject(
+            method = "doBrew(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/entity/BrewingStandBlockEntity;)V",
+            at = @At("RETURN")
+    )
+    private static void auraskills$brewReturn(ServerLevel world, BlockPos pos, BrewingStandBlockEntity stand, CallbackInfo ci) {
+        FabricBrewingXpHandler.onCraftReturn(world, pos, ((BrewingStandBlockEntityMixin) (Object) stand).getItems());
     }
 }

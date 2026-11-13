@@ -1,14 +1,14 @@
 package dev.aurelium.auraskills.fabric.mixin;
 
 import dev.aurelium.auraskills.fabric.requirement.FabricHarvestRequirement;
-import net.minecraft.block.BeehiveBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BeehiveBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -20,22 +20,22 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(BeehiveBlock.class)
 public abstract class BeehiveHarvestRequirementMixin {
 
-    @Inject(method = "onUseWithItem", at = @At("HEAD"), cancellable = true)
-    private void auraskills$harvestRequirementHoney(ItemStack stack, BlockState state, World world,
-            net.minecraft.util.math.BlockPos pos, PlayerEntity player, net.minecraft.util.Hand hand, BlockHitResult hit,
-            CallbackInfoReturnable<ActionResult> cir) {
-        if (world.isClient()) {
+    @Inject(method = "useItemOn", at = @At("HEAD"), cancellable = true)
+    private void auraskills$harvestRequirementHoney(ItemStack stack, BlockState state, Level world,
+            net.minecraft.core.BlockPos pos, Player player, net.minecraft.world.InteractionHand hand, BlockHitResult hit,
+            CallbackInfoReturnable<InteractionResult> cir) {
+        if (world.isClientSide()) {
             return;
         }
-        int honey = state.get(BeehiveBlock.HONEY_LEVEL);
+        int honey = state.getValue(BeehiveBlock.HONEY_LEVEL);
         if (honey <= 0) {
             return;
         }
-        if (!stack.isOf(Items.SHEARS) && !stack.isOf(Items.GLASS_BOTTLE)) {
+        if (!stack.is(Items.SHEARS) && !stack.is(Items.GLASS_BOTTLE)) {
             return;
         }
         if (!FabricHarvestRequirement.allowHarvest(player, state)) {
-            cir.setReturnValue(ActionResult.FAIL);
+            cir.setReturnValue(InteractionResult.FAIL);
         }
     }
 }

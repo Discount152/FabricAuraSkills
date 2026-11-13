@@ -22,10 +22,9 @@ import dev.aurelium.auraskills.fabric.ability.FabricForagingAbilities;
 import dev.aurelium.auraskills.fabric.ability.FabricHealingAbilities;
 import dev.aurelium.auraskills.fabric.ability.FabricMiningAbilities;
 import dev.aurelium.auraskills.fabric.damage.FabricDamageMeta;
-import net.minecraft.server.network.ServerPlayerEntity;
-
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.server.level.ServerPlayer;
 
 public final class FabricAbilityManager extends AbilityManager {
 
@@ -64,13 +63,13 @@ public final class FabricAbilityManager extends AbilityManager {
         }
     }
 
-    public void applyAbilityAttackDamage(FabricDamageMeta meta, ServerPlayerEntity attacker) {
+    public void applyAbilityAttackDamage(FabricDamageMeta meta, ServerPlayer attacker) {
         for (FabricDamagePipelineContributor c : damageContributors) {
             c.contributeAttackDamage(plugin, meta, attacker);
         }
     }
 
-    public void applyAbilityDefenseDamage(FabricDamageMeta meta, ServerPlayerEntity victim) {
+    public void applyAbilityDefenseDamage(FabricDamageMeta meta, ServerPlayer victim) {
         for (FabricDamagePipelineContributor c : damageContributors) {
             c.contributeDefenseDamage(plugin, meta, victim);
         }
@@ -78,7 +77,7 @@ public final class FabricAbilityManager extends AbilityManager {
 
     @Override
     public void sendAbilityMessage(User user, String message) {
-        ServerPlayerEntity player = FabricUser.getPlayer(user);
+        ServerPlayer player = FabricUser.getPlayer(user);
         if (player == null) {
             return;
         }

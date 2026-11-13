@@ -3,7 +3,7 @@ package dev.aurelium.auraskills.fabric.ability;
 import dev.aurelium.auraskills.api.ability.Ability;
 import dev.aurelium.auraskills.common.ability.AbilityImpl;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 
 public abstract class FabricAbilityImpl extends AbilityImpl {
 
@@ -20,7 +20,7 @@ public abstract class FabricAbilityImpl extends AbilityImpl {
         return abilityContext.isDisabled(ability);
     }
 
-    protected boolean failsChecks(ServerPlayerEntity player, Ability ability) {
+    protected boolean failsChecks(ServerPlayer player, Ability ability) {
         return abilityContext.failsChecks(player, ability);
     }
 }

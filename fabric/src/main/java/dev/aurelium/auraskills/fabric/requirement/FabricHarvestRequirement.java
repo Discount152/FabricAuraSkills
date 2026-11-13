@@ -2,11 +2,11 @@ package dev.aurelium.auraskills.fabric.requirement;
 
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.trait.FabricTraitWorlds;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.registry.Registries;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * Shared harvest gate for block mixins (Paper {@code PlayerHarvestBlockEvent} parity).
@@ -19,8 +19,8 @@ public final class FabricHarvestRequirement {
     /**
      * @return true if harvest is allowed (or requirement system inactive / not applicable)
      */
-    public static boolean allowHarvest(PlayerEntity player, BlockState harvestedState) {
-        if (!(player instanceof ServerPlayerEntity sp)) {
+    public static boolean allowHarvest(Player player, BlockState harvestedState) {
+        if (!(player instanceof ServerPlayer sp)) {
             return true;
         }
         FabricAuraSkills plugin = FabricAuraSkills.getInstance();
@@ -30,7 +30,7 @@ public final class FabricHarvestRequirement {
         if (FabricTraitWorlds.isInDisabledWorld(plugin, sp)) {
             return true;
         }
-        Identifier blockId = Registries.BLOCK.getId(harvestedState.getBlock());
+        Identifier blockId = BuiltInRegistries.BLOCK.getKey(harvestedState.getBlock());
         return FabricRequirementHandlers.checkBlock(plugin, sp, blockId, FabricRequirementHandlers.BlockContext.HARVEST);
     }
 }

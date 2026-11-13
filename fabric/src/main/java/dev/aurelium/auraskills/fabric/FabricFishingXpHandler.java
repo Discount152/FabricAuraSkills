@@ -7,11 +7,11 @@ import dev.aurelium.auraskills.common.config.Option;
 import dev.aurelium.auraskills.common.source.SourceTypes;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.loot.FabricFishingLootHandler;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.projectile.FishingBobberEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.projectile.FishingHook;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 public final class FabricFishingXpHandler {
@@ -20,16 +20,16 @@ public final class FabricFishingXpHandler {
     }
 
     /**
-     * Called from a mixin when vanilla increments {@link net.minecraft.stat.Stats#FISH_CAUGHT} during bobber {@code use}.
+     * Called from a mixin when vanilla increments {@link net.minecraft.stats.Stats#FISH_CAUGHT} during bobber {@code use}.
      */
-    public static void onFishCaughtStat(FabricAuraSkills plugin, FishingBobberEntity bobber, ServerPlayerEntity player) {
+    public static void onFishCaughtStat(FabricAuraSkills plugin, FishingHook bobber, ServerPlayer player) {
         if (plugin == null) {
             return;
         }
         if (!plugin.getSkillManager().isSourceEnabled(SourceTypes.FISHING)) {
             return;
         }
-        if (plugin.configBoolean(Option.DISABLE_IN_CREATIVE_MODE) && player.getAbilities().creativeMode) {
+        if (plugin.configBoolean(Option.DISABLE_IN_CREATIVE_MODE) && player.getAbilities().instabuild) {
             return;
         }
         ItemStack caught = resolveCaughtStack(bobber);
@@ -50,7 +50,7 @@ public final class FabricFishingXpHandler {
         if (!skill.isEnabled()) {
             return;
         }
-        User user = plugin.getUserManager().getUser(player.getUuid());
+        User user = plugin.getUserManager().getUser(player.getUUID());
         if (!user.hasSkillPermission(skill)) {
             return;
         }
@@ -63,14 +63,14 @@ public final class FabricFishingXpHandler {
         FabricFishingLootHandler.tryRollBonusLoot(plugin, player, bobber, caught, match);
     }
 
-    private static @Nullable ItemStack resolveCaughtStack(FishingBobberEntity bobber) {
+    private static @Nullable ItemStack resolveCaughtStack(FishingHook bobber) {
         ItemStack fromHook = FabricFishingCatchHolder.take();
         if (fromHook != null && !fromHook.isEmpty()) {
             return fromHook;
         }
-        Entity hooked = bobber.getHookedEntity();
+        Entity hooked = bobber.getHookedIn();
         if (hooked instanceof ItemEntity itemEntity) {
-            return itemEntity.getStack().copy();
+            return itemEntity.getItem().copy();
         }
         return null;
     }

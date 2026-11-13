@@ -17,8 +17,6 @@ import dev.aurelium.auraskills.fabric.trait.FabricManaRegenTrait;
 import dev.aurelium.auraskills.fabric.trait.FabricMaxManaTrait;
 import dev.aurelium.auraskills.fabric.trait.FabricMovementSpeedTrait;
 import dev.aurelium.auraskills.fabric.trait.FabricTraitHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.NumberFormat;
@@ -26,6 +24,8 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 
 public final class FabricTraitManager extends TraitManager {
 
@@ -80,7 +80,7 @@ public final class FabricTraitManager extends TraitManager {
     /**
      * Invoked when a player moves to another dimension so attribute traits can refresh.
      */
-    public void onPlayerChangedServerWorld(ServerPlayerEntity player, ServerWorld from, ServerWorld to) {
+    public void onPlayerChangedServerWorld(ServerPlayer player, ServerLevel from, ServerLevel to) {
         for (FabricTraitHandler impl : traitImpls.values()) {
             impl.onPlayerChangedServerWorld(player, from, to);
         }
@@ -88,7 +88,7 @@ public final class FabricTraitManager extends TraitManager {
 
     @Override
     public double getBaseLevel(User user, Trait trait) {
-        ServerPlayerEntity player = FabricUser.getPlayer(user);
+        ServerPlayer player = FabricUser.getPlayer(user);
         if (player == null) {
             return 0.0;
         }

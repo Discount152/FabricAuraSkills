@@ -7,16 +7,15 @@ import dev.aurelium.auraskills.common.config.Option;
 import dev.aurelium.auraskills.common.source.SourceTypes;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.common.util.text.TextUtil;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.ItemEnchantmentsComponent;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.tag.EnchantmentTags;
-import net.minecraft.screen.GrindstoneScreenHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
-
 import java.util.List;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.EnchantmentTags;
+import net.minecraft.world.inventory.GrindstoneMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 
 public final class FabricGrindstoneXpHandler {
 
@@ -26,7 +25,7 @@ public final class FabricGrindstoneXpHandler {
     /**
      * Called after the player successfully takes (or reduces) the grindstone result stack.
      */
-    public static void onGrindstoneTake(ServerPlayerEntity player, GrindstoneScreenHandler handler, ItemStack topBefore, ItemStack bottomBefore) {
+    public static void onGrindstoneTake(ServerPlayer player, GrindstoneMenu handler, ItemStack topBefore, ItemStack bottomBefore) {
         FabricAuraSkills plugin = FabricAuraSkills.getInstance();
         if (plugin == null) {
             return;
@@ -41,7 +40,7 @@ public final class FabricGrindstoneXpHandler {
             return;
         }
         double multiplier = getTotalLevelMultiplier(plugin, source, skill, topBefore, bottomBefore);
-        User user = plugin.getUserManager().getUser(player.getUuid());
+        User user = plugin.getUserManager().getUser(player.getUUID());
         plugin.getLevelManager().addXp(user, skill, source, multiplier * source.getXp());
     }
 
@@ -66,21 +65,21 @@ public final class FabricGrindstoneXpHandler {
             return 0;
         }
         int total = 0;
-        ItemEnchantmentsComponent stored = stack.get(DataComponentTypes.STORED_ENCHANTMENTS);
+        ItemEnchantments stored = stack.get(DataComponents.STORED_ENCHANTMENTS);
         if (stored != null) {
             total += sumDisenchantableLevels(stored, plugin);
         }
-        ItemEnchantmentsComponent ench = stack.get(DataComponentTypes.ENCHANTMENTS);
+        ItemEnchantments ench = stack.get(DataComponents.ENCHANTMENTS);
         if (ench != null) {
             total += sumDisenchantableLevels(ench, plugin);
         }
         return total;
     }
 
-    private static int sumDisenchantableLevels(ItemEnchantmentsComponent component, FabricAuraSkills plugin) {
+    private static int sumDisenchantableLevels(ItemEnchantments component, FabricAuraSkills plugin) {
         int sum = 0;
-        for (var e : component.getEnchantmentEntries()) {
-            RegistryEntry<Enchantment> entry = e.getKey();
+        for (var e : component.entrySet()) {
+            Holder<Enchantment> entry = e.getKey();
             if (!isDisenchantable(entry, plugin)) {
                 continue;
             }
@@ -89,11 +88,11 @@ public final class FabricGrindstoneXpHandler {
         return sum;
     }
 
-    private static boolean isDisenchantable(RegistryEntry<Enchantment> entry, FabricAuraSkills plugin) {
-        if (entry.isIn(EnchantmentTags.CURSE)) {
+    private static boolean isDisenchantable(Holder<Enchantment> entry, FabricAuraSkills plugin) {
+        if (entry.is(EnchantmentTags.CURSE)) {
             return false;
         }
-        String key = entry.getKey().map(k -> k.getValue().getPath()).orElse("");
+        String key = entry.unwrapKey().map(k -> k.identifier().getPath()).orElse("");
         List<String> blocked = plugin.configStringList(Option.SOURCE_GRINDSTONE_BLOCKED_ENCHANTS);
         for (String blockedName : blocked) {
             if (blockedName != null && blockedName.equalsIgnoreCase(key)) {

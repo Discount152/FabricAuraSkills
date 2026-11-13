@@ -1,12 +1,11 @@
 package dev.aurelium.auraskills.fabric;
 
 import dev.aurelium.auraskills.api.item.ItemCategory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
-
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Approximates Bukkit {@code BukkitItemRegistry#getItemCategories} using registry item ids.
@@ -20,7 +19,7 @@ final class FabricItemCategories {
         if (stack.isEmpty()) {
             return Collections.emptySet();
         }
-        String path = Registries.ITEM.getId(stack.getItem()).getPath();
+        String path = BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath();
         EnumSet<ItemCategory> found = EnumSet.noneOf(ItemCategory.class);
 
         if (path.endsWith("_sword") || path.equals("bow") || path.equals("crossbow") || path.equals("trident")) {
@@ -40,7 +39,7 @@ final class FabricItemCategories {
             found.add(ItemCategory.FISHING_JUNK);
         }
         if (path.equals("fishing_rod")) {
-            if (stack.hasEnchantments()) {
+            if (stack.isEnchanted()) {
                 found.add(ItemCategory.FISHING_TREASURE);
             } else {
                 found.add(ItemCategory.FISHING_JUNK);

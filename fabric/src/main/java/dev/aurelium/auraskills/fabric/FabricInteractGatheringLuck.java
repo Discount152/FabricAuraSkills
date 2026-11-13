@@ -6,23 +6,23 @@ import dev.aurelium.auraskills.api.trait.Trait;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.ability.FabricMiningAbilities;
 import dev.aurelium.auraskills.fabric.trait.FabricGatheringLuckTraits;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.ItemEnchantmentsComponent;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Prediction;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Ports Bukkit {@link dev.aurelium.auraskills.bukkit.source.BlockLeveler#applyBlockLuck} for
@@ -38,9 +38,9 @@ public final class FabricInteractGatheringLuck {
     private FabricInteractGatheringLuck() {
     }
 
-    public static void tryApply(FabricAuraSkills plugin, ServerPlayerEntity player, User user, Skill skill,
-            XpSource xpSource, ServerWorld world, BlockPos pos, BlockState state) {
-        if (player.getAbilities().creativeMode) {
+    public static void tryApply(FabricAuraSkills plugin, ServerPlayer player, User user, Skill skill,
+            XpSource xpSource, ServerLevel world, BlockPos pos, BlockState state) {
+        if (player.getAbilities().instabuild) {
             return;
         }
         Trait trait = FabricGatheringLuckTraits.traitForSkill(skill);
@@ -51,7 +51,7 @@ public final class FabricInteractGatheringLuck {
         if (tag != null && !plugin.getSkillManager().hasTag(xpSource, tag)) {
             return;
         }
-        ItemStack tool = player.getMainHandStack();
+        ItemStack tool = player.getMainHandItem();
         if (silkTouchLevel(world, tool) > 0) {
             FabricMiningAbilities mining = plugin.getAbilityManager().getAbilityImpl(FabricMiningAbilities.class);
             if (mining.dropsMineralDirectly(state)) {
@@ -65,30 +65,30 @@ public final class FabricInteractGatheringLuck {
                 continue;
             }
             ItemStack dropped = dropTemplate.copyWithCount(numExtra);
-            if (plugin.getFabricLootManager().toInventory(player.getMainHandStack())) {
-                player.getInventory().offerOrDrop(dropped);
+            if (plugin.getFabricLootManager().toInventory(player.getMainHandItem())) {
+                player.getInventory().placeItemBackInInventory(dropped, Prediction.SERVER_ONLY);
             } else {
-                Vec3d at = pos.toCenterPos();
-                world.spawnEntity(new ItemEntity(world, at.x, at.y, at.z, dropped));
+                Vec3 at = Vec3.atCenterOf(pos);
+                world.addFreshEntity(new ItemEntity(world, at.x, at.y, at.z, dropped));
             }
         }
     }
 
-    private static int silkTouchLevel(ServerWorld world, ItemStack stack) {
-        ItemEnchantmentsComponent c = stack.get(DataComponentTypes.ENCHANTMENTS);
+    private static int silkTouchLevel(ServerLevel world, ItemStack stack) {
+        ItemEnchantments c = stack.get(DataComponents.ENCHANTMENTS);
         if (c == null || c.isEmpty()) {
             return 0;
         }
-        return world.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT)
-                .getOptional(Enchantments.SILK_TOUCH)
+        return world.registryAccess().lookupOrThrow(Registries.ENCHANTMENT)
+                .get(Enchantments.SILK_TOUCH)
                 .map(c::getLevel)
                 .orElse(0);
     }
 
-    private static List<ItemStack> uniqueDroppedStacks(ServerWorld world, ServerPlayerEntity player, BlockPos pos,
+    private static List<ItemStack> uniqueDroppedStacks(ServerLevel world, ServerPlayer player, BlockPos pos,
             BlockState state, ItemStack tool) {
         BlockEntity be = world.getBlockEntity(pos);
-        List<ItemStack> raw = Block.getDroppedStacks(state, world, pos, be, player, tool);
+        List<ItemStack> raw = Block.getDrops(state, world, pos, be, player, tool);
         List<ItemStack> unique = new ArrayList<>();
         for (ItemStack item : raw) {
             if (item.isEmpty()) {
@@ -96,7 +96,7 @@ public final class FabricInteractGatheringLuck {
             }
             boolean already = false;
             for (ItemStack u : unique) {
-                if (ItemStack.areItemsAndComponentsEqual(u, item)) {
+                if (ItemStack.isSameItemSameComponents(u, item)) {
                     already = true;
                     break;
                 }

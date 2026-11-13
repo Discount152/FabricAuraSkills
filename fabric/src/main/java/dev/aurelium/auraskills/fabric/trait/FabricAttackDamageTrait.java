@@ -4,9 +4,8 @@ import dev.aurelium.auraskills.api.trait.Trait;
 import dev.aurelium.auraskills.api.trait.Traits;
 import dev.aurelium.auraskills.api.util.NumberUtil;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
-import net.minecraft.server.network.ServerPlayerEntity;
-
 import java.util.Locale;
+import net.minecraft.server.level.ServerPlayer;
 
 /**
  * Menu/base display only; damage math runs in {@link dev.aurelium.auraskills.fabric.damage.FabricAttackDamageApplier}.
@@ -18,7 +17,7 @@ public final class FabricAttackDamageTrait extends FabricTraitImpl {
     }
 
     @Override
-    public double getBaseLevel(ServerPlayerEntity player, Trait trait) {
+    public double getBaseLevel(ServerPlayer player, Trait trait) {
         return 0;
     }
 

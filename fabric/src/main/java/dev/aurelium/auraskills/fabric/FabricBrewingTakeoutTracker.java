@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -16,9 +16,9 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class FabricBrewingTakeoutTracker {
 
-    public record BrewStandKey(RegistryKey<World> worldKey, BlockPos pos) {
+    public record BrewStandKey(ResourceKey<Level> worldKey, BlockPos pos) {
         public BrewStandKey {
-            pos = pos.toImmutable();
+            pos = pos.immutable();
         }
     }
 
@@ -27,15 +27,15 @@ public final class FabricBrewingTakeoutTracker {
     private FabricBrewingTakeoutTracker() {
     }
 
-    public static void remove(ServerWorld world, BlockPos pos) {
-        STANDS.remove(new BrewStandKey(world.getRegistryKey(), pos));
+    public static void remove(ServerLevel world, BlockPos pos) {
+        STANDS.remove(new BrewStandKey(world.dimension(), pos));
     }
 
     /**
      * After a brew step, mark slots whose bottle stacks changed while still non-empty (vanilla potion output).
      */
     public static void applyCraft(
-            ServerWorld world,
+            ServerLevel world,
             BlockPos pos,
             ItemStack ingredientUsed,
             ItemStack[] bottlesBefore012,
@@ -43,12 +43,12 @@ public final class FabricBrewingTakeoutTracker {
         if (ingredientUsed.isEmpty()) {
             return;
         }
-        BrewStandKey key = new BrewStandKey(world.getRegistryKey(), pos);
+        BrewStandKey key = new BrewStandKey(world.dimension(), pos);
         BrewingStandData standData = STANDS.computeIfAbsent(key, k -> new BrewingStandData());
         for (int i = 0; i < 3; i++) {
             ItemStack beforeItem = bottlesBefore012[i];
             ItemStack afterItem = bottlesAfter012[i];
-            if (!beforeItem.isEmpty() && !afterItem.isEmpty() && !ItemStack.areEqual(beforeItem, afterItem)) {
+            if (!beforeItem.isEmpty() && !afterItem.isEmpty() && !ItemStack.matches(beforeItem, afterItem)) {
                 BrewingSlot slot = standData.getSlot(i);
                 slot.setBrewed(true);
                 if (slot.getIngredients().size() < 5) {
@@ -58,8 +58,8 @@ public final class FabricBrewingTakeoutTracker {
         }
     }
 
-    public static @Nullable BrewingSlot getSlot(ServerWorld world, BlockPos pos, int slot0to2) {
-        BrewingStandData data = STANDS.get(new BrewStandKey(world.getRegistryKey(), pos));
+    public static @Nullable BrewingSlot getSlot(ServerLevel world, BlockPos pos, int slot0to2) {
+        BrewingStandData data = STANDS.get(new BrewStandKey(world.dimension(), pos));
         if (data == null) {
             return null;
         }

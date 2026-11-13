@@ -4,23 +4,23 @@ import dev.aurelium.auraskills.api.registry.NamespacedId;
 import dev.aurelium.auraskills.common.util.PlatformUtil;
 import dev.aurelium.auraskills.common.util.data.Validate;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.LoreComponent;
-import net.minecraft.component.type.PotionContentsComponent;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.potion.Potion;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.component.ItemLore;
 
 /**
  * Item stack parsing from YAML: loot-style {@link #parseBaseStack} and richer {@link #parseMenuItemStack} for sources.
@@ -34,12 +34,12 @@ public final class FabricConfigurateItemParser {
     public static ItemStack parseBaseStack(ConfigurationNode config) {
         String materialString = config.node("material").getString();
         Validate.notNull(materialString, "Item must specify a material");
-        Identifier id = materialString.contains(":") ? Identifier.of(materialString) : Identifier.ofVanilla(materialString);
-        Item item = Registries.ITEM.get(id);
+        Identifier id = materialString.contains(":") ? Identifier.parse(materialString) : Identifier.withDefaultNamespace(materialString);
+        Item item = BuiltInRegistries.ITEM.getValue(id);
         Validate.notNull(item, "Unknown item: " + materialString);
         ItemStack stack = new ItemStack(item);
-        if (config.hasChild("potion_data") && (stack.isOf(Items.TIPPED_ARROW) || stack.isOf(Items.POTION)
-                || stack.isOf(Items.SPLASH_POTION) || stack.isOf(Items.LINGERING_POTION))) {
+        if (config.hasChild("potion_data") && (stack.is(Items.TIPPED_ARROW) || stack.is(Items.POTION)
+                || stack.is(Items.SPLASH_POTION) || stack.is(Items.LINGERING_POTION))) {
             applyPotionData(stack, config.node("potion_data"));
         }
         return stack;
@@ -78,7 +78,7 @@ public final class FabricConfigurateItemParser {
             String raw = config.node("display_name").getString();
             if (raw != null) {
                 String withLegacy = util.toString(util.toComponent(raw));
-                stack.set(DataComponentTypes.ITEM_NAME, Text.literal(withLegacy));
+                stack.set(DataComponents.ITEM_NAME, Component.literal(withLegacy));
             }
         }
         if (!config.node("lore").virtual()) {
@@ -89,12 +89,12 @@ public final class FabricConfigurateItemParser {
                 loreLines = new ArrayList<>();
             }
             if (!loreLines.isEmpty()) {
-                List<Text> texts = new ArrayList<>();
+                List<Component> texts = new ArrayList<>();
                 for (String line : loreLines) {
                     String withLegacy = util.toString(util.toComponent(line));
-                    texts.add(Text.literal(withLegacy));
+                    texts.add(Component.literal(withLegacy));
                 }
-                stack.set(DataComponentTypes.LORE, new LoreComponent(texts));
+                stack.set(DataComponents.LORE, new ItemLore(texts));
             }
         }
     }
@@ -102,22 +102,22 @@ public final class FabricConfigurateItemParser {
     private static void applyPotionData(ItemStack stack, ConfigurationNode node) {
         String typeName = node.node("type").getString("water").toLowerCase(Locale.ROOT);
         Identifier potionId = mapYamlPotionType(typeName);
-        RegistryEntry<Potion> entry = Registries.POTION.getEntry(potionId).orElse(null);
+        Holder<Potion> entry = BuiltInRegistries.POTION.get(potionId).orElse(null);
         if (entry == null) {
             return;
         }
-        stack.set(DataComponentTypes.POTION_CONTENTS, new PotionContentsComponent(entry));
+        stack.set(DataComponents.POTION_CONTENTS, new PotionContents(entry));
     }
 
     private static Identifier mapYamlPotionType(String yaml) {
         return switch (yaml) {
-            case "instant_damage", "harming" -> Identifier.ofVanilla("harming");
-            case "instant_heal", "healing" -> Identifier.ofVanilla("healing");
-            case "regen", "regeneration" -> Identifier.ofVanilla("regeneration");
-            case "jump", "leaping" -> Identifier.ofVanilla("leaping");
-            case "speed", "swiftness" -> Identifier.ofVanilla("swiftness");
-            case "turtle_master" -> Identifier.ofVanilla("turtle_master");
-            default -> Identifier.ofVanilla(yaml);
+            case "instant_damage", "harming" -> Identifier.withDefaultNamespace("harming");
+            case "instant_heal", "healing" -> Identifier.withDefaultNamespace("healing");
+            case "regen", "regeneration" -> Identifier.withDefaultNamespace("regeneration");
+            case "jump", "leaping" -> Identifier.withDefaultNamespace("leaping");
+            case "speed", "swiftness" -> Identifier.withDefaultNamespace("swiftness");
+            case "turtle_master" -> Identifier.withDefaultNamespace("turtle_master");
+            default -> Identifier.withDefaultNamespace(yaml);
         };
     }
 
@@ -129,8 +129,8 @@ public final class FabricConfigurateItemParser {
         if (type == null || type.isEmpty()) {
             return ItemStack.EMPTY;
         }
-        Identifier id = Identifier.ofVanilla(type.toLowerCase(Locale.ROOT));
-        Item item = Registries.ITEM.get(id);
+        Identifier id = Identifier.withDefaultNamespace(type.toLowerCase(Locale.ROOT));
+        Item item = BuiltInRegistries.ITEM.getValue(id);
         if (item == null) {
             return ItemStack.EMPTY;
         }

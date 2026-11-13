@@ -12,7 +12,7 @@ pluginManagement {
 
 
 
-rootProject.name = "FabricAuraSkills"
+rootProject.name = "GraniteSkills"
 
 
 

@@ -8,19 +8,19 @@ import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.FabricTraitManager;
 import dev.aurelium.auraskills.fabric.trait.FabricCritChanceTrait;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 
 public final class FabricCriticalHandler {
 
     private FabricCriticalHandler() {
     }
 
-    public static void apply(FabricAuraSkills plugin, FabricDamageMeta meta, ServerPlayerEntity attacker) {
+    public static void apply(FabricAuraSkills plugin, FabricDamageMeta meta, ServerPlayer attacker) {
         DamageType dt = meta.getDamageType();
         if (!criticalEnabled(plugin, dt)) {
             return;
         }
-        User user = plugin.getUserManager().getUser(attacker.getUuid());
+        User user = plugin.getUserManager().getUser(attacker.getUUID());
         FabricCritChanceTrait critTrait = ((FabricTraitManager) plugin.getTraitManager()).getTraitImpl(FabricCritChanceTrait.class);
         if (!critTrait.isCrit(user)) {
             return;

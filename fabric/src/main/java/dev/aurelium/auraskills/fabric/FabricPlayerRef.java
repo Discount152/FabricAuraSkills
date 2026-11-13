@@ -2,9 +2,9 @@ package dev.aurelium.auraskills.fabric;
 
 import dev.aurelium.auraskills.common.ref.LocationRef;
 import dev.aurelium.auraskills.common.ref.PlayerRef;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 
-public record FabricPlayerRef(ServerPlayerEntity player) implements PlayerRef {
+public record FabricPlayerRef(ServerPlayer player) implements PlayerRef {
 
     @Override
     public Object get() {

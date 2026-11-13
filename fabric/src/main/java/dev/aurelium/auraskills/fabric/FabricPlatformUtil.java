@@ -3,8 +3,8 @@ package dev.aurelium.auraskills.fabric;
 import dev.aurelium.auraskills.common.util.PlatformUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 public final class FabricPlatformUtil implements PlatformUtil {
@@ -17,7 +17,7 @@ public final class FabricPlatformUtil implements PlatformUtil {
             return false;
         }
         Identifier id = parseId(input);
-        return id != null && Registries.BLOCK.get(id) != null;
+        return id != null && BuiltInRegistries.BLOCK.getValue(id) != null;
     }
 
     @Override
@@ -26,7 +26,7 @@ public final class FabricPlatformUtil implements PlatformUtil {
             return false;
         }
         Identifier id = parseId(input);
-        return id != null && Registries.ENTITY_TYPE.get(id) != null;
+        return id != null && BuiltInRegistries.ENTITY_TYPE.getValue(id) != null;
     }
 
     @Override

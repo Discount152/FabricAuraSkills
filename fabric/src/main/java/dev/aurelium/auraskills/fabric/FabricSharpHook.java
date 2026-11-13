@@ -8,20 +8,18 @@ import dev.aurelium.auraskills.common.mana.ManaAbilityData;
 import dev.aurelium.auraskills.common.message.type.ManaAbilityMessage;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.common.util.text.TextUtil;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.projectile.FishingBobberEntity;
-import net.minecraft.item.Items;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.Box;
-import net.minecraft.world.World;
-
 import java.util.Locale;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.FishingHook;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 
 /**
  * Fabric port of Bukkit {@link dev.aurelium.auraskills.bukkit.skills.fishing.SharpHook}: left-click with a fishing rod
@@ -38,20 +36,20 @@ public final class FabricSharpHook {
      * Called from {@link dev.aurelium.auraskills.fabric.mixin.ServerPlayerEntitySharpHookMixin} when the player swings
      * the main hand (including left-click air/block with rod).
      */
-    public static void onSwingMainHandRod(FabricAuraSkills plugin, ServerPlayerEntity player) {
-        if (player.getEntityWorld().isClient()) {
+    public static void onSwingMainHandRod(FabricAuraSkills plugin, ServerPlayer player) {
+        if (player.level().isClientSide()) {
             return;
         }
         if (isDisabled()) {
             return;
         }
-        if (!player.getMainHandStack().isOf(Items.FISHING_ROD)) {
+        if (!player.getMainHandItem().is(Items.FISHING_ROD)) {
             return;
         }
-        if (FabricManaAbilityItemTags.shouldIgnoreInteract(player.getMainHandStack())) {
+        if (FabricManaAbilityItemTags.shouldIgnoreInteract(player.getMainHandItem())) {
             return;
         }
-        User user = plugin.getUserManager().getUser(player.getUuid());
+        User user = plugin.getUserManager().getUser(player.getUUID());
         if (user.getManaAbilityLevel(MANA) <= 0) {
             return;
         }
@@ -59,23 +57,23 @@ public final class FabricSharpHook {
             return;
         }
 
-        ServerWorld world = (ServerWorld) player.getEntityWorld();
-        Box castProximity = player.getBoundingBox().expand(0.1);
-        for (Entity nearby : world.getOtherEntities(player, castProximity)) {
-            if (nearby instanceof FishingBobberEntity bobber && bobber.getPlayerOwner() == player) {
+        ServerLevel world = (ServerLevel) player.level();
+        AABB castProximity = player.getBoundingBox().inflate(0.1);
+        for (Entity nearby : world.getEntities(player, castProximity)) {
+            if (nearby instanceof FishingHook bobber && bobber.getPlayerOwner() == player) {
                 return;
             }
         }
 
-        Box range = player.getBoundingBox().expand(33.0);
-        for (Entity entity : world.getOtherEntities(player, range)) {
-            if (!(entity instanceof FishingBobberEntity bobber)) {
+        AABB range = player.getBoundingBox().inflate(33.0);
+        for (Entity entity : world.getEntities(player, range)) {
+            if (!(entity instanceof FishingHook bobber)) {
                 continue;
             }
             if (bobber.getPlayerOwner() != player || !bobber.isAlive() || bobber.isRemoved()) {
                 continue;
             }
-            Entity hooked = bobber.getHookedEntity();
+            Entity hooked = bobber.getHookedIn();
             if (!(hooked instanceof LivingEntity living) || !living.isAlive() || living.isRemoved()) {
                 continue;
             }
@@ -97,16 +95,16 @@ public final class FabricSharpHook {
         }
     }
 
-    private static void activateSharpHook(FabricAuraSkills plugin, ServerPlayerEntity player, User user,
-            LivingEntity caught, ServerWorld world) {
+    private static void activateSharpHook(FabricAuraSkills plugin, ServerPlayer player, User user,
+            LivingEntity caught, ServerLevel world) {
         double manaCost = MANA.getManaCost(user.getManaAbilityLevel(MANA));
         if (insufficientMana(plugin, user, manaCost)) {
             return;
         }
         double damage = MANA.getValue(user.getManaAbilityLevel(MANA));
         float healthBefore = caught.getHealth();
-        DamageSource source = player.getDamageSources().playerAttack(player);
-        caught.damage(world, source, (float) damage);
+        DamageSource source = player.damageSources().playerAttack(player);
+        caught.hurtServer(world, source, (float) damage);
         float healthAfter = caught.getHealth();
         if (!MANA.optionBoolean("disable_health_check", false) && healthBefore == healthAfter) {
             return;
@@ -114,8 +112,8 @@ public final class FabricSharpHook {
         completeActivation(plugin, player, user, world, manaCost);
     }
 
-    private static void completeActivation(FabricAuraSkills plugin, ServerPlayerEntity player, User user,
-            ServerWorld world, double manaCost) {
+    private static void completeActivation(FabricAuraSkills plugin, ServerPlayer player, User user,
+            ServerLevel world, double manaCost) {
         if (insufficientMana(plugin, user, manaCost)) {
             return;
         }
@@ -123,14 +121,14 @@ public final class FabricSharpHook {
         data.setActivated(true);
         if (MANA.optionBoolean("enable_sound", true)) {
             world.playSound(null, player.getX(), player.getY(), player.getZ(),
-                    SoundEvents.ENTITY_FISHING_BOBBER_RETRIEVE, SoundCategory.PLAYERS, 1.0f, 1.5f);
+                    SoundEvents.FISHING_BOBBER_RETRIEVE, SoundSource.PLAYERS, 1.0f, 1.5f);
         }
         double manaUsed = consumeMana(plugin, user, manaCost);
         FabricManaAbilityUseXpHandler.onManaAbilityActivated(player, MANA, manaUsed);
         stop(plugin, player, user);
     }
 
-    private static void stop(FabricAuraSkills plugin, ServerPlayerEntity player, User user) {
+    private static void stop(FabricAuraSkills plugin, ServerPlayer player, User user) {
         ManaAbilityData data = user.getManaAbilityData(MANA);
         if (!data.isActivated()) {
             return;
@@ -162,7 +160,7 @@ public final class FabricSharpHook {
         return true;
     }
 
-    private static boolean failsChecks(FabricAuraSkills plugin, ServerPlayerEntity player, User user) {
+    private static boolean failsChecks(FabricAuraSkills plugin, ServerPlayer player, User user) {
         String w = FabricUser.worldNameCompat(player);
         if (plugin.getWorldManager().isDisabledWorld(w)) {
             return true;
@@ -170,16 +168,16 @@ public final class FabricSharpHook {
         if (!user.hasSkillPermission(MANA.getSkill())) {
             return true;
         }
-        return plugin.configBoolean(Option.DISABLE_IN_CREATIVE_MODE) && player.getAbilities().creativeMode;
+        return plugin.configBoolean(Option.DISABLE_IN_CREATIVE_MODE) && player.getAbilities().instabuild;
     }
 
-    private static boolean areValidLocations(ServerPlayerEntity damager, LivingEntity hooked) {
-        World dw = damager.getEntityWorld();
-        World hw = hooked.getEntityWorld();
+    private static boolean areValidLocations(ServerPlayer damager, LivingEntity hooked) {
+        Level dw = damager.level();
+        Level hw = hooked.level();
         if (dw != hw) {
             return false;
         }
-        return damager.squaredDistanceTo(hooked) <= 1089.0;
+        return damager.distanceToSqr(hooked) <= 1089.0;
     }
 
     private static boolean isDisabled() {

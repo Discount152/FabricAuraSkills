@@ -7,13 +7,12 @@ import dev.aurelium.auraskills.common.config.Option;
 import dev.aurelium.auraskills.common.source.SourceTypes;
 import dev.aurelium.auraskills.common.user.User;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.math.BlockPos;
-
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.level.block.Blocks;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -54,14 +53,14 @@ public final class FabricJumpingXpHandler {
         if (!skill.isEnabled()) {
             return;
         }
-        for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
+        for (ServerPlayer player : server.getPlayerList().getPlayers()) {
             tickPlayer(player, source, skill);
         }
     }
 
-    private void tickPlayer(ServerPlayerEntity player, JumpingXpSource source, Skill skill) {
-        UUID id = player.getUuid();
-        double vy = player.getVelocity().y;
+    private void tickPlayer(ServerPlayer player, JumpingXpSource source, Skill skill) {
+        UUID id = player.getUUID();
+        double vy = player.getDeltaMovement().y;
         if (vy <= 0) {
             updateGroundState(player, id);
             return;
@@ -72,7 +71,7 @@ public final class FabricJumpingXpHandler {
             updateGroundState(player, id);
             return;
         }
-        if (player.isOnGround() || Double.compare(vy, jumpVelocity) != 0) {
+        if (player.onGround() || Double.compare(vy, jumpVelocity) != 0) {
             updateGroundState(player, id);
             return;
         }
@@ -89,33 +88,33 @@ public final class FabricJumpingXpHandler {
         updateGroundState(player, id);
     }
 
-    private void updateGroundState(ServerPlayerEntity player, UUID id) {
-        if (player.isOnGround()) {
+    private void updateGroundState(ServerPlayer player, UUID id) {
+        if (player.onGround()) {
             prevOnGround.add(id);
         } else {
             prevOnGround.remove(id);
         }
     }
 
-    private static double baseJumpVelocity(ServerPlayerEntity player) {
+    private static double baseJumpVelocity(ServerPlayer player) {
         double v = 0.42;
-        StatusEffectInstance jump = player.getStatusEffect(StatusEffects.JUMP_BOOST);
+        MobEffectInstance jump = player.getEffect(MobEffects.JUMP_BOOST);
         if (jump != null) {
             v += (jump.getAmplifier() + 1) * 0.1;
         }
         return v;
     }
 
-    private static boolean isLadderAtFeet(ServerPlayerEntity player) {
-        BlockPos pos = BlockPos.ofFloored(player.getX(), player.getY(), player.getZ());
-        return player.getEntityWorld().getBlockState(pos).isOf(Blocks.LADDER);
+    private static boolean isLadderAtFeet(ServerPlayer player) {
+        BlockPos pos = BlockPos.containing(player.getX(), player.getY(), player.getZ());
+        return player.level().getBlockState(pos).is(Blocks.LADDER);
     }
 
-    private static boolean failsPlayerSkillCheck(FabricAuraSkills plugin, ServerPlayerEntity player, Skill skill) {
-        if (plugin.configBoolean(Option.DISABLE_IN_CREATIVE_MODE) && player.getAbilities().creativeMode) {
+    private static boolean failsPlayerSkillCheck(FabricAuraSkills plugin, ServerPlayer player, Skill skill) {
+        if (plugin.configBoolean(Option.DISABLE_IN_CREATIVE_MODE) && player.getAbilities().instabuild) {
             return true;
         }
-        User user = plugin.getUserManager().getUser(player.getUuid());
+        User user = plugin.getUserManager().getUser(player.getUUID());
         if (!user.hasSkillPermission(skill)) {
             return true;
         }

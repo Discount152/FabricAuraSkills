@@ -11,23 +11,22 @@ import dev.aurelium.auraskills.common.util.text.TextUtil;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.item.Items;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.block.BlockState;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.RaycastContext;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -49,26 +48,26 @@ public final class FabricAbsorption {
      * Called from {@link dev.aurelium.auraskills.fabric.mixin.ServerPlayerEntityShieldAbsorptionSwingMixin} when the
      * player swings the main hand while holding a shield (including left-click air).
      */
-    public static void onMainHandShieldSwing(FabricAuraSkills plugin, ServerPlayerEntity player, Hand hand) {
-        if (hand != Hand.MAIN_HAND || !player.getMainHandStack().isOf(Items.SHIELD)) {
+    public static void onMainHandShieldSwing(FabricAuraSkills plugin, ServerPlayer player, InteractionHand hand) {
+        if (hand != InteractionHand.MAIN_HAND || !player.getMainHandItem().is(Items.SHIELD)) {
             return;
         }
-        if (!(player.getEntityWorld() instanceof ServerWorld sw)) {
+        if (!(player.level() instanceof ServerLevel sw)) {
             return;
         }
-        Vec3d eye = player.getEyePos();
-        double reach = player.getBlockInteractionRange();
-        Vec3d rot = player.getRotationVec(1.0f);
-        Vec3d end = eye.add(rot.getX() * reach, rot.getY() * reach, rot.getZ() * reach);
-        BlockHitResult hit = sw.raycast(new RaycastContext(eye, end, RaycastContext.ShapeType.COLLIDER,
-                RaycastContext.FluidHandling.NONE, player));
+        Vec3 eye = player.getEyePosition();
+        double reach = player.blockInteractionRange();
+        Vec3 rot = player.getViewVector(1.0f);
+        Vec3 end = eye.add(rot.x() * reach, rot.y() * reach, rot.z() * reach);
+        BlockHitResult hit = sw.clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER,
+                ClipContext.Fluid.NONE, player));
         BlockPos pos;
         BlockState state;
         if (hit.getType() == HitResult.Type.BLOCK) {
             pos = hit.getBlockPos();
             state = sw.getBlockState(pos);
         } else {
-            pos = BlockPos.ofFloored(player.getX(), player.getY(), player.getZ());
+            pos = BlockPos.containing(player.getX(), player.getY(), player.getZ());
             state = sw.getBlockState(pos);
         }
         tryReadyOnAttackBlock(plugin, player, sw, pos, state);
@@ -78,24 +77,24 @@ public final class FabricAbsorption {
         ServerLivingEntityEvents.ALLOW_DAMAGE.register((LivingEntity entity, DamageSource source, float amount) ->
                 allowDamage(plugin, entity, amount));
         AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
-            if (world.isClient() || !(player instanceof ServerPlayerEntity sp) || !(world instanceof ServerWorld sw)) {
-                return ActionResult.PASS;
+            if (world.isClientSide() || !(player instanceof ServerPlayer sp) || !(world instanceof ServerLevel sw)) {
+                return InteractionResult.PASS;
             }
-            if (hand != Hand.MAIN_HAND) {
-                return ActionResult.PASS;
+            if (hand != InteractionHand.MAIN_HAND) {
+                return InteractionResult.PASS;
             }
             tryReadyOnAttackBlock(plugin, sp, sw, pos, sw.getBlockState(pos));
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         });
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-            ServerPlayerEntity player = handler.player;
+            ServerPlayer player = handler.player;
             plugin.getScheduler().scheduleSync(() -> joinCleanup(plugin, player), 50L, TimeUnit.MILLISECONDS);
         });
         ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> stopIfActive(plugin, handler.player));
     }
 
     private static boolean allowDamage(FabricAuraSkills plugin, LivingEntity entity, float amount) {
-        if (!(entity instanceof ServerPlayerEntity player)) {
+        if (!(entity instanceof ServerPlayer player)) {
             return true;
         }
         if (amount <= 0f) {
@@ -104,10 +103,10 @@ public final class FabricAbsorption {
         if (isDisabled()) {
             return true;
         }
-        if (!plugin.getUserManager().hasUser(player.getUuid())) {
+        if (!plugin.getUserManager().hasUser(player.getUUID())) {
             return true;
         }
-        User user = plugin.getUserManager().getUser(player.getUuid());
+        User user = plugin.getUserManager().getUser(player.getUUID());
         if (user.getManaAbilityLevel(MANA) <= 0) {
             return true;
         }
@@ -128,15 +127,15 @@ public final class FabricAbsorption {
     /**
      * @return {@code true} if damage was fully absorbed (caller should cancel damage).
      */
-    private static boolean tryAbsorbHit(FabricAuraSkills plugin, ServerPlayerEntity player, User user, float amount) {
+    private static boolean tryAbsorbHit(FabricAuraSkills plugin, ServerPlayer player, User user, float amount) {
         double mana = user.getMana() - amount * 2.0;
         if (mana <= 0) {
             return false;
         }
         user.setMana(mana);
-        if (player.getEntityWorld() instanceof ServerWorld world) {
+        if (player.level() instanceof ServerLevel world) {
             world.playSound(null, player.getX(), player.getY(), player.getZ(),
-                    SoundEvents.ENTITY_GUARDIAN_HURT, SoundCategory.PLAYERS, 1.0f, 1.0f);
+                    SoundEvents.GUARDIAN_HURT, SoundSource.PLAYERS, 1.0f, 1.0f);
             if (MANA.optionBoolean("enable_particles", true)) {
                 double x = player.getX();
                 double y = player.getY() + 1.0;
@@ -146,22 +145,22 @@ public final class FabricAbsorption {
                 for (double theta = 0; theta <= Math.PI * 2; theta += rate) {
                     double px = x + radius * Math.cos(theta);
                     double pz = z + radius * Math.sin(theta);
-                    world.spawnParticles(ParticleTypes.WITCH, px, y, pz, 1, 0.0, 0.0, 0.0, 0.0);
+                    world.sendParticles(ParticleTypes.WITCH, px, y, pz, 1, 0.0, 0.0, 0.0, 0.0);
                 }
             }
         }
         return true;
     }
 
-    private static void tryReadyOnAttackBlock(FabricAuraSkills plugin, ServerPlayerEntity player, ServerWorld world,
+    private static void tryReadyOnAttackBlock(FabricAuraSkills plugin, ServerPlayer player, ServerLevel world,
             BlockPos pos, BlockState stateAtPos) {
         if (isDisabled()) {
             return;
         }
-        if (!player.getMainHandStack().isOf(Items.SHIELD)) {
+        if (!player.getMainHandItem().is(Items.SHIELD)) {
             return;
         }
-        User user = plugin.getUserManager().getUser(player.getUuid());
+        User user = plugin.getUserManager().getUser(player.getUUID());
         if (failsAbsorptionContext(plugin, player, user)) {
             return;
         }
@@ -193,13 +192,13 @@ public final class FabricAbsorption {
         }
     }
 
-    private static void scheduleUnready(FabricAuraSkills plugin, ServerPlayerEntity player, Locale locale, ManaAbilityData data) {
+    private static void scheduleUnready(FabricAuraSkills plugin, ServerPlayer player, Locale locale, ManaAbilityData data) {
         int readyDurationTicks = 80;
         plugin.getScheduler().scheduleSync(() -> {
-            if (!plugin.getUserManager().hasUser(player.getUuid())) {
+            if (!plugin.getUserManager().hasUser(player.getUUID())) {
                 return;
             }
-            User user = plugin.getUserManager().getUser(player.getUuid());
+            User user = plugin.getUserManager().getUser(player.getUUID());
             ManaAbilityData d = user.getManaAbilityData(MANA);
             if (!d.isActivated() && d.isReady()) {
                 d.setReady(false);
@@ -208,8 +207,8 @@ public final class FabricAbsorption {
         }, readyDurationTicks * 50L, TimeUnit.MILLISECONDS);
     }
 
-    private static boolean isAllowReady(FabricAuraSkills plugin, ServerPlayerEntity player, ServerWorld world, BlockPos pos) {
-        if (MANA.optionBoolean("require_sneak", false) && !player.isSneaking()) {
+    private static boolean isAllowReady(FabricAuraSkills plugin, ServerPlayer player, ServerLevel world, BlockPos pos) {
+        if (MANA.optionBoolean("require_sneak", false) && !player.isShiftKeyDown()) {
             return false;
         }
         if (isBlockPlace(player, world, pos)) {
@@ -219,25 +218,25 @@ public final class FabricAbsorption {
         if (plugin.getWorldManager().isDisabledWorld(w)) {
             return false;
         }
-        User user = plugin.getUserManager().getUser(player.getUuid());
+        User user = plugin.getUserManager().getUser(player.getUUID());
         return user.hasSkillPermission(MANA.getSkill());
     }
 
-    private static boolean isBlockPlace(ServerPlayerEntity player, ServerWorld world, BlockPos pos) {
+    private static boolean isBlockPlace(ServerPlayer player, ServerLevel world, BlockPos pos) {
         if (!MANA.optionBoolean("check_offhand", true)) {
             return false;
         }
-        net.minecraft.item.ItemStack off = player.getOffHandStack();
+        net.minecraft.world.item.ItemStack off = player.getOffhandItem();
         if (off.isEmpty()) {
             return false;
         }
-        if (player.isSneaking() && MANA.optionBoolean("sneak_offhand_bypass", true)) {
+        if (player.isShiftKeyDown() && MANA.optionBoolean("sneak_offhand_bypass", true)) {
             return false;
         }
-        return off.getItem() instanceof net.minecraft.item.BlockItem;
+        return off.getItem() instanceof net.minecraft.world.item.BlockItem;
     }
 
-    private static boolean checkActivation(FabricAuraSkills plugin, ServerPlayerEntity player, User user) {
+    private static boolean checkActivation(FabricAuraSkills plugin, ServerPlayer player, User user) {
         ManaAbilityData data = user.getManaAbilityData(MANA);
         if (!data.isReady() || data.isActivated()) {
             return false;
@@ -249,9 +248,9 @@ public final class FabricAbsorption {
         }
         data.setActivated(true);
         user.getAbilityData(MANA).setData(ABSORPTION_ACTIVE_FLAG, true);
-        if (player.getEntityWorld() instanceof ServerWorld soundWorld) {
+        if (player.level() instanceof ServerLevel soundWorld) {
             soundWorld.playSound(null, player.getX(), player.getY(), player.getZ(),
-                    SoundEvents.BLOCK_BEACON_POWER_SELECT, SoundCategory.PLAYERS, 1.0f, 1.0f);
+                    SoundEvents.BEACON_POWER_SELECT, SoundSource.PLAYERS, 1.0f, 1.0f);
         }
         double manaUsed = consumeMana(plugin, user, manaCost);
         FabricManaAbilityUseXpHandler.onManaAbilityActivated(player, MANA, manaUsed);
@@ -263,11 +262,11 @@ public final class FabricAbsorption {
         return true;
     }
 
-    private static void stop(FabricAuraSkills plugin, ServerPlayerEntity player) {
-        if (!plugin.getUserManager().hasUser(player.getUuid())) {
+    private static void stop(FabricAuraSkills plugin, ServerPlayer player) {
+        if (!plugin.getUserManager().hasUser(player.getUUID())) {
             return;
         }
-        User user = plugin.getUserManager().getUser(player.getUuid());
+        User user = plugin.getUserManager().getUser(player.getUUID());
         ManaAbilityData data = user.getManaAbilityData(MANA);
         if (!data.isActivated()) {
             return;
@@ -279,21 +278,21 @@ public final class FabricAbsorption {
         user.sendMessage(plugin.getMsg(ManaAbilityMessage.ABSORPTION_END, user.getLocale()));
     }
 
-    private static void stopIfActive(FabricAuraSkills plugin, ServerPlayerEntity player) {
-        if (!plugin.getUserManager().hasUser(player.getUuid())) {
+    private static void stopIfActive(FabricAuraSkills plugin, ServerPlayer player) {
+        if (!plugin.getUserManager().hasUser(player.getUUID())) {
             return;
         }
-        ManaAbilityData data = plugin.getUserManager().getUser(player.getUuid()).getManaAbilityData(MANA);
+        ManaAbilityData data = plugin.getUserManager().getUser(player.getUUID()).getManaAbilityData(MANA);
         if (data.isActivated()) {
             stop(plugin, player);
         }
     }
 
-    private static void joinCleanup(FabricAuraSkills plugin, ServerPlayerEntity player) {
-        if (!plugin.getUserManager().hasUser(player.getUuid())) {
+    private static void joinCleanup(FabricAuraSkills plugin, ServerPlayer player) {
+        if (!plugin.getUserManager().hasUser(player.getUUID())) {
             return;
         }
-        User user = plugin.getUserManager().getUser(player.getUuid());
+        User user = plugin.getUserManager().getUser(player.getUUID());
         if (!user.getManaAbilityData(MANA).isActivated()) {
             user.getAbilityData(MANA).remove(ABSORPTION_ACTIVE_FLAG);
         }
@@ -321,8 +320,8 @@ public final class FabricAbsorption {
         return true;
     }
 
-    private static boolean failsAbsorptionContext(FabricAuraSkills plugin, ServerPlayerEntity player, User user) {
-        if (plugin.configBoolean(Option.DISABLE_IN_CREATIVE_MODE) && player.getAbilities().creativeMode) {
+    private static boolean failsAbsorptionContext(FabricAuraSkills plugin, ServerPlayer player, User user) {
+        if (plugin.configBoolean(Option.DISABLE_IN_CREATIVE_MODE) && player.getAbilities().instabuild) {
             return true;
         }
         if (!user.hasSkillPermission(MANA.getSkill())) {

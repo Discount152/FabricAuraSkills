@@ -1,4 +1,4 @@
-# Fabric AuraSkills — quick start (ship checklist)
+# Granite Skills — quick start (ship checklist)
 
 ## Build the mod JAR
 
@@ -8,12 +8,12 @@ From the repository root:
 ./gradlew -PfabricOnly=true :fabric:build
 ```
 
-Output: `fabric/build/libs/FabricAuraSkills-<version>.jar` (version from root `gradle.properties` → `projectVersion`). Use **`-PfabricOnly=true`** if the full multi-project build fails on Bukkit/Gradle transforms.
+Output: `fabric/build/libs/GraniteSkills-<version>.jar` (version from root `gradle.properties` → `projectVersion`). Use **`-PfabricOnly=true`** if the full multi-project build fails on Bukkit/Gradle transforms.
 
 ## Install
 
-1. Server: **Minecraft Java 1.21.11**, **Java 21**, **Fabric Loader ≥ 0.18.4** (Apex Hosting and similar providers’ `fabric_1.21.11` images often ship **0.18.4** — that works; **0.19.x** is fine too), **Fabric API**, and **fabric-permissions-api** (JiJ may bundle permissions API with the mod; still install Fabric API as declared in `fabric.mod.json`).
-2. Put the **Fabric AuraSkills** JAR in the server `mods/` folder.
+1. Server: **Minecraft Java 26.3**, **Java 25**, **Fabric Loader ≥ 0.20.1**, **Fabric API**. **fabric-permissions-api** is bundled inside the jar.
+2. Put the **GraniteSkills** JAR in the server `mods/` folder. The mod id is still `auraskills`.
 3. Start once to generate `config/auraskills/` (same layout as Paper).
 
 ## Permissions (production)
@@ -29,10 +29,10 @@ Besides vanilla custom stats (`walk_one_cm`), Fabric accepts **`mined/minecraft:
 
 | Command | Purpose |
 |--------|---------|
-| `/auraskills version` | Version + data folder path |
-| `/auraskills skills` | Player: skill levels summary |
-| `/auraskills reload` | Reload `config.yml`, messages, `skills.yml` / stats / sources / loot / rewards / XP tables; refresh traits for **online** players. Does **not** re-hook Fabric events. |
-| `/auraskills save` | Flush **all loaded** user profiles to disk |
+| `/auraskills version` or `/graniteskills version` | Version + data folder path |
+| `/auraskills skills` or `/graniteskills skills` | Player: skill levels summary |
+| `/auraskills reload` or `/graniteskills reload` | Reload `config.yml`, messages, `skills.yml` / stats / sources / loot / rewards / XP tables; refresh traits for **online** players. Does **not** re-hook Fabric events. |
+| `/auraskills save` or `/graniteskills save` | Flush **all loaded** user profiles to disk |
 
 After editing YAML under `config/auraskills/`, run **`/auraskills reload`** (or restart).
 

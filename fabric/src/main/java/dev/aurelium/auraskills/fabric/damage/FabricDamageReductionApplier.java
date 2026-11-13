@@ -8,7 +8,7 @@ import dev.aurelium.auraskills.api.trait.Trait;
 import dev.aurelium.auraskills.api.trait.Traits;
 import dev.aurelium.auraskills.common.user.User;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
 
 public final class FabricDamageReductionApplier {
@@ -22,11 +22,11 @@ public final class FabricDamageReductionApplier {
         formula = null;
     }
 
-    public static void apply(FabricAuraSkills plugin, FabricDamageMeta meta, ServerPlayerEntity victim) {
+    public static void apply(FabricAuraSkills plugin, FabricDamageMeta meta, ServerPlayer victim) {
         if (!Traits.DAMAGE_REDUCTION.isEnabled()) {
             return;
         }
-        User user = plugin.getUserManager().getUser(victim.getUuid());
+        User user = plugin.getUserManager().getUser(victim.getUUID());
         double reduction = user.getEffectiveTraitLevel(Traits.DAMAGE_REDUCTION);
         double factor = (1.0 - getReductionValue(plugin, reduction)) - 1.0;
         meta.addDefenseModifier(new DamageModifier(factor, DamageModifier.Operation.MULTIPLY));

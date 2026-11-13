@@ -4,7 +4,7 @@ import dev.aurelium.auraskills.common.AuraSkillsPlugin;
 import dev.aurelium.auraskills.common.ui.ActionBarManager;
 import dev.aurelium.auraskills.common.ui.UiProvider;
 import dev.aurelium.auraskills.common.user.User;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
 
 public final class FabricActionBarManager extends ActionBarManager {
@@ -15,7 +15,7 @@ public final class FabricActionBarManager extends ActionBarManager {
 
     @Override
     public @NotNull String getHp(User user) {
-        ServerPlayerEntity player = FabricUser.getPlayer(user);
+        ServerPlayer player = FabricUser.getPlayer(user);
         if (player == null) {
             return "";
         }
@@ -25,7 +25,7 @@ public final class FabricActionBarManager extends ActionBarManager {
 
     @Override
     public @NotNull String getMaxHp(User user) {
-        ServerPlayerEntity player = FabricUser.getPlayer(user);
+        ServerPlayer player = FabricUser.getPlayer(user);
         if (player == null) {
             return "";
         }
@@ -35,7 +35,7 @@ public final class FabricActionBarManager extends ActionBarManager {
 
     @Override
     public @NotNull String getWorldName(User user) {
-        ServerPlayerEntity player = FabricUser.getPlayer(user);
+        ServerPlayer player = FabricUser.getPlayer(user);
         if (player == null) {
             return "";
         }

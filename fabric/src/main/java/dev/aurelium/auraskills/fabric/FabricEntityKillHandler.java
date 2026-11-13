@@ -7,11 +7,10 @@ import dev.aurelium.auraskills.common.config.Option;
 import dev.aurelium.auraskills.common.user.User;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
-import net.minecraft.entity.Entity;
-import net.minecraft.registry.Registries;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import java.util.Arrays;
 
 public final class FabricEntityKillHandler {
@@ -24,20 +23,20 @@ public final class FabricEntityKillHandler {
 
         ServerLivingEntityEvents.AFTER_DEATH.register((entity, damageSource) -> {
             try {
-                if (!(entity.getEntityWorld() instanceof ServerWorld) || entity.getEntityWorld().isClient()) {
+                if (!(entity.level() instanceof ServerLevel) || entity.level().isClientSide()) {
                     return;
                 }
-                if (entity instanceof ServerPlayerEntity) {
+                if (entity instanceof ServerPlayer) {
                     return;
                 }
-                Entity attacker = damageSource.getAttacker();
-                if (!(attacker instanceof ServerPlayerEntity player)) {
+                Entity attacker = damageSource.getEntity();
+                if (!(attacker instanceof ServerPlayer player)) {
                     return;
                 }
-                if (plugin.configBoolean(Option.DISABLE_IN_CREATIVE_MODE) && player.getAbilities().creativeMode) {
+                if (plugin.configBoolean(Option.DISABLE_IN_CREATIVE_MODE) && player.getAbilities().instabuild) {
                     return;
                 }
-                String path = Registries.ENTITY_TYPE.getId(entity.getType()).getPath();
+                String path = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).getPath();
 
                 for (SkillSource<EntityXpSource> entry : plugin.getSkillManager().getSourcesOfType(EntityXpSource.class)) {
                     EntityXpSource source = entry.source();
@@ -54,7 +53,7 @@ public final class FabricEntityKillHandler {
                     if (!skill.isEnabled()) {
                         continue;
                     }
-                    User user = plugin.getUserManager().getUser(player.getUuid());
+                    User user = plugin.getUserManager().getUser(player.getUUID());
                     if (!user.hasSkillPermission(skill)) {
                         continue;
                     }

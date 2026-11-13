@@ -57,7 +57,7 @@ import dev.aurelium.auraskills.fabric.requirement.FabricRequirementManager;
 import com.mojang.brigadier.StringReader;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -214,7 +214,7 @@ public final class FabricAuraSkills implements AuraSkillsPlugin {
         statManager.scheduleTemporaryModifierTask();
         modifierManager.registerSchedulesIfNeeded();
         runtimeReady = true;
-        logger.info("Fabric AuraSkills enabled — block/entity/damage/stat/jump/fishing XP; consume, splash, anvil, grindstone, enchanting table, brewing (BREW + TAKEOUT); mana abilities; permissions via fabric-permissions-api. Use /auraskills reload after editing configs; see fabric/FABRIC_QUICKSTART.md.");
+        logger.info("Granite Skills enabled — block/entity/damage/stat/jump/fishing XP; consume, splash, anvil, grindstone, enchanting table, brewing (BREW + TAKEOUT); mana abilities; permissions via fabric-permissions-api. Use /graniteskills reload (or /auraskills reload) after editing configs; see fabric/FABRIC_QUICKSTART.md.");
     }
 
     private void loadSkills() {
@@ -462,7 +462,7 @@ public final class FabricAuraSkills implements AuraSkillsPlugin {
         if (ref instanceof FabricPlayerRef fpr) {
             return userManager.getUser(fpr.player());
         }
-        if (ref.get() instanceof ServerPlayerEntity player) {
+        if (ref.get() instanceof ServerPlayer player) {
             return userManager.getUser(player);
         }
         throw new IllegalArgumentException("Unsupported PlayerRef for Fabric: " + ref);
@@ -482,7 +482,7 @@ public final class FabricAuraSkills implements AuraSkillsPlugin {
     public void runConsoleCommand(String command) {
         String cmd = command.startsWith("/") ? command.substring(1) : command;
         try {
-            server.getCommandManager().getDispatcher().execute(new StringReader(cmd), server.getCommandSource());
+            server.getCommands().getDispatcher().execute(new StringReader(cmd), server.createCommandSourceStack());
         } catch (Exception e) {
             logger.warn("Failed to run console command: " + cmd, e);
         }
@@ -490,13 +490,13 @@ public final class FabricAuraSkills implements AuraSkillsPlugin {
 
     @Override
     public void runPlayerCommand(User user, String command) {
-        ServerPlayerEntity player = FabricUser.getPlayer(user);
+        ServerPlayer player = FabricUser.getPlayer(user);
         if (player == null) {
             return;
         }
         String cmd = command.startsWith("/") ? command.substring(1) : command;
         try {
-            server.getCommandManager().getDispatcher().execute(new StringReader(cmd), player.getCommandSource());
+            server.getCommands().getDispatcher().execute(new StringReader(cmd), player.createCommandSourceStack());
         } catch (Exception e) {
             logger.warn("Failed to run player command: " + cmd, e);
         }

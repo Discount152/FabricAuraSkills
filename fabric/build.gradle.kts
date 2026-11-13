@@ -1,23 +1,17 @@
 plugins {
     java
-    id("fabric-loom") version "1.13.6"
+    id("fabric-loom") version "1.20.0-alpha.31"
 }
 
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.zip.ZipFile
+import org.gradle.api.tasks.bundling.Jar
 
-/** Ship JARs as {@code FabricAuraSkills-<projectVersion>[ -sources].jar} (version from root {@code projectVersion}). */
+/** Ship JARs as {@code GraniteSkills-<projectVersion>[ -sources].jar} (version from root {@code projectVersion}). */
 tasks.withType<org.gradle.api.tasks.bundling.Jar>().configureEach {
-    archiveBaseName.set("FabricAuraSkills")
-}
-tasks.named<net.fabricmc.loom.task.RemapJarTask>("remapJar") {
-    archiveBaseName.set("FabricAuraSkills")
-    finalizedBy("verifyFabricReleaseBundle")
-}
-tasks.named<net.fabricmc.loom.task.RemapSourcesJarTask>("remapSourcesJar") {
-    archiveBaseName.set("FabricAuraSkills")
+    archiveBaseName.set("GraniteSkills")
 }
 
 sourceSets {
@@ -30,7 +24,7 @@ sourceSets {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
+        languageVersion.set(JavaLanguageVersion.of(25))
     }
     withSourcesJar()
 }
@@ -61,20 +55,18 @@ repositories {
 }
 
 dependencies {
-    minecraft("com.mojang:minecraft:1.21.11")
-    mappings("net.fabricmc:yarn:1.21.11+build.4:v2")
-    // Match common Apex Hosting / shared-host fabric_1.21.11 images (Loader 0.18.4); fabric.mod.json requires >=0.18.4.
-    modImplementation("net.fabricmc:fabric-loader:0.18.4")
-    // Align with common Fabric 1.21.11 host images (was 0.140.2; 0.141.x matches many shared-host 1.21.11 packs).
-    modImplementation("net.fabricmc.fabric-api:fabric-api:0.141.3+1.21.11")
+    // 26.1+ is unobfuscated: Mojang names are in the game, so there is no mappings dependency.
+    minecraft("com.mojang:minecraft:26.3")
+    implementation("net.fabricmc:fabric-loader:0.20.1")
+    implementation("net.fabricmc.fabric-api:fabric-api:0.166.2+26.3")
 
-    // Aligns with MC 1.21.11 per https://github.com/lucko/fabric-permissions-api/blob/master/USAGE.md
-    include(modImplementation("me.lucko:fabric-permissions-api:0.6.1")!!)
+    // fabric-permissions-api 0.7.0 depends on Minecraft >=26.1. JiJ so servers do not install it separately.
+    include(implementation("me.lucko:fabric-permissions-api:0.7.0")!!)
 
     implementation(project(":api"))
     implementation(project(":common"))
-    // Slate Fabric port (skeleton); Loom expects namedElements between Loom subprojects.
-    implementation(project(":slate-fabric", configuration = "namedElements"))
+    // Slate Fabric port (skeleton). Unobfuscated Loom publishes the default variant, not namedElements.
+    implementation(project(":slate-fabric"))
 
     implementation("com.google.guava:guava:33.2.1-jre")
 
@@ -126,16 +118,21 @@ tasks.named<Test>("test") {
 }
 
 /**
- * Post-[remapJar] audit: JiJ must include api/common, polyglot, and Configurate **4.1.2** only (no 4.2 — modpack clash).
- * Runs automatically after `remapJar` (e.g. as part of `build`). Manual: `gradlew -PfabricOnly=true :fabric:verifyFabricReleaseBundle`.
+ * Post-jar audit: JiJ must include api/common, polyglot, and Configurate **4.1.2** only (no 4.2 — modpack clash).
+ * Minecraft 26.3 is unobfuscated, so the production artifact is the `jar` task.
+ * Runs automatically after `jar` (e.g. as part of `build`). Manual: `gradlew -PfabricOnly=true :fabric:verifyFabricReleaseBundle`.
  */
+tasks.named<Jar>("jar") {
+    finalizedBy("verifyFabricReleaseBundle")
+}
+
 tasks.register("verifyFabricReleaseBundle") {
     group = "verification"
     description =
-        "Audit META-INF/jars in the remapped mod for required embedded libs and forbidden configurate 4.2."
-    dependsOn("remapJar")
+        "Audit META-INF/jars in the mod jar for required embedded libs and forbidden configurate 4.2."
+    dependsOn("jar")
     doLast {
-        val jarFile = tasks.named<net.fabricmc.loom.task.RemapJarTask>("remapJar").get().archiveFile.get().asFile
+        val jarFile = tasks.named<Jar>("jar").get().archiveFile.get().asFile
         require(jarFile.isFile) { "Remapped jar missing: $jarFile" }
         val nestedJars = ZipFile(jarFile).use { z ->
             z.entries().toList()
@@ -168,17 +165,16 @@ tasks.register("verifyFabricReleaseBundle") {
 tasks.register("archiveFabricModJar") {
     group = "build"
     description =
-        "Copy FabricAuraSkills remapped JAR to fabric-mod-jar-history/ with a timestamp (keeps all iterations)."
-    dependsOn("remapJar")
+        "Copy the GraniteSkills jar to fabric-mod-jar-history/ with a timestamp (keeps all iterations)."
+    dependsOn("jar")
     doLast {
-        val remap = tasks.named<net.fabricmc.loom.task.RemapJarTask>("remapJar").get()
-        val src = remap.archiveFile.get().asFile
+        val src = tasks.named<Jar>("jar").get().archiveFile.get().asFile
         val destDir = rootProject.layout.projectDirectory.dir("fabric-mod-jar-history").asFile
         destDir.mkdirs()
         val ts = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss-SSS")
             .withZone(ZoneId.systemDefault())
             .format(Instant.now())
-        val dest = destDir.resolve("FabricAuraSkills-${project.version}-$ts.jar")
+        val dest = destDir.resolve("GraniteSkills-${project.version}-$ts.jar")
         src.copyTo(dest, overwrite = false)
 
     }
@@ -186,7 +182,7 @@ tasks.register("archiveFabricModJar") {
 
 /**
  * Gradle [clean] wipes [fabric/build] including [fabric/build/libs]. Copy any existing
- * FabricAuraSkills jars out first so every iteration stays under [fabric-mod-jar-history/]
+ * GraniteSkills jars out first so every iteration stays under [fabric-mod-jar-history/]
  * for documentation / rollback (same intent as [archiveFabricModJar] after remap).
  */
 tasks.named("clean").configure {
@@ -196,7 +192,7 @@ tasks.named("clean").configure {
             return@doFirst
         }
         val jars = libsDir.listFiles()
-            ?.filter { it.isFile && it.name.startsWith("FabricAuraSkills-") && it.name.endsWith(".jar") }
+            ?.filter { it.isFile && it.name.startsWith("GraniteSkills-") && it.name.endsWith(".jar") }
             .orEmpty()
         if (jars.isEmpty()) {
             return@doFirst
@@ -216,7 +212,7 @@ tasks.named("clean").configure {
             }
         }
         logger.lifecycle(
-            "clean: archived {} FabricAuraSkills jar(s) from build/libs to fabric-mod-jar-history (*-preclean-{}-*.jar) before deleting build/",
+            "clean: archived {} GraniteSkills jar(s) from build/libs to fabric-mod-jar-history (*-preclean-{}-*.jar) before deleting build/",
             jars.size,
             ts,
         )
@@ -230,7 +226,7 @@ tasks.named("build") {
 tasks.withType<JavaCompile>().configureEach {
     options.encoding = "UTF-8"
     options.compilerArgs.add("-parameters")
-    options.release.set(21)
+    options.release.set(25)
 }
 
 tasks.processResources {

@@ -1,9 +1,9 @@
 package dev.aurelium.auraskills.fabric;
 
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
-import net.minecraft.block.Blocks;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
@@ -28,36 +28,36 @@ public final class FabricBrewingOwnerTracker {
             return;
         }
         PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, blockEntity) -> {
-            if (world.isClient() || !(world instanceof ServerWorld sw)) {
+            if (world.isClientSide() || !(world instanceof ServerLevel sw)) {
                 return;
             }
-            if (!state.isOf(Blocks.BREWING_STAND)) {
+            if (!state.is(Blocks.BREWING_STAND)) {
                 return;
             }
             remove(sw, pos);
         });
     }
 
-    public static void setOwner(ServerWorld world, BlockPos pos, UUID owner) {
+    public static void setOwner(ServerLevel world, BlockPos pos, UUID owner) {
         OWNERS.put(key(world, pos), owner);
     }
 
     /**
      * Bukkit {@code InventoryOpenEvent}: first player to open an unclaimed stand becomes owner.
      */
-    public static void claimIfAbsent(ServerWorld world, BlockPos pos, UUID playerId) {
+    public static void claimIfAbsent(ServerLevel world, BlockPos pos, UUID playerId) {
         OWNERS.putIfAbsent(key(world, pos), playerId);
     }
 
-    public static @Nullable UUID getOwner(ServerWorld world, BlockPos pos) {
+    public static @Nullable UUID getOwner(ServerLevel world, BlockPos pos) {
         return OWNERS.get(key(world, pos));
     }
 
-    public static void remove(ServerWorld world, BlockPos pos) {
+    public static void remove(ServerLevel world, BlockPos pos) {
         OWNERS.remove(key(world, pos));
     }
 
-    private static FabricBrewingTakeoutTracker.BrewStandKey key(ServerWorld world, BlockPos pos) {
-        return new FabricBrewingTakeoutTracker.BrewStandKey(world.getRegistryKey(), pos);
+    private static FabricBrewingTakeoutTracker.BrewStandKey key(ServerLevel world, BlockPos pos) {
+        return new FabricBrewingTakeoutTracker.BrewStandKey(world.dimension(), pos);
     }
 }

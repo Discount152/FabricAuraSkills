@@ -5,19 +5,18 @@ import dev.aurelium.auraskills.api.skill.Skill;
 import dev.aurelium.auraskills.api.stat.Stat;
 import dev.aurelium.auraskills.fabric.FabricAuraSkills;
 import dev.aurelium.auraskills.fabric.FabricUser;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.ItemEnchantmentsComponent;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
-
 import java.util.Locale;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 
 final class FabricSkillNode extends FabricRequirementNode {
 
@@ -31,11 +30,11 @@ final class FabricSkillNode extends FabricRequirementNode {
     }
 
     @Override
-    public boolean check(ServerPlayerEntity player) {
+    public boolean check(ServerPlayer player) {
         if (skill == null) {
             return true;
         }
-        return plugin.getUserManager().getUser(player.getUuid()).getSkillLevel(skill) >= level;
+        return plugin.getUserManager().getUser(player.getUUID()).getSkillLevel(skill) >= level;
     }
 }
 
@@ -49,11 +48,11 @@ final class FabricPermissionNode extends FabricRequirementNode {
     }
 
     @Override
-    public boolean check(ServerPlayerEntity player) {
+    public boolean check(ServerPlayer player) {
         if (permission == null) {
             return true;
         }
-        if (plugin.getUserManager().getUser(player.getUuid()) instanceof FabricUser user) {
+        if (plugin.getUserManager().getUser(player.getUUID()) instanceof FabricUser user) {
             return user.hasPermission(permission);
         }
         return false;
@@ -70,7 +69,7 @@ final class FabricExcludedWorldNode extends FabricRequirementNode {
     }
 
     @Override
-    public boolean check(ServerPlayerEntity player) {
+    public boolean check(ServerPlayer player) {
         String w = FabricUser.worldNameCompat(player);
         for (String world : worlds) {
             if (world != null && w.equalsIgnoreCase(world)) {
@@ -93,11 +92,11 @@ final class FabricStatNode extends FabricRequirementNode {
     }
 
     @Override
-    public boolean check(ServerPlayerEntity player) {
+    public boolean check(ServerPlayer player) {
         if (stat == null) {
             return true;
         }
-        return plugin.getUserManager().getUser(player.getUuid()).getStatLevel(stat) >= value;
+        return plugin.getUserManager().getUser(player.getUUID()).getStatLevel(stat) >= value;
     }
 }
 
@@ -111,7 +110,7 @@ final class FabricWorldNode extends FabricRequirementNode {
     }
 
     @Override
-    public boolean check(ServerPlayerEntity player) {
+    public boolean check(ServerPlayer player) {
         return world != null && FabricUser.worldNameCompat(player).equalsIgnoreCase(world);
     }
 }
@@ -126,11 +125,11 @@ final class FabricBiomeNode extends FabricRequirementNode {
     }
 
     @Override
-    public boolean check(ServerPlayerEntity player) {
-        if (biome == null || !(player.getEntityWorld() instanceof ServerWorld sw)) {
+    public boolean check(ServerPlayer player) {
+        if (biome == null || !(player.level() instanceof ServerLevel sw)) {
             return false;
         }
-        Identifier id = sw.getRegistryManager().getOrThrow(RegistryKeys.BIOME).getId(sw.getBiome(player.getBlockPos()).value());
+        Identifier id = sw.registryAccess().lookupOrThrow(Registries.BIOME).getKey(sw.getBiome(player.blockPosition()).value());
         if (id == null) {
             return false;
         }
@@ -150,7 +149,7 @@ final class FabricRegionNode extends FabricRequirementNode {
     }
 
     @Override
-    public boolean check(ServerPlayerEntity player) {
+    public boolean check(ServerPlayer player) {
         return true;
     }
 }
@@ -162,8 +161,8 @@ final class FabricItemNode extends FabricRequirementNode {
     FabricItemNode(FabricAuraSkills plugin, String item, String message) {
         super(plugin, message);
         String upper = item != null ? item.toUpperCase(Locale.ROOT) : "";
-        Identifier id = Identifier.ofVanilla(upper.toLowerCase(Locale.ROOT));
-        if (!Registries.ITEM.containsId(id)) {
+        Identifier id = Identifier.withDefaultNamespace(upper.toLowerCase(Locale.ROOT));
+        if (!BuiltInRegistries.ITEM.containsKey(id)) {
             this.expectedItemId = Identifier.tryParse(item != null ? item.toLowerCase(Locale.ROOT) : "");
         } else {
             this.expectedItemId = id;
@@ -171,30 +170,30 @@ final class FabricItemNode extends FabricRequirementNode {
     }
 
     @Override
-    public boolean check(ServerPlayerEntity player) {
-        if (expectedItemId == null || !Registries.ITEM.containsId(expectedItemId)) {
+    public boolean check(ServerPlayer player) {
+        if (expectedItemId == null || !BuiltInRegistries.ITEM.containsKey(expectedItemId)) {
             return true;
         }
-        ItemStack held = player.getMainHandStack();
-        Identifier heldId = Registries.ITEM.getId(held.getItem());
+        ItemStack held = player.getMainHandItem();
+        Identifier heldId = BuiltInRegistries.ITEM.getKey(held.getItem());
         return expectedItemId.equals(heldId);
     }
 }
 
 final class FabricEnchantmentNode extends FabricRequirementNode {
 
-    private final RegistryEntry<Enchantment> enchantment;
+    private final Holder<Enchantment> enchantment;
     private final int levelMin;
     private final int levelMax;
 
     FabricEnchantmentNode(FabricAuraSkills plugin, Identifier enchantmentId, int levelMin, int levelMax, String message) {
         super(plugin, message);
-        RegistryEntry<Enchantment> resolved = null;
+        Holder<Enchantment> resolved = null;
         if (enchantmentId != null) {
-            RegistryKey<Enchantment> key = RegistryKey.of(RegistryKeys.ENCHANTMENT, enchantmentId);
-            resolved = plugin.getServer().getRegistryManager()
-                    .getOrThrow(RegistryKeys.ENCHANTMENT)
-                    .getOptional(key)
+            ResourceKey<Enchantment> key = ResourceKey.create(Registries.ENCHANTMENT, enchantmentId);
+            resolved = plugin.getServer().registryAccess()
+                    .lookupOrThrow(Registries.ENCHANTMENT)
+                    .get(key)
                     .orElse(null);
         }
         this.enchantment = resolved;
@@ -203,12 +202,12 @@ final class FabricEnchantmentNode extends FabricRequirementNode {
     }
 
     @Override
-    public boolean check(ServerPlayerEntity player) {
+    public boolean check(ServerPlayer player) {
         if (enchantment == null) {
             return true;
         }
-        ItemStack held = player.getMainHandStack();
-        ItemEnchantmentsComponent c = held.get(DataComponentTypes.ENCHANTMENTS);
+        ItemStack held = player.getMainHandItem();
+        ItemEnchantments c = held.get(DataComponents.ENCHANTMENTS);
         if (c == null || c.isEmpty()) {
             return false;
         }

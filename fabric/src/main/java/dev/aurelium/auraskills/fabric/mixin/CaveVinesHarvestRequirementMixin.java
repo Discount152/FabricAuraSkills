@@ -1,14 +1,14 @@
 package dev.aurelium.auraskills.fabric.mixin;
 
 import dev.aurelium.auraskills.fabric.requirement.FabricHarvestRequirement;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.CaveVines;
-import net.minecraft.block.CaveVinesBodyBlock;
-import net.minecraft.block.CaveVinesHeadBlock;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.CaveVines;
+import net.minecraft.world.level.block.CaveVinesBlock;
+import net.minecraft.world.level.block.CaveVinesPlantBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -17,20 +17,20 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 /**
  * Harvest requirement for glow berries on cave vines (head and body).
  */
-@Mixin({CaveVinesHeadBlock.class, CaveVinesBodyBlock.class})
+@Mixin({CaveVinesBlock.class, CaveVinesPlantBlock.class})
 public abstract class CaveVinesHarvestRequirementMixin {
 
-    @Inject(method = "onUse", at = @At("HEAD"), cancellable = true)
-    private void auraskills$harvestRequirementGlowBerries(BlockState state, World world, net.minecraft.util.math.BlockPos pos,
-            PlayerEntity player, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir) {
-        if (world.isClient()) {
+    @Inject(method = "useWithoutItem", at = @At("HEAD"), cancellable = true)
+    private void auraskills$harvestRequirementGlowBerries(BlockState state, Level world, net.minecraft.core.BlockPos pos,
+            Player player, BlockHitResult hit, CallbackInfoReturnable<InteractionResult> cir) {
+        if (world.isClientSide()) {
             return;
         }
-        if (!state.get(CaveVines.BERRIES)) {
+        if (!state.getValue(CaveVines.BERRIES)) {
             return;
         }
         if (!FabricHarvestRequirement.allowHarvest(player, state)) {
-            cir.setReturnValue(ActionResult.FAIL);
+            cir.setReturnValue(InteractionResult.FAIL);
         }
     }
 }
