@@ -1,9 +1,9 @@
 package dev.granitelib.fabric.menu;
 
-import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.SimpleMenuProvider;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
@@ -19,7 +19,7 @@ public final class GraniteContainerMenus {
     /**
      * Opens a 6×9 menu with no top-slot click handling (items are display-only in the top grid).
      */
-    public static void openReadOnly9x6(ServerPlayerEntity player, Text title, Consumer<SimpleInventory> populate) {
+    public static void openReadOnly9x6(ServerPlayer player, Component title, Consumer<SimpleContainer> populate) {
         openClickable9x6(player, title, populate, null);
     }
 
@@ -28,13 +28,13 @@ public final class GraniteContainerMenus {
      * never moved by the handler).
      */
     public static void openClickable9x6(
-            ServerPlayerEntity player,
-            Text title,
-            Consumer<SimpleInventory> populate,
+            ServerPlayer player,
+            Component title,
+            Consumer<SimpleContainer> populate,
             @Nullable GraniteTopSlotClickHandler topClick) {
-        SimpleInventory inv = new SimpleInventory(GraniteClickable9x6Handler.CONTAINER_SLOTS);
+        SimpleContainer inv = new SimpleContainer(GraniteClickable9x6Handler.CONTAINER_SLOTS);
         populate.accept(inv);
-        player.openHandledScreen(new SimpleNamedScreenHandlerFactory(
+        player.openMenu(new SimpleMenuProvider(
                 (syncId, playerInventory, playerEntity) ->
                         new GraniteClickable9x6Handler(syncId, playerInventory, inv, topClick),
                 title));

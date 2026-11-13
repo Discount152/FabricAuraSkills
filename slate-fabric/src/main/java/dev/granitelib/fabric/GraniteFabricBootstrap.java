@@ -9,7 +9,7 @@ import dev.granitelib.fabric.menu.GraniteContainerMenus;
  * (<a href="https://github.com/Archy-X/Slate">Archy-X/Slate</a>). See {@code fabric/MENU_AND_COMMANDS_PORT.md}.
  * <p>
  * Menu surface: {@link GraniteContainerMenus#openReadOnly9x6},
- * {@link GraniteContainerMenus#openClickable9x6} (vanilla {@code GENERIC_9X6} — Geyser-friendly
+ * {@link GraniteContainerMenus#openClickable9x6} (vanilla {@code GENERIC_9x6} — Geyser-friendly
  * large chest). Path A Spike 0 adds read-only YAML templates in {@code dev.granitelib.fabric.template}
  * (not wired to screens yet — see {@code fabric/SPRINT_95_GRANITELIB_TEMPLATE_SPIKE0.md}).
  */

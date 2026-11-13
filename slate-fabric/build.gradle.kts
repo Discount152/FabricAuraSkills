@@ -1,6 +1,8 @@
 plugins {
     java
-    id("fabric-loom") version "1.13.6"
+    // 26.1+ is unobfuscated. `net.fabricmc.fabric-loom` is the no-remap plugin; the short
+    // `fabric-loom` id still expects Yarn/Mojmap and fails on 26.3.
+    id("net.fabricmc.fabric-loom") version "1.19.4"
 }
 
 /** Fabric port of Slate — skeleton. Upstream Bukkit Slate lives in {@code vendor/Slate} (git submodule). */
@@ -9,7 +11,7 @@ version = rootProject.version
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
+        languageVersion.set(JavaLanguageVersion.of(25))
     }
     withSourcesJar()
 }
@@ -24,10 +26,9 @@ repositories {
 }
 
 dependencies {
-    minecraft("com.mojang:minecraft:1.21.11")
-    mappings("net.fabricmc:yarn:1.21.11+build.4:v2")
-    modImplementation("net.fabricmc:fabric-loader:0.18.4")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:0.141.3+1.21.11")
+    minecraft("com.mojang:minecraft:26.3")
+    implementation("net.fabricmc:fabric-loader:0.20.1")
+    implementation("net.fabricmc.fabric-api:fabric-api:0.166.2+26.3")
 
     // Template YAML (Spike 0 / Sprint 95) — JiJ so standalone granitelib-fabric resolves at runtime.
     // 2.3 — Loom JiJ semver warning on plain "2.2"
@@ -45,7 +46,7 @@ tasks.withType<org.gradle.api.tasks.bundling.Jar>().configureEach {
 
 tasks.withType<JavaCompile>().configureEach {
     options.encoding = "UTF-8"
-    options.release.set(21)
+    options.release.set(25)
 }
 
 tasks.named<Test>("test") {
