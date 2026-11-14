@@ -1,0 +1,28 @@
+# Granite Skills — stat detail (template v0). Center icon uses stat map in Java when applicable.
+# Sprint 119: Container title is built in Java (FabricMenuTitles#statInfoTitle); YAML `title` is ignored at runtime.
+# Fallback: built-in FabricStatInfoMenuGui on any failure.
+id: stat_info
+title: "{stat_display}"
+rows: 6
+
+# Sprint 122: no global glass fill — empty slots stay empty (no hover targets).
+
+items:
+  stat:
+    material: minecraft:ender_eye
+    slot: 22
+    name: "§l§b{stat_display}"
+    lore:
+      - "§7{stat_description}"
+      - ""
+      - "§fCurrent: §e{stat_value}"
+      - ""
+      - "§7§nRelated traits"
+    action: stat_panel
+  back:
+    material: minecraft:iron_door
+    slot: 45
+    name: "§c← Stats"
+    lore:
+      - "§7Back to the stat list"
+    action: back

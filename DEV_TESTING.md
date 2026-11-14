@@ -17,7 +17,7 @@ This guide is for **Granite Skills** in this repo (mod id `graniteskills`). It u
 | Java | **25** (Gradle toolchain) |
 | Loom | `1.20.0-alpha.31` |
 
-Use **`-PfabricOnly=true`** so Gradle only loads `api`, `common`, `slate-fabric`, and `fabric` (skips Bukkit and other subprojects). All commands below include it.
+Use **`-PfabricOnly=true`** so Gradle only loads `api`, `common`, `granitelib-fabric`, and `fabric` (skips Bukkit and other subprojects). All commands below include it. The `granitelib` mod must be present at runtime; it is a compile dependency of `:fabric`, not a jar nested inside Granite Skills.
 
 ---
 

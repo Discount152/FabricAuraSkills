@@ -1,0 +1,259 @@
+package dev.granite.graniteskills.fabric.command;
+
+import com.mojang.brigadier.context.CommandContext;
+import dev.granite.graniteskills.fabric.menu.FabricGraniteBundledMenuTemplateIds;
+import dev.granite.graniteskills.fabric.menu.FabricGraniteMenuTemplateBindings;
+import dev.granite.graniteskills.fabric.menu.FabricGraniteMenuTemplateExporter;
+import dev.granite.graniteskills.fabric.menu.FabricGraniteMenuTemplateStatusFormatter;
+import dev.granite.graniteskills.fabric.text.FabricGraniteText;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+
+import static net.minecraft.commands.Commands.literal;
+
+/**
+ * Sprint 108: staff export of bundled Granite menu templates to {@code config/graniteskills/granite/templates/}.
+ *
+ * <p>Sprint 109: guarded overwrite — preview ({@code templates export overwrite}) and console/RCON-only confirm
+ * ({@code … overwrite confirm}) via {@link FabricCommandConfirmation}.
+ *
+ * <p>Sprint 110–111: {@code templates status} — registry snapshot with paths, states, and disk/bundled diagnostics.
+ */
+public final class FabricGraniteTemplateCommands {
+
+    private FabricGraniteTemplateCommands() {}
+
+    public static com.mojang.brigadier.builder.LiteralArgumentBuilder<CommandSourceStack> templatesLiteral() {
+        return literal("templates")
+                .then(
+                        literal("status")
+                                .requires(
+                                        FabricCommandRequirements.permissionOrNonPlayerSource(
+                                                FabricCommandPermissions.TEMPLATES, false))
+                                .executes(FabricGraniteTemplateCommands::templatesStatus))
+                .then(
+                        literal("export")
+                                .requires(
+                                        FabricCommandRequirements.permissionOrNonPlayerSource(
+                                                FabricCommandPermissions.TEMPLATES, false))
+                                .executes(FabricGraniteTemplateCommands::templatesExport)
+                                .then(
+                                        literal("overwrite")
+                                                .requires(
+                                                        FabricCommandRequirements.permissionOrNonPlayerSource(
+                                                                FabricCommandPermissions.TEMPLATES, false))
+                                                .executes(FabricGraniteTemplateCommands::templatesExportOverwritePreview)
+                                                .then(
+                                                        literal("confirm")
+                                                                .requires(
+                                                                        FabricCommandRequirements
+                                                                                .permissionOrNonPlayerSource(
+                                                                                        FabricCommandPermissions
+                                                                                                .TEMPLATES,
+                                                                                        false))
+                                                                .executes(
+                                                                        FabricGraniteTemplateCommands
+                                                                                ::templatesExportOverwriteConfirm))));
+    }
+
+    private static FabricGraniteMenuTemplateExporter.BundledOpener bundledOpener() {
+        return cp ->
+                FabricGraniteBundledMenuTemplateIds.class.getClassLoader().getResourceAsStream(cp);
+    }
+
+    private static int templatesStatus(CommandContext<CommandSourceStack> ctx) {
+        return FabricCommandPluginState.runtimeReadyOrEmpty()
+                .map(
+                        p -> {
+                            String text =
+                                    FabricGraniteMenuTemplateStatusFormatter.format(
+                                            p.menuTemplateRegistry().snapshot(),
+                                            FabricGraniteMenuTemplateBindings.ALL);
+                            ctx.getSource().sendSuccess(() -> Component.literal(text), false);
+                            return 1;
+                        })
+                .orElseGet(
+                        () -> {
+                            ctx.getSource().sendFailure(Component.literal("GraniteSkills is still starting."));
+                            return 0;
+                        });
+    }
+
+    private static int templatesExport(CommandContext<CommandSourceStack> ctx) {
+        return FabricCommandPluginState.runtimeReadyOrEmpty()
+                .map(
+                        p -> {
+                            FabricGraniteMenuTemplateExporter.ExportOutcome out =
+                                    FabricGraniteMenuTemplateExporter.exportMissing(
+                                            p.getPluginFolder().toPath(), bundledOpener());
+                            CommandSourceStack source = ctx.getSource();
+                            String abs = out.templatesDirectory().toAbsolutePath().normalize().toString();
+                            StringBuilder summary =
+                                    new StringBuilder(
+                                            "Exported Granite menu templates: created "
+                                                    + out.created()
+                                                    + ", skipped "
+                                                    + out.skipped()
+                                                    + ", failed "
+                                                    + out.failed()
+                                                    + ".\nPath: "
+                                                    + abs);
+                            if (out.skipped() > 0) {
+                                summary.append("\nExisting files were not overwritten.");
+                            }
+                            if (out.failed() > 0) {
+                                summary.append("\nFailures:");
+                                for (FabricGraniteMenuTemplateExporter.FileOutcome f : out.files()) {
+                                    if (f.kind() == FabricGraniteMenuTemplateExporter.FileOutcome.Kind.FAILED) {
+                                        summary.append("\n  - ")
+                                                .append(f.menuId())
+                                                .append(": ")
+                                                .append(f.detail() != null ? f.detail() : "(unknown)");
+                                    }
+                                }
+                            }
+                            String summaryText = summary.toString();
+                            source.sendSuccess(() -> Component.literal(summaryText), false);
+                            source.sendSuccess(
+                                    () ->
+                                            Component.literal(
+                                                    "Run /graniteskills reload so the menu template registry picks up new or changed disk files."),
+                                    false);
+                            return 1;
+                        })
+                .orElseGet(
+                        () -> {
+                            ctx.getSource().sendFailure(Component.literal("GraniteSkills is still starting."));
+                            return 0;
+                        });
+    }
+
+    private static int templatesExportOverwritePreview(CommandContext<CommandSourceStack> ctx) {
+        return FabricCommandPluginState.runtimeReadyOrEmpty()
+                .map(
+                        p -> {
+                            FabricGraniteMenuTemplateExporter.OverwritePreviewOutcome pre =
+                                    FabricGraniteMenuTemplateExporter.previewOverwrite(
+                                            p.getPluginFolder().toPath(), bundledOpener());
+                            CommandSourceStack source = ctx.getSource();
+                            String abs =
+                                    pre.templatesDirectory().toAbsolutePath().normalize().toString();
+                            String previewBody =
+                                    "Granite template overwrite preview:\nWould create: "
+                                            + pre.wouldCreate()
+                                            + "\nWould overwrite: "
+                                            + pre.wouldOverwrite()
+                                            + "\nWould fail: "
+                                            + pre.wouldFail()
+                                            + "\nPath: "
+                                            + abs;
+                            source.sendSuccess(() -> Component.literal(previewBody), false);
+                            if (pre.wouldFail() > 0) {
+                                StringBuilder failLines = new StringBuilder("Forecast failures:");
+                                for (FabricGraniteMenuTemplateExporter.PreviewFileOutcome f : pre.files()) {
+                                    if (f.kind()
+                                            == FabricGraniteMenuTemplateExporter.PreviewFileOutcome.PreviewKind
+                                                    .WOULD_FAIL) {
+                                        failLines.append("\n  - ")
+                                                .append(f.menuId())
+                                                .append(": ")
+                                                .append(f.detail() != null ? f.detail() : "(unknown)");
+                                    }
+                                }
+                                String fl = failLines.toString();
+                                source.sendSuccess(() -> Component.literal(fl), false);
+                            }
+
+                            boolean consoleOrRcon = !(source.getEntity() instanceof ServerPlayer);
+                            if (consoleOrRcon) {
+                                FabricCommandConfirmation.registerPending(
+                                        p, source, FabricCommandConfirmation.TEMPLATES_EXPORT_OVERWRITE_PENDING);
+                                source.sendSuccess(
+                                        () ->
+                                                Component.literal(
+                                                        "Run /graniteskills templates export overwrite confirm from this console or RCON within 30s to apply."),
+                                        false);
+                            } else {
+                                source.sendSuccess(
+                                        () ->
+                                                FabricGraniteText.key(
+                                                        "graniteskills.granite.command.templates.overwrite"
+                                                                + ".preview_arm_from_console"),
+                                        false);
+                            }
+
+                            source.sendSuccess(
+                                    () ->
+                                            Component.literal(
+                                                    "Already-open menus stay unchanged until reopened. Run /graniteskills reload to refresh the template registry."),
+                                    false);
+                            return 1;
+                        })
+                .orElseGet(
+                        () -> {
+                            ctx.getSource().sendFailure(Component.literal("GraniteSkills is still starting."));
+                            return 0;
+                        });
+    }
+
+    private static int templatesExportOverwriteConfirm(CommandContext<CommandSourceStack> ctx) {
+        return FabricCommandPluginState.runtimeReadyOrEmpty()
+                .map(
+                        p -> {
+                            CommandSourceStack source = ctx.getSource();
+                            if (source.getEntity() instanceof ServerPlayer) {
+                                source.sendFailure(
+                                        FabricGraniteText.key(
+                                                "graniteskills.granite.command.templates.overwrite"
+                                                        + ".confirm_console_only"));
+                                return 0;
+                            }
+                            if (!FabricCommandConfirmation.verifyPendingOrError(
+                                    source, FabricCommandConfirmation.TEMPLATES_EXPORT_OVERWRITE_PENDING)) {
+                                return 0;
+                            }
+
+                            FabricGraniteMenuTemplateExporter.OverwriteExportOutcome out =
+                                    FabricGraniteMenuTemplateExporter.exportOverwrite(
+                                            p.getPluginFolder().toPath(), bundledOpener());
+                            String abs = out.templatesDirectory().toAbsolutePath().normalize().toString();
+                            StringBuilder summary =
+                                    new StringBuilder(
+                                            "Exported Granite menu templates with overwrite: created "
+                                                    + out.created()
+                                                    + ", overwritten "
+                                                    + out.overwritten()
+                                                    + ", failed "
+                                                    + out.failed()
+                                                    + ".\nPath: "
+                                                    + abs);
+                            if (out.failed() > 0) {
+                                summary.append("\nFailures:");
+                                for (FabricGraniteMenuTemplateExporter.OverwriteFileOutcome f : out.files()) {
+                                    if (f.kind()
+                                            == FabricGraniteMenuTemplateExporter.OverwriteFileOutcome.OverwriteKind
+                                                    .FAILED) {
+                                        summary.append("\n  - ")
+                                                .append(f.menuId())
+                                                .append(": ")
+                                                .append(f.detail() != null ? f.detail() : "(unknown)");
+                                    }
+                                }
+                            }
+                            String st = summary.toString();
+                            source.sendSuccess(() -> Component.literal(st), false);
+                            source.sendSuccess(
+                                    () ->
+                                            Component.literal(
+                                                    "Run /graniteskills reload so the menu template registry reloads from disk. Already-open menus stay unchanged until reopened."),
+                                    false);
+                            return 1;
+                        })
+                .orElseGet(
+                        () -> {
+                            ctx.getSource().sendFailure(Component.literal("GraniteSkills is still starting."));
+                            return 0;
+                        });
+    }
+}

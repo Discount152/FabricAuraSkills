@@ -55,6 +55,10 @@ import dev.granite.graniteskills.fabric.ability.FabricDefenseAbilities;
 import dev.granite.graniteskills.fabric.item.FabricItemRegistry;
 import dev.granite.graniteskills.fabric.loot.FabricApiLootBridge;
 import dev.granite.graniteskills.fabric.loot.FabricLootManager;
+import dev.granite.graniteskills.fabric.menu.FabricBuiltInMenuConfig;
+import dev.granite.graniteskills.fabric.menu.FabricGraniteMenuTemplateRegistry;
+import dev.granite.graniteskills.fabric.menu.FabricMenuLoaders;
+import dev.granite.graniteskills.fabric.menu.FabricMenuRegistry;
 import dev.granite.graniteskills.fabric.requirement.FabricRequirementManager;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.MinecraftServer;
@@ -109,6 +113,9 @@ public final class FabricGraniteSkills implements GraniteSkillsPlugin {
     private PresetManager presetManager;
     private FabricModifierManager modifierManager;
     private FabricMenuHelper menuHelper;
+    private FabricMenuRegistry menuRegistry;
+    private final FabricBuiltInMenuConfig builtInMenuConfig = new FabricBuiltInMenuConfig();
+    private final FabricGraniteMenuTemplateRegistry menuTemplateRegistry = new FabricGraniteMenuTemplateRegistry();
     private FabricPlatformUtil platformUtil;
     private FabricLootManager lootManager;
     private FabricRequirementManager requirementManager;
@@ -215,6 +222,10 @@ public final class FabricGraniteSkills implements GraniteSkillsPlugin {
         leaderboardManager.startLeaderboardUpdater();
         statManager.scheduleTemporaryModifierTask();
         modifierManager.registerSchedulesIfNeeded();
+        menuRegistry = new FabricMenuRegistry();
+        FabricMenuLoaders.registerBuiltInMenus(menuRegistry, this);
+        builtInMenuConfig.load(this);
+        menuTemplateRegistry.reloadAll(this);
         runtimeReady = true;
         logger.info("Granite Skills enabled — block/entity/damage/stat/jump/fishing XP; consume, splash, anvil, grindstone, enchanting table, brewing (BREW + TAKEOUT); mana abilities; permissions via fabric-permissions-api. Use /graniteskills reload after editing configs; see fabric/FABRIC_QUICKSTART.md.");
     }
@@ -429,6 +440,19 @@ public final class FabricGraniteSkills implements GraniteSkillsPlugin {
         return menuHelper;
     }
 
+    public FabricMenuRegistry getMenuRegistry() {
+        return menuRegistry;
+    }
+
+    /** Granite slice of bundled menu YAML. Reloads with {@link #reloadFromDisk()}. */
+    public FabricBuiltInMenuConfig getBuiltInMenuConfig() {
+        return builtInMenuConfig;
+    }
+
+    public FabricGraniteMenuTemplateRegistry menuTemplateRegistry() {
+        return menuTemplateRegistry;
+    }
+
     @Override
     public EventHandler getEventHandler() {
         return eventHandler;
@@ -560,6 +584,8 @@ public final class FabricGraniteSkills implements GraniteSkillsPlugin {
             statManager.reloadAllTraits(u);
         }
         scheduler.executeAsync(() -> leaderboardManager.updateLeaderboards());
+        runReloadStep("built-in menu YAML (menus/*.yml granite)", () -> builtInMenuConfig.load(this));
+        runReloadStep("granite menu templates (registry)", () -> menuTemplateRegistry.reloadAll(this));
         logger.info("GraniteSkills: reload finished.");
     }
 

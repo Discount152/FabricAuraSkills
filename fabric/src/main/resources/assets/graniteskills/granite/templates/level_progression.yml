@@ -1,0 +1,79 @@
+# Granite Skills — level progression (template). Sprint 117 snake path (24 levels/page); Sprint 116 visuals.
+# Sprint 119: Container title is built in Java (FabricMenuTitles#levelProgressionTitle); YAML `title` is ignored at runtime.
+# Row 1 (slots 0-8): empty in Java. Row cells: LEVEL_PATH_SLOTS in FabricLevelProgressionLayout.
+# Fallback: built-in `FabricLevelProgressionMenuGui` snake path (Sprint 118) when template invalid.
+id: level_progression
+title: "{skill_display}"
+rows: 6
+
+# Sprint 122: no global glass fill — empty slots stay empty.
+
+items:
+  level:
+    material: minecraft:lime_dye
+    slots:
+      - 9
+      - 18
+      - 27
+      - 36
+      - 37
+      - 38
+      - 29
+      - 20
+      - 11
+      - 12
+      - 13
+      - 22
+      - 31
+      - 40
+      - 41
+      - 42
+      - 33
+      - 24
+      - 15
+      - 16
+      - 17
+      - 26
+      - 35
+      - 44
+    name: "<white>Level </white><yellow>{level}</yellow>"
+    lore:
+      - "{level_status}"
+      - ""
+      - "{level_detail}"
+    action: level_row
+  sources:
+    material: minecraft:knowledge_book
+    slot: 48
+    name: "<aqua>Sources</aqua>"
+    lore:
+      - "<gray>XP sources for this skill</gray>"
+    action: open_sources
+  abilities:
+    material: minecraft:amethyst_shard
+    slot: 49
+    name: "<light_purple>Abilities</light_purple>"
+    lore:
+      - "<gray>Passives and mana abilities</gray>"
+    action: open_abilities
+  back:
+    material: minecraft:iron_door
+    slot: 45
+    name: "<white>Back</white>"
+    lore:
+      - "<gray>Return to Skills</gray>"
+    action: back
+  previous:
+    material: minecraft:arrow
+    slot: 52
+    name: "<yellow>Previous</yellow>"
+    lore:
+      - "<gray>Previous page</gray>"
+    action: previous_page
+  next:
+    material: minecraft:arrow
+    slot: 53
+    name: "<yellow>Next</yellow>"
+    lore:
+      - "<gray>Next page</gray>"
+    action: next_page

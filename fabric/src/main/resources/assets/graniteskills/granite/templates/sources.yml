@@ -1,0 +1,74 @@
+# Granite Skills — XP sources (template v0). Row icon merges source menu_item from skill YAML when present.
+# Sprint 119: Container title is built in Java (FabricMenuTitles#sourcesMenuTitle); YAML `title` is ignored at runtime.
+# Fallback: built-in FabricSourcesMenuGui on any failure.
+id: sources
+title: "{skill_display}"
+rows: 6
+
+# Sprint 122: no global glass fill — empty slots stay empty.
+
+items:
+  source:
+    material: minecraft:experience_bottle
+    slots:
+      - 10
+      - 11
+      - 12
+      - 13
+      - 14
+      - 15
+      - 16
+      - 19
+      - 20
+      - 21
+      - 22
+      - 23
+      - 24
+      - 25
+      - 28
+      - 29
+      - 30
+      - 31
+      - 32
+      - 33
+      - 34
+      - 37
+      - 38
+      - 39
+      - 40
+      - 41
+      - 42
+      - 43
+    name: "§f{source_name}"
+    lore:
+      - "§7Reward: §e{source_xp} §7XP"
+      - "§8{source_type}"
+    action: source_row
+  back:
+    material: minecraft:iron_door
+    slot: 45
+    name: "§c← Progression"
+    lore:
+      - "§7Back to level view"
+    action: back
+  previous:
+    material: minecraft:arrow
+    slot: 48
+    name: "§e« Page"
+    lore:
+      - "§7Previous sources"
+    action: previous_page
+  sort:
+    material: minecraft:comparator
+    slot: 49
+    name: "§6Sort §8· §f{sort}"
+    lore:
+      - "§7Click to cycle sort order"
+    action: cycle_sort
+  next:
+    material: minecraft:arrow
+    slot: 50
+    name: "§ePage »"
+    lore:
+      - "§7Next sources"
+    action: next_page

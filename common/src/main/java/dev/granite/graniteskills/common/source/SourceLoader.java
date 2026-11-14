@@ -52,6 +52,8 @@ public class SourceLoader {
     public List<XpSource> loadSources(Skill skill, File contentDirectory, boolean loadEmbedded) {
         File sourceFile = new File(contentDirectory, "sources/" + skill.name().toLowerCase(Locale.ROOT) + ".yml");
         String fileName = "sources/" + skill.name().toLowerCase(Locale.ROOT) + ".yml";
+        SourceLoadDiagnostics diagnostics = new SourceLoadDiagnostics(skill.getId().toString(), sourceFile.getPath());
+        diagnostics.setDiskFileExists(sourceFile.isFile());
         try {
             Map<String, ConfigurationNode> embeddedSources = new ConcurrentHashMap<>();
             ConfigurationNode fileDefault = null;
@@ -115,10 +117,18 @@ public class SourceLoader {
                     registerMenuItem(source, sourceNode);
                 }
             }
+            diagnostics.setEmbeddedFileExists(embedded != null);
+            diagnostics.setEmbeddedSourceKeys(embeddedSources.keySet());
+            diagnostics.setDiskSourceKeys(userSources.keySet());
+            diagnostics.setMergedSourceKeys(sources.keySet());
+            diagnostics.setVersionValidSources(deserializedSources.size());
+            plugin.getSkillManager().registerSourceDiagnostics(skill, diagnostics);
             return deserializedSources;
         } catch (Exception e) {
             plugin.logger().warn("Error loading source file " + fileName + ": " + e.getMessage());
             e.printStackTrace();
+            diagnostics.setFatalError(e.getMessage());
+            plugin.getSkillManager().registerSourceDiagnostics(skill, diagnostics);
             return new ArrayList<>();
         }
     }
@@ -336,6 +346,100 @@ public class SourceLoader {
             } else {
                 applyNodeReplacements(child, parentNode, sourceName); // Recursively search for placeholders
             }
+        }
+    }
+
+    public static final class SourceLoadDiagnostics {
+        private final String skillId;
+        private final String diskPath;
+        private boolean diskFileExists;
+        private boolean embeddedFileExists;
+        private final Set<String> diskSourceKeys = new LinkedHashSet<>();
+        private final Set<String> embeddedSourceKeys = new LinkedHashSet<>();
+        private final Set<String> mergedSourceKeys = new LinkedHashSet<>();
+        private int versionValidSources;
+        private final Map<String, String> rejectedSources = new LinkedHashMap<>();
+        private String fatalError = "";
+        private boolean embeddedFallbackUsed;
+
+        public SourceLoadDiagnostics(String skillId, String diskPath) {
+            this.skillId = skillId;
+            this.diskPath = diskPath;
+        }
+
+        public String skillId() {
+            return skillId;
+        }
+
+        public String diskPath() {
+            return diskPath;
+        }
+
+        public boolean diskFileExists() {
+            return diskFileExists;
+        }
+
+        public boolean embeddedFileExists() {
+            return embeddedFileExists;
+        }
+
+        public int diskSourceKeyCount() {
+            return diskSourceKeys.size();
+        }
+
+        public int embeddedSourceKeyCount() {
+            return embeddedSourceKeys.size();
+        }
+
+        public int mergedSourceKeyCount() {
+            return mergedSourceKeys.size();
+        }
+
+        public int versionValidSources() {
+            return versionValidSources;
+        }
+
+        public Map<String, String> rejectedSources() {
+            return Collections.unmodifiableMap(rejectedSources);
+        }
+
+        public String fatalError() {
+            return fatalError;
+        }
+
+        public boolean embeddedFallbackUsed() {
+            return embeddedFallbackUsed;
+        }
+
+        void setDiskFileExists(boolean exists) {
+            this.diskFileExists = exists;
+        }
+
+        void setEmbeddedFileExists(boolean exists) {
+            this.embeddedFileExists = exists;
+        }
+
+        void setDiskSourceKeys(Collection<String> keys) {
+            this.diskSourceKeys.clear();
+            this.diskSourceKeys.addAll(keys);
+        }
+
+        void setEmbeddedSourceKeys(Collection<String> keys) {
+            this.embeddedSourceKeys.clear();
+            this.embeddedSourceKeys.addAll(keys);
+        }
+
+        void setMergedSourceKeys(Collection<String> keys) {
+            this.mergedSourceKeys.clear();
+            this.mergedSourceKeys.addAll(keys);
+        }
+
+        void setVersionValidSources(int count) {
+            this.versionValidSources = count;
+        }
+
+        void setFatalError(String error) {
+            this.fatalError = error == null ? "" : error;
         }
     }
 

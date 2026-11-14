@@ -2,6 +2,20 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.177
+
+### New Features
+
+- Restore the eight Granite Skills menus (skills, stats, level progression, stat info, sources, abilities, leaderboard, unclaimed items) on Minecraft 26.3, opened from `/skills`, `/sk`, `/skill`, `/stats`, and `/graniteskills`
+- Require the standalone GraniteLib 0.2.0-alpha.1 jar. Menus and YAML templates load through that library. Bukkit Slate and Polyglot stay separate libraries
+- Restore the Granite command families under `/graniteskills` and the skills aliases, including XP, mana, skill levels, mana abilities, per-skill shortcuts, leaderboards, modifiers, traits, item and armor, claims, sources, anti-AFK, profile, backup, preset, storage, transfer, reset health, and template export. Vanilla `/xp` and `/item` are unchanged
+- Record Archyx (original AuraSkills) and Discount152 (Fabric port) beside Granite Skills in the mod metadata
+
+### Changes
+
+- Gameplay version moves from 2.3.18 to 2.3.177 so the restored menus and commands are not shipped under the old version
+- `fabric/FEATURE_RESTORATION_26_3.md` lists what is restored, what the 26.3 gameplay branch already had, and the gameplay helpers that are still absent because their 1.21.11 mixins cannot be copied onto 26.3
+
 ## 2.3.18
 
 ### New Features

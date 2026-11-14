@@ -1,0 +1,23 @@
+# Built-in Stats menu (Granite / Fabric) — first YAML slice (Sprint 32+).
+# The `granite` block is the supported surface until full Slate file parity.
+
+granite:
+  enabled: true
+  title_key: "graniteskills.granite.menu.stats_title"
+  size:
+    rows: 6
+    columns: 9
+  layout:
+    list_start_slot: 0
+    list_end_slot_exclusive: 54
+    main_slot: 4
+    back_slot: 49
+  items:
+    list: "minecraft:book"
+    main: "minecraft:book"
+    back: "minecraft:iron_door"
+  paging:
+    prev_slot: 45
+    next_slot: 53
+  format:
+    list_open_detail: "graniteskills.granite.menu.stats_lore_open_detail"

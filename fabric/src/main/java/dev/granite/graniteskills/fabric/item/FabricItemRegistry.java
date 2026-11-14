@@ -153,26 +153,60 @@ public final class FabricItemRegistry implements ItemRegistry {
         return items.containsKey(key);
     }
 
+    /**
+     * Server thread: try to add {@code count} of a registered item into the main inventory and hotbar.
+     *
+     * @return how many items did not fit
+     */
+    public int tryMergeRegisteredItemCount(ServerPlayer player, NamespacedId id, int count) {
+        if (count <= 0) {
+            return 0;
+        }
+        ItemStack template = getItem(id);
+        if (template == null || template.isEmpty()) {
+            return count;
+        }
+        ItemStack toGive = template.copy();
+        toGive.setCount(count);
+        ItemStack leftover = FabricItemInventoryUtil.addItemToInventory(player.getInventory(), toGive);
+        if (leftover == null || leftover.isEmpty()) {
+            return 0;
+        }
+        return leftover.getCount();
+    }
+
+    /**
+     * Server thread: give a registered item. When {@code amount} is {@code -1}, uses the template stack size.
+     *
+     * @return the requested count, or {@code -1} if the key is not registered
+     */
+    public int addRegisteredItemToInventory(User user, ServerPlayer player, NamespacedId key, int amount) {
+        ItemStack template = getItem(key);
+        if (template == null || template.isEmpty()) {
+            return -1;
+        }
+        int count = amount == -1 ? template.getCount() : Math.max(1, amount);
+        int notFit = tryMergeRegisteredItemCount(player, key, count);
+        if (notFit > 0) {
+            user.getUnclaimedItems().add(new KeyIntPair(key.toString(), notFit));
+            user.setShouldSave(true);
+            String msg = plugin.getPrefix(user.getLocale()) + plugin.getMsg(LevelerMessage.UNCLAIMED_ITEM, user.getLocale());
+            user.sendMessage(msg);
+        }
+        return count;
+    }
+
     @Override
     public void giveItem(User user, NamespacedId key, int amount) {
         ServerPlayer player = FabricUser.getPlayer(user);
-        if (player == null) {
-            return;
-        }
-        ItemStack template = getItem(key);
-        if (template == null || template.isEmpty()) {
+        if (player == null || getItem(key) == null) {
             return;
         }
         plugin.getScheduler().executeSync(() -> {
-            ItemStack item = template.copy();
-            int count = amount == -1 ? template.getCount() : Math.max(1, amount);
-            item.setCount(count);
-            ItemStack leftover = FabricItemInventoryUtil.addItemToInventory(player.getInventory(), item);
-            if (leftover != null && !leftover.isEmpty()) {
-                user.getUnclaimedItems().add(new KeyIntPair(key.toString(), leftover.getCount()));
-                String msg = plugin.getPrefix(user.getLocale()) + plugin.getMsg(LevelerMessage.UNCLAIMED_ITEM, user.getLocale());
-                player.sendSystemMessage(Component.literal(msg));
+            if (getItem(key) == null) {
+                return;
             }
+            addRegisteredItemToInventory(user, player, key, amount);
         });
     }
 

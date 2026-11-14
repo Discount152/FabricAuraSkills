@@ -1,0 +1,139 @@
+package dev.granite.graniteskills.fabric.menu;
+
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Collections;
+import java.util.Map;
+
+/**
+ * Granite slice of a built-in menu loaded from {@code menus/<id>.yml} under the {@code granite:} key.
+ * Not a full Slate {@code skills.yml} / {@code stats.yml} document. **Sprint 34:** layout slot numbers.
+ * **Sprint 36:** item registry ids under {@code granite.items} (list / main / back). **Sprint 37:** list
+ * paging (prev/next slots) in {@code granite.paging}.
+ */
+public record FabricMenuYamlSlice(
+        boolean enabled,
+        String titleTranslationKey,
+        int rows,
+        int columns,
+        Map<String, String> formatKeys,
+        int listStartSlot,
+        int listEndSlotExclusive,
+        int mainSlot,
+        int backSlot,
+        String listItemId,
+        String mainItemId,
+        String backItemId,
+        int pagingPrevSlot,
+        int pagingNextSlot) {
+
+    public static final int EXPECTED_ROWS = 6;
+    public static final int EXPECTED_COLS = 9;
+
+    public FabricMenuYamlSlice {
+        formatKeys = formatKeys == null
+                ? Map.of()
+                : Collections.unmodifiableMap(formatKeys);
+    }
+
+    static FabricMenuYamlSlice defaultSkills() {
+        return new FabricMenuYamlSlice(
+                true,
+                "graniteskills.granite.menu.skills_title",
+                EXPECTED_ROWS,
+                EXPECTED_COLS,
+                Map.of("list_open_detail", "graniteskills.granite.menu.skills_lore_open_detail"),
+                FabricMenuSlotLayout.DEFAULT_LIST_START,
+                FabricMenuSlotLayout.DEFAULT_LIST_END_EX,
+                FabricMenuSlotLayout.DEFAULT_MAIN_SLOT,
+                FabricMenuSlotLayout.DEFAULT_BACK_SLOT,
+                FabricMenuItemDefinitions.DEFAULT_LIST_ITEM_ID,
+                FabricMenuItemDefinitions.DEFAULT_MAIN_ITEM_ID,
+                FabricMenuItemDefinitions.DEFAULT_BACK_ITEM_ID,
+                FabricListMenuPaging.DEFAULT_PREV_PAGE_SLOT,
+                FabricListMenuPaging.DEFAULT_NEXT_PAGE_SLOT);
+    }
+
+    static FabricMenuYamlSlice defaultStats() {
+        return new FabricMenuYamlSlice(
+                true,
+                "graniteskills.granite.menu.stats_title",
+                EXPECTED_ROWS,
+                EXPECTED_COLS,
+                Map.of("list_open_detail", "graniteskills.granite.menu.stats_lore_open_detail"),
+                FabricMenuSlotLayout.DEFAULT_LIST_START,
+                FabricMenuSlotLayout.DEFAULT_LIST_END_EX,
+                FabricMenuSlotLayout.DEFAULT_MAIN_SLOT,
+                FabricMenuSlotLayout.DEFAULT_BACK_SLOT,
+                FabricMenuItemDefinitions.DEFAULT_LIST_ITEM_ID,
+                FabricMenuItemDefinitions.DEFAULT_MAIN_ITEM_ID,
+                FabricMenuItemDefinitions.DEFAULT_BACK_ITEM_ID,
+                FabricListMenuPaging.DEFAULT_PREV_PAGE_SLOT,
+                FabricListMenuPaging.DEFAULT_NEXT_PAGE_SLOT);
+    }
+
+    static FabricMenuYamlSlice defaultLevelProgression() {
+        return new FabricMenuYamlSlice(
+                true,
+                "graniteskills.granite.menu.level_progression_title",
+                EXPECTED_ROWS,
+                EXPECTED_COLS,
+                Map.ofEntries(
+                        Map.entry("main_title", "graniteskills.granite.menu.level_progression_main_title"),
+                        Map.entry("lore_level", "graniteskills.granite.menu.level_progression_lore_level"),
+                        Map.entry("lore_xp", "graniteskills.granite.menu.level_progression_lore_xp"),
+                        Map.entry("lore_to_next", "graniteskills.granite.menu.level_progression_lore_to_next"),
+                        Map.entry("lore_maxed", "graniteskills.granite.menu.level_progression_lore_maxed"),
+                        Map.entry("back", "graniteskills.granite.menu.level_progression_back"),
+                        Map.entry("back_lore", "graniteskills.granite.menu.level_progression_back_lore"),
+                        Map.entry("no_permission", "graniteskills.granite.menu.skills_lore_no_permission")),
+                FabricMenuSlotLayout.DEFAULT_LIST_START,
+                FabricMenuSlotLayout.DEFAULT_LIST_END_EX,
+                FabricMenuSlotLayout.DEFAULT_MAIN_SLOT,
+                FabricMenuSlotLayout.DEFAULT_BACK_SLOT,
+                FabricMenuItemDefinitions.DEFAULT_LIST_ITEM_ID,
+                FabricMenuItemDefinitions.DEFAULT_MAIN_ITEM_ID,
+                FabricMenuItemDefinitions.DEFAULT_BACK_ITEM_ID,
+                FabricListMenuPaging.DEFAULT_PREV_PAGE_SLOT,
+                FabricListMenuPaging.DEFAULT_NEXT_PAGE_SLOT);
+    }
+
+    static FabricMenuYamlSlice defaultStatInfo() {
+        return new FabricMenuYamlSlice(
+                true,
+                "graniteskills.granite.menu.stat_info_title",
+                EXPECTED_ROWS,
+                EXPECTED_COLS,
+                Map.ofEntries(
+                        Map.entry("main_title", "graniteskills.granite.menu.stat_info_main_title"),
+                        Map.entry("lore_value", "graniteskills.granite.menu.stat_info_lore_value"),
+                        Map.entry("back", "graniteskills.granite.menu.stat_info_back"),
+                        Map.entry("back_lore", "graniteskills.granite.menu.stat_info_back_lore")),
+                FabricMenuSlotLayout.DEFAULT_LIST_START,
+                FabricMenuSlotLayout.DEFAULT_LIST_END_EX,
+                FabricMenuSlotLayout.DEFAULT_MAIN_SLOT,
+                FabricMenuSlotLayout.DEFAULT_BACK_SLOT,
+                FabricMenuItemDefinitions.DEFAULT_LIST_ITEM_ID,
+                FabricMenuItemDefinitions.DEFAULT_MAIN_ITEM_ID,
+                FabricMenuItemDefinitions.DEFAULT_BACK_ITEM_ID,
+                FabricListMenuPaging.DEFAULT_PREV_PAGE_SLOT,
+                FabricListMenuPaging.DEFAULT_NEXT_PAGE_SLOT);
+    }
+
+    @Nullable
+    public String getFormatKey(String name, @Nullable String codeFallback) {
+        String v = formatKeys.get(name);
+        if (v != null && !v.isEmpty()) {
+            return v;
+        }
+        return codeFallback;
+    }
+
+    public String resolveFormatKey(String name, FabricMenuYamlSlice codeDefaults, String hardFallback) {
+        String v = getFormatKey(name, null);
+        if (v != null) {
+            return v;
+        }
+        return codeDefaults.getFormatKey(name, hardFallback);
+    }
+}

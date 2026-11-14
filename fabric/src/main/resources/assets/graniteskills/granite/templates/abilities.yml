@@ -1,0 +1,51 @@
+# Granite Skills — abilities (template v0). Passive grid slots fixed to built-in order; mana single slot.
+# Sprint 119: Container title is built in Java (FabricMenuTitles#abilitiesMenuTitle); YAML `title` is ignored at runtime.
+# Fallback: built-in FabricAbilitiesMenuGui on any failure.
+id: abilities
+title: "{skill_display}"
+rows: 6
+
+# Sprint 122: no global glass fill — empty slots stay empty.
+
+items:
+  ability:
+    material: minecraft:lapis_lazuli
+    slots:
+      - 11
+      - 12
+      - 13
+      - 14
+      - 15
+      - 16
+      - 17
+      - 20
+      - 21
+      - 22
+      - 23
+      - 24
+      - 25
+      - 26
+    name: "§b{ability_display}"
+    lore:
+      - "§7{ability_unlock_level}"
+      - "§f{ability_status}"
+      - ""
+    action: ability_row
+
+  mana_ability:
+    material: minecraft:end_crystal
+    slot: 31
+    name: "§d§l{mana_ability_display}"
+    lore:
+      - "§7Mana ability"
+      - "§f{mana_ability_status}"
+      - ""
+    action: mana_ability_row
+
+  back:
+    material: minecraft:iron_door
+    slot: 45
+    name: "§c← Progression"
+    lore:
+      - "§7Back to levels"
+    action: back

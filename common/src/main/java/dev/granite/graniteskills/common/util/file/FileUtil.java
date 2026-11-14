@@ -92,6 +92,24 @@ public class FileUtil {
         loader.save(config);
     }
 
+    /**
+     * Like {@link #loadEmbeddedYamlFile(String, ClassLoader, boolean)} but returns null when the resource is missing.
+     */
+    @Nullable
+    public static ConfigurationNode loadEmbeddedYamlFileOrNull(String fileName, ClassLoader classLoader) throws IOException {
+        try (InputStream in = classLoader.getResourceAsStream(fileName)) {
+            if (in == null) {
+                return null;
+            }
+            YamlConfigurationLoader loader = YamlConfigurationLoader.builder()
+                    .defaultOptions(opts -> opts.shouldCopyDefaults(false))
+                    .nodeStyle(NodeStyle.BLOCK)
+                    .source(() -> new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8)))
+                    .build();
+            return loader.load();
+        }
+    }
+
     public static ConfigurationNode loadEmbeddedYamlFile(String fileName, GraniteSkillsPlugin plugin) throws IOException {
         return loadEmbeddedYamlFile(fileName, plugin.getClass().getClassLoader(), true);
     }

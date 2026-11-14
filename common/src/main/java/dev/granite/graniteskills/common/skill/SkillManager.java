@@ -10,6 +10,7 @@ import dev.granite.graniteskills.api.source.SourceType;
 import dev.granite.graniteskills.api.source.XpSource;
 import dev.granite.graniteskills.common.GraniteSkillsPlugin;
 import dev.granite.graniteskills.common.config.ConfigurateLoader;
+import dev.granite.graniteskills.common.source.SourceLoader;
 import dev.granite.graniteskills.common.source.SourceTag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,6 +31,7 @@ public class SkillManager {
     private final Set<File> contentDirectories;
     private final Map<SourceType, Boolean> sourceEnabledCache = new ConcurrentHashMap<>();
     private final Map<Class<?>, List<SkillSource<?>>> typeToSourceCache = new ConcurrentHashMap<>();
+    private final Map<Skill, SourceLoader.SourceLoadDiagnostics> sourceDiagnostics = new ConcurrentHashMap<>();
 
     public SkillManager(GraniteSkillsPlugin plugin) {
         this.plugin = plugin;
@@ -109,6 +111,14 @@ public class SkillManager {
     public void clearCache() {
         sourceEnabledCache.clear();
         typeToSourceCache.clear();
+    }
+
+    public void registerSourceDiagnostics(Skill skill, SourceLoader.SourceLoadDiagnostics diagnostics) {
+        sourceDiagnostics.put(skill, diagnostics);
+    }
+
+    public @Nullable SourceLoader.SourceLoadDiagnostics getSourceDiagnostics(Skill skill) {
+        return sourceDiagnostics.get(skill);
     }
 
     /**

@@ -3,8 +3,8 @@
   "id": "graniteskills",
   "version": "${version}",
   "name": "Granite Skills",
-  "description": "Granite Skills — standalone dedicated-server skills for Minecraft 26.3. Mod id graniteskills. See fabric/FABRIC_QUICKSTART.md.",
-  "authors": ["Granite Skills"],
+  "description": "Granite Skills — standalone dedicated-server skills for Minecraft 26.3. Mod id graniteskills. Requires the GraniteLib Fabric mod for menus. See fabric/FABRIC_QUICKSTART.md.",
+  "authors": ["Archyx (original AuraSkills)", "Discount152 (Fabric port)", "Granite Skills"],
   "license": "GPL-3.0",
   "environment": "*",
   "entrypoints": {
@@ -20,6 +20,7 @@
     "minecraft": "~26.3",
     "java": ">=25",
     "fabric-api": "*",
-    "fabric-permissions-api-v0": "*"
+    "fabric-permissions-api-v0": "*",
+    "granitelib": ">=0.2.0-alpha.1"
   }
 }

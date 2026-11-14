@@ -66,7 +66,8 @@ dependencies {
     implementation(project(":api"))
     implementation(project(":common"))
     // Slate Fabric port (skeleton). Unobfuscated Loom publishes the default variant, not namedElements.
-    implementation(project(":slate-fabric"))
+    // Standalone GraniteLib 26.3 menu library. Separate mod jar; not nested in Granite Skills.
+    implementation(project(":granitelib-fabric"))
 
     implementation("com.google.guava:guava:33.2.1-jre")
 
@@ -89,6 +90,8 @@ dependencies {
         "net.kyori:adventure-api:4.25.0",
         "co.aikar:acf-core:0.5.1-SNAPSHOT",
         "net.kyori:adventure-text-serializer-legacy:4.25.0",
+        "net.kyori:adventure-text-minimessage:4.25.0",
+        "net.kyori:adventure-text-serializer-gson:4.25.0",
         "com.ezylang:EvalEx:3.3.0",
         "org.spongepowered:configurate-core:4.1.2",
         "org.spongepowered:configurate-yaml:4.1.2",
