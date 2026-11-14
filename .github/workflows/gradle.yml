@@ -19,11 +19,32 @@ jobs:
         uses: gradle/actions/setup-gradle@0723195856401067f7a2779048b490ace7a47d7c
       - name: Build with Gradle
         run: ./gradlew build --refresh-dependencies
+      - name: Collect install jars
+        run: |
+          mkdir -p dist
+          # Fabric mod keeps the plain GraniteSkills name. The Bukkit jar uses a
+          # -bukkit suffix so the two files, which share a version, do not overwrite.
+          shopt -s nullglob
+          for f in fabric/build/libs/GraniteSkills-*.jar; do
+            base=$(basename "$f")
+            case "$base" in *-sources.jar) continue ;; esac
+            cp "$f" "dist/$base"
+          done
+          for f in granitelib-fabric/build/libs/granitelib-fabric-*.jar; do
+            base=$(basename "$f")
+            case "$base" in *-sources.jar) continue ;; esac
+            cp "$f" "dist/$base"
+          done
+          for f in build/libs/GraniteSkills-*.jar bukkit/build/libs/GraniteSkills-*.jar; do
+            base=$(basename "$f")
+            case "$base" in *-sources.jar|*-dev.jar) continue ;; esac
+            cp "$f" "dist/${base%.jar}-bukkit.jar"
+          done
+          ls -la dist
       - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
         with:
           name: GraniteSkills
-          path: |
-            build/libs/GraniteSkills-**.jar
-            fabric/build/libs/GraniteSkills-**.jar
+          path: dist/*.jar
+          if-no-files-found: error
       - name: Delete all summary content
         run: rm $GITHUB_STEP_SUMMARY
