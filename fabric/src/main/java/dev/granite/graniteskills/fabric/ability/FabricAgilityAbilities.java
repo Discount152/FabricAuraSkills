@@ -66,7 +66,11 @@ public final class FabricAgilityAbilities extends FabricAbilityImpl {
     }
 
     public void onQuit(ServerPlayer player) {
-        plugin.getUserManager().getUser(player.getUUID()).removeTraitModifier(FLEETING_ID);
+        User user = plugin.getUserManager().getUser(player.getUUID());
+        if (user == null) {
+            return;
+        }
+        user.removeTraitModifier(FLEETING_ID);
     }
 
     private float lightFall(ServerPlayer player, float amount) {

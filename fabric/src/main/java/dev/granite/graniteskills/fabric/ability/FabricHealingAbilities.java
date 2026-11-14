@@ -76,6 +76,9 @@ public final class FabricHealingAbilities extends FabricAbilityImpl {
 
     private void clearRevival(ServerPlayer player) {
         User user = plugin.getUserManager().getUser(player.getUUID());
+        if (user == null) {
+            return;
+        }
         user.removeStatModifier(REVIVAL_HEALTH);
         user.removeStatModifier(REVIVAL_REGEN);
     }

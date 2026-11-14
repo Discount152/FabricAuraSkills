@@ -2,6 +2,16 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.179
+
+### Bug Fixes
+
+- Ship the Adventure 4.25.0 libraries the release jar left out: `examination-api` 1.3.0, `examination-string` 1.3.0, `adventure-key` 4.25.0, `adventure-text-serializer-json` 4.25.0, `adventure-text-serializer-commons` 4.25.0, and `option` 1.1.0. Opening a menu from the packaged jar initialized MiniMessage and crashed with `NoClassDefFoundError: net/kyori/examination/Examinable`.
+- Ship Configurate's `geantyref` 1.3.11 and SnakeYAML 2.3 in the same jar. `include` does not pack transitive dependencies, so declaring them as `implementation` was not enough.
+- Shade that Adventure 4.25.0 set from `net.kyori` to `dev.granite.graniteskills.shaded.kyori` and fold it into one nested jar, `graniteskills_kyori`. Fabric keeps a single copy of each nested mod id, so leaving the libraries as `net_kyori_adventure-api` let Geyser 2.12.1's Adventure 5.2.0 replace them. Geyser stays on Adventure 5.2.0.
+- Skip agility and healing quit cleanup when the player profile is already gone, instead of throwing while the server stops.
+- Fail the release check when the packaged jar references a runtime class it does not contain.
+
 ## 2.3.178
 
 ### Bug Fixes

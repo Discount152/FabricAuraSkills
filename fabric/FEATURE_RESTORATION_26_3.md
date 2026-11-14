@@ -1,6 +1,6 @@
 # Granite Skills 26.3 feature restoration
 
-This ledger records what was brought from the feature baseline onto the Minecraft 26.3 gameplay branch, and what is still not restored. Compilation and unit tests are not release acceptance. In-game GUI, Bedrock, and production install were not run.
+This ledger records what was brought from the feature baseline onto the Minecraft 26.3 gameplay branch, and what is still not restored. Compilation and unit tests are not release acceptance. A disposable dedicated server opened the menus through a fake player. A real Java client, a Bedrock client, and a production install were not run.
 
 ## Pins
 
@@ -11,7 +11,7 @@ This ledger records what was brought from the feature baseline onto the Minecraf
 | Common ancestor | `main` | `1295405d96bbcac51453dc1be1fc955e02a1c8a3` | Do not treat `main` as the gameplay tree. |
 | GraniteLib 26.3 port | `cursor/granitelib-26-3-8208` | `650c7ed98273ed15eed83780ea2fa171482f8972` | Standalone menu and YAML template library. Copied as `granitelib-fabric`. Loom plugin aligned to `fabric-loom` 1.20.0-alpha.31 so the composite build matches gameplay. |
 
-This work is on `cursor/feature-restoration-26-3-65b4`, branched from `c504b25`. Gameplay version is **2.3.178**. Library version is **0.2.0-alpha.1**. Version 2.3.18 is not reused for the changed gameplay bytes. 2.3.177 restored the menus and then hung while loading persistent chunks; 2.3.178 is that build with the chunk-load callback fixed.
+This work is on `cursor/feature-restoration-26-3-65b4`, branched from `c504b25`. Gameplay version is **2.3.179**. Library version is **0.2.0-alpha.1**. Version 2.3.18 is not reused for the changed gameplay bytes. 2.3.177 restored the menus and then hung while loading persistent chunks. 2.3.178 fixed that chunk-load callback. 2.3.179 packages the Adventure 4.25.0 runtime the release jar had omitted and shades it so Geyser's Adventure 5.2.0 does not replace it.
 
 ## Artifacts
 
@@ -19,11 +19,12 @@ Install both jars. GraniteLib is a separate Fabric mod, not nested inside Granit
 
 | Jar | SHA-256 | Bytes |
 | --- | --- | --- |
+| `fabric/build/libs/GraniteSkills-2.3.179.jar` | `3f6d8dfe56cc7d940a56917238177be4114ade295c115b3c942e5201e0ba7732` | 4183363 |
 | `fabric/build/libs/GraniteSkills-2.3.178.jar` | `8322f70bfcee189814e74ab961816932c292d85f7f5db96c329ea7c99c75cf4a` | 3734037 |
 | `fabric/build/libs/GraniteSkills-2.3.177.jar` | `a75639cfb19825313bb789897ad53ded595c65cff654850cef67b65ba938849e` | 3731938 |
 | `granitelib-fabric/build/libs/granitelib-fabric-0.2.0-alpha.1.jar` | `9577adb0e95e5dc80e76994d898aafb4b034ef3c2e54f5d168665f05cd7b83cc` | 325227 |
 
-`GraniteSkills-2.3.177.jar` depends on `granitelib >=0.2.0-alpha.1`. It does not contain a GraniteLib jar. SnakeYAML 2.3 is nested inside the GraniteLib jar. Adventure MiniMessage and Gson serializers are nested inside the Granite Skills jar for chat formatting. Bukkit Slate (`dev.aurelium:slate:1.2.2`) and Polyglot (`dev.aurelium:polyglot:1.2.4`) stay third-party: GraniteLib does not load Bukkit menus or message files.
+`GraniteSkills-2.3.179.jar` depends on `granitelib >=0.2.0-alpha.1`. It does not contain a GraniteLib jar. SnakeYAML 2.3 is nested inside both jars. Adventure 4.25.0, including MiniMessage, the Gson and JSON serializers, `option` 1.1.0, `examination-api` 1.3.0, and `examination-string` 1.3.0, is nested as `graniteskills-kyori-4.25.0.jar` with classes under `dev.granite.graniteskills.shaded.kyori`. Bukkit Slate (`dev.aurelium:slate:1.2.2`) and Polyglot (`dev.aurelium:polyglot:1.2.4`) stay third-party: GraniteLib does not load Bukkit menus or message files.
 
 Authors recorded in `fabric/src/main/resources/fabric.mod.json`: Archyx (original AuraSkills), Discount152 (Fabric port), Granite Skills.
 
@@ -140,11 +141,30 @@ Startup on 14 Nov 2026 (UTC) reached `Done (0.300s)` with no error lines. The lo
 
 Disposable Loom server, same world, after the fix: first boot `Done (0.217s)` with zero persistent chunks; `forceload add 0 0` returned immediately; restart `Done (1.527s)` while loading 25 persistent chunks; a further restart with `online-mode=false` `Done (0.852s)` loading the same 25 chunks. No watchdog. `/skills` and XP were not run: the client could not create an OpenGL context, the console command is player-only, and there is no GameTest. The production mod pack was not installed on this disposable world. The production log already showed that pack reaches `Done` when Granite Skills is the only mod removed.
 
+## Runtime dependencies in 2.3.179
+
+`/skill` on the packaged 2.3.178 jar reached `FabricTextFormatter` line 37, `MiniMessage.miniMessage()`, and threw `NoClassDefFoundError: net/kyori/examination/Examinable`. The jar contained Adventure and MiniMessage 4.25.0 and omitted Examination. `implementation` puts those libraries on Gradle's development classpath only. `include` does not pack transitive dependencies, so each required jar is included by name.
+
+The release check now reads the packaged jar, requires the nested runtime jars, and fails when a scanned class constant pool names a runtime class the jar and GraniteLib do not contain. Optional integrations (Hikari metrics, LuckPerms, annotation-only types) are not required.
+
+Fabric Loader 0.20.1 keeps one class space and one copy of each nested mod id. On a dedicated server with Geyser-Fabric 2.12.1-SNAPSHOT (build b1302) and Floodgate-Fabric 2.2.7-SNAPSHOT (build b69), Knot kept Geyser's `net_kyori_adventure-api` 5.2.0 and dropped Granite's 4.25.0 jar of the same id. Adventure 5.2.0 has no `Examinable`. The 2.3.179 jar rewrites `net.kyori` to `dev.granite.graniteskills.shaded.kyori` and folds those libraries into nested mod id `graniteskills_kyori`. Geyser is not downgraded and is not a dependency.
+
+Completed on a disposable Fabric 26.3 dedicated server (`java -jar fabric-server-launch.jar`, not `gradlew runServer`), 14 Nov 2026, with only the packaged jars plus Fabric API. A local probe mod joined one fake player. It is not part of the mod.
+
+| Run | Startup | Menus | Class sources | Stop |
+| --- | --- | --- | --- | --- |
+| No Geyser | `Done (0.232s)` at 23:23 CET | `/skill`, `/skills`, `/sk`, and `/stats` passed. Slot 0 was a gold ingot, slot 12 a bow. The skill click opened level progression (iron door in 45, knowledge book in 48). Back returned to the gold ingot. Stats slot 0 was empty and slot 45 was an iron door. Back returned to the gold ingot. | MiniMessage, Examinable, and Adventure `Component` loaded from `graniteskills_kyori` 4.25.0. Unshaded `net.kyori` MiniMessage, Examinable, and `Component` were absent. | Saved worlds. No exception while stopping. |
+| Geyser 2.12.1-SNAPSHOT b1302 and Floodgate 2.2.7-SNAPSHOT b69 | `Done (0.172s)` at 23:24 CET, then Geyser `Done (2.116s)` | Same menu path passed. | Shaded MiniMessage, Examinable, and `Component` still came from `graniteskills_kyori` 4.25.0. Unshaded `Component` came from Geyser's `adventure-api` 5.2.0. Unshaded MiniMessage and Examinable stayed absent. No `NoClassDefFoundError`, `LinkageError`, or `IncompatibleClassChangeError`. | Geyser shut down, then the server saved worlds. No exception while stopping. |
+
+`verifyFabricReleaseBundle`, `checkstyleMain`, and the fabric unit tests (159, 0 failures) passed on this jar. GraniteLib was not rebuilt.
+
+Not done: breaking a block for XP, a real Java client (this machine has no OpenGL context), a Bedrock client through Geyser, and the rest of the production mod pack. Production world data and configs were not changed.
+
 ## Manual regression checklist
 
 Do this on a disposable Fabric 26.3 world with both jars. Stop before any production copy.
 
-1. Confirm the log lists mods `graniteskills` 2.3.178 and `granitelib` 0.2.0-alpha.1, then `Done`. A world with forced chunks must finish "Loading N persistent chunks" instead of sitting at 15%.
+1. Confirm the log lists mods `graniteskills` 2.3.179 and `granitelib` 0.2.0-alpha.1, then `Done`. A world with forced chunks must finish "Loading N persistent chunks" instead of sitting at 15%. The 2.3.178 persistent-chunk restart covered that. 2.3.179 was not rebooted on that forced-chunk world.
 2. As an operator, run `/graniteskills version`, `/skills`, `/sk`, `/skill`, and `/stats`. Each skills alias must open the skills chest, not a chat dump.
 3. Click a skill and confirm the level-progression page uses the 24-slot path (slots 9–44) and the control slots 45, 48, 49, 52, and 53. Page forward and back, then return to skills.
 4. Open stats, one stat info page, abilities, sources, the leaderboard, and unclaimed items. Confirm back returns to the previous menu.
