@@ -11,7 +11,7 @@ This ledger records what was brought from the feature baseline onto the Minecraf
 | Common ancestor | `main` | `1295405d96bbcac51453dc1be1fc955e02a1c8a3` | Do not treat `main` as the gameplay tree. |
 | GraniteLib 26.3 port | `cursor/granitelib-26-3-8208` | `650c7ed98273ed15eed83780ea2fa171482f8972` | Standalone menu and YAML template library. Copied as `granitelib-fabric`. Loom plugin aligned to `fabric-loom` 1.20.0-alpha.31 so the composite build matches gameplay. |
 
-This work is on `cursor/feature-restoration-26-3-65b4`, branched from `c504b25`. Gameplay version is **2.3.177**. Library version is **0.2.0-alpha.1**. Version 2.3.18 is not reused for the changed gameplay bytes.
+This work is on `cursor/feature-restoration-26-3-65b4`, branched from `c504b25`. Gameplay version is **2.3.178**. Library version is **0.2.0-alpha.1**. Version 2.3.18 is not reused for the changed gameplay bytes. 2.3.177 restored the menus and then hung while loading persistent chunks; 2.3.178 is that build with the chunk-load callback fixed.
 
 ## Artifacts
 
@@ -19,6 +19,7 @@ Install both jars. GraniteLib is a separate Fabric mod, not nested inside Granit
 
 | Jar | SHA-256 | Bytes |
 | --- | --- | --- |
+| `fabric/build/libs/GraniteSkills-2.3.178.jar` | `8322f70bfcee189814e74ab961816932c292d85f7f5db96c329ea7c99c75cf4a` | 3734037 |
 | `fabric/build/libs/GraniteSkills-2.3.177.jar` | `a75639cfb19825313bb789897ad53ded595c65cff654850cef67b65ba938849e` | 3731938 |
 | `granitelib-fabric/build/libs/granitelib-fabric-0.2.0-alpha.1.jar` | `9577adb0e95e5dc80e76994d898aafb4b034ef3c2e54f5d168665f05cd7b83cc` | 325227 |
 
@@ -131,11 +132,19 @@ Dedicated-server startup uses Loom `./gradlew -PfabricOnly=true :fabric:runServe
 
 Startup on 14 Nov 2026 (UTC) reached `Done (0.300s)` with no error lines. The loader listed `granitelib 0.2.0-alpha.1` and `graniteskills 2.3.177`. The mod logged 11 skills, 327 sources, 9 stats, 17 traits, 21 message files, and 160 config options. It registered the four built-in menu ids `skills`, `stats`, `level_progression`, and `stat_info`. Sources, abilities, leaderboard, and unclaimed items open through their own helpers, matching the feature-baseline loader, and the template registry reported disk 0, bundled 8, failed 0. Identity migration logged that the data was already migrated and left the old `auraskills` folder in place. Brigadier registration logged `/skills`, `/sk`, `/skill`, and the Granite command families. From the server console, `graniteskills version` replied with the data folder `fabric/run/config/graniteskills`. No player joined, so GUI clicks, permissions for a non-operator, and Bedrock were not exercised.
 
+## Startup hang in 2.3.177
+
+`FabricPlayerLifecycle.migrateChunk` ran from Fabric's `ServerChunkEvents.CHUNK_LOAD`, which Fabric injects at the end of `ChunkStatusTasks.full`. The server thread was inside `ServerChunkCache.getChunk`, waiting for that same FULL task on `ServerChunkCache$MainThreadExecutor`. The callback then called `BlockEntity.setChanged()`, and `Level.blockEntityChanged` calls `getChunkAt` for the chunk that is still loading. On a chest that still had a loot table, `Container.getItem` unpacked the table, `LootTable.fill` called `setItem`, and Fabric's transfer mixin redirected that into `setChanged` as well. The watchdog dump `crash-2026-11-14_21.09.36-server.txt` (22:09 CET) shows the server thread parked in `managedBlock` with `FabricPlayerLifecycle.migrateChunk` (the 2.3.177 lines 80 and 81) on the stack, nested inside `ChunkStatusTasks.lambda$full$0`. A fresh world with no forced chunks reached `Done` because nothing re-entered `getChunk`. One `minecraft:forced` ticket at chunk 0,0 stalled the server until the 60-second watchdog.
+
+2.3.178 still rewrites legacy item names. During `CHUNK_LOAD` it edits the stored stacks in place and calls `LevelChunk.markUnsaved()`, which only records the chunk for saving. Chests that still have a loot table are left closed so loot is not generated during load. Dropped items, item frames, and armor stands are scanned on `ServerTickEvents.END_SERVER_TICK` with `getChunkNow`, after the load task has finished. Player inventory migration on join is unchanged.
+
+Disposable Loom server, same world, after the fix: first boot `Done (0.217s)` with zero persistent chunks; `forceload add 0 0` returned immediately; restart `Done (1.527s)` while loading 25 persistent chunks; a further restart with `online-mode=false` `Done (0.852s)` loading the same 25 chunks. No watchdog. `/skills` and XP were not run: the client could not create an OpenGL context, the console command is player-only, and there is no GameTest. The production mod pack was not installed on this disposable world. The production log already showed that pack reaches `Done` when Granite Skills is the only mod removed.
+
 ## Manual regression checklist
 
 Do this on a disposable Fabric 26.3 world with both jars. Stop before any production copy.
 
-1. Confirm the log lists mods `graniteskills` 2.3.177 and `granitelib` 0.2.0-alpha.1, then `Done`.
+1. Confirm the log lists mods `graniteskills` 2.3.178 and `granitelib` 0.2.0-alpha.1, then `Done`. A world with forced chunks must finish "Loading N persistent chunks" instead of sitting at 15%.
 2. As an operator, run `/graniteskills version`, `/skills`, `/sk`, `/skill`, and `/stats`. Each skills alias must open the skills chest, not a chat dump.
 3. Click a skill and confirm the level-progression page uses the 24-slot path (slots 9–44) and the control slots 45, 48, 49, 52, and 53. Page forward and back, then return to skills.
 4. Open stats, one stat info page, abilities, sources, the leaderboard, and unclaimed items. Confirm back returns to the previous menu.

@@ -2,6 +2,12 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.178
+
+### Bug Fixes
+
+- Fix the dedicated-server startup hang while loading persistent chunks. Chunk loading no longer calls `setChanged()` or unpacks loot chests from inside the chunk-load task, which was waiting on the chunk it was still loading. Legacy item names in containers are still rewritten, and items on dropped entities, item frames, and armor stands are rewritten on the following server tick.
+
 ## 2.3.177
 
 ### New Features
