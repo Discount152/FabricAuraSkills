@@ -1,0 +1,42 @@
+# Granite Stats — locked 3×3 stats hub (Sprint 113). Row 0 empty; row 5 empty; back/close on row 6.
+id: stats
+title: "§8§lYour Stats"
+rows: 6
+
+items:
+  stat:
+    material: minecraft:stone
+    slots:
+      - 12
+      - 13
+      - 14
+      - 21
+      - 22
+      - 23
+      - 30
+      - 31
+      - 32
+    name: "§b{stat_display}"
+    lore:
+      - "§7{stat_description}"
+      - ""
+      - "§fValue: §e{stat_value}"
+      - ""
+      - "§a▸ §7Details"
+    action: stat_row
+
+  back:
+    material: minecraft:iron_door
+    slot: 45
+    name: "&eBack to Skills"
+    lore:
+      - "&7Return to skills"
+    action: back
+
+  close:
+    material: minecraft:barrier
+    slot: 53
+    name: "§cClose"
+    lore:
+      - "§7Exit"
+    action: close

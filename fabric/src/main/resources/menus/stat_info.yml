@@ -1,0 +1,23 @@
+# Stat Info detail menu (Granite / Fabric) — bounded `granite` slice (Sprint 33+).
+# Not the full Bukkit/Slate stat_info modifier grid.
+
+granite:
+  enabled: true
+  title_key: "graniteskills.granite.menu.stat_info_title"
+  size:
+    rows: 6
+    columns: 9
+  layout:
+    list_start_slot: 0
+    list_end_slot_exclusive: 54
+    main_slot: 4
+    back_slot: 49
+  items:
+    list: "minecraft:book"
+    main: "minecraft:book"
+    back: "minecraft:iron_door"
+  format:
+    main_title: "graniteskills.granite.menu.stat_info_main_title"
+    lore_value: "graniteskills.granite.menu.stat_info_lore_value"
+    back: "graniteskills.granite.menu.stat_info_back"
+    back_lore: "graniteskills.granite.menu.stat_info_back_lore"

@@ -78,6 +78,18 @@ public class StatLoader {
                 statsLoaded++;
                 traitsLoaded += loadedStat.traits().size();
             }
+            for (Object key : root.node("traits").childrenMap().keySet()) {
+                String traitName = String.valueOf(key);
+                try {
+                    Trait trait = plugin.getTraitRegistry().get(NamespacedId.fromString(traitName));
+                    if (!plugin.getTraitManager().isLoaded(trait)) {
+                        createLoadedTrait(trait);
+                        traitsLoaded++;
+                    }
+                } catch (IllegalArgumentException e) {
+                    plugin.logger().warn("Could not find trait with id " + traitName);
+                }
+            }
 
             plugin.logger().info("Loaded " + statsLoaded + " stats and " + traitsLoaded + " traits");
         } catch (IOException e) {

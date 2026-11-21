@@ -19,6 +19,7 @@ import dev.granite.graniteskills.common.region.BlockPosition;
 import dev.granite.graniteskills.common.storage.StorageProvider;
 import dev.granite.graniteskills.common.storage.sql.migration.SqlMigrator;
 import dev.granite.graniteskills.common.storage.sql.pool.ConnectionPool;
+import dev.granite.graniteskills.common.ui.ActionBarIdleMode;
 import dev.granite.graniteskills.common.ui.ActionBarType;
 import dev.granite.graniteskills.common.user.AntiAfkLog;
 import dev.granite.graniteskills.common.user.SkillLevelMaps;
@@ -558,8 +559,7 @@ public class SqlStorageProvider extends StorageProvider {
 
     private List<KeyValueRow> getActionBarRow(User user) {
         List<KeyValueRow> rows = new ArrayList<>();
-        boolean shouldSave = false;
-        // Only save if one of the action bars is disabled
+        boolean shouldSave = user.getActionBarIdleMode() != ActionBarIdleMode.SMART;
         for (ActionBarType type : ActionBarType.values()) {
             if (!user.isActionBarEnabled(type)) {
                 shouldSave = true;
@@ -569,6 +569,8 @@ public class SqlStorageProvider extends StorageProvider {
             return rows;
         }
 
+        rows.add(new KeyValueRow(ACTION_BAR_ID, null, "idle_mode",
+                user.getActionBarIdleMode().name().toLowerCase(Locale.ROOT)));
         ActionBarType type = ActionBarType.IDLE;
         String keyName = type.toString().toLowerCase(Locale.ROOT);
         String value = String.valueOf(user.isActionBarEnabled(type));

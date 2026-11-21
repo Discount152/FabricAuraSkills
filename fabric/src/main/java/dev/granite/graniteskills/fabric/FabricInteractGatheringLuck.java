@@ -109,7 +109,11 @@ public final class FabricInteractGatheringLuck {
         return unique;
     }
 
-    private static int rollExtraDrops(User user, Trait trait) {
+    /**
+     * Bukkit {@code GatheringLuckTraits#rollExtraDrops}: every 100 luck = one guaranteed extra,
+     * remainder is a percent chance of one more.
+     */
+    public static int rollExtraDrops(User user, Trait trait) {
         double value = user.getEffectiveTraitLevel(trait);
         if (value == 0.0) {
             return 0;

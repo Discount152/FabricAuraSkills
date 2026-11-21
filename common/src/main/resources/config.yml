@@ -1,6 +1,7 @@
 # +----------------------------------------------------------------------------+ #
 # |                           Granite Skills Main Config                       | #
-# |                                                                            | #
+# |  Fork of AuraSkills by Archyx (https://github.com/Archy-X/AuraSkills)      | #
+# |  Modified 2026 — Fabric port. GPL-3.0.                                     | #
 # |      Source: https://github.com/Discount152/FabricAuraSkills               | #
 # |      Guide:  https://github.com/Discount152/FabricAuraSkills/tree/main/wiki | #
 # +----------------------------------------------------------------------------+ #
@@ -16,6 +17,8 @@ sql:
   load_delay: 0
   always_load_on_join: false
   ssl: false
+  # Opt-in: rename auraskills_*/aureliumskills_* tables to graniteskills_*. Off by default so a shared DB is not disrupted.
+  migrate_legacy_tables: false
   pool:
     maximum_pool_size: 10
     minimum_idle: 10

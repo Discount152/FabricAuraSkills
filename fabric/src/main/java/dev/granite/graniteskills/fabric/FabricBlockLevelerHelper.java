@@ -21,7 +21,15 @@ public final class FabricBlockLevelerHelper {
     }
 
     public static int getBlocksBroken(ServerLevel world, BlockPos pos, BlockXpSource source, FabricGraniteSkills plugin) {
-        BlockState state = world.getBlockState(pos);
+        return getBlocksBroken(world, pos, world.getBlockState(pos), source, plugin);
+    }
+
+    /**
+     * @param brokenState state of the broken block before it became air (required for tall plants)
+     */
+    public static int getBlocksBroken(
+            ServerLevel world, BlockPos pos, BlockState brokenState, BlockXpSource source, FabricGraniteSkills plugin) {
+        BlockState state = brokenState != null ? brokenState : world.getBlockState(pos);
         String path = BuiltInRegistries.BLOCK.getKey(state.getBlock()).getPath();
         boolean checkReplace = plugin.configBoolean(Option.CHECK_BLOCK_REPLACE_ENABLED);
 
@@ -94,6 +102,6 @@ public final class FabricBlockLevelerHelper {
     }
 
     private static boolean isPlaced(ServerLevel world, BlockPos pos) {
-        return false;
+        return dev.granite.graniteskills.fabric.region.FabricPlacedBlocks.isPlaced(world, pos);
     }
 }

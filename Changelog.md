@@ -2,6 +2,381 @@
 
 Changelog for versions since 2.0.0.
 
+## 2.3.222
+
+### Bug Fixes
+
+- `/abtoggle status` reports the current idle mode, and the set and invalid replies are real messages.
+
+## 2.3.221
+
+### Bug Fixes
+
+- `graniteskills`, `skills`, `skill`, and `sk` register the same commands, including help, version, reload, and save.
+
+## 2.3.220
+
+### Bug Fixes
+
+- A skill command opens that skill's level progression. The menu title uses the skill name from the loaded definition.
+
+## 2.3.219
+
+### Bug Fixes
+
+- A second break of a new block at the same position still awards XP inside the duplicate-callback window. A repeated callback for one break does not award twice.
+
+## 2.3.218
+
+### Bug Fixes
+
+- The built-in menus open from the loaded GraniteLib definition. Changing that definition changes the title and items of the next menu that opens.
+
+## 2.3.217
+
+### Bug Fixes
+
+- Item loot that does not fit in the inventory is dropped. A full creative inventory does not delete that remainder.
+
+## 2.3.216
+
+### Bug Fixes
+
+- Granite Skills rejects a GraniteLib older than 0.2.0-alpha.18, the first library that contains the menu classes the gameplay code calls.
+- Skill and mob item loot can go straight into the player's inventory when that option is on. What does not fit is dropped, and fishing keeps its own delivery.
+- A respawned player is the player traits, messages, and permissions use, and health capacity is applied to that player.
+- `/modifier addtemp` and `/trait addtemp` add a modifier that expires, including a stacked name when one is requested.
+- Permission multipliers read the granted percentage, including values outside the old fixed list, and skill-specific grants.
+
+## GraniteLib 0.2.0-alpha.19
+
+### Bug Fixes
+
+- A menu item and a filler keep the display name, lore, and custom model data declared on the template.
+
+## 2.3.215
+
+### Bug Fixes
+
+- A preset merge keeps values already in the file and adds keys that are only in the preset.
+
+## 2.3.214
+
+### Bug Fixes
+
+- Storage merge and remove-all-modifiers can be cancelled. Cancel drops the pending confirmation and does not change stored data.
+
+## 2.3.213
+
+### Bug Fixes
+
+- Growth Aura adds stages when a crop grows on its own, and also when bone meal grows it. A plant that is not that crop does not gain those stages.
+
+## 2.3.212
+
+### Bug Fixes
+
+- A splash potion matches its potion source and awards that XP to the owner.
+
+## 2.3.211
+
+### Bug Fixes
+
+- Brewing takeout credits the player who started the brew.
+
+## 2.3.210
+
+### Bug Fixes
+
+- A fishing catch awards fishing XP. The bobber stat hook follows the 26.3 `awardStat` call.
+
+## 2.3.209
+
+### Bug Fixes
+
+- An external multi-block break awards each eligible block and does not award the origin again.
+
+## 2.3.208
+
+### Bug Fixes
+
+- An invalid menu YAML file is named in the reload warning, and the last valid loaded menu stays in place.
+
+## 2.3.207
+
+### Bug Fixes
+
+- Skills, Stats, Level Progression, Stat Info, Sources, Abilities, Leaderboard, and Unclaimed Items open through GraniteLib's menu id.
+
+## 2.3.206
+
+### Bug Fixes
+
+- A failed backup create completes the command future, so the operator sees the save error instead of a command that never finishes.
+- `/backup load` and `/backup restore` accept `cancel`, which drops the pending confirmation without applying the file.
+- The server console can run `/graniteskills reload`.
+
+## GraniteLib 0.2.0-alpha.18
+
+- A click action is dispatched with its actor. A denied actor does not run the action.
+
+## GraniteLib 0.2.0-alpha.17
+
+- Opening a menu by id opens a registered menu and rejects an id that is not registered.
+
+## GraniteLib 0.2.0-alpha.16
+
+- Menu paging returns the next slice of entries and does not repeat the previous slice.
+
+## GraniteLib 0.2.0-alpha.15
+
+- The same menu entries can be sorted by name or by value.
+
+## GraniteLib 0.2.0-alpha.14
+
+- A placeholder in a display name is replaced, and a placeholder with no value is reported by name.
+
+## GraniteLib 0.2.0-alpha.13
+
+- Opening a menu by id passes the caller a typed context and a page.
+
+## GraniteLib 0.2.0-alpha.12
+
+- A shared item is defined once and can be referenced by more than one menu.
+
+## GraniteLib 0.2.0-alpha.11
+
+- A dynamic template row repeats once for each supplied entry, one menu row lower each time.
+
+## GraniteLib 0.2.0-alpha.10
+
+- Menu filler fills empty slots in the menu grid and leaves a slot that already has an item unchanged.
+
+## GraniteLib 0.2.0-alpha.9
+
+- Menu layout places each item into the container slot that item requested. Other slots stay empty.
+
+## GraniteLib 0.2.0-alpha.8
+
+- A menu builder loads a menu with the title, row count, and item slots it was given.
+
+## GraniteLib 0.2.0-alpha.7
+
+- Menu diagnostics name the invalid file and each reason it was rejected.
+
+## GraniteLib 0.2.0-alpha.6
+
+- Menu status reports the effective file, whether a fallback file was used, and the error from the file that was not loaded.
+
+## GraniteLib 0.2.0-alpha.5
+
+- Export writes the menu definition currently loaded for that id.
+
+## GraniteLib 0.2.0-alpha.4
+
+- Reloading a menu replaces the loaded definition and drops the previous listener. A file that fails validation leaves the current listener in place.
+
+## GraniteLib 0.2.0-alpha.3
+
+- A user menu overlay replaces only the values it sets. Omitted menu, fill, and item values stay on the default menu.
+
+## 2.3.205
+
+### Bug Fixes
+
+- A source present only in the embedded file is loaded again when the user file omits it. A user value on a source that is present still wins.
+
+## 2.3.204
+
+### Bug Fixes
+
+- Menu format names resolve to reward and stat templates instead of being shown as lookup keys.
+- The leaderboard template has Power, Average, and per-skill controls, and Back restores the previous menu's skill, page, and sort.
+- Block and mob loot runs command and entity entries and rolls item amounts inside the configured range.
+- Duplicate XP suppression includes the dimension and the event, so a break and an interact at the same block both count.
+- GraniteLib 0.2.0-alpha.2 is required. The previous alpha.1 library does not satisfy the dependency.
+
+## 2.3.203
+
+### Bug Fixes
+
+- `/sources diagnose` can be run from the server console, which has no LuckPerms node, and still prints recorded source rejects.
+
+## 2.3.202
+
+### Bug Fixes
+
+- Loot requirement checks can run against the player who is breaking or killing, including skill, stat, permission, world, and biome nodes.
+
+## 2.3.201
+
+### Bug Fixes
+
+- Treecapitator sees a placed-log mark before the break handler clears it, so a player-placed trunk does not start the ability.
+
+## 2.3.200
+
+### Bug Fixes
+
+- Block-replace XP looks at the placed mark before the break clears it.
+
+## 2.3.199
+
+### Bug Fixes
+
+- A marked block whose source has `check_replace` does not grant break XP while block-replace checking is enabled.
+
+## 2.3.198
+
+### Bug Fixes
+
+- Mana regen skips a player who has no loaded user instead of failing the regen tick. The same regen step is used by the scheduled task.
+
+## 2.3.197
+
+### Bug Fixes
+
+- Anvil discount writes the menu's cost slot. A discounted cost still stays at least 1.
+
+## 2.3.196
+
+### Bug Fixes
+
+- Traits listed in `stats.yml` are loaded even when no stat links them. Double Drop can use its configured chance, and that chance stays within `max_percent`.
+
+## 2.3.195
+
+### Bug Fixes
+
+- A version-2 backup restores the saved skill level, XP, stat modifier, and mana. Later edits to the live user do not change that restored copy.
+
+## 2.3.194
+
+### Bug Fixes
+
+- Built-in menus activate on a normal pickup only. Shift-move, swap, clone, throw, drag, and pickup-all no longer navigate.
+
+## 2.3.193
+
+### Bug Fixes
+
+- Growth Aura adds crop stages only for a player inside the configured radius. A player outside that radius does not change the crop.
+
+## 2.3.192
+
+### Bug Fixes
+
+- Statistic XP is paid only after the statistic rises by at least the source minimum. No increase, a decrease, or a smaller rise awards nothing and leaves the baseline in place.
+
+## 2.3.191
+
+### Bug Fixes
+
+- Grindstone XP is 36 times the disenchantable levels removed. A click that is not taking the result, and a grind with no such levels, award nothing.
+
+## 2.3.190
+
+### Bug Fixes
+
+- Enchanting XP is the source amount times the enchant levels added, or times the experience levels spent when that unit is configured. Zero levels award nothing.
+
+## 2.3.189
+
+### Bug Fixes
+
+- Brewing XP uses the first ingredient filter that matches. Nether wart awards the awkward amount. An ingredient that matches no source awards nothing.
+
+## 2.3.188
+
+### Bug Fixes
+
+- Bleed damage XP is awarded only when the entity source is a damage trigger for that entity, damager, and cause. A source that does not match awards nothing.
+
+## 2.3.187
+
+### Bug Fixes
+
+- Entity XP from a projectile is credited to the shooter. Another player on the damage record does not receive it, and the damager is recorded as a projectile.
+
+## 2.3.186
+
+### Bug Fixes
+
+- Jump XP is awarded when a jump reaches the source interval. A movement that is not that jump, including the wrong velocity, a ladder, or a jump below the interval, awards nothing.
+
+## 2.3.185
+
+### Bug Fixes
+
+- A right-click harvest awards XP from the block before the click, and only after the block reaches its after-state. The same harvest does not award a second time.
+
+## 2.3.184
+
+### Bug Fixes
+
+- Crop break XP uses the source age. A crop that is not at a configured age awards nothing. Sweet berries still scale by `age-1` once they are ready.
+
+## 2.3.183
+
+### Bug Fixes
+
+- Claiming an unclaimed stack records only what was delivered. A later claim cannot give that same stack again.
+
+## 2.3.182
+
+### Bug Fixes
+
+- `ignore_interact` stops the mana right-click handler. The ordinary click still passes through.
+
+## 2.3.181
+
+### Bug Fixes
+
+- A registered item with `expiration_time` at or before the current time is not given, and an expired unclaimed entry is dropped instead of being added to the inventory.
+
+## 2.3.180
+
+### Bug Fixes
+
+- Format chat, action bars, and titles with MiniMessage. Titles send title, subtitle, and timing packets. Sources still import `net.kyori`; the packaged jar still shades that package.
+- Save idle action-bar mode as smart, always, or off in YAML and SQL. A legacy idle boolean still loads as smart or off.
+- Smart idle opens on join, world change, displayed health or mana change, and damage, then expires. A stable displayed tuple does not keep it up. Idle updates skip while an XP or ability line is active.
+- Record player-placed blocks and use that record for `check_replace`, Speed Mine, and Treecapitator. Breaking a block clears it. The record is written to `placed-blocks.txt`.
+- Apply Saturation Regen, Hunger Regen, Double Drop, vanilla experience bonus, anvil discount, and configured death skill or XP reset.
+- Loot requirements use the existing skill, stat, permission, world, and biome nodes. Block breaks and mob kills can roll that skill's loot table.
+- Permission XP multipliers read `graniteskills.multiplier.<percent>` and `graniteskills.multiplier.<skill>.<percent>`. With no permission provider those checks stay false, so the multiplier is zero.
+- A bad source entry is recorded for `/sources diagnose` instead of discarding the whole file.
+
+## 2.3.179
+
+### Bug Fixes
+
+- Ship the Adventure 4.25.0 libraries the release jar left out: `examination-api` 1.3.0, `examination-string` 1.3.0, `adventure-key` 4.25.0, `adventure-text-serializer-json` 4.25.0, `adventure-text-serializer-commons` 4.25.0, and `option` 1.1.0. Opening a menu from the packaged jar initialized MiniMessage and crashed with `NoClassDefFoundError: net/kyori/examination/Examinable`.
+- Ship Configurate's `geantyref` 1.3.11 and SnakeYAML 2.3 in the same jar. `include` does not pack transitive dependencies, so declaring them as `implementation` was not enough.
+- Shade that Adventure 4.25.0 set from `net.kyori` to `dev.granite.graniteskills.shaded.kyori` and fold it into one nested jar, `graniteskills_kyori`. Fabric keeps a single copy of each nested mod id, so leaving the libraries as `net_kyori_adventure-api` let Geyser 2.12.1's Adventure 5.2.0 replace them. Geyser stays on Adventure 5.2.0.
+- Skip agility and healing quit cleanup when the player profile is already gone, instead of throwing while the server stops.
+- Fail the release check when the packaged jar references a runtime class it does not contain.
+
+## 2.3.178
+
+### Bug Fixes
+
+- Fix the dedicated-server startup hang while loading persistent chunks. Chunk loading no longer calls `setChanged()` or unpacks loot chests from inside the chunk-load task, which was waiting on the chunk it was still loading. Legacy item names in containers are still rewritten, and items on dropped entities, item frames, and armor stands are rewritten on the following server tick.
+
+## 2.3.177
+
+### New Features
+
+- Restore the eight Granite Skills menus (skills, stats, level progression, stat info, sources, abilities, leaderboard, unclaimed items) on Minecraft 26.3, opened from `/skills`, `/sk`, `/skill`, `/stats`, and `/graniteskills`
+- Require the standalone GraniteLib 0.2.0-alpha.1 jar. Menus and YAML templates load through that library. Bukkit Slate and Polyglot stay separate libraries
+- Restore the Granite command families under `/graniteskills` and the skills aliases, including XP, mana, skill levels, mana abilities, per-skill shortcuts, leaderboards, modifiers, traits, item and armor, claims, sources, anti-AFK, profile, backup, preset, storage, transfer, reset health, and template export. Vanilla `/xp` and `/item` are unchanged
+- Record Archyx (original AuraSkills) and Discount152 (Fabric port) beside Granite Skills in the mod metadata
+
+### Changes
+
+- Gameplay version moves from 2.3.18 to 2.3.177 so the restored menus and commands are not shipped under the old version
+- `fabric/FEATURE_RESTORATION_26_3.md` lists what is restored, what the 26.3 gameplay branch already had, and the gameplay helpers that are still absent because their 1.21.11 mixins cannot be copied onto 26.3
+
 ## 2.3.18
 
 ### New Features

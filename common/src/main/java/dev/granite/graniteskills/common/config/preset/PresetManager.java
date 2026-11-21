@@ -96,8 +96,8 @@ public class PresetManager {
             ConfigurateLoader loader = new ConfigurateLoader(plugin, TypeSerializerCollection.builder().build());
             ConfigurationNode merged;
             if (presetEntry.action() == PresetAction.MERGE) {
-                // Preset overrides existing
-                merged = loader.mergeNodes(existingConfig, presetConfig);
+                // Existing values stay. Keys present only in the preset are added.
+                merged = loader.mergeNodes(presetConfig, existingConfig);
             } else if (presetEntry.action() == PresetAction.APPEND) {
                 // Preset does not override
                 merged = loader.mergeNodes(presetConfig, existingConfig);

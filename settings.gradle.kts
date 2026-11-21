@@ -18,7 +18,7 @@ rootProject.name = "GraniteSkills"
 
 /**
 
- * When true, only `api`, `common`, `slate-fabric`, and `fabric` are included. Use for Fabric-only dev builds:
+ * When true, only `api`, `common`, `granitelib-fabric`, and `fabric` are included. Use for Fabric-only dev builds:
 
  * `gradlew -PfabricOnly=true :fabric:compileJava`
 
@@ -38,7 +38,9 @@ if (fabricOnly) {
 
     include("common")
 
-    include("slate-fabric")
+    include("granitelib-fabric")
+
+    include("granitelib-consumer")
 
     include("fabric")
 
@@ -52,7 +54,9 @@ if (fabricOnly) {
 
     include("api-bukkit")
 
-    include("slate-fabric")
+    include("granitelib-fabric")
+
+    include("granitelib-consumer")
 
     include("fabric")
 

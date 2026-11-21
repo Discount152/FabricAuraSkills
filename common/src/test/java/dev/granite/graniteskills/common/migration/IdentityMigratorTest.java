@@ -7,8 +7,10 @@ import org.spongepowered.configurate.ConfigurationNode;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class IdentityMigratorTest {
@@ -70,6 +72,42 @@ public class IdentityMigratorTest {
         assertEquals(9, player.node("skills", "graniteskills/farming", "level").getInt());
         assertTrue(player.node("skills", "auraskills/farming").virtual());
         assertTrue(text(pluginFolder.resolve("extra.yml")).contains("kept: true"));
+    }
+
+    @Test
+    void secondRunDoesNotOverwriteAConflictingFile() throws Exception {
+        Path oldFolder = temp.resolve("AuraSkills");
+        Files.createDirectories(oldFolder.resolve("userdata"));
+        Files.writeString(oldFolder.resolve("userdata/player.yml"), "skills:\n  auraskills/farming:\n    level: 2\n");
+        Files.writeString(oldFolder.resolve("config.yml"), "default_language: de\n");
+        Files.writeString(oldFolder.resolve("rewards.yml"), "source: old\n");
+
+        Path pluginFolder = temp.resolve("graniteskills");
+        Files.createDirectories(pluginFolder.resolve("userdata"));
+        Files.writeString(pluginFolder.resolve("userdata/player.yml"), "skills:\n  graniteskills/farming:\n    level: 9\n");
+        Files.writeString(pluginFolder.resolve("config.yml"), "default_language: en\n");
+
+        List<String> first = IdentityMigrator.migrateFolder(pluginFolder);
+        assertTrue(first.stream().anyMatch(line -> line.contains("Migrated")));
+        ConfigurationNode player = FileUtil.loadYamlFile(pluginFolder.resolve("userdata/player.yml").toFile());
+        assertEquals(9, player.node("skills", "graniteskills/farming", "level").getInt());
+        assertTrue(player.node("skills", "auraskills/farming").virtual());
+        assertTrue(text(pluginFolder.resolve("config.yml")).contains("default_language: en"));
+        assertTrue(text(pluginFolder.resolve("rewards.yml")).contains("source: old"));
+        assertTrue(Files.exists(pluginFolder.resolve(LegacyIdentity.MARKER_FILE)));
+
+        Files.writeString(pluginFolder.resolve("config.yml"), "default_language: fr\n");
+        Files.writeString(pluginFolder.resolve("userdata/player.yml"), "skills:\n  graniteskills/farming:\n    level: 11\n");
+        Files.writeString(pluginFolder.resolve("rewards.yml"), "source: edited\n");
+
+        List<String> second = IdentityMigrator.migrateFolder(pluginFolder);
+        assertTrue(second.stream().anyMatch(line -> line.contains("already migrated")));
+        assertFalse(second.stream().anyMatch(line -> line.contains("Migrated")));
+        assertTrue(text(pluginFolder.resolve("config.yml")).contains("default_language: fr"));
+        assertTrue(text(pluginFolder.resolve("rewards.yml")).contains("source: edited"));
+        player = FileUtil.loadYamlFile(pluginFolder.resolve("userdata/player.yml").toFile());
+        assertEquals(11, player.node("skills", "graniteskills/farming", "level").getInt());
+        assertTrue(text(oldFolder.resolve("userdata/player.yml")).contains("level: 2"));
     }
 
     private static String text(Path path) throws Exception {

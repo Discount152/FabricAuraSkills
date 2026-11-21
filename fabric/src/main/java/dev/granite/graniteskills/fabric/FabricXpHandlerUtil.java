@@ -29,7 +29,7 @@ public final class FabricXpHandlerUtil {
             return true;
         }
         User user = plugin.getUserManager().getUser(player.getUUID());
-        if (!user.hasSkillPermission(skill)) {
+        if (user == null || !user.hasSkillPermission(skill)) {
             return true;
         }
         String worldName = FabricUser.worldNameCompat(player);

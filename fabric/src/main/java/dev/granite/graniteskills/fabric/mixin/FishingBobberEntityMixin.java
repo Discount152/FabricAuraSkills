@@ -4,8 +4,8 @@ import dev.granite.graniteskills.fabric.FabricFishingCatchHolder;
 import dev.granite.graniteskills.fabric.FabricFishingXpHandler;
 import dev.granite.graniteskills.fabric.FabricGraniteSkills;
 import dev.granite.graniteskills.fabric.ability.FabricFishingAbilities;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.stats.Stat;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -32,31 +32,28 @@ public abstract class FishingBobberEntityMixin {
             )
     )
     private void graniteskills$captureFirstItemEntityStack5(Args args) {
-        FabricFishingCatchHolder.set(args.get(4));
+        ItemStack stack = args.get(4);
+        applyLuckyCatchToCaughtStack(stack);
+        FabricFishingCatchHolder.set(stack);
     }
 
-    @ModifyArgs(
-            method = "retrieve",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/world/entity/item/ItemEntity;<init>(Lnet/minecraft/world/level/Level;DDDLnet/minecraft/world/item/ItemStack;DDD)V",
-                    ordinal = 0
-            )
-    )
-    private void graniteskills$captureFirstItemEntityStack8(Args args) {
-        FabricFishingCatchHolder.set(args.get(4));
+    private void applyLuckyCatchToCaughtStack(ItemStack stack) {
+        FishingHook hook = (FishingHook) (Object) this;
+        if (hook.getPlayerOwner() instanceof ServerPlayer player) {
+            FabricFishingAbilities.applyLuckyCatch(FabricGraniteSkills.getInstance(), player, stack);
+        }
     }
 
     @Redirect(
             method = "retrieve",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/entity/player/Player;awardStat(Lnet/minecraft/stats/Stat;I)V"
+                    target = "Lnet/minecraft/world/entity/player/Player;awardStat(Lnet/minecraft/resources/Identifier;I)V"
             )
     )
-    private void graniteskills$afterFishStat(Player player, Stat<?> stat, int amount) {
+    private void graniteskills$afterFishStat(Player player, Identifier stat, int amount) {
         player.awardStat(stat, amount);
-        if (amount <= 0 || !stat.equals(Stats.CUSTOM.get(Stats.FISH_CAUGHT))) {
+        if (amount <= 0 || !Stats.FISH_CAUGHT.equals(stat)) {
             return;
         }
         if (!(player instanceof ServerPlayer serverPlayer)) {

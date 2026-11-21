@@ -8,6 +8,7 @@ import dev.granite.graniteskills.fabric.FabricDamageCauseMapper;
 import dev.granite.graniteskills.fabric.FabricGraniteSkills;
 import dev.granite.graniteskills.fabric.FabricUser;
 import dev.granite.graniteskills.fabric.ability.FabricAgilityAbilities;
+import dev.granite.graniteskills.fabric.ability.FabricArcheryAbilities;
 import dev.granite.graniteskills.fabric.ability.FabricEnduranceAbilities;
 import dev.granite.graniteskills.fabric.ability.FabricHealingAbilities;
 import net.minecraft.server.level.ServerLevel;
@@ -29,6 +30,13 @@ public final class FabricDamagePipeline {
 
     public static float modifyIncomingDamage(ServerLevel world, LivingEntity target, DamageSource source, float amount) {
         if (amount <= 0f) {
+            return amount;
+        }
+        // Defense in depth if an injector ever runs before vanilla rejection.
+        if (world != null && target.isInvulnerableTo(world, source)) {
+            return amount;
+        }
+        if (target.isDeadOrDying()) {
             return amount;
         }
         FabricGraniteSkills plugin = FabricGraniteSkills.getInstance();
@@ -59,7 +67,10 @@ public final class FabricDamagePipeline {
             }
         }
 
-        Entity directAttacker = source.getEntity();
+        // Mojmap: getEntity() is the responsible/causing entity (often the shooter);
+        // getDirectEntity() is the projectile or other direct source used for weapon type.
+        Entity causing = source.getEntity();
+        Entity directAttacker = source.getDirectEntity() != null ? source.getDirectEntity() : causing;
         DamageType skillsType = FabricDamageTypeResolver.resolve(directAttacker, attackingPlayer);
         if (targetPlayer != null) {
             amount = FabricAgilityAbilities.adjustFall(plugin, targetPlayer, source, amount);
@@ -77,6 +88,9 @@ public final class FabricDamagePipeline {
             FabricCriticalHandler.apply(plugin, meta, attackingPlayer);
             abilities.applyAbilityAttackDamage(meta, attackingPlayer);
             FabricAttackDamageApplier.apply(plugin, meta, attackingPlayer);
+            if (skillsType == DamageType.BOW) {
+                FabricArcheryAbilities.applyStun(attackingPlayer, target, Double.NaN);
+            }
         }
         if (targetPlayer != null) {
             abilities.applyAbilityDefenseDamage(meta, targetPlayer);
@@ -102,11 +116,18 @@ public final class FabricDamagePipeline {
     }
 
     private static @Nullable ServerPlayer resolveAttackingPlayer(DamageSource source) {
-        Entity direct = source.getEntity();
-        if (direct instanceof ServerPlayer sp) {
+        Entity causing = source.getEntity();
+        if (causing instanceof ServerPlayer sp) {
             return sp;
         }
+        Entity direct = source.getDirectEntity();
         if (direct instanceof Projectile projectile) {
+            Entity owner = projectile.getOwner();
+            if (owner instanceof ServerPlayer sp) {
+                return sp;
+            }
+        }
+        if (causing instanceof Projectile projectile) {
             Entity owner = projectile.getOwner();
             if (owner instanceof ServerPlayer sp) {
                 return sp;

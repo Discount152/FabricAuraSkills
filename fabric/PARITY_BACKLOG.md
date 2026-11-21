@@ -2,7 +2,7 @@
 
 For the **full handoff** (product goals, deployment assumptions, bootstrap order, Gradle `fabricOnly`, fishing mixin details, file index, and phased roadmap), see **`FABRIC_PORT_HANDOFF.md`** in the repository root.
 
-**Core Fabric port (skills, XP, storage, permissions, reload/save, default YAML sources, mana abilities wired in `FabricManaAbilityManager`) is treated as *complete* for dedicated-server use.** Remaining bullets are **Paper parity gaps**, **third-party integrations**, or **optional polish** — not blockers to run the mod.
+The completion status for 26.3 is `fabric/FULL_COMPLETION_LEDGER.md`. This file is historical. Do not treat the core as finished because a bullet here once said so. `fabric/MENU_AND_COMMANDS_PORT.md` Path A (a second Slate module) is superseded: GraniteLib is the menu framework.
 
 This document tracks Paper/plugin behavior that is intentionally **not** implemented on Fabric, or differs enough that server configs may need adjustment. **Third-party parity** (WorldGuard, Mythic, jobs, …) is **optional** unless a named deployment needs it.
 

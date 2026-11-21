@@ -11,6 +11,8 @@ import dev.granite.graniteskills.common.message.type.ManaAbilityMessage;
 import dev.granite.graniteskills.common.source.SourceTag;
 import dev.granite.graniteskills.common.user.User;
 import dev.granite.graniteskills.common.util.text.TextUtil;
+import dev.granite.graniteskills.fabric.item.FabricItemIgnoreTags;
+import dev.granite.graniteskills.fabric.item.IgnoreInteractClicks;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
@@ -196,8 +198,8 @@ public final class FabricTerraform {
             if (hand != InteractionHand.MAIN_HAND) {
                 return InteractionResult.PASS;
             }
-            tryReady(plugin, sp, sw, hitResult.getBlockPos(), sw.getBlockState(hitResult.getBlockPos()));
-            return InteractionResult.PASS;
+            return IgnoreInteractClicks.finishRightClick(sp.getMainHandItem(),
+                    () -> tryReady(plugin, sp, sw, hitResult.getBlockPos(), sw.getBlockState(hitResult.getBlockPos())));
         });
 
         UseItemCallback.EVENT.register((Player player, Level world, InteractionHand hand) -> {
@@ -207,8 +209,8 @@ public final class FabricTerraform {
             if (hand != InteractionHand.MAIN_HAND) {
                 return InteractionResult.PASS;
             }
-            tryReady(plugin, sp, null, null, null);
-            return InteractionResult.PASS;
+            return IgnoreInteractClicks.finishRightClick(sp.getMainHandItem(),
+                    () -> tryReady(plugin, sp, null, null, null));
         });
     }
 
@@ -269,6 +271,9 @@ public final class FabricTerraform {
 
     private static boolean isAllowReady(FabricGraniteSkills plugin, ServerPlayer player, @Nullable ServerLevel world,
             @Nullable BlockPos pos) {
+        if (!IgnoreInteractClicks.runRightClickHandler(FabricItemIgnoreTags.ignoresManaAbilityInteract(player.getMainHandItem()))) {
+            return false;
+        }
         if (MANA.optionBoolean("require_sneak", false) && !player.isShiftKeyDown()) {
             return false;
         }

@@ -14,8 +14,12 @@ Standalone skills mod for Minecraft. Fabric dedicated servers use Minecraft 26.3
 
 ## About
 
-**Granite Skills** is a Minecraft plugin that adds skills, stats, abilities, and other
-RPG-related features. The plugin is fully configurable and customizable, enabling usage on a wide range of server types.
+**Granite Skills** is a fork of [AuraSkills](https://github.com/Archy-X/AuraSkills) by Archyx
+(GPL-3.0). Shared game logic follows that upstream project; the Fabric dedicated-server port and
+GraniteLib menu layer are maintained here. Modified 2026.
+
+**Granite Skills** adds skills, stats, abilities, and other RPG-related features. The plugin is fully
+configurable and customizable, enabling usage on a wide range of server types.
 
 Features include:
 

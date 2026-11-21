@@ -10,6 +10,7 @@ import dev.granite.graniteskills.common.message.type.ManaAbilityMessage;
 import dev.granite.graniteskills.common.scheduler.TaskRunnable;
 import dev.granite.graniteskills.common.user.User;
 import dev.granite.graniteskills.common.util.text.TextUtil;
+import dev.granite.graniteskills.fabric.item.IgnoreInteractClicks;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -66,7 +67,7 @@ public final class FabricChargedShot {
         if (world.isClientSide() || !(user instanceof ServerPlayer sp)) {
             return;
         }
-        if (!stack.is(Items.BOW) || FabricManaAbilityItemTags.shouldIgnoreInteract(stack)) {
+        if (!stack.is(Items.BOW) || !IgnoreInteractClicks.runRightClickHandler(FabricManaAbilityItemTags.shouldIgnoreInteract(stack))) {
             return;
         }
         net.minecraft.world.item.BowItem bow = (net.minecraft.world.item.BowItem) stack.getItem();
@@ -102,7 +103,7 @@ public final class FabricChargedShot {
         if (!player.getMainHandItem().is(Items.BOW)) {
             return;
         }
-        if (FabricManaAbilityItemTags.shouldIgnoreInteract(player.getMainHandItem())) {
+        if (!IgnoreInteractClicks.runRightClickHandler(FabricManaAbilityItemTags.shouldIgnoreInteract(player.getMainHandItem()))) {
             return;
         }
         if (failsChecks(plugin, player)) {

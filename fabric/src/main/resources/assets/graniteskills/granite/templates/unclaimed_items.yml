@@ -1,0 +1,73 @@
+# Granite Skills — unclaimed rewards (template v0). Grid stacks are real items; controls only adjust lore/copy.
+# Sprint 119: Container title is built in Java (FabricMenuTitles#unclaimedItemsTitle); YAML `title` is ignored at runtime.
+# Fallback: built-in FabricUnclaimedItemsMenuGui on any failure.
+id: unclaimed_items
+title: "Unclaimed"
+rows: 6
+
+# Sprint 122: no global glass fill — empty slots stay empty.
+
+items:
+  claimable:
+    material: minecraft:chest
+    slots:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+      - 12
+      - 13
+      - 14
+      - 15
+      - 16
+      - 17
+      - 18
+      - 19
+      - 20
+      - 21
+      - 22
+      - 23
+      - 24
+      - 25
+      - 26
+      - 27
+      - 28
+      - 29
+      - 30
+      - 31
+      - 32
+      - 33
+      - 34
+      - 35
+    lore:
+      - "§a▸ §7Click to claim"
+    action: claim_item
+  previous:
+    material: minecraft:arrow
+    slot: 48
+    name: "§e« Page"
+    lore:
+      - "§7Previous rewards"
+    action: previous_page
+  claim_all:
+    material: minecraft:chest_minecart
+    slot: 49
+    name: "§6Claim all"
+    lore:
+      - "§7Move everything that fits"
+    action: claim_all
+  next:
+    material: minecraft:arrow
+    slot: 50
+    name: "§ePage »"
+    lore:
+      - "§7Next rewards"
+    action: next_page

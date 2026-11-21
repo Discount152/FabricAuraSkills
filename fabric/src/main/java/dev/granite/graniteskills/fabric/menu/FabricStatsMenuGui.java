@@ -1,0 +1,313 @@
+package dev.granite.graniteskills.fabric.menu;
+
+import dev.granite.graniteskills.api.stat.Stat;
+import dev.granite.graniteskills.api.trait.Trait;
+import dev.granite.graniteskills.api.util.NumberUtil;
+import dev.granite.graniteskills.common.config.Option;
+import dev.granite.graniteskills.common.menu.MenuHelper;
+import dev.granite.graniteskills.common.message.MessageProvider;
+import dev.granite.graniteskills.common.user.User;
+import dev.granite.graniteskills.common.util.text.TextUtil;
+import dev.granite.graniteskills.fabric.FabricGraniteSkills;
+import dev.granite.graniteskills.fabric.FabricTraitManager;
+import dev.granite.graniteskills.fabric.text.FabricGraniteText;
+import dev.granitelib.fabric.menu.GraniteContainerMenus;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ItemLore;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+/**
+ * Stats: one entry per enabled {@link Stat} (Bukkit {@code stats.yml} spirit). **Sprint 31:** when
+ * {@link Option#MENUS_STAT_INFO_ENABLED} is on, list click opens {@link FabricStatInfoMenuGui}. **Sprint
+ * 36:** list row item from {@code granite.items.list}. **Sprint 37:** paged list + {@code
+ * granite.paging}. **Sprint 101:** tries bundled GraniteLib template first.
+ */
+final class FabricStatsMenuGui {
+
+    private FabricStatsMenuGui() {
+    }
+
+    static void open(
+            ServerPlayer player, FabricGraniteSkills plugin, Component title, FabricMenuContext context) {
+        User user = FabricMenuUserReadiness.loadedUserOrWarn(plugin, player);
+        if (user == null) {
+            return;
+        }
+        if (FabricStatsTemplateSupport.tryOpen(player, plugin, context, user)) {
+            return;
+        }
+        openBuiltIn(player, plugin, title, context, user);
+    }
+
+    private static void openBuiltIn(
+            ServerPlayer player,
+            FabricGraniteSkills plugin,
+            Component title,
+            FabricMenuContext context,
+            User user) {
+        Locale locale = user.getLocale();
+        MessageProvider msg = plugin.getMessageProvider();
+        MenuHelper menus = plugin.getMenuHelper();
+        List<Stat> order = new ArrayList<>();
+        for (Stat s : plugin.getStatManager().getEnabledStats()) {
+            order.add(s);
+        }
+        FabricMenuYamlSlice cfg = plugin
+                .getBuiltInMenuConfig()
+                .getSlice(FabricMenuKeys.STATS, FabricMenuYamlSlice.defaultStats());
+        int listStart = cfg.listStartSlot();
+        int listEnd = cfg.listEndSlotExclusive();
+        FabricListMenuPaging.ListContentRegion region =
+                FabricListMenuPaging.listContentRegion(listStart, listEnd);
+        int pageSize = region.size();
+        Item listItem = FabricMenuItemDefinitions.resolveItem(
+                cfg.listItemId(), Items.BOOK, plugin, "menus/stats.yml", "list");
+        int prevSlot = cfg.pagingPrevSlot();
+        int nextSlot = cfg.pagingNextSlot();
+        boolean statInfoClicks = plugin.configBoolean(Option.MENUS_STAT_INFO_ENABLED);
+        int total = order.size();
+        int maxPage = FabricListMenuPaging.maxPageIndex(total, pageSize);
+        int page = FabricListMenuPaging.clampPage(context.listPage(), total, pageSize);
+        int from = page * pageSize;
+        int to = pageSize == 0 ? 0 : Math.min(from + pageSize, total);
+        int contentStart = region.startInclusive();
+        int contentEndEx = region.endExclusive();
+        Component pageTitle = FabricListMenuPaging.appendPageToTitleIfNeeded(title, page, maxPage);
+        final int fFrom = from;
+        final int fTo = to;
+        final int fPage = page;
+        final int fMaxPage = maxPage;
+        final int fPageSize = pageSize;
+        final int fTotal = total;
+        final boolean fStatClicks = statInfoClicks;
+        GraniteContainerMenus.openClickable9x6(
+                player,
+                pageTitle,
+                inv -> {
+                    for (int i = 0; i < FabricMenuSlotLayout.TOP_SLOTS; i++) {
+                        inv.setItem(i, ItemStack.EMPTY);
+                    }
+                    if (pageSize > 0) {
+                        for (int g = fFrom; g < fTo; g++) {
+                            int slot = contentStart + (g - fFrom);
+                            if (slot >= contentEndEx) {
+                                break;
+                            }
+                            fillOneStatStack(
+                                    order.get(g),
+                                    user,
+                                    msg,
+                                    plugin,
+                                    locale,
+                                    menus,
+                                    listItem,
+                                    fStatClicks,
+                                    inv,
+                                    slot);
+                        }
+                    }
+                    if (fMaxPage > 0) {
+                        if (fPage > 0) {
+                            putNav(
+                                    inv,
+                                    prevSlot,
+                                    true,
+                                    "graniteskills.granite.menu.paging_prev",
+                                    "graniteskills.granite.menu.paging_prev_lore");
+                        } else {
+                            inv.setItem(prevSlot, ItemStack.EMPTY);
+                        }
+                        if (fPage < fMaxPage) {
+                            putNav(
+                                    inv,
+                                    nextSlot,
+                                    true,
+                                    "graniteskills.granite.menu.paging_next",
+                                    "graniteskills.granite.menu.paging_next_lore");
+                        } else {
+                            inv.setItem(nextSlot, ItemStack.EMPTY);
+                        }
+                    } else {
+                        inv.setItem(prevSlot, ItemStack.EMPTY);
+                        inv.setItem(nextSlot, ItemStack.EMPTY);
+                    }
+                },
+                (topSlot, p, b, t) -> {
+                    if (!FabricMenuClicks.activates(t)) {
+                        return;
+                    }
+                    if (fMaxPage > 0) {
+                        if (topSlot == prevSlot) {
+                            if (fPage > 0) {
+                                plugin.getScheduler()
+                                        .executeSync(() -> plugin
+                                                .getMenuRegistry()
+                                                .open(
+                                                        FabricMenuKeys.STATS,
+                                                        p,
+                                                        plugin,
+                                                        FabricMenuContext.none()
+                                                                .withListPage(fPage - 1)));
+                            }
+                            return;
+                        }
+                        if (topSlot == nextSlot) {
+                            if (fPage < fMaxPage) {
+                                plugin.getScheduler()
+                                        .executeSync(() -> plugin
+                                                .getMenuRegistry()
+                                                .open(
+                                                        FabricMenuKeys.STATS,
+                                                        p,
+                                                        plugin,
+                                                        FabricMenuContext.none()
+                                                                .withListPage(fPage + 1)));
+                            }
+                            return;
+                        }
+                    }
+                    if (!fStatClicks) {
+                        return;
+                    }
+                    if (fPageSize <= 0) {
+                        return;
+                    }
+                    if (topSlot < contentStart || topSlot >= contentEndEx) {
+                        return;
+                    }
+                    int gIdx = fFrom + (topSlot - contentStart);
+                    if (gIdx < fFrom || gIdx >= fTo) {
+                        return;
+                    }
+                    if (gIdx < 0 || gIdx >= fTotal) {
+                        return;
+                    }
+                    Stat st = order.get(gIdx);
+                    if (!st.isEnabled()) {
+                        return;
+                    }
+                    final Stat stat = st;
+                    plugin.getScheduler()
+                            .executeSync(
+                                    () -> FabricGraniteSkillsMenus.openStatInfo(stat, p, plugin, fPage));
+                });
+    }
+
+    private static void putNav(
+            Container inv, int slot, boolean active, String nameKey, String loreKey) {
+        if (!active) {
+            inv.setItem(slot, ItemStack.EMPTY);
+            return;
+        }
+        inv.setItem(
+                slot,
+                FabricMenuItemPresentation.pageNavArrow(
+                        FabricGraniteText.key(nameKey), FabricGraniteText.key(loreKey)));
+    }
+
+    private static void fillOneStatStack(
+            Stat stat,
+            User user,
+            MessageProvider msg,
+            FabricGraniteSkills plugin,
+            Locale locale,
+            MenuHelper menus,
+            Item listItem,
+            boolean addOpenDetailLore,
+            Container inv,
+            int slot) {
+        ItemStack stack = new ItemStack(listItem);
+        String levelText = formatStatLevel(stat, user, plugin, locale);
+        String nameTemplate = menus.getFormat("stats", "player_stat_entry");
+        String rawName = TextUtil.replace(
+                nameTemplate,
+                "{color}", msg.getStatColor(stat, locale),
+                "{symbol}", msg.getStatSymbol(stat, locale),
+                "{stat}", msg.getStatDisplayName(stat, locale, false),
+                "{level}", levelText);
+        stack.set(DataComponents.ITEM_NAME, FabricMenuLoreFormatting.formatMenuLine(plugin, rawName));
+        List<Component> lore = new ArrayList<>();
+        String desc = msg.getStatDescription(stat, locale, false);
+        if (desc != null && !desc.isEmpty()) {
+            FabricMenuLoreFormatting.appendWrappedFormattedLore(plugin, lore, desc, 10, 800);
+        }
+        for (Trait tr : stat.getTraits()) {
+            if (lore.size() >= 10) {
+                break;
+            }
+            addTraitLoreIfPresent(stat, user, tr, msg, plugin, locale, menus, lore);
+        }
+        if (addOpenDetailLore) {
+            String openDetail = plugin
+                    .getBuiltInMenuConfig()
+                    .resolveListOpenDetailKey(
+                            FabricMenuKeys.STATS,
+                            FabricMenuYamlSlice.defaultStats(),
+                            "graniteskills.granite.menu.stats_lore_open_detail");
+            lore.add(FabricGraniteText.key(openDetail));
+        }
+        stack.set(DataComponents.LORE, new ItemLore(lore));
+        FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(stack);
+        inv.setItem(slot, stack);
+    }
+
+    static String formatStatLevel(Stat stat, User user, FabricGraniteSkills plugin, Locale locale) {
+        if (stat.hasDirectTrait() && plugin.configBoolean(Option.MENUS_STATS_SHOW_TRAIT_VALUES_DIRECTLY)) {
+            Trait trait = stat.getTraits().get(0);
+            double value = user.getEffectiveTraitLevel(trait);
+            return plugin.getTraitManager().getMenuDisplay(trait, value, locale, null);
+        }
+        return NumberUtil.format1(user.getStatLevel(stat));
+    }
+
+    static void addTraitLoreIfPresent(
+            Stat stat,
+            User user,
+            Trait trait,
+            MessageProvider msg,
+            FabricGraniteSkills plugin,
+            Locale locale,
+            MenuHelper menus,
+            List<Component> lore) {
+        if (!trait.isEnabled()) {
+            return;
+        }
+        String line = formatTraitLine(stat, user, trait, msg, plugin, locale, menus);
+        if (line == null) {
+            return;
+        }
+        lore.add(FabricMenuLoreFormatting.formatMenuLine(plugin, line));
+    }
+
+    private static @Nullable String formatTraitLine(
+            Stat stat,
+            User user,
+            Trait trait,
+            MessageProvider msg,
+            FabricGraniteSkills plugin,
+            Locale locale,
+            MenuHelper menus) {
+        if (plugin.getTraitManager() instanceof FabricTraitManager fabricTraits
+                && fabricTraits.getTraitImpl(trait) == null) {
+            return null;
+        }
+        String template = menus.getFormat("stats", "trait_entry");
+        double eff = user.getEffectiveTraitLevel(trait);
+        String levelPart = plugin.getTraitManager().getMenuDisplay(trait, eff, locale, null);
+        return TextUtil.replace(
+                template,
+                "{trait}", trait.getDisplayName(locale),
+                "{color}", msg.getStatColor(stat, locale),
+                "{level}", levelPart);
+    }
+}

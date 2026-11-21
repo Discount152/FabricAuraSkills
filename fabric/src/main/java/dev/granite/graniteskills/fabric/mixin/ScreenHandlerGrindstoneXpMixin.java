@@ -1,6 +1,7 @@
 package dev.granite.graniteskills.fabric.mixin;
 
 import dev.granite.graniteskills.fabric.FabricGrindstoneXpHandler;
+import dev.granite.graniteskills.fabric.GrindstoneXpAward;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -63,11 +64,9 @@ public abstract class ScreenHandlerGrindstoneXpMixin {
                 return;
             }
             ItemStack after = self.getSlot(GrindstoneMenu.RESULT_SLOT).getItem();
-            if (graniteskillsOutputBeforeClick.isEmpty()) {
-                return;
-            }
-            if (!ItemStack.isSameItemSameComponents(graniteskillsOutputBeforeClick, after)
-                    || after.getCount() < graniteskillsOutputBeforeClick.getCount()) {
+            boolean outputChanged = !ItemStack.isSameItemSameComponents(graniteskillsOutputBeforeClick, after)
+                    || after.getCount() < graniteskillsOutputBeforeClick.getCount();
+            if (GrindstoneXpAward.isResultTake(true, !graniteskillsOutputBeforeClick.isEmpty(), outputChanged)) {
                 FabricGrindstoneXpHandler.onGrindstoneTake(sp, self, graniteskillsInput1Before, graniteskillsInput2Before);
             }
         } finally {

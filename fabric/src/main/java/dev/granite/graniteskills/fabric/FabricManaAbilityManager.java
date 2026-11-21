@@ -30,7 +30,6 @@ public final class FabricManaAbilityManager extends ManaAbilityManager {
         FabricReplenish.register(plugin);
         FabricSpeedMine.register(plugin);
         FabricTerraform.register(plugin);
-        FabricTreecapitator.register(plugin);
         FabricLightningBlade.register(plugin);
         FabricChargedShot.register(plugin);
     }

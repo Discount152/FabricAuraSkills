@@ -46,6 +46,36 @@ public final class FabricBlockStateMatcher {
         return false;
     }
 
+    /**
+     * Break XP for this source after crop-age and other state gates. A state that does not match,
+     * including a crop that is not ready, awards nothing.
+     */
+    public static double awardedBreakXp(BlockState state, BlockXpSource source) {
+        if (state == null || source == null) {
+            return 0.0;
+        }
+        BlockXpSource.BlockXpSourceState[] states = source.getStates();
+        if (states != null && states.length > 0 && !matchesStates(state, states)) {
+            return 0.0;
+        }
+        return source.getXp() * getStateMultiplier(state, source);
+    }
+
+    /**
+     * Right-click harvest XP. The amount is taken from the block before the click. The award is
+     * kept only when the block reaches the configured after-state, and a second claim for that
+     * same action is rejected.
+     */
+    public static double harvestAward(double snapshottedXp, BlockState after, BlockXpSource.BlockXpSourceState[] afterStates, boolean claimGranted) {
+        if (!claimGranted || snapshottedXp == 0.0) {
+            return 0.0;
+        }
+        if (afterStates != null && afterStates.length > 0 && (after == null || !matchesStates(after, afterStates))) {
+            return 0.0;
+        }
+        return snapshottedXp;
+    }
+
     public static double getStateMultiplier(BlockState state, BlockXpSource source) {
         if (!source.hasStateMultiplier()) {
             return 1.0;

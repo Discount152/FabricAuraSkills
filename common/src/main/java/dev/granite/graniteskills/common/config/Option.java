@@ -18,6 +18,8 @@ public enum Option {
     SQL_POOL_CONNECTION_TIMEOUT("sql.pool.connection_timeout", OptionType.INT),
     SQL_POOL_MAX_LIFETIME("sql.pool.max_lifetime", OptionType.INT),
     SQL_POOL_KEEPALIVE_TIME("sql.pool.keepalive_time", OptionType.INT),
+    /** When true, rename auraskills_/aureliumskills_ tables to graniteskills_ on first SQL start. Default false. */
+    SQL_MIGRATE_LEGACY_TABLES("sql.migrate_legacy_tables", OptionType.BOOLEAN),
     DEFAULT_LANGUAGE("default_language", OptionType.STRING),
     TRY_DETECT_CLIENT_LANGUAGE("try_detect_client_language", OptionType.BOOLEAN),
     // Action bar options

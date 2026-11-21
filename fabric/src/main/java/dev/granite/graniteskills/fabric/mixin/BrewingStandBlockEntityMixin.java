@@ -1,6 +1,7 @@
 package dev.granite.graniteskills.fabric.mixin;
 
 import dev.granite.graniteskills.fabric.FabricBrewingXpHandler;
+import dev.granite.graniteskills.fabric.ability.FabricAlchemyAbilities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerLevel;
@@ -34,6 +35,8 @@ public abstract class BrewingStandBlockEntityMixin {
             at = @At("RETURN")
     )
     private static void graniteskills$brewReturn(ServerLevel world, BlockPos pos, BrewingStandBlockEntity stand, CallbackInfo ci) {
-        FabricBrewingXpHandler.onCraftReturn(world, pos, ((BrewingStandBlockEntityMixin) (Object) stand).getItems());
+        NonNullList<ItemStack> items = ((BrewingStandBlockEntityMixin) (Object) stand).getItems();
+        FabricBrewingXpHandler.onCraftReturn(world, pos, items);
+        FabricAlchemyAbilities.onBrewComplete(world, pos, items);
     }
 }

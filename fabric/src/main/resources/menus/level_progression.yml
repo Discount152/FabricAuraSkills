@@ -1,0 +1,30 @@
+# Level Progression detail menu (Granite / Fabric) — bounded `granite` slice (Sprint 33+).
+# Not the full Bukkit/Slate level_progression reward template set.
+
+granite:
+  enabled: true
+  title_key: "graniteskills.granite.menu.level_progression_title"
+  size:
+    rows: 6
+    columns: 9
+  # Detail menu: main_slot (book) and back_slot (iron door). list_* is ignored; invalid layout logs a warn and uses defaults.
+  layout:
+    list_start_slot: 0
+    list_end_slot_exclusive: 54
+    main_slot: 4
+    back_slot: 49
+  items:
+    list: "minecraft:book"
+    main: "minecraft:book"
+    back: "minecraft:iron_door"
+  format:
+    main_title: "graniteskills.granite.menu.level_progression_main_title"
+    lore_level: "graniteskills.granite.menu.level_progression_lore_level"
+    lore_xp: "graniteskills.granite.menu.level_progression_lore_xp"
+    lore_to_next: "graniteskills.granite.menu.level_progression_lore_to_next"
+    lore_maxed: "graniteskills.granite.menu.level_progression_lore_maxed"
+    back: "graniteskills.granite.menu.level_progression_back"
+    back_lore: "graniteskills.granite.menu.level_progression_back_lore"
+    no_permission: "graniteskills.granite.menu.skills_lore_no_permission"
+    stat_reward_entry: "\n  {color}+{num} {symbol} {stat}"
+    money_reward_entry: "\n  <green>${amount}"

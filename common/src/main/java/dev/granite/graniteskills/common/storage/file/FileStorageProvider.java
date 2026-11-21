@@ -15,6 +15,7 @@ import dev.granite.graniteskills.common.mana.ManaAbilityData;
 import dev.granite.graniteskills.common.ref.PlayerRef;
 import dev.granite.graniteskills.common.region.BlockPosition;
 import dev.granite.graniteskills.common.storage.StorageProvider;
+import dev.granite.graniteskills.common.ui.ActionBarIdleMode;
 import dev.granite.graniteskills.common.ui.ActionBarType;
 import dev.granite.graniteskills.common.user.AntiAfkLog;
 import dev.granite.graniteskills.common.user.SkillLevelMaps;
@@ -224,7 +225,19 @@ public class FileStorageProvider extends StorageProvider {
     }
 
     private void loadActionBar(ConfigurationNode node, User user) {
+        boolean hasMode = !node.node("idle_mode").virtual();
+        boolean hasLegacyIdle = !node.node("idle").virtual();
+        ActionBarIdleMode.ActionBarLoadResolution resolution = ActionBarIdleMode.resolveOnLoad(
+                hasMode,
+                node.node("idle_mode").getString(),
+                hasLegacyIdle,
+                node.node("idle").getBoolean(),
+                "smart");
+        user.setActionBarIdleMode(resolution.mode());
         for (ActionBarType type : ActionBarType.values()) {
+            if (type == ActionBarType.IDLE) {
+                continue;
+            }
             String typeName = type.toString().toLowerCase(Locale.ROOT);
             if (!node.node(typeName).virtual()) {
                 user.setActionBarSetting(type, node.node(typeName).getBoolean());
@@ -379,11 +392,8 @@ public class FileStorageProvider extends StorageProvider {
 
         // Save action bar settings
         ConfigurationNode actionBarNode = root.node("action_bar");
-        for (ActionBarType type : ActionBarType.values()) {
-            if (type != ActionBarType.IDLE) continue; // Only save idle action bar for now
-            boolean value = user.isActionBarEnabled(type);
-            actionBarNode.node(type.toString().toLowerCase(Locale.ROOT)).set(value);
-        }
+        actionBarNode.node("idle_mode").set(user.getActionBarIdleMode().name().toLowerCase(Locale.ROOT));
+        actionBarNode.node("idle").set(user.isActionBarEnabled(ActionBarType.IDLE));
 
         // Save jobs
         if (user.getJobs().isEmpty()) {

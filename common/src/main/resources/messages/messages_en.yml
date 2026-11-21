@@ -634,6 +634,11 @@ commands:
     enabled: "<green>Your skills action bar has been enabled"
     disabled: "<red>Your skills action bar has been disabled"
     not_enabled: "<yellow>Skills action bar is not enabled on this server!"
+    mode_set_smart: "<green>Action bar idle mode set to Smart"
+    mode_set_always: "<green>Action bar idle mode set to Always"
+    mode_set_off: "<green>Action bar idle mode set to Off"
+    mode_status: "<yellow>Action bar idle mode: {mode}"
+    invalid_subcommand: "<red>Unknown action bar mode. Use smart, always, off, or status."
     desc: Toggles your own skills action bar.
   top:
     desc: Shows the top players in a skill

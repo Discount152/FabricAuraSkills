@@ -1,0 +1,302 @@
+package dev.granite.graniteskills.fabric.menu;
+
+import dev.granite.graniteskills.api.skill.Skill;
+import dev.granite.graniteskills.api.source.XpSource;
+import dev.granite.graniteskills.api.util.NumberUtil;
+import dev.granite.graniteskills.common.user.User;
+import dev.granite.graniteskills.fabric.FabricGraniteSkills;
+import dev.granite.graniteskills.fabric.command.FabricSourceSortType;
+import dev.granite.graniteskills.fabric.command.FabricSourcesListSupport;
+import dev.granite.graniteskills.fabric.command.FabricSourcesRuntimeDiagnostics;
+import dev.granite.graniteskills.fabric.text.FabricGraniteText;
+import dev.granitelib.fabric.menu.GraniteContainerMenus;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ItemLore;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+/**
+ * 6×9 “sources” list for one skill, opened from {@code /sources} for in-game players (**Sprint
+ * 69**). Control row (back / page / sorter) matches Bukkit default {@code menus/sources.yml} slot
+ * positions. **Sprint 98:** tries bundled GraniteLib template first; on failure uses this built-in path.
+ */
+final class FabricSourcesMenuGui {
+
+    /** Bukkit default {@code sources} items: back row5 col0, prev 5,3, sorter 5,4, next 5,5. */
+    private static final int SLOT_BACK = 45;
+    private static final int SLOT_PREV = 48;
+    private static final int SLOT_SORT = 49;
+    private static final int SLOT_NEXT = 50;
+
+    private static final int ITEMS_PER_PAGE = 28;
+    private static final int GRID_COLS = 7;
+
+    private FabricSourcesMenuGui() {
+    }
+
+    /**
+     * Bukkit default grid: {@code source_start 1,1} → {@code source_end 4,8} (7×4, 28 slots), row-major
+     * order. Exposed for template validation (**Sprint 98**).
+     */
+    static List<Integer> builtinSourceGridSlots() {
+        List<Integer> out = new ArrayList<>(ITEMS_PER_PAGE);
+        for (int i = 0; i < ITEMS_PER_PAGE; i++) {
+            out.add(sourceSlotInPage(i));
+        }
+        return List.copyOf(out);
+    }
+
+    static List<RenderedSourceRow> renderPlanForPage(List<XpSource> all, int page) {
+        int maxPage = FabricListMenuPaging.maxPageIndex(all.size(), ITEMS_PER_PAGE);
+        int clamped = FabricListMenuPaging.clampPage(page, all.size(), ITEMS_PER_PAGE);
+        int from = clamped * ITEMS_PER_PAGE;
+        int to = Math.min(from + ITEMS_PER_PAGE, all.size());
+        List<XpSource> sub = all.subList(from, to);
+        List<RenderedSourceRow> rows = new ArrayList<>(sub.size());
+        for (int i = 0; i < sub.size(); i++) {
+            rows.add(new RenderedSourceRow(sourceSlotInPage(i), sub.get(i)));
+        }
+        return rows;
+    }
+
+    /**
+     * Bukkit default grid: {@code source_start 1,1} → {@code source_end 4,8} (7×4, 28 slots).
+     */
+    private static int sourceSlotInPage(int indexInPage) {
+        int r = 1 + indexInPage / GRID_COLS;
+        int c = 1 + indexInPage % GRID_COLS;
+        return r * 9 + c;
+    }
+
+    static void open(
+            ServerPlayer player,
+            FabricGraniteSkills plugin,
+            Skill skill,
+            FabricSourceSortType sort,
+            int page,
+            int returnToSkillsListPage) {
+        User user = plugin.getUserManager().getUser(player.getUUID());
+        Locale lo = user.getLocale();
+        var loaded = plugin.getSkillManager().getSkill(skill);
+        List<XpSource> all = FabricSourcesListSupport.buildSorted(plugin, loaded, sort, lo);
+        if (all.isEmpty()) {
+            return;
+        }
+        FabricMenuNavigation.remember(player, "sources", skill.getId().getSimpleName(), page, sort.name());
+        if (FabricSourcesTemplateSupport.tryOpen(
+                player, plugin, skill, sort, page, returnToSkillsListPage, all, lo)) {
+            return;
+        }
+        openBuiltIn(player, plugin, skill, sort, page, returnToSkillsListPage, all, lo);
+    }
+
+    private static void openBuiltIn(
+            ServerPlayer player,
+            FabricGraniteSkills plugin,
+            Skill skill,
+            FabricSourceSortType sort,
+            int page,
+            int returnToSkillsListPage,
+            List<XpSource> all,
+            Locale lo) {
+        var msg = plugin.getMessageProvider();
+        int maxPage = FabricListMenuPaging.maxPageIndex(all.size(), ITEMS_PER_PAGE);
+        int p = FabricListMenuPaging.clampPage(page, all.size(), ITEMS_PER_PAGE);
+        int from = p * ITEMS_PER_PAGE;
+        int to = Math.min(from + ITEMS_PER_PAGE, all.size());
+        String skillName = msg.getSkillDisplayName(skill, lo, true);
+        String sortLabel = sortTitle(sort).getString();
+        Component baseTitle = FabricMenuTitles.sourcesMenuTitle(skillName);
+        Component pageTitle = FabricListMenuPaging.appendPageToTitleIfNeeded(baseTitle, p, maxPage);
+        var sub = all.subList(from, to);
+        final int fPage = p;
+        final int fMax = maxPage;
+        final FabricSourceSortType fSort = sort;
+        GraniteContainerMenus.openClickable9x6(
+                player,
+                pageTitle,
+                inv -> {
+                    List<FabricSourcesRuntimeDiagnostics.PlannedRow> plannedRows = new ArrayList<>(sub.size());
+                    for (int i = 0; i < FabricMenuSlotLayout.TOP_SLOTS; i++) {
+                        inv.setItem(i, ItemStack.EMPTY);
+                    }
+                    for (int i = 0; i < sub.size(); i++) {
+                        XpSource s = sub.get(i);
+                        int slot = sourceSlotInPage(i);
+                        ItemStack rowStack = sourceStack(plugin, s, lo);
+                        plannedRows.add(FabricSourcesRuntimeDiagnostics.plannedRow(slot, rowStack));
+                        inv.setItem(slot, rowStack);
+                    }
+                    putControl(
+                            inv,
+                            SLOT_BACK,
+                            true,
+                            "graniteskills.granite.menu.sources_back",
+                            "graniteskills.granite.menu.sources_back_lore",
+                            Items.IRON_DOOR);
+                    if (fMax > 0) {
+                        if (fPage > 0) {
+                            putArrowControl(
+                                    inv,
+                                    SLOT_PREV,
+                                    true,
+                                    "graniteskills.granite.menu.paging_prev",
+                                    "graniteskills.granite.menu.paging_prev_lore");
+                        }
+                        if (fPage < fMax) {
+                            putArrowControl(
+                                    inv,
+                                    SLOT_NEXT,
+                                    true,
+                                    "graniteskills.granite.menu.paging_next",
+                                    "graniteskills.granite.menu.paging_next_lore");
+                        }
+                    }
+                    putSortControl(inv, SLOT_SORT, sortLabel);
+                    FabricSourcesRuntimeDiagnostics.capture(skill, plannedRows, inv);
+                },
+                (topSlot, pl, b, t) -> {
+                    if (!FabricMenuClicks.activates(t)) {
+                        return;
+                    }
+                    if (topSlot == SLOT_BACK) {
+                        plugin.getScheduler()
+                                .executeSync(
+                                        () -> {
+                                            if (!FabricMenuNavigation.back(pl, plugin)) {
+                                                FabricGraniteSkillsMenus.openLevelProgression(
+                                                        skill, pl, plugin, returnToSkillsListPage);
+                                            }
+                                        });
+                        return;
+                    }
+                    if (fMax > 0) {
+                        if (topSlot == SLOT_PREV) {
+                            if (fPage > 0) {
+                                plugin.getScheduler()
+                                        .executeSync(
+                                                () -> FabricSourcesMenuGui.open(
+                                                        pl,
+                                                        plugin,
+                                                        skill,
+                                                        fSort,
+                                                        fPage - 1,
+                                                        returnToSkillsListPage));
+                            }
+                            return;
+                        }
+                        if (topSlot == SLOT_NEXT) {
+                            if (fPage < fMax) {
+                                plugin.getScheduler()
+                                        .executeSync(
+                                                () -> FabricSourcesMenuGui.open(
+                                                        pl,
+                                                        plugin,
+                                                        skill,
+                                                        fSort,
+                                                        fPage + 1,
+                                                        returnToSkillsListPage));
+                            }
+                            return;
+                        }
+                    }
+                    if (topSlot == SLOT_SORT) {
+                        plugin.getScheduler()
+                                .executeSync(
+                                        () -> FabricSourcesMenuGui.open(
+                                                pl,
+                                                plugin,
+                                                skill,
+                                                fSort.nextCyclic(),
+                                                0,
+                                                returnToSkillsListPage));
+                    }
+                });
+    }
+
+    private static Component sortTitle(FabricSourceSortType s) {
+        return FabricGraniteText.key(
+                "graniteskills.granite.sort." + s.name().toLowerCase(Locale.ROOT));
+    }
+
+    private static void putControl(
+            Container inv, int slot, boolean active, String nameKey, String loreKey, net.minecraft.world.item.Item item) {
+        if (!active) {
+            return;
+        }
+        ItemStack s = new ItemStack(item);
+        s.set(DataComponents.ITEM_NAME, FabricGraniteText.key(nameKey));
+        s.set(
+                DataComponents.LORE,
+                new ItemLore(List.of(FabricGraniteText.key(loreKey))));
+        FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(s);
+        inv.setItem(slot, s);
+    }
+
+    private static void putArrowControl(
+            Container inv, int slot, boolean active, String nameKey, String loreKey) {
+        putControl(inv, slot, active, nameKey, loreKey, Items.ARROW);
+    }
+
+    private static void putSortControl(Container inv, int slot, String sortLabel) {
+        ItemStack s = new ItemStack(Items.COMPARATOR);
+        s.set(DataComponents.ITEM_NAME, FabricGraniteText.key("graniteskills.granite.menu.sources_sort"));
+        List<Component> lore = new ArrayList<>();
+        lore.add(FabricGraniteText.key("graniteskills.granite.menu.sources_sort_lore"));
+        lore.add(FabricGraniteText.key("graniteskills.granite.menu.sources_sort_current", sortLabel));
+        s.set(DataComponents.LORE, new ItemLore(lore));
+        FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(s);
+        inv.setItem(slot, s);
+    }
+
+    private static ItemStack sourceStack(FabricGraniteSkills plugin, XpSource s, Locale lo) {
+        ItemStack st = new ItemStack(Items.DYE.gray());
+        String rawName = FabricXpSourceMenuDisplay.effectiveRowTitle(plugin, s, lo);
+        st.set(DataComponents.ITEM_NAME, FabricMenuLoreFormatting.formatMenuLine(plugin, rawName));
+        List<Component> lore = new ArrayList<>();
+        String unit = s.getUnitName(lo);
+        if (unit == null) {
+            lore.add(
+                    FabricGraniteText.key(
+                            "graniteskills.granite.menu.sources_lore_xp", NumberUtil.format2(s.getXp())));
+        } else {
+            lore.add(
+                    FabricGraniteText.key(
+                            "graniteskills.granite.menu.sources_lore_xp_per",
+                            NumberUtil.format2(s.getXp()),
+                            unit));
+        }
+        lore.add(
+                FabricGraniteText.key(
+                        "graniteskills.granite.menu.sources_lore_type",
+                        FabricSourceTypeLabels.playerFacingTypeLine(s)));
+        st.set(DataComponents.LORE, new ItemLore(lore));
+        FabricMenuTooltipPresentation.suppressVanillaMechanicsTooltip(st);
+        return st;
+    }
+
+    static final class RenderedSourceRow {
+        private final int slot;
+        private final XpSource source;
+
+        RenderedSourceRow(int slot, XpSource source) {
+            this.slot = slot;
+            this.source = source;
+        }
+
+        int slot() {
+            return slot;
+        }
+
+        XpSource source() {
+            return source;
+        }
+    }
+}

@@ -75,8 +75,8 @@ public final class FabricBlockInteractHandler {
             return;
         }
 
-        double interactMultiplier = FabricBlockLevelerHelper.getBlocksBroken(sw, pos, xpSource, plugin)
-                * FabricBlockStateMatcher.getStateMultiplier(state, xpSource);
+        double snapshot = FabricBlockStateMatcher.awardedBreakXp(state, xpSource)
+                * FabricBlockLevelerHelper.getBlocksBroken(sw, pos, xpSource, plugin);
 
         UUID playerId = sp.getUUID();
         Identifier blockIdBefore = BuiltInRegistries.BLOCK.getKey(state.getBlock());
@@ -89,6 +89,9 @@ public final class FabricBlockInteractHandler {
                 return;
             }
             User u = plugin.getUserManager().getUser(playerId);
+            if (u == null) {
+                return;
+            }
             BlockState now = sw.getBlockState(pos);
             if (!BuiltInRegistries.BLOCK.getKey(now.getBlock()).equals(blockIdBefore)) {
                 return;
@@ -98,7 +101,16 @@ public final class FabricBlockInteractHandler {
                     return;
                 }
             }
-            plugin.getLevelManager().addXp(u, skill, xpSource, xpSource.getXp() * interactMultiplier);
+            if (FabricXpHandlerUtil.shouldBlockXp(plugin, p, skill, SourceTypes.BLOCK)) {
+                return;
+            }
+            double xp = FabricBlockStateMatcher.harvestAward(snapshot, now, after,
+                    FabricXpAwardGuard.claim(playerId, xpSource.getId().toString(), pos,
+                            sw.dimension().identifier().toString(), "interact"));
+            if (xp == 0.0) {
+                return;
+            }
+            plugin.getLevelManager().addXp(u, skill, xpSource, xp);
             FabricInteractGatheringLuck.tryApply(plugin, p, u, skill, xpSource, sw, pos, now);
         };
 

@@ -1,8 +1,11 @@
 package dev.granite.graniteskills.fabric.mixin;
 
 import dev.granite.graniteskills.fabric.FabricChargedShot;
+import dev.granite.graniteskills.fabric.ability.FabricArcheryAbilities;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -32,5 +35,8 @@ public abstract class BowItemChargedShotMixin {
     private void graniteskills$chargedShotAfterShoot(LivingEntity shooter, Projectile projectile, int index, float speed,
             float divergence, float yaw, @Nullable LivingEntity target, CallbackInfo ci) {
         FabricChargedShot.onBowShotProjectile(shooter, projectile);
+        if (shooter instanceof ServerPlayer player && projectile instanceof AbstractArrow arrow) {
+            FabricArcheryAbilities.applyPiercing(player, arrow, Double.NaN);
+        }
     }
 }

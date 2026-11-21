@@ -6,7 +6,7 @@ import dev.granite.graniteskills.api.source.type.GrindstoneXpSource;
 import dev.granite.graniteskills.common.config.Option;
 import dev.granite.graniteskills.common.source.SourceTypes;
 import dev.granite.graniteskills.common.user.User;
-import dev.granite.graniteskills.common.util.text.TextUtil;
+import dev.granite.graniteskills.fabric.ability.FabricForgingAbilities;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerPlayer;
@@ -40,25 +40,17 @@ public final class FabricGrindstoneXpHandler {
         if (FabricXpHandlerUtil.shouldBlockXp(plugin, player, skill, SourceTypes.GRINDSTONE)) {
             return;
         }
-        double multiplier = getTotalLevelMultiplier(plugin, source, skill, topBefore, bottomBefore);
-        User user = plugin.getUserManager().getUser(player.getUUID());
-        plugin.getLevelManager().addXp(user, skill, source, multiplier * source.getXp());
-    }
-
-    private static double getTotalLevelMultiplier(FabricGraniteSkills plugin, GrindstoneXpSource source, Skill skill, ItemStack top, ItemStack bottom) {
-        double multiplier = 1;
-        String multiplierString = source.getMultiplier();
-        if (multiplierString != null) {
-            int totalLevel = countDisenchantableLevels(top, plugin) + countDisenchantableLevels(bottom, plugin);
-            multiplierString = TextUtil.replace(multiplierString, "{total_level}", String.valueOf(totalLevel));
-            try {
-                multiplier = Double.parseDouble(multiplierString);
-            } catch (NumberFormatException e) {
-                plugin.logger().warn("Invalid multiplier for grindstone source " + source.getId() + " in skill " + skill.getId());
-                e.printStackTrace();
-            }
+        int totalLevel = countDisenchantableLevels(topBefore, plugin) + countDisenchantableLevels(bottomBefore, plugin);
+        double xp = GrindstoneXpAward.xp(source.getXp(), source.getMultiplier(), totalLevel);
+        if (xp <= 0.0) {
+            return;
         }
-        return multiplier;
+        User user = plugin.getUserManager().getUser(player.getUUID());
+        if (user == null) {
+            return;
+        }
+        plugin.getLevelManager().addXp(user, skill, source, xp);
+        FabricForgingAbilities.onGrindstoneDisenchant(player, topBefore, bottomBefore);
     }
 
     private static int countDisenchantableLevels(ItemStack stack, FabricGraniteSkills plugin) {

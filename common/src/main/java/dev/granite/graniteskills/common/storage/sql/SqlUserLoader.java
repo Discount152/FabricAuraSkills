@@ -15,6 +15,7 @@ import dev.granite.graniteskills.api.trait.TraitModifier;
 import dev.granite.graniteskills.api.util.GraniteSkillsModifier.Operation;
 import dev.granite.graniteskills.api.util.NumberUtil;
 import dev.granite.graniteskills.common.GraniteSkillsPlugin;
+import dev.granite.graniteskills.common.ui.ActionBarIdleMode;
 import dev.granite.graniteskills.common.ui.ActionBarType;
 import dev.granite.graniteskills.common.user.User;
 import dev.granite.graniteskills.common.util.data.KeyIntPair;
@@ -221,8 +222,18 @@ public class SqlUserLoader {
     }
 
     private void applyActionBar(User user, String keyName, String valueStr) {
+        if ("idle_mode".equalsIgnoreCase(keyName)) {
+            user.setActionBarIdleMode(ActionBarIdleMode.fromStringOr(valueStr, ActionBarIdleMode.SMART));
+            return;
+        }
         try {
             ActionBarType type = ActionBarType.valueOf(keyName.toUpperCase(Locale.ROOT));
+            if (type == ActionBarType.IDLE) {
+                if ("false".equalsIgnoreCase(valueStr) && user.getActionBarIdleMode() == ActionBarIdleMode.SMART) {
+                    user.setActionBarIdleMode(ActionBarIdleMode.OFF);
+                }
+                return;
+            }
             boolean enabled = !valueStr.equals("false");
             user.setActionBarSetting(type, enabled);
         } catch (IllegalArgumentException ignored) {

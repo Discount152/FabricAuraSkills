@@ -110,8 +110,20 @@ skills:
     abilities:
       - graniteskills/light_fall
       - graniteskills/jumper
-      - graniteskills/golden_heal
+      - graniteskills/sugar_rush
       - graniteskills/fleeting
+      - graniteskills/thunder_fall
+    options:
+      enabled: true
+      max_level: 100
+      check_cancelled: true
+      check_multiplier_permissions: true
+  graniteskills/endurance:
+    abilities:
+      - graniteskills/anti_hunger
+      - graniteskills/runner
+      - graniteskills/golden_heal
+      - graniteskills/recovery
       - graniteskills/meal_steal
     options:
       enabled: true
@@ -122,8 +134,10 @@ skills:
     abilities:
       - graniteskills/alchemist
       - graniteskills/brewer
+      - graniteskills/splasher
       - graniteskills/life_steal
       - graniteskills/golden_heart
+      - graniteskills/lingering
       - graniteskills/wise_effect
     options:
       enabled: true
@@ -135,6 +149,7 @@ skills:
     abilities:
       - graniteskills/xp_convert
       - graniteskills/enchanter
+      - graniteskills/xp_warrior
       - graniteskills/anvil_master
       - graniteskills/enchanted_strength
       - graniteskills/lucky_table
@@ -143,4 +158,33 @@ skills:
       max_level: 100
       check_cancelled: true
       check_multiplier_permissions: true
-file_version: 1
+  graniteskills/sorcery:
+    abilities:
+      - graniteskills/sorcerer
+    options:
+      enabled: true
+      max_level: 100
+      check_cancelled: true
+      check_multiplier_permissions: true
+  graniteskills/forging:
+    abilities:
+      - graniteskills/disenchanter
+      - graniteskills/forger
+      - graniteskills/repairing
+      - graniteskills/skill_mender
+    options:
+      enabled: true
+      max_level: 100
+      check_cancelled: true
+      check_multiplier_permissions: true
+  graniteskills/healing:
+    abilities:
+      - graniteskills/life_essence
+      - graniteskills/healer
+      - graniteskills/revival
+    options:
+      enabled: true
+      max_level: 100
+      check_cancelled: true
+      check_multiplier_permissions: true
+file_version: 2

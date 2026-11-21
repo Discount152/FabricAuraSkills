@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "granitelib",
+  "version": "${version}",
+  "name": "GraniteLib",
+  "description": "Fabric menu and layout library. Granite Skills depends on it.",
+  "authors": [
+    "Discount152"
+  ],
+  "license": "GPL-3.0",
+  "environment": "*",
+  "entrypoints": {},
+  "depends": {
+    "fabricloader": ">=0.20.1",
+    "minecraft": "~26.3",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
+}

@@ -21,6 +21,7 @@ import dev.granite.graniteskills.common.api.implementation.ApiSkillsUser;
 import dev.granite.graniteskills.common.config.Option;
 import dev.granite.graniteskills.common.jobs.JobsBatchData;
 import dev.granite.graniteskills.common.mana.ManaAbilityData;
+import dev.granite.graniteskills.common.ui.ActionBarIdleMode;
 import dev.granite.graniteskills.common.ui.ActionBarType;
 import dev.granite.graniteskills.common.util.data.KeyIntPair;
 import net.kyori.adventure.text.Component;
@@ -57,6 +58,7 @@ public abstract class User {
     private final Map<String, Object> metadata;
     private List<KeyIntPair> unclaimedItems;
     private final Map<ActionBarType, Boolean> actionBarSettings;
+    private ActionBarIdleMode actionBarIdleMode = ActionBarIdleMode.SMART;
     private final Set<Skill> jobs;
     private long lastJobSelectTime;
     private final List<AntiAfkLog> sessionAntiAfkLogs;
@@ -451,11 +453,26 @@ public abstract class User {
     }
 
     public boolean isActionBarEnabled(ActionBarType type) {
+        if (type == ActionBarType.IDLE) {
+            return actionBarIdleMode != ActionBarIdleMode.OFF;
+        }
         return actionBarSettings.getOrDefault(type, true);
     }
 
+    public @NotNull ActionBarIdleMode getActionBarIdleMode() {
+        return actionBarIdleMode;
+    }
+
+    public void setActionBarIdleMode(@NotNull ActionBarIdleMode actionBarIdleMode) {
+        this.actionBarIdleMode = actionBarIdleMode;
+    }
+
     public void setActionBarSetting(ActionBarType type, boolean enabled) {
-        this.actionBarSettings.put(type, enabled);
+        if (type == ActionBarType.IDLE) {
+            this.actionBarIdleMode = enabled ? ActionBarIdleMode.SMART : ActionBarIdleMode.OFF;
+        } else {
+            this.actionBarSettings.put(type, enabled);
+        }
     }
 
     public JobsBatchData getJobsBatchData() {
@@ -501,6 +518,16 @@ public abstract class User {
      * @return True if profile has not been modified, false if player has leveled profile
      */
     public boolean isBlankProfile() {
+        // Modifiers, unclaimed items, and a non-default idle mode are stored content even when
+        // the skill blank flag was never cleared (SQL must not delete those profiles).
+        if (!userStats.getStatModifiers().isEmpty()
+                || !userStats.getTraitModifiers().isEmpty()
+                || !unclaimedItems.isEmpty()) {
+            return false;
+        }
+        if (actionBarIdleMode != ActionBarIdleMode.SMART) {
+            return false;
+        }
         if (blank) {
             return true;
         }
@@ -517,7 +544,19 @@ public abstract class User {
         if (!jobs.isEmpty()) {
             return false;
         }
-        return userStats.getStatModifiers().isEmpty() && userStats.getTraitModifiers().isEmpty() && unclaimedItems.isEmpty();
+        return true;
+    }
+
+    public boolean hasProgressBeyondStart() {
+        int start = plugin.config().getStartLevel();
+        for (Skill skill : plugin.getSkillRegistry().getValues()) {
+            if (getSkillLevel(skill) > start || getSkillXp(skill) > 0.0) {
+                return true;
+            }
+        }
+        return !userStats.getStatModifiers().isEmpty()
+                || !userStats.getTraitModifiers().isEmpty()
+                || !unclaimedItems.isEmpty();
     }
 
     public UserState getState() {

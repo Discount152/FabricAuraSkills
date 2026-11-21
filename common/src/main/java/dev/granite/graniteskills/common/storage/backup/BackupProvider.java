@@ -2,11 +2,6 @@ package dev.granite.graniteskills.common.storage.backup;
 
 import dev.granite.graniteskills.api.registry.NamespacedId;
 import dev.granite.graniteskills.api.skill.Skill;
-import dev.granite.graniteskills.api.stat.Stat;
-import dev.granite.graniteskills.api.stat.StatModifier;
-import dev.granite.graniteskills.api.trait.Trait;
-import dev.granite.graniteskills.api.trait.TraitModifier;
-import dev.granite.graniteskills.api.util.GraniteSkillsModifier.Operation;
 import dev.granite.graniteskills.common.GraniteSkillsPlugin;
 import dev.granite.graniteskills.common.config.Option;
 import dev.granite.graniteskills.common.storage.sql.SqlStorageProvider;
@@ -56,7 +51,7 @@ public class BackupProvider {
                 File file = saveBackupSync(savePlayerData);
                 future.complete(file);
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                future.completeExceptionally(e);
             }
         });
 
@@ -91,34 +86,7 @@ public class BackupProvider {
         }
         for (UserState state : states) {
             ConfigurationNode userNode = config.node("users", state.uuid().toString());
-            // Save skill levels and xp
-            for (Skill skill : state.skillLevels().keySet()) {
-                int level = state.skillLevels().getOrDefault(skill, plugin.config().getStartLevel());
-                double xp = state.skillXp().getOrDefault(skill, 0.0);
-
-                ConfigurationNode skillNode = userNode.node("skills", skill.getId().toString());
-
-                skillNode.node("level").set(level);
-                skillNode.node("xp").set(xp);
-            }
-            // Save mana
-            userNode.node("mana").set(state.mana());
-            // Save stat modifiers
-            for (StatModifier modifier : state.statModifiers().values()) {
-                ConfigurationNode modifierNode = userNode.node("stat_modifiers").appendListNode();
-                modifierNode.node("name").set(modifier.name());
-                modifierNode.node("stat").set(modifier.stat().getId().toString());
-                modifierNode.node("operation").set(modifier.operation().toString());
-                modifierNode.node("value").set(modifier.value());
-            }
-            // Save trait modifiers
-            for (TraitModifier modifier : state.traitModifiers().values()) {
-                ConfigurationNode modifierNode = userNode.node("trait_modifiers").appendListNode();
-                modifierNode.node("name").set(modifier.name());
-                modifierNode.node("trait").set(modifier.trait().getId().toString());
-                modifierNode.node("operation").set(modifier.operation().toString());
-                modifierNode.node("value").set(modifier.value());
-            }
+            BackupUserCodec.writeUser(userNode, state, plugin.config().getStartLevel());
         }
         // Save the backup file
         loader.save(config);
@@ -199,48 +167,10 @@ public class BackupProvider {
     }
 
     private @Nullable UserState getUserState(ConfigurationNode userNode) {
-        UUID uuid = getFromKey(userNode);
-        if (uuid == null) return null;
-
-        Map<Skill, Integer> skillLevels = new ConcurrentHashMap<>();
-        Map<Skill, Double> skillXp = new ConcurrentHashMap<>();
-
-        for (ConfigurationNode skillNode : userNode.node("skills").childrenMap().values()) {
-            loadSkillNode(skillNode, skillLevels, skillXp);
-        }
-        // Load modifiers
-        Map<String, StatModifier> statModifiers = new ConcurrentHashMap<>();
-        for (ConfigurationNode modifierNode : userNode.node("stat_modifiers").childrenList()) {
-            String name = modifierNode.node("name").getString();
-
-            String statName = modifierNode.node("stat").getString();
-            if (statName == null) continue;
-            Stat stat = plugin.getStatRegistry().get(NamespacedId.fromString(statName));
-            String operationName = modifierNode.node("operation").getString(Operation.ADD.toString());
-
-            double value = modifierNode.node("value").getDouble();
-
-            StatModifier statModifier = new StatModifier(name, stat, value, Operation.parse(operationName));
-            statModifiers.put(name, statModifier);
-        }
-        Map<String, TraitModifier> traitModifiers = new ConcurrentHashMap<>();
-        for (ConfigurationNode modifierNode : userNode.node("trait_modifiers").childrenList()) {
-            String name = modifierNode.node("name").getString();
-
-            String traitName = modifierNode.node("trait").getString();
-            if (traitName == null) continue;
-            Trait trait = plugin.getTraitRegistry().get(NamespacedId.fromString(traitName));
-            String operationName = modifierNode.node("operation").getString(Operation.ADD.toString());
-
-            double value = modifierNode.node("value").getDouble();
-
-            TraitModifier traitModifier = new TraitModifier(name, trait, value, Operation.parse(operationName));
-            traitModifiers.put(name, traitModifier);
-        }
-        double mana = userNode.node("mana").getDouble();
-
-        // Create user state
-        return new UserState(uuid, skillLevels, skillXp, statModifiers, traitModifiers, mana);
+        return BackupUserCodec.readUser(userNode,
+                id -> plugin.getSkillRegistry().get(id),
+                id -> plugin.getStatRegistry().get(id),
+                id -> plugin.getTraitRegistry().get(id));
     }
 
     private void loadV1(ConfigurationNode config) throws Exception {

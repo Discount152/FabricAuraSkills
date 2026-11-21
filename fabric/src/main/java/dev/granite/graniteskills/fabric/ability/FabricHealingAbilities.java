@@ -9,6 +9,7 @@ import dev.granite.graniteskills.common.message.type.AbilityMessage;
 import dev.granite.graniteskills.common.user.User;
 import dev.granite.graniteskills.common.util.text.TextUtil;
 import dev.granite.graniteskills.fabric.FabricGraniteSkills;
+import dev.granite.graniteskills.fabric.FabricPlayerLifecycle;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffects;
@@ -26,9 +27,22 @@ public final class FabricHealingAbilities extends FabricAbilityImpl {
         ServerPlayerEvents.LEAVE.register(player -> clearRevival(player));
     }
 
+    private static final ThreadLocal<Boolean> MAGIC_HEAL_FLAG = ThreadLocal.withInitial(() -> false);
+
+    /** Mark the next heal as instant/magic healing (potions never leave INSTANT_HEALTH active). */
+    public static void markMagicHeal() {
+        MAGIC_HEAL_FLAG.set(true);
+    }
+
+    public static void clearMagicHeal() {
+        MAGIC_HEAL_FLAG.set(false);
+    }
+
     public static float adjustHeal(ServerPlayer player, float amount) {
         FabricGraniteSkills plugin = FabricGraniteSkills.getInstance();
-        if (plugin == null || amount <= 0f || !player.hasEffect(MobEffects.INSTANT_HEALTH)) {
+        boolean magic = Boolean.TRUE.equals(MAGIC_HEAL_FLAG.get())
+                || (player != null && player.hasEffect(MobEffects.INSTANT_HEALTH));
+        if (plugin == null || player == null || amount <= 0f || !magic) {
             return amount;
         }
         FabricHealingAbilities self = plugin.getAbilityManager().getAbilityImpl(FabricHealingAbilities.class);
@@ -37,6 +51,9 @@ public final class FabricHealingAbilities extends FabricAbilityImpl {
             return amount;
         }
         User user = plugin.getUserManager().getUser(player.getUUID());
+        if (user == null) {
+            return amount;
+        }
         return (float) (amount * (1.0 + self.getValue(ability, user) / 100.0));
     }
 
@@ -55,7 +72,17 @@ public final class FabricHealingAbilities extends FabricAbilityImpl {
         return (float) Math.max(0.01, multiplier);
     }
 
+    /** Probe/runtime entry for Revival on respawn. */
+    public static void applyRevival(ServerPlayer player) {
+        FabricGraniteSkills plugin = FabricGraniteSkills.getInstance();
+        if (plugin == null || player == null) {
+            return;
+        }
+        plugin.getAbilityManager().getAbilityImpl(FabricHealingAbilities.class).revival(player);
+    }
+
     private void revival(ServerPlayer player) {
+        FabricPlayerLifecycle.rebindRespawned(plugin, player);
         var ability = Abilities.REVIVAL;
         if (isDisabled(ability) || failsChecks(player, ability)) {
             return;
@@ -76,6 +103,9 @@ public final class FabricHealingAbilities extends FabricAbilityImpl {
 
     private void clearRevival(ServerPlayer player) {
         User user = plugin.getUserManager().getUser(player.getUUID());
+        if (user == null) {
+            return;
+        }
         user.removeStatModifier(REVIVAL_HEALTH);
         user.removeStatModifier(REVIVAL_REGEN);
     }

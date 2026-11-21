@@ -52,11 +52,16 @@ public class SourceLoader {
     public List<XpSource> loadSources(Skill skill, File contentDirectory, boolean loadEmbedded) {
         File sourceFile = new File(contentDirectory, "sources/" + skill.name().toLowerCase(Locale.ROOT) + ".yml");
         String fileName = "sources/" + skill.name().toLowerCase(Locale.ROOT) + ".yml";
+        SourceLoadDiagnostics diagnostics = new SourceLoadDiagnostics(skill.getId().toString(), sourceFile.getPath());
+        diagnostics.setDiskFileExists(sourceFile.isFile());
         try {
             Map<String, ConfigurationNode> embeddedSources = new ConcurrentHashMap<>();
             ConfigurationNode fileDefault = null;
             // Attempt to load embedded file
             ConfigurationNode embedded = configurateLoader.loadEmbeddedFileOrNull(fileName);
+            if (loadEmbedded && embedded == null) {
+                diagnostics.setEmbeddedFallbackUsed(true);
+            }
             if (loadEmbedded && embedded != null) {
                 // Get the node containing default values in the file
                 fileDefault = embedded.node("default");
@@ -83,15 +88,28 @@ public class SourceLoader {
 
             // Merge embedded and user sources
             Map<String, ConfigurationNode> sources = new HashMap<>();
+            Set<String> sourceNames = new LinkedHashSet<>();
+            sourceNames.addAll(userSources.keySet());
+            if (loadEmbedded) {
+                sourceNames.addAll(embeddedSources.keySet());
+            }
 
-            for (String sourceName : userSources.keySet()) {
+            for (String sourceName : sourceNames) {
                 ConfigurationNode userNode = userSources.get(sourceName);
+                ConfigurationNode embeddedNode = loadEmbedded ? embeddedSources.get(sourceName) : null;
+                if (userNode == null && embeddedNode == null) {
+                    continue;
+                }
+                if (userNode == null) {
+                    diagnostics.recover(sourceName);
+                }
                 ConfigurationNode merged;
                 if (loadEmbedded && fileDefault != null) {
-                    ConfigurationNode embeddedNode = embeddedSources.get(sourceName);
                     merged = configurateLoader.mergeNodes(fileDefault, embeddedNode, userDefault, userNode);
-                } else {
+                } else if (userNode != null) {
                     merged = configurateLoader.mergeNodes(userDefault, userNode);
+                } else {
+                    merged = embeddedNode;
                 }
                 sources.put(sourceName, merged);
             }
@@ -106,19 +124,34 @@ public class SourceLoader {
 
                 String type = sourceNode.node("type").getString();
                 if (type == null) {
-                    throw new IllegalArgumentException("Source " + id + " must specify a type");
+                    diagnostics.reject(sourceName, "missing type");
+                    continue;
                 }
-                applyNodeReplacements(sourceNode, sourceNode, sourceName);
-                XpSource source = parseSourceFromType(type, sourceNode, sourceName);
-                if (source != null && source.getXp() > 0.0) {
-                    deserializedSources.add(source);
-                    registerMenuItem(source, sourceNode);
+                try {
+                    applyNodeReplacements(sourceNode, sourceNode, sourceName);
+                    XpSource source = parseSourceFromType(type, sourceNode, sourceName);
+                    if (source != null && source.getXp() > 0.0) {
+                        deserializedSources.add(source);
+                        registerMenuItem(source, sourceNode);
+                    } else {
+                        diagnostics.reject(sourceName, "not version-valid or non-positive xp");
+                    }
+                } catch (RuntimeException e) {
+                    diagnostics.reject(sourceName, e.getMessage() == null ? e.getClass().getSimpleName() : e.getMessage());
                 }
             }
+            diagnostics.setEmbeddedFileExists(embedded != null);
+            diagnostics.setEmbeddedSourceKeys(embeddedSources.keySet());
+            diagnostics.setDiskSourceKeys(userSources.keySet());
+            diagnostics.setMergedSourceKeys(sources.keySet());
+            diagnostics.setVersionValidSources(deserializedSources.size());
+            plugin.getSkillManager().registerSourceDiagnostics(skill, diagnostics);
             return deserializedSources;
         } catch (Exception e) {
             plugin.logger().warn("Error loading source file " + fileName + ": " + e.getMessage());
             e.printStackTrace();
+            diagnostics.setFatalError(e.getMessage());
+            plugin.getSkillManager().registerSourceDiagnostics(skill, diagnostics);
             return new ArrayList<>();
         }
     }
@@ -336,6 +369,117 @@ public class SourceLoader {
             } else {
                 applyNodeReplacements(child, parentNode, sourceName); // Recursively search for placeholders
             }
+        }
+    }
+
+    public static final class SourceLoadDiagnostics {
+        private final String skillId;
+        private final String diskPath;
+        private boolean diskFileExists;
+        private boolean embeddedFileExists;
+        private final Set<String> diskSourceKeys = new LinkedHashSet<>();
+        private final Set<String> embeddedSourceKeys = new LinkedHashSet<>();
+        private final Set<String> mergedSourceKeys = new LinkedHashSet<>();
+        private int versionValidSources;
+        private final Map<String, String> rejectedSources = new LinkedHashMap<>();
+        private final Set<String> recoveredFromEmbedded = new LinkedHashSet<>();
+        private String fatalError = "";
+        private boolean embeddedFallbackUsed;
+
+        public SourceLoadDiagnostics(String skillId, String diskPath) {
+            this.skillId = skillId;
+            this.diskPath = diskPath;
+        }
+
+        public String skillId() {
+            return skillId;
+        }
+
+        public String diskPath() {
+            return diskPath;
+        }
+
+        public boolean diskFileExists() {
+            return diskFileExists;
+        }
+
+        public boolean embeddedFileExists() {
+            return embeddedFileExists;
+        }
+
+        public int diskSourceKeyCount() {
+            return diskSourceKeys.size();
+        }
+
+        public int embeddedSourceKeyCount() {
+            return embeddedSourceKeys.size();
+        }
+
+        public int mergedSourceKeyCount() {
+            return mergedSourceKeys.size();
+        }
+
+        public int versionValidSources() {
+            return versionValidSources;
+        }
+
+        public Map<String, String> rejectedSources() {
+            return Collections.unmodifiableMap(rejectedSources);
+        }
+
+        public Set<String> recoveredFromEmbedded() {
+            return Collections.unmodifiableSet(recoveredFromEmbedded);
+        }
+
+        void recover(String sourceName) {
+            recoveredFromEmbedded.add(sourceName);
+        }
+
+        void reject(String sourceName, String reason) {
+            rejectedSources.put(sourceName, reason);
+        }
+
+        public String fatalError() {
+            return fatalError;
+        }
+
+        public boolean embeddedFallbackUsed() {
+            return embeddedFallbackUsed;
+        }
+
+        void setEmbeddedFallbackUsed(boolean embeddedFallbackUsed) {
+            this.embeddedFallbackUsed = embeddedFallbackUsed;
+        }
+
+        void setDiskFileExists(boolean exists) {
+            this.diskFileExists = exists;
+        }
+
+        void setEmbeddedFileExists(boolean exists) {
+            this.embeddedFileExists = exists;
+        }
+
+        void setDiskSourceKeys(Collection<String> keys) {
+            this.diskSourceKeys.clear();
+            this.diskSourceKeys.addAll(keys);
+        }
+
+        void setEmbeddedSourceKeys(Collection<String> keys) {
+            this.embeddedSourceKeys.clear();
+            this.embeddedSourceKeys.addAll(keys);
+        }
+
+        void setMergedSourceKeys(Collection<String> keys) {
+            this.mergedSourceKeys.clear();
+            this.mergedSourceKeys.addAll(keys);
+        }
+
+        void setVersionValidSources(int count) {
+            this.versionValidSources = count;
+        }
+
+        void setFatalError(String error) {
+            this.fatalError = error == null ? "" : error;
         }
     }
 

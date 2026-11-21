@@ -37,23 +37,33 @@ public final class FabricManaRegenTrait extends FabricTraitImpl {
                     return;
                 }
                 for (ServerPlayer player : plugin.getServer().getPlayerList().getPlayers()) {
-                    User user = plugin.getUserManager().getUser(player.getUUID());
-                    double originalMana = user.getMana();
-                    double maxMana = user.getMaxMana();
-                    if (originalMana >= maxMana) {
-                        continue;
-                    }
-                    if (user.getAbilityData(ManaAbilities.ABSORPTION).getBoolean("activated")) {
-                        continue;
-                    }
-                    double regen = user.getEffectiveTraitLevel(Traits.MANA_REGEN);
-                    double delta = Math.min(originalMana + regen, maxMana) - originalMana;
-                    if (delta > 0) {
-                        user.setMana(originalMana + delta);
-                    }
+                    tickPlayer(player);
                 }
             }
         };
         plugin.getScheduler().timerSync(task, 0, 1, TimeUnit.SECONDS);
+    }
+
+    public void tickPlayer(ServerPlayer player) {
+        if (!Traits.MANA_REGEN.isEnabled() || player == null) {
+            return;
+        }
+        User user = plugin.getUserManager().getUser(player.getUUID());
+        if (user == null) {
+            return;
+        }
+        double originalMana = user.getMana();
+        double maxMana = user.getMaxMana();
+        if (originalMana >= maxMana) {
+            return;
+        }
+        if (user.getAbilityData(ManaAbilities.ABSORPTION).getBoolean("activated")) {
+            return;
+        }
+        double regen = user.getEffectiveTraitLevel(Traits.MANA_REGEN);
+        double delta = Math.min(originalMana + regen, maxMana) - originalMana;
+        if (delta > 0) {
+            user.setMana(originalMana + delta);
+        }
     }
 }
