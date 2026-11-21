@@ -142,6 +142,8 @@ dependencies {
             exclude(group = "org.slf4j", module = "slf4j-api")
         },
     )
+    // Fabric does not ship a JDBC driver; Paper does. Bundle MySQL for sql.enabled: true.
+    include(implementation("com.mysql:mysql-connector-j:8.4.0")!!)
 
     testImplementation(platform("org.junit:junit-bom:5.13.2"))
     testImplementation("org.junit.jupiter:junit-jupiter")
@@ -435,6 +437,10 @@ tasks.register("verifyFabricReleaseBundle") {
             requireJar({ it == name }, "JiJ must include $name")
         }
         requireJar({ it.contains("polyglot") }, "JiJ must include polyglot")
+        requireJar(
+            { it.contains("mysql-connector") || it.contains("mysql-connector-j") },
+            "JiJ must include mysql-connector-j for sql.enabled",
+        )
         val forbidden = nestedJars.filter {
             Regex("configurate-(core|yaml)-4\\.2.*\\.jar").matches(it) ||
                 Regex("adventure-.*-5\\..*\\.jar").matches(it)

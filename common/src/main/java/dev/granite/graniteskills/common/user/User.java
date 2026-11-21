@@ -518,6 +518,16 @@ public abstract class User {
      * @return True if profile has not been modified, false if player has leveled profile
      */
     public boolean isBlankProfile() {
+        // Modifiers, unclaimed items, and a non-default idle mode are stored content even when
+        // the skill blank flag was never cleared (SQL must not delete those profiles).
+        if (!userStats.getStatModifiers().isEmpty()
+                || !userStats.getTraitModifiers().isEmpty()
+                || !unclaimedItems.isEmpty()) {
+            return false;
+        }
+        if (actionBarIdleMode != ActionBarIdleMode.SMART) {
+            return false;
+        }
         if (blank) {
             return true;
         }
@@ -534,7 +544,19 @@ public abstract class User {
         if (!jobs.isEmpty()) {
             return false;
         }
-        return userStats.getStatModifiers().isEmpty() && userStats.getTraitModifiers().isEmpty() && unclaimedItems.isEmpty();
+        return true;
+    }
+
+    public boolean hasProgressBeyondStart() {
+        int start = plugin.config().getStartLevel();
+        for (Skill skill : plugin.getSkillRegistry().getValues()) {
+            if (getSkillLevel(skill) > start || getSkillXp(skill) > 0.0) {
+                return true;
+            }
+        }
+        return !userStats.getStatModifiers().isEmpty()
+                || !userStats.getTraitModifiers().isEmpty()
+                || !unclaimedItems.isEmpty();
     }
 
     public UserState getState() {

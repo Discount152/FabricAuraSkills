@@ -267,11 +267,18 @@ public final class FabricSourcesTemplateSupport {
                     FabricSourcesRuntimeDiagnostics.capture(skill, plannedRows, inv);
                 },
                 (topSlot, pl, b, t) -> {
+                    if (!FabricMenuClicks.activates(t)) {
+                        return;
+                    }
                     if (topSlot == back) {
                         plugin.getScheduler()
                                 .executeSync(
-                                        () -> FabricGraniteSkillsMenus.openLevelProgression(
-                                                skill, pl, plugin, returnToSkillsListPage));
+                                        () -> {
+                                            if (!FabricMenuNavigation.back(pl, plugin)) {
+                                                FabricGraniteSkillsMenus.openLevelProgression(
+                                                        skill, pl, plugin, returnToSkillsListPage);
+                                            }
+                                        });
                         return;
                     }
                     if (fMax > 0) {

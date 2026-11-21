@@ -79,15 +79,15 @@ public final class FabricStatisticXpHandler {
                 continue;
             }
             int current = player.getStats().getValue(stat);
-            int lastValue = tracker.computeIfAbsent(player.getUUID(), u -> new ConcurrentHashMap<>())
-                    .computeIfAbsent(source, s -> current);
-            int change = current - lastValue;
-            if (change <= 0 || change < source.getMinimumIncrease()) {
+            Map<StatisticXpSource, Integer> playerTracker = tracker.computeIfAbsent(player.getUUID(), u -> new ConcurrentHashMap<>());
+            int lastValue = playerTracker.computeIfAbsent(source, s -> current);
+            StatisticXpAward.Result result = StatisticXpAward.award(
+                    current, lastValue, source.getMinimumIncrease(), source.getMultiplier(), source.getXp());
+            if (!result.advanceBaseline() || user == null) {
                 continue;
             }
-            double xpToAdd = change * source.getMultiplier() * source.getXp();
-            plugin.getLevelManager().addXp(user, entry.skill(), source, xpToAdd);
-            tracker.computeIfAbsent(player.getUUID(), u -> new ConcurrentHashMap<>()).put(source, current);
+            plugin.getLevelManager().addXp(user, entry.skill(), source, result.xp());
+            playerTracker.put(source, current);
         }
     }
 

@@ -6,12 +6,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Locale;
 
 /**
- * Optional argument for {@code /toggle} and {@code /abtoggle}: cycle, show status, or set a mode.
+ * Optional argument for {@code /toggle} and {@code /abtoggle}: toggle on/off, show status, or set a mode.
  */
 public final class ActionBarToggleSubcommand {
 
     public enum Kind {
-        CYCLE,
+        TOGGLE,
         STATUS,
         SET_MODE,
         INVALID
@@ -25,7 +25,7 @@ public final class ActionBarToggleSubcommand {
 
     public static @NotNull Result parse(@Nullable String raw) {
         if (raw == null || raw.isBlank()) {
-            return new Result(Kind.CYCLE, null);
+            return new Result(Kind.TOGGLE, null);
         }
         return switch (raw.trim().toLowerCase(Locale.ROOT)) {
             case "status" -> new Result(Kind.STATUS, null);

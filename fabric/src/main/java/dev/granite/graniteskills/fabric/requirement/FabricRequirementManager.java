@@ -126,7 +126,7 @@ public final class FabricRequirementManager {
         }
     }
 
-    private List<FabricRequirementNode> parseRequirementNodes(List<? extends ConfigurationNode> requirementNodes) {
+    public List<FabricRequirementNode> parseRequirementNodes(List<? extends ConfigurationNode> requirementNodes) {
         List<FabricRequirementNode> nodes = new ArrayList<>();
         for (ConfigurationNode requirementNode : requirementNodes) {
             String type = requirementNode.node("type").getString("");

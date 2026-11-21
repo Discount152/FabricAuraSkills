@@ -154,6 +154,9 @@ public final class FabricStatInfoTemplateSupport {
                     }
                 },
                 (topSlot, p, b, t) -> {
+                    if (!FabricMenuClicks.activates(t)) {
+                        return;
+                    }
                     if (topSlot != back) {
                         return;
                     }

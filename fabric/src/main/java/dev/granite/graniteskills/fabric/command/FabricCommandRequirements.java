@@ -76,7 +76,7 @@ public final class FabricCommandRequirements {
                     || Permissions.check(src, FabricCommandPermissions.ITEM_REQUIREMENT, false)
                     || Permissions.check(src, FabricCommandPermissions.ITEM_MULTIPLIER, false)
                     || Permissions.check(src, FabricCommandPermissions.ITEM_REGISTER, false)
-                    || Permissions.check(src, FabricCommandPermissions.ITEM_GIVE, false);
+                    || Permissions.check(src, FabricCommandPermissions.ITEM_GIVE, 2);
         };
     }
 

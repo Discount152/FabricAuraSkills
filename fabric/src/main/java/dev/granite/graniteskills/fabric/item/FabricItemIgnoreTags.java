@@ -21,15 +21,18 @@ public final class FabricItemIgnoreTags {
     private FabricItemIgnoreTags() {}
 
     public static boolean ignoresManaAbilityInteract(ItemStack stack) {
-        if (stack.isEmpty()) {
+        if (stack == null || stack.isEmpty()) {
             return false;
         }
         CustomData comp = stack.get(DataComponents.CUSTOM_DATA);
         if (comp == null) {
             return false;
         }
-        CompoundTag root = comp.copyTag();
-        if (!root.contains(PUBLIC_BUKKIT_VALUES)) {
+        return ignores(comp.copyTag());
+    }
+
+    public static boolean ignores(CompoundTag root) {
+        if (root == null || !root.contains(PUBLIC_BUKKIT_VALUES)) {
             return false;
         }
         CompoundTag pbv = root.getCompound(PUBLIC_BUKKIT_VALUES).orElse(null);

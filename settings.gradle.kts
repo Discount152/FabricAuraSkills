@@ -40,6 +40,8 @@ if (fabricOnly) {
 
     include("granitelib-fabric")
 
+    include("granitelib-consumer")
+
     include("fabric")
 
 } else {
@@ -53,6 +55,8 @@ if (fabricOnly) {
     include("api-bukkit")
 
     include("granitelib-fabric")
+
+    include("granitelib-consumer")
 
     include("fabric")
 

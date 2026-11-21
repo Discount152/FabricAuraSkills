@@ -4,6 +4,7 @@ import dev.granite.graniteskills.common.config.Option;
 import dev.granite.graniteskills.common.storage.sql.SqlStorageProvider;
 import dev.granite.graniteskills.common.user.User;
 import dev.granite.graniteskills.fabric.item.FabricLegacyItemMigrator;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -37,12 +38,18 @@ public final class FabricPlayerLifecycle {
     }
 
     public static void register(FabricGraniteSkills plugin) {
+        ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> rebindRespawned(plugin, newPlayer));
         ServerChunkEvents.CHUNK_LOAD.register(FabricPlayerLifecycle::migrateChunk);
         ServerTickEvents.END_SERVER_TICK.register(FabricPlayerLifecycle::migrateQueuedChunkEntities);
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             ServerPlayer player = handler.player;
             migratePlayer(player);
+            // Fast reconnect can leave the User in memory while a new ServerPlayer exists. Bukkit
+            // reapplies HP on PlayerJoinEvent; Fabric must rebind and refresh traits here too.
+            if (plugin.getUserManager().hasUser(player.getUUID())) {
+                refreshOnlineUser(plugin, player);
+            }
             if (plugin.getStorageProvider() instanceof SqlStorageProvider) {
                 if (plugin.configBoolean(Option.SQL_ALWAYS_LOAD_ON_JOIN) || !plugin.getUserManager().hasUser(player.getUUID())) {
                     int loadDelay = plugin.configInt(Option.SQL_LOAD_DELAY);
@@ -52,10 +59,8 @@ public final class FabricPlayerLifecycle {
                         plugin.getScheduler().scheduleSync(() -> loadUserAsync(plugin, player), loadDelay * 50L, TimeUnit.MILLISECONDS);
                     }
                 }
-            } else {
-                if (!plugin.getUserManager().hasUser(player.getUUID())) {
-                    loadUserAsync(plugin, player);
-                }
+            } else if (!plugin.getUserManager().hasUser(player.getUUID())) {
+                loadUserAsync(plugin, player);
             }
         });
 
@@ -65,16 +70,50 @@ public final class FabricPlayerLifecycle {
                 return;
             }
             User user = plugin.getUserManager().getUser(player.getUUID());
+            java.util.UUID uuid = player.getUUID();
             plugin.getScheduler().executeAsync(() -> {
                 try {
                     user.cleanUp();
                     plugin.getStorageProvider().saveSafely(user);
-                    plugin.getUserManager().removeUser(player.getUUID());
+                    // Remove only if they are still offline. A fast reconnect must keep the User and
+                    // only rebind to the new ServerPlayer (JOIN already refreshed traits).
+                    plugin.getScheduler().executeSync(() -> {
+                        if (server.getPlayerList().getPlayer(uuid) == null) {
+                            plugin.getUserManager().removeUser(uuid);
+                        } else {
+                            ServerPlayer online = server.getPlayerList().getPlayer(uuid);
+                            if (online != null) {
+                                refreshOnlineUser(plugin, online);
+                            }
+                        }
+                    });
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             });
         });
+    }
+
+    /**
+     * Points the in-memory {@link FabricUser} at the live player and reapplies stats, item modifiers,
+     * and traits (max HP, etc.). Used on join when the profile was not reloaded, and on respawn.
+     */
+    public static void refreshOnlineUser(FabricGraniteSkills plugin, ServerPlayer player) {
+        if (plugin == null || player == null) {
+            return;
+        }
+        User user = plugin.getUserManager().getUser(player.getUUID());
+        if (!(user instanceof FabricUser fabricUser)) {
+            return;
+        }
+        fabricUser.rebind(player);
+        plugin.getStatManager().recalculateStats(fabricUser, false);
+        plugin.getModifierManager().applyModifiers(fabricUser, false);
+        plugin.getStatManager().reloadAllTraits(fabricUser);
+    }
+
+    public static void rebindRespawned(FabricGraniteSkills plugin, ServerPlayer player) {
+        refreshOnlineUser(plugin, player);
     }
 
     private static void migratePlayer(ServerPlayer player) {

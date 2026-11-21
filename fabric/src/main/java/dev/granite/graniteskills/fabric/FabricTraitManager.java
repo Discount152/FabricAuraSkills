@@ -11,6 +11,7 @@ import dev.granite.graniteskills.fabric.trait.FabricCritChanceTrait;
 import dev.granite.graniteskills.fabric.trait.FabricCritDamageTrait;
 import dev.granite.graniteskills.fabric.trait.FabricDamageReductionTrait;
 import dev.granite.graniteskills.fabric.trait.FabricGatheringLuckTraits;
+import dev.granite.graniteskills.fabric.trait.FabricHealthRegenTraits;
 import dev.granite.graniteskills.fabric.trait.FabricHpTrait;
 import dev.granite.graniteskills.fabric.trait.FabricLuckTrait;
 import dev.granite.graniteskills.fabric.trait.FabricManaRegenTrait;
@@ -48,6 +49,7 @@ public final class FabricTraitManager extends TraitManager {
         registerTraitImpl(new FabricAttackDamageTrait(plugin));
         registerTraitImpl(new FabricDamageReductionTrait(plugin));
         registerTraitImpl(new FabricGatheringLuckTraits(plugin));
+        registerTraitImpl(new FabricHealthRegenTraits(plugin));
     }
 
     public void registerTraitImpl(FabricTraitHandler fabricTrait) {
@@ -81,6 +83,10 @@ public final class FabricTraitManager extends TraitManager {
      * Invoked when a player moves to another dimension so attribute traits can refresh.
      */
     public void onPlayerChangedServerWorld(ServerPlayer player, ServerLevel from, ServerLevel to) {
+        User user = plugin.getUserManager().getUser(player.getUUID());
+        if (user instanceof FabricUser fabricUser) {
+            fabricUser.rebind(player);
+        }
         for (FabricTraitHandler impl : traitImpls.values()) {
             impl.onPlayerChangedServerWorld(player, from, to);
         }

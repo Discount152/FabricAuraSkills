@@ -30,7 +30,10 @@ public final class FabricGraniteMenuTemplateActionContract {
             GraniteTemplateActionNames.OPEN_LEADERBOARD,
             GraniteTemplateActionNames.OPEN_STATS,
             GraniteTemplateActionNames.OPEN_UNCLAIMED_ITEMS,
-            GraniteTemplateActionNames.CLOSE));
+            GraniteTemplateActionNames.CLOSE,
+            GraniteTemplateActionNames.LEADERBOARD_POWER,
+            GraniteTemplateActionNames.LEADERBOARD_AVERAGE,
+            GraniteTemplateActionNames.LEADERBOARD_SKILL));
 
     private static final Set<String> ROW_OR_PANEL_NORMALIZED = Set.copyOf(List.of(
             GraniteTemplateActionNames.SOURCE_ROW,
@@ -104,7 +107,10 @@ public final class FabricGraniteMenuTemplateActionContract {
                                 GraniteTemplateActionNames.BACK,
                                 GraniteTemplateActionNames.PREVIOUS_PAGE,
                                 GraniteTemplateActionNames.REFRESH,
-                                GraniteTemplateActionNames.NEXT_PAGE)));
+                                GraniteTemplateActionNames.NEXT_PAGE,
+                                GraniteTemplateActionNames.LEADERBOARD_POWER,
+                                GraniteTemplateActionNames.LEADERBOARD_AVERAGE,
+                                GraniteTemplateActionNames.LEADERBOARD_SKILL)));
         m.put(
                 "unclaimed_items",
                 Set.copyOf(

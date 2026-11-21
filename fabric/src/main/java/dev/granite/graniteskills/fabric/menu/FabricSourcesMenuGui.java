@@ -89,6 +89,7 @@ final class FabricSourcesMenuGui {
         if (all.isEmpty()) {
             return;
         }
+        FabricMenuNavigation.remember(player, "sources", skill.getId().getSimpleName(), page, sort.name());
         if (FabricSourcesTemplateSupport.tryOpen(
                 player, plugin, skill, sort, page, returnToSkillsListPage, all, lo)) {
             return;
@@ -162,11 +163,18 @@ final class FabricSourcesMenuGui {
                     FabricSourcesRuntimeDiagnostics.capture(skill, plannedRows, inv);
                 },
                 (topSlot, pl, b, t) -> {
+                    if (!FabricMenuClicks.activates(t)) {
+                        return;
+                    }
                     if (topSlot == SLOT_BACK) {
                         plugin.getScheduler()
                                 .executeSync(
-                                        () -> FabricGraniteSkillsMenus.openLevelProgression(
-                                                skill, pl, plugin, returnToSkillsListPage));
+                                        () -> {
+                                            if (!FabricMenuNavigation.back(pl, plugin)) {
+                                                FabricGraniteSkillsMenus.openLevelProgression(
+                                                        skill, pl, plugin, returnToSkillsListPage);
+                                            }
+                                        });
                         return;
                     }
                     if (fMax > 0) {

@@ -1,6 +1,7 @@
 package dev.granite.graniteskills.fabric.item;
 
 import dev.granite.graniteskills.api.registry.NamespacedId;
+import dev.granite.graniteskills.common.item.UnclaimedClaim;
 import dev.granite.graniteskills.common.user.User;
 import dev.granite.graniteskills.common.util.data.KeyIntPair;
 import dev.granite.graniteskills.fabric.FabricGraniteSkills;
@@ -41,21 +42,23 @@ public final class FabricUnclaimedItemsMerge {
                 user.setShouldSave(true);
                 continue;
             }
-            if (!p.getFabricItemRegistry().containsItem(id)) {
+            if (!p.getFabricItemRegistry().containsItem(id)
+                    || !p.getFabricItemRegistry().isGrantable(id, System.currentTimeMillis())) {
                 list.remove(i);
                 user.setShouldSave(true);
                 continue;
             }
             int n = pair.getValue();
             int notFit = p.getFabricItemRegistry().tryMergeRegisteredItemCount(player, id, n);
-            if (notFit == 0) {
-                list.remove(i);
+            int delivered = UnclaimedClaim.recordDelivery(list, i, notFit);
+            if (UnclaimedClaim.remainingAfterDelivery(n, notFit) == 0) {
                 user.setShouldSave(true);
-                touch++;
+                if (delivered > 0) {
+                    touch++;
+                }
                 continue;
             }
-            if (notFit < n) {
-                pair.setValue(notFit);
+            if (delivered > 0) {
                 user.setShouldSave(true);
                 touch++;
             }
@@ -83,20 +86,16 @@ public final class FabricUnclaimedItemsMerge {
             user.setShouldSave(true);
             return MergeOne.CHANGED;
         }
-        if (!p.getFabricItemRegistry().containsItem(id)) {
+        if (!p.getFabricItemRegistry().containsItem(id)
+                || !p.getFabricItemRegistry().isGrantable(id, System.currentTimeMillis())) {
             list.remove(listIndex);
             user.setShouldSave(true);
             return MergeOne.CHANGED;
         }
         int n = pair.getValue();
         int notFit = p.getFabricItemRegistry().tryMergeRegisteredItemCount(player, id, n);
-        if (notFit == 0) {
-            list.remove(listIndex);
-            user.setShouldSave(true);
-            return MergeOne.CHANGED;
-        }
-        if (notFit < n) {
-            pair.setValue(notFit);
+        int delivered = UnclaimedClaim.recordDelivery(list, listIndex, notFit);
+        if (delivered > 0 || UnclaimedClaim.remainingAfterDelivery(n, notFit) == 0) {
             user.setShouldSave(true);
             return MergeOne.CHANGED;
         }

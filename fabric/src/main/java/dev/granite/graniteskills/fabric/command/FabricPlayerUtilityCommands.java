@@ -225,11 +225,15 @@ public final class FabricPlayerUtilityCommands {
                             source.sendSuccess(() -> Component.literal(m), false);
                             yield 1;
                         }
-                        case CYCLE -> {
-                            ActionBarIdleMode next = user.getActionBarIdleMode().nextInCycle();
+                        case TOGGLE -> {
+                            ActionBarIdleMode next = user.getActionBarIdleMode().toggled();
                             user.setActionBarIdleMode(next);
                             user.setShouldSave(true);
-                            String msg = p.getMsg(messageKeyForSet(next), lo);
+                            String msg = p.getMsg(
+                                    next == ActionBarIdleMode.OFF
+                                            ? CommandMessage.TOGGLE_DISABLED
+                                            : CommandMessage.TOGGLE_ENABLED,
+                                    lo);
                             source.sendSuccess(() -> Component.literal(msg), false);
                             yield 1;
                         }

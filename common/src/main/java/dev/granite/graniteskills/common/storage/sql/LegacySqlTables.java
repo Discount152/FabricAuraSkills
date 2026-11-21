@@ -1,6 +1,7 @@
 package dev.granite.graniteskills.common.storage.sql;
 
 import dev.granite.graniteskills.common.GraniteSkillsPlugin;
+import dev.granite.graniteskills.common.config.Option;
 import dev.granite.graniteskills.common.storage.sql.pool.ConnectionPool;
 
 import java.sql.Connection;
@@ -30,11 +31,28 @@ public final class LegacySqlTables {
 
     public static void migrate(GraniteSkillsPlugin plugin, ConnectionPool pool) {
         try (Connection connection = pool.getConnection()) {
-            renameTables(plugin, pool, connection);
+            if (plugin.configBoolean(Option.SQL_MIGRATE_LEGACY_TABLES)) {
+                renameTables(plugin, pool, connection);
+            } else if (legacyTablesPresent(pool, connection)) {
+                plugin.logger().warn("Legacy AuraSkills/AureliumSkills SQL tables detected. "
+                        + "Set sql.migrate_legacy_tables: true to rename them to graniteskills_*, "
+                        + "or migrate/copy offline. Stored id rewrite still runs on graniteskills_* tables.");
+            }
             rewriteStoredIds(plugin, connection);
         } catch (SQLException e) {
             throw new IllegalStateException("Failed to migrate AuraSkills SQL tables. Please report this!", e);
         }
+    }
+
+    private static boolean legacyTablesPresent(ConnectionPool pool, Connection connection) throws SQLException {
+        for (String oldPrefix : OLD_PREFIXES) {
+            for (String table : TABLES) {
+                if (tableExists(connection, pool, oldPrefix + table)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private static void renameTables(GraniteSkillsPlugin plugin, ConnectionPool pool, Connection connection) throws SQLException {

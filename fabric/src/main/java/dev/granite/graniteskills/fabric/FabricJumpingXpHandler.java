@@ -7,26 +7,26 @@ import dev.granite.graniteskills.common.config.Option;
 import dev.granite.graniteskills.common.source.SourceTypes;
 import dev.granite.graniteskills.common.user.User;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.stats.Stats;
 
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Counts vanilla-style jump impulses each tick, matching Paper {@code JumpingLeveler} heuristics.
+ * Counts jumps from the vanilla jump statistic and from leaving the ground while moving up.
+ * 26.3 client jumps often never call {@code jumpFromGround}, so the statistic alone stays at 0.
  */
 public final class FabricJumpingXpHandler {
 
     private final FabricGraniteSkills plugin;
-    private final Set<UUID> prevOnGround = ConcurrentHashMap.newKeySet();
+    private final Map<UUID, Integer> lastJumpStat = new ConcurrentHashMap<>();
     private final Map<UUID, Integer> jumpsAccumulated = new ConcurrentHashMap<>();
+    private final Map<UUID, Double> lastY = new ConcurrentHashMap<>();
+    private final Map<UUID, Boolean> lastOnGround = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> pendingStatCredit = new ConcurrentHashMap<>();
 
     private FabricJumpingXpHandler(FabricGraniteSkills plugin) {
         this.plugin = plugin;
@@ -61,54 +61,51 @@ public final class FabricJumpingXpHandler {
 
     private void tickPlayer(ServerPlayer player, JumpingXpSource source, Skill skill) {
         UUID id = player.getUUID();
-        double vy = player.getDeltaMovement().y;
-        if (vy <= 0) {
-            updateGroundState(player, id);
-            return;
-        }
-        double jumpVelocity = baseJumpVelocity(player);
-        boolean wasOnGround = prevOnGround.contains(id);
-        if (isLadderAtFeet(player) || !wasOnGround) {
-            updateGroundState(player, id);
-            return;
-        }
-        if (player.onGround() || Double.compare(vy, jumpVelocity) != 0) {
-            updateGroundState(player, id);
-            return;
-        }
-        if (failsPlayerSkillCheck(plugin, player, skill)) {
-            updateGroundState(player, id);
-            return;
-        }
-        int next = jumpsAccumulated.merge(id, 1, Integer::sum);
-        if (next >= source.getInterval()) {
-            User user = plugin.getUserManager().getUser(id);
-            plugin.getLevelManager().addXp(user, skill, source, source.getXp());
-            jumpsAccumulated.remove(id);
-        }
-        updateGroundState(player, id);
-    }
-
-    private void updateGroundState(ServerPlayer player, UUID id) {
-        if (player.onGround()) {
-            prevOnGround.add(id);
+        int stat = player.getStats().getValue(Stats.CUSTOM.get(Stats.JUMP));
+        int statJumps = FabricJumpAward.newJumps(lastJumpStat.put(id, stat), stat);
+        FabricJumpAward.JumpCount counted = FabricJumpAward.combine(
+                statJumps, leftGroundUpward(player, id), pendingStatCredit.getOrDefault(id, 0));
+        if (counted.pendingStatCredit() == 0) {
+            pendingStatCredit.remove(id);
         } else {
-            prevOnGround.remove(id);
+            pendingStatCredit.put(id, counted.pendingStatCredit());
+        }
+        int jumps = counted.jumps();
+        if (jumps == 0 || failsPlayerSkillCheck(plugin, player, skill)) {
+            return;
+        }
+        for (int i = 0; i < jumps; i++) {
+            int next = jumpsAccumulated.merge(id, 1, Integer::sum);
+            double xp = FabricJumpAward.xpForJump(next, source.getInterval(), source.getXp());
+            if (xp > 0.0) {
+                User user = plugin.getUserManager().getUser(id);
+                if (user != null) {
+                    plugin.getLevelManager().addXp(user, skill, source, xp);
+                }
+                jumpsAccumulated.remove(id);
+            }
         }
     }
 
-    private static double baseJumpVelocity(ServerPlayer player) {
-        double v = 0.42;
-        MobEffectInstance jump = player.getEffect(MobEffects.JUMP_BOOST);
-        if (jump != null) {
-            v += (jump.getAmplifier() + 1) * 0.1;
+    /**
+     * 26.3 often moves a jumping client without calling {@code jumpFromGround}, so the vanilla jump
+     * statistic stays at 0. Leaving the ground while moving up is the jump the statistic missed.
+     */
+    private boolean leftGroundUpward(ServerPlayer player, UUID id) {
+        double y = player.getY();
+        boolean onGround = player.onGround();
+        Double previousY = lastY.put(id, y);
+        Boolean wasOnGround = lastOnGround.put(id, onGround);
+        if (previousY == null || wasOnGround == null) {
+            return false;
         }
-        return v;
-    }
-
-    private static boolean isLadderAtFeet(ServerPlayer player) {
-        BlockPos pos = BlockPos.containing(player.getX(), player.getY(), player.getZ());
-        return player.level().getBlockState(pos).is(Blocks.LADDER);
+        if (player.isFallFlying()
+                || player.isInWater()
+                || player.isPassenger()
+                || player.getAbilities().flying) {
+            return false;
+        }
+        return FabricJumpAward.leftGroundUpward(wasOnGround, onGround, y - previousY);
     }
 
     private static boolean failsPlayerSkillCheck(FabricGraniteSkills plugin, ServerPlayer player, Skill skill) {
@@ -116,7 +113,7 @@ public final class FabricJumpingXpHandler {
             return true;
         }
         User user = plugin.getUserManager().getUser(player.getUUID());
-        if (!user.hasSkillPermission(skill)) {
+        if (user == null || !user.hasSkillPermission(skill)) {
             return true;
         }
         String worldName = FabricUser.worldNameCompat(player);

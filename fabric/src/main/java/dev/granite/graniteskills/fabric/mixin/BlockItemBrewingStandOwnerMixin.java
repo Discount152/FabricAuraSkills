@@ -1,6 +1,7 @@
 package dev.granite.graniteskills.fabric.mixin;
 
 import dev.granite.graniteskills.fabric.FabricBrewingOwnerTracker;
+import dev.granite.graniteskills.fabric.region.FabricPlacedBlocks;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
@@ -24,16 +25,17 @@ public abstract class BlockItemBrewingStandOwnerMixin {
         if (!result.consumesAction()) {
             return;
         }
+        if (!(context.getLevel() instanceof ServerLevel sw)) {
+            return;
+        }
+        if (!(context.getPlayer() instanceof ServerPlayer)) {
+            return;
+        }
+        FabricPlacedBlocks.mark(sw, context.getClickedPos());
         BlockItem self = (BlockItem) (Object) this;
         if (!self.getBlock().equals(Blocks.BREWING_STAND)) {
             return;
         }
-        if (!(context.getLevel() instanceof ServerLevel sw)) {
-            return;
-        }
-        if (!(context.getPlayer() instanceof ServerPlayer sp)) {
-            return;
-        }
-        FabricBrewingOwnerTracker.setOwner(sw, context.getClickedPos(), sp.getUUID());
+        FabricBrewingOwnerTracker.setOwner(sw, context.getClickedPos(), ((ServerPlayer) context.getPlayer()).getUUID());
     }
 }

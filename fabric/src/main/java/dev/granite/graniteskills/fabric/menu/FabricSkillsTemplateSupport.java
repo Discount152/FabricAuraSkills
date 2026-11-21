@@ -25,31 +25,16 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Template-backed {@code skills} hub — Sprint 113 locked layout (11 skills + utilities). On failure returns
+ * Template-backed {@code skills} hub: every enabled skill plus utilities. On failure returns
  * {@code false} so {@link FabricSkillsMenuGui} uses the built-in path.
  */
 public final class FabricSkillsTemplateSupport {
 
     public static final String TEMPLATE_RESOURCE_PATH = "assets/graniteskills/granite/templates/skills.yml";
 
-    /** 6×9 menu: curated skill cells (archery…enchanting); row 5 kept empty. */
-    public static final List<Integer> LOCKED_SKILL_GRID_SLOTS = List.of(
-            12, 13, 14, 20, 21, 22, 23, 24, 30, 31, 32);
-
-    public static final List<String> LOCKED_SKILL_IDS = List.of(
-            "archery",
-            "fighting",
-            "defense",
-            "farming",
-            "foraging",
-            "mining",
-            "fishing",
-            "excavation",
-            "agility",
-            "alchemy",
-            "enchanting");
-
-    public static final int EXPECTED_SKILL_COUNT = 11;
+    /** Bundled 5×3 skill grid (rows 2–4), one cell per built-in skill. */
+    public static final List<Integer> DEFAULT_SKILL_GRID_SLOTS = List.of(
+            11, 12, 13, 14, 15, 20, 21, 22, 23, 24, 29, 30, 31, 32, 33);
 
     private static final String MENU_LOG = "skills template";
 
@@ -100,9 +85,8 @@ public final class FabricSkillsTemplateSupport {
                     "skills template: no skill row (key 'skill' or action skill_row); using built-in menu");
             return false;
         }
-        if (skillDef.slots().size() != EXPECTED_SKILL_COUNT || !skillDef.slots().equals(LOCKED_SKILL_GRID_SLOTS)) {
-            plugin.logger().warn(
-                    "skills template: skill item must use Sprint 113 locked slot list; using built-in menu");
+        if (skillDef.slots().isEmpty()) {
+            plugin.logger().warn("skills template: skill item has no slots; using built-in menu");
             return false;
         }
 
@@ -146,14 +130,14 @@ public final class FabricSkillsTemplateSupport {
 
         Locale locale = user.getLocale();
         MessageProvider msg = plugin.getMessageProvider();
-        List<Skill> gridSkills = resolveLockedSkills(plugin);
-        if (gridSkills.size() != EXPECTED_SKILL_COUNT) {
+        List<Skill> gridSkills = List.copyOf(plugin.getSkillManager().getEnabledSkills());
+        if (gridSkills.size() > skillDef.slots().size()) {
             plugin.logger().warn(
-                    MENU_LOG + ": expected "
-                            + EXPECTED_SKILL_COUNT
-                            + " enabled skills matching locked ids, got "
+                    MENU_LOG + ": "
                             + gridSkills.size()
-                            + "; using built-in menu");
+                            + " enabled skills but only "
+                            + skillDef.slots().size()
+                            + " skill slots; using built-in menu");
             return false;
         }
 
@@ -241,6 +225,9 @@ public final class FabricSkillsTemplateSupport {
                     }
                 },
                 (topSlot, pl, b, t) -> {
+                    if (!FabricMenuClicks.activates(t)) {
+                        return;
+                    }
                     if (topSlot == fCl) {
                         pl.closeContainer();
                         return;
@@ -292,24 +279,6 @@ public final class FabricSkillsTemplateSupport {
                 .filter(item -> item.slots().size() == 1)
                 .map(item -> item.slots().getFirst())
                 .orElse(-1);
-    }
-
-    /** Enabled skills matching {@link #LOCKED_SKILL_IDS} in order; skips disabled or missing registry entries. */
-    static List<Skill> resolveLockedSkills(FabricGraniteSkills plugin) {
-        List<Skill> out = new ArrayList<>(EXPECTED_SKILL_COUNT);
-        for (String id : LOCKED_SKILL_IDS) {
-            Skill found = null;
-            for (Skill sk : plugin.getSkillManager().getEnabledSkills()) {
-                if (id.equalsIgnoreCase(sk.getId().getSimpleName())) {
-                    found = sk;
-                    break;
-                }
-            }
-            if (found != null) {
-                out.add(found);
-            }
-        }
-        return out;
     }
 
     private static void addSkillRowPlaceholders(

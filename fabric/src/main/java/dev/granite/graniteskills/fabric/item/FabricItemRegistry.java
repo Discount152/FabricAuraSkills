@@ -1,6 +1,7 @@
 package dev.granite.graniteskills.fabric.item;
 
 import dev.granite.graniteskills.api.registry.NamespacedId;
+import dev.granite.graniteskills.common.item.ItemGrantExpiry;
 import dev.granite.graniteskills.common.item.ItemRegistry;
 import dev.granite.graniteskills.common.message.type.LevelerMessage;
 import dev.granite.graniteskills.common.source.SourceMenuItems;
@@ -39,7 +40,10 @@ public final class FabricItemRegistry implements ItemRegistry {
     }
 
     public void register(NamespacedId key, ItemStack item) {
-        items.put(key, item.copy());
+        ItemStack existing = items.putIfAbsent(key, item.copy());
+        if (existing != null) {
+            plugin.logger().warn("Duplicate item id " + key + " was ignored; the first registration stays");
+        }
     }
 
     public void unregister(NamespacedId key) {
@@ -88,6 +92,7 @@ public final class FabricItemRegistry implements ItemRegistry {
                     plugin.logger().warn("Failed to load item at path items." + keyStr + " in items.yml");
                     continue;
                 }
+                applyYamlExpiration(stack, val);
                 NamespacedId id = NamespacedId.fromDefault(keyStr);
                 register(id, stack);
                 registered++;
@@ -129,6 +134,24 @@ public final class FabricItemRegistry implements ItemRegistry {
         return null;
     }
 
+    private static void applyYamlExpiration(ItemStack stack, ConfigurationNode node) {
+        if (stack == null || stack.isEmpty() || node == null || !node.isMap()) {
+            return;
+        }
+        long expiration = node.node(FabricItemExpiry.EXPIRATION_TIME).getLong(0L);
+        if (expiration > 0L) {
+            FabricItemExpiry.writeExpiration(stack, expiration);
+        }
+    }
+
+    public boolean isGrantable(NamespacedId key, long nowEpochMillis) {
+        ItemStack template = items.get(key);
+        if (template == null || template.isEmpty()) {
+            return false;
+        }
+        return ItemGrantExpiry.shouldGive(FabricItemExpiry.readExpiration(template), nowEpochMillis);
+    }
+
     public void saveToDisk() {
         File file = new File(plugin.getPluginFolder(), "items.yml");
         try {
@@ -166,6 +189,9 @@ public final class FabricItemRegistry implements ItemRegistry {
         if (template == null || template.isEmpty()) {
             return count;
         }
+        if (FabricItemExpiry.amountToGive(template, count, System.currentTimeMillis()) == 0) {
+            return count;
+        }
         ItemStack toGive = template.copy();
         toGive.setCount(count);
         ItemStack leftover = FabricItemInventoryUtil.addItemToInventory(player.getInventory(), toGive);
@@ -186,6 +212,9 @@ public final class FabricItemRegistry implements ItemRegistry {
             return -1;
         }
         int count = amount == -1 ? template.getCount() : Math.max(1, amount);
+        if (FabricItemExpiry.amountToGive(template, count, System.currentTimeMillis()) == 0) {
+            return 0;
+        }
         int notFit = tryMergeRegisteredItemCount(player, key, count);
         if (notFit > 0) {
             user.getUnclaimedItems().add(new KeyIntPair(key.toString(), notFit));
@@ -203,7 +232,12 @@ public final class FabricItemRegistry implements ItemRegistry {
             return;
         }
         plugin.getScheduler().executeSync(() -> {
-            if (getItem(key) == null) {
+            ItemStack template = getItem(key);
+            if (template == null) {
+                return;
+            }
+            int count = amount == -1 ? template.getCount() : Math.max(1, amount);
+            if (FabricItemExpiry.amountToGive(template, count, System.currentTimeMillis()) == 0) {
                 return;
             }
             addRegisteredItemToInventory(user, player, key, amount);

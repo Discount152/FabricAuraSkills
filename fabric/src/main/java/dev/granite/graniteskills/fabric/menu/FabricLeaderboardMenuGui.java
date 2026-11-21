@@ -36,6 +36,9 @@ public final class FabricLeaderboardMenuGui {
 
     private static final int ENTRIES = FabricCommandLeaderboardText.ENTRIES_PER_PAGE;
     private static final int SLOT_BACK = 45;
+    private static final int SLOT_POWER = 46;
+    private static final int SLOT_AVERAGE = 47;
+    private static final int SLOT_SKILL = 52;
     private static final int SLOT_PREV = 48;
     private static final int SLOT_REFRESH = 49;
     private static final int SLOT_NEXT = 50;
@@ -63,6 +66,8 @@ public final class FabricLeaderboardMenuGui {
         int page1 =
                 FabricListMenuPaging.clampPage(Math.max(1, page) - 1, total, ENTRIES) + 1;
         int page0 = page1 - 1;
+        String skillKey = skill == null ? "" : skill.getId().getSimpleName();
+        FabricMenuNavigation.remember(player, FabricMenuKeys.LEADERBOARD, skillKey, page1, mode.name());
         var user = plugin.getUserManager().getUser(player.getUUID());
         Locale lo = user != null ? user.getLocale() : plugin.getDefaultLanguage();
         List<SkillValue> slice = fetchPage(lb, mode, skill, page1);
@@ -107,6 +112,12 @@ public final class FabricLeaderboardMenuGui {
                     }
                     putControl(
                             inv, SLOT_BACK, true, "graniteskills.granite.menu.leaderboard_back", "graniteskills.granite.menu.leaderboard_back_lore", Items.IRON_DOOR);
+                    putControl(
+                            inv, SLOT_POWER, fMode != Mode.POWER, "graniteskills.granite.menu.leaderboard_power", "graniteskills.granite.menu.leaderboard_power_lore", Items.GOLD_INGOT);
+                    putControl(
+                            inv, SLOT_AVERAGE, fMode != Mode.AVERAGE, "graniteskills.granite.menu.leaderboard_average", "graniteskills.granite.menu.leaderboard_average_lore", Items.IRON_INGOT);
+                    putControl(
+                            inv, SLOT_SKILL, fMode != Mode.SKILL, "graniteskills.granite.menu.leaderboard_skill", "graniteskills.granite.menu.leaderboard_skill_lore", Items.BOOK);
                     if (fMax0 > 0) {
                         putControl(
                                 inv,
@@ -132,11 +143,32 @@ public final class FabricLeaderboardMenuGui {
                             Items.COMPASS);
                 },
                 (topSlot, pl, b, t) -> {
+                    if (!FabricMenuClicks.activates(t)) {
+                        return;
+                    }
+                    if (topSlot == SLOT_POWER) {
+                        plugin.getScheduler().executeSync(() -> FabricLeaderboardMenuGui.open(pl, plugin, Mode.POWER, null, 1));
+                        return;
+                    }
+                    if (topSlot == SLOT_AVERAGE) {
+                        plugin.getScheduler().executeSync(() -> FabricLeaderboardMenuGui.open(pl, plugin, Mode.AVERAGE, null, 1));
+                        return;
+                    }
+                    if (topSlot == SLOT_SKILL) {
+                        Skill next = nextListedSkill(plugin, fMode == Mode.SKILL ? fSkill : null);
+                        if (next != null) {
+                            plugin.getScheduler().executeSync(() -> FabricLeaderboardMenuGui.open(pl, plugin, Mode.SKILL, next, 1));
+                        }
+                        return;
+                    }
                     if (topSlot == SLOT_BACK) {
                         plugin.getScheduler()
                                 .executeSync(
-                                        () -> FabricGraniteSkillsMenus.open(
-                                                FabricMenuKeys.SKILLS, pl, plugin));
+                                        () -> {
+                                            if (!FabricMenuNavigation.back(pl, plugin)) {
+                                                FabricGraniteSkillsMenus.open(FabricMenuKeys.SKILLS, pl, plugin);
+                                            }
+                                        });
                         return;
                     }
                     if (topSlot == SLOT_REFRESH) {
@@ -225,6 +257,23 @@ public final class FabricLeaderboardMenuGui {
                 };
         Component base = FabricMenuTitles.fromLeaderboardContextLine(line);
         return FabricListMenuPaging.appendPageToTitleIfNeeded(base, page0, maxPage0);
+    }
+
+    static Skill nextListedSkill(FabricGraniteSkills plugin, @Nullable Skill current) {
+        Skill first = null;
+        boolean takeNext = current == null;
+        for (Skill skill : plugin.getSkillManager().getEnabledSkills()) {
+            if (first == null) {
+                first = skill;
+            }
+            if (takeNext) {
+                return skill;
+            }
+            if (skill.equals(current)) {
+                takeNext = true;
+            }
+        }
+        return first;
     }
 
     /** Formatted value column; shared with {@link FabricLeaderboardTemplateSupport}. */

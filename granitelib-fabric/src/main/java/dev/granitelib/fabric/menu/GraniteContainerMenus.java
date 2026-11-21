@@ -32,8 +32,9 @@ public final class GraniteContainerMenus {
             Component title,
             Consumer<SimpleContainer> populate,
             @Nullable GraniteTopSlotClickHandler topClick) {
-        SimpleContainer inv = new SimpleContainer(GraniteClickable9x6Handler.CONTAINER_SLOTS);
+        GraniteDisplayContainer inv = new GraniteDisplayContainer(GraniteClickable9x6Handler.CONTAINER_SLOTS);
         populate.accept(inv);
+        // Lock + clear happen inside GraniteClickable9x6Handler after it snapshots stacks onto display slots.
         player.openMenu(new SimpleMenuProvider(
                 (syncId, playerInventory, playerEntity) ->
                         new GraniteClickable9x6Handler(syncId, playerInventory, inv, topClick),

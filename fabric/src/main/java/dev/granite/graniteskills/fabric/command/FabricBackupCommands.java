@@ -93,7 +93,10 @@ public final class FabricBackupCommands {
                                 .executes(FabricBackupCommands::executeLoadPreview)
                                 .then(
                                         literal("confirm")
-                                                .executes(FabricBackupCommands::executeLoadConfirm)));
+                                                .executes(FabricBackupCommands::executeLoadConfirm))
+                                .then(
+                                        literal("cancel")
+                                                .executes(FabricBackupCommands::executeLoadCancel)));
     }
 
     private static int executeCreate(CommandContext<CommandSourceStack> ctx) {
@@ -304,6 +307,36 @@ public final class FabricBackupCommands {
                         });
     }
 
+    private static int executeLoadCancel(CommandContext<CommandSourceStack> ctx) {
+        return FabricCommandPluginState.runtimeReadyOrEmpty()
+                .map(
+                        p -> {
+                            CommandSourceStack source = ctx.getSource();
+                            Locale lo = localeForSource(source, p);
+                            String nameArg = StringArgumentType.getString(ctx, ARG_FILE);
+                            File target = resolveForLoad(p, nameArg, source, lo);
+                            if (target == null) {
+                                return 0;
+                            }
+                            if (!FabricCommandConfirmation.cancelPending(source, target.getName())) {
+                                return 0;
+                            }
+                            p.logger().info("Backup load cancelled file=" + target.getName());
+                            source.sendSuccess(
+                                    () ->
+                                            Component.literal(
+                                                    "Backup load cancelled for " + target.getName()),
+                                    false);
+                            return 1;
+                        })
+                .orElseGet(
+                        () -> {
+                            ctx.getSource()
+                                    .sendFailure(Component.literal("GraniteSkills is still starting."));
+                            return 0;
+                        });
+    }
+
     private static int executeLoadConfirm(CommandContext<CommandSourceStack> ctx) {
         return FabricCommandPluginState.runtimeReadyOrEmpty()
                 .map(
@@ -328,6 +361,7 @@ public final class FabricBackupCommands {
                             }
                             if (!FabricCommandConfirmation.verifyPendingOrError(
                                     source, target.getName())) {
+                                p.logger().info("Backup load confirm rejected file=" + target.getName());
                                 return 0;
                             }
                             String loading =
@@ -385,6 +419,11 @@ public final class FabricBackupCommands {
                                                     long ms = System.currentTimeMillis() - start;
                                                     FabricCommandStorageUtil.refreshOnlineUsersFromStorage(
                                                             p);
+                                                    p.logger()
+                                                            .info(
+                                                                    "Backup load applied file="
+                                                                            + target.getName()
+                                                                            + " online refreshed");
                                                     String line =
                                                             p.getMessageProvider()
                                                                     .applyFormatting(

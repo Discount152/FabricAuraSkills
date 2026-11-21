@@ -53,7 +53,7 @@ class GraniteTemplateActionNamesTest {
 
     @Test
     void allKnownNormalizedCountsAllV0Actions() {
-        assertEquals(21, GraniteTemplateActionNames.allKnownNormalized().size());
+        assertEquals(24, GraniteTemplateActionNames.allKnownNormalized().size());
         assertTrue(GraniteTemplateActionNames.allKnownNormalized().contains(GraniteTemplateActionNames.CYCLE_SORT));
         assertTrue(GraniteTemplateActionNames.allKnownNormalized().contains(GraniteTemplateActionNames.CLOSE));
     }

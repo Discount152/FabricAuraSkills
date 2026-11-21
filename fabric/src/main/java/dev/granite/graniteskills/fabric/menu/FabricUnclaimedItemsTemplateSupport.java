@@ -240,8 +240,12 @@ public final class FabricUnclaimedItemsTemplateSupport {
                         fNextOpt.ifPresent(st -> inv.setItem(next, st.copy()));
                     }
                 },
-                (topSlot, pl, b, t) ->
-                        FabricUnclaimedItemsMenuGui.handleUnclaimedClick(pl, plugin, fPage, fMax, topSlot));
+                (topSlot, pl, b, t) -> {
+                    if (!FabricMenuClicks.activates(t)) {
+                        return;
+                    }
+                    FabricUnclaimedItemsMenuGui.handleUnclaimedClick(pl, plugin, fPage, fMax, topSlot);
+                });
         return true;
     }
 

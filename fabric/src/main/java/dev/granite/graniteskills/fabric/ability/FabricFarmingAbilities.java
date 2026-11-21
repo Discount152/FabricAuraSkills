@@ -65,20 +65,22 @@ public final class FabricFarmingAbilities extends FabricAbilityImpl implements F
             return;
         }
         int radius = ability.optionInt("radius", 30);
-        double radiusSq = (double) radius * radius;
         BlockState state = server.getBlockState(pos);
         if (!(state.getBlock() instanceof CropBlock crop) || crop.isMaxAge(state)) {
             return;
         }
+        double centerX = pos.getX() + 0.5;
+        double centerY = pos.getY() + 0.5;
+        double centerZ = pos.getZ() + 0.5;
         for (ServerPlayer player : server.players()) {
-            if (player.distanceToSqr(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) > radiusSq) {
+            if (!GrowthAuraAward.inRange(player.distanceToSqr(centerX, centerY, centerZ), radius)) {
                 continue;
             }
             if (self.failsChecks(player, ability)) {
                 continue;
             }
             User user = plugin.getUserManager().getUser(player.getUUID());
-            int extra = self.rollExtraStages(user);
+            int extra = GrowthAuraAward.stages(self.getValue(ability, user), self.rand.nextDouble());
             if (extra <= 0) {
                 continue;
             }
@@ -87,7 +89,7 @@ public final class FabricFarmingAbilities extends FabricAbilityImpl implements F
                 return;
             }
             int age = grown.getAge(current);
-            int next = Math.min(age + extra, grown.getMaxAge());
+            int next = GrowthAuraAward.nextAge(age, grown.getMaxAge(), extra, true);
             if (next != age) {
                 server.setBlock(pos, grown.getStateForAge(next), 2);
             }
@@ -101,14 +103,6 @@ public final class FabricFarmingAbilities extends FabricAbilityImpl implements F
             return DamageModifier.none();
         }
         return new DamageModifier(getValue(ability, user) / 100.0, DamageModifier.Operation.ADD_COMBINED);
-    }
-
-    private int rollExtraStages(User user) {
-        double value = getValue(Abilities.GROWTH_AURA, user);
-        int guaranteed = (int) (value / 100);
-        double chance = (value - guaranteed * 100) / 100.0;
-        int extra = rand.nextDouble() < chance ? 1 : 0;
-        return guaranteed + extra;
     }
 
     private static boolean isPlantBased(ItemStack stack) {

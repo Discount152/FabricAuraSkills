@@ -1,12 +1,10 @@
 package dev.granite.graniteskills.fabric;
 
 import dev.granite.graniteskills.common.message.MessageProvider;
+import dev.granite.graniteskills.fabric.text.FabricTextFormatter;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 public final class FabricMessageProvider extends MessageProvider {
-
-    private static final LegacyComponentSerializer LEGACY = LegacyComponentSerializer.legacySection();
 
     public FabricMessageProvider(FabricGraniteSkills plugin) {
         super(plugin);
@@ -14,17 +12,16 @@ public final class FabricMessageProvider extends MessageProvider {
 
     @Override
     public String applyFormatting(String message) {
-        Component c = LEGACY.deserialize(message);
-        return LEGACY.serialize(c);
+        return FabricTextFormatter.toString(FabricTextFormatter.toComponent(message));
     }
 
     @Override
     public String componentToString(Component component) {
-        return LEGACY.serialize(component);
+        return FabricTextFormatter.toString(component);
     }
 
     @Override
     public Component stringToComponent(String message) {
-        return LEGACY.deserialize(message);
+        return FabricTextFormatter.toComponent(message);
     }
 }

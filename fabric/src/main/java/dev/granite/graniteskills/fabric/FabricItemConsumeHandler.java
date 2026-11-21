@@ -6,6 +6,7 @@ import dev.granite.graniteskills.api.source.type.ItemConsumeXpSource;
 import dev.granite.graniteskills.common.source.SourceTypes;
 import dev.granite.graniteskills.common.user.User;
 import dev.granite.graniteskills.fabric.ability.FabricAgilityAbilities;
+import dev.granite.graniteskills.fabric.ability.FabricAlchemyAbilities;
 import dev.granite.graniteskills.fabric.ability.FabricFarmingAbilities;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -24,6 +25,7 @@ public final class FabricItemConsumeHandler {
             return;
         }
         FabricAgilityAbilities.onConsume(plugin, player, consumedStack);
+        FabricAlchemyAbilities.onConsume(plugin, player, consumedStack);
         FabricFarmingAbilities.onConsume(plugin, player, consumedStack);
         SkillSource<ItemConsumeXpSource> match = null;
         for (SkillSource<ItemConsumeXpSource> entry : plugin.getSkillManager().getSourcesOfType(ItemConsumeXpSource.class)) {

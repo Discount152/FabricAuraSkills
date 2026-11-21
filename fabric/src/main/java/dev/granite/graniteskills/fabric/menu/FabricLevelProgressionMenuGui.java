@@ -220,16 +220,22 @@ final class FabricLevelProgressionMenuGui {
                     }
                 },
                 (topSlot, pl, b, t) -> {
+                    if (!FabricMenuClicks.activates(t)) {
+                        return;
+                    }
                     if (topSlot == back) {
                         plugin.getScheduler()
                                 .executeSync(
-                                        () ->
+                                        () -> {
+                                            if (!FabricMenuNavigation.back(pl, plugin)) {
                                                 FabricGraniteSkillsMenus.open(
                                                         FabricGraniteSkillsMenus.Id.SKILLS,
                                                         pl,
                                                         plugin,
                                                         FabricMenuContext.none()
-                                                                .withListPage(returnSkillsPage)));
+                                                                .withListPage(returnSkillsPage));
+                                            }
+                                        });
                         return;
                     }
                     if (topSlot == sourcesS) {

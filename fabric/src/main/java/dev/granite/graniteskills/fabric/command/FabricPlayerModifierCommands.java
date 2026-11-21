@@ -14,6 +14,7 @@ import dev.granite.graniteskills.api.trait.TraitModifier;
 import dev.granite.graniteskills.api.util.GraniteSkillsModifier;
 import dev.granite.graniteskills.common.message.type.CommandMessage;
 import dev.granite.graniteskills.common.user.User;
+import dev.granite.graniteskills.common.util.text.DurationParser;
 import dev.granite.graniteskills.fabric.FabricGraniteSkills;
 import dev.granite.graniteskills.fabric.text.FabricGraniteText;
 import net.minecraft.commands.CommandSourceStack;
@@ -21,6 +22,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -29,7 +31,7 @@ import static net.minecraft.commands.Commands.literal;
 
 /**
  * **Sprint 50** — Bukkit-shaped **player** {@code /modifier} and {@code /trait} (no item/armor
- * subtrees, no addtemp in this batch).
+ * subtrees). {@code addtemp} stores a modifier that expires.
  */
 public final class FabricPlayerModifierCommands {
 
@@ -40,7 +42,10 @@ public final class FabricPlayerModifierCommands {
     private static final String ARG_VALUE = "value";
     private static final String ARG_OP = "operation";
     private static final String ARG_STACK = "stack";
+    private static final String ARG_DURATION = "duration";
+    private static final String ARG_PAUSE = "pauseOffline";
     private static final String LIT_ADD = "add";
+    private static final String LIT_ADDTEMP = "addtemp";
     private static final String LIT_REMOVE = "remove";
     private static final String LIT_LIST = "list";
     private static final String LIT_REMOVEALL = "removeall";
@@ -58,9 +63,10 @@ public final class FabricPlayerModifierCommands {
     public static LiteralArgumentBuilder<CommandSourceStack> modifierCommandRoot() {
         return literal("modifier")
                 .requires(
-                        FabricCommandRequirements.permission(
+                        FabricCommandRequirements.permissionOrNonPlayerSource(
                                 FabricCommandPermissions.MODIFIER, false))
                 .then(literal(LIT_ADD).then(modifierAddArguments()))
+                .then(literal(LIT_ADDTEMP).then(modifierAddTempArguments()))
                 .then(literal(LIT_REMOVE).then(modifierRemoveArguments()))
                 .then(
                         literal(LIT_LIST)
@@ -77,9 +83,10 @@ public final class FabricPlayerModifierCommands {
     public static LiteralArgumentBuilder<CommandSourceStack> traitCommandRoot() {
         return literal("trait")
                 .requires(
-                        FabricCommandRequirements.permission(
+                        FabricCommandRequirements.permissionOrNonPlayerSource(
                                 FabricCommandPermissions.MODIFIER, false))
                 .then(literal(LIT_ADD).then(traitAddArguments()))
+                .then(literal(LIT_ADDTEMP).then(traitAddTempArguments()))
                 .then(literal(LIT_REMOVE).then(traitRemoveArguments()))
                 .then(
                         literal(LIT_LIST)
@@ -227,6 +234,45 @@ public final class FabricPlayerModifierCommands {
                                                                                                         ARG_OP)),
                                                                         BoolArgumentType.getBool(
                                                                                 ctx, ARG_STACK)))));
+    }
+
+    private static ArgumentBuilder<CommandSourceStack, ?> modifierAddTempArguments() {
+        return Commands.argument(ARG_PLAYER, StringArgumentType.word())
+                .suggests(FabricCommandSuggestionProviders.onlinePlayers())
+                .then(Commands.argument(ARG_STAT, StringArgumentType.word())
+                        .suggests(FabricCommandSuggestionProviders.enabledStatKeys())
+                        .then(Commands.argument(ARG_NAME, StringArgumentType.word())
+                                .then(Commands.argument(ARG_VALUE, DoubleArgumentType.doubleArg())
+                                        .then(tempTail(true)))));
+    }
+
+    private static ArgumentBuilder<CommandSourceStack, ?> traitAddTempArguments() {
+        return Commands.argument(ARG_PLAYER, StringArgumentType.word())
+                .suggests(FabricCommandSuggestionProviders.onlinePlayers())
+                .then(Commands.argument(ARG_TRAIT, StringArgumentType.word())
+                        .suggests(FabricCommandSuggestionProviders.enabledTraitKeys())
+                        .then(Commands.argument(ARG_NAME, StringArgumentType.word())
+                                .then(Commands.argument(ARG_VALUE, DoubleArgumentType.doubleArg())
+                                        .then(tempTail(false)))));
+    }
+
+    private static ArgumentBuilder<CommandSourceStack, ?> tempTail(boolean stat) {
+        return Commands.argument(ARG_DURATION, StringArgumentType.word())
+                .executes(ctx -> runAddTemp(ctx, stat, false, GraniteSkillsModifier.Operation.ADD, false))
+                .then(Commands.argument(ARG_PAUSE, BoolArgumentType.bool())
+                        .executes(ctx -> runAddTemp(ctx, stat, BoolArgumentType.getBool(ctx, ARG_PAUSE),
+                                GraniteSkillsModifier.Operation.ADD, false))
+                        .then(Commands.argument(ARG_OP, StringArgumentType.word())
+                                .suggests(OPERATIONS)
+                                .executes(ctx -> runAddTemp(ctx, stat, BoolArgumentType.getBool(ctx, ARG_PAUSE),
+                                        GraniteSkillsModifier.Operation.parse(StringArgumentType.getString(ctx, ARG_OP)),
+                                        false))
+                                .then(Commands.argument(ARG_STACK, BoolArgumentType.bool())
+                                        .executes(ctx -> runAddTemp(ctx, stat,
+                                                BoolArgumentType.getBool(ctx, ARG_PAUSE),
+                                                GraniteSkillsModifier.Operation.parse(
+                                                        StringArgumentType.getString(ctx, ARG_OP)),
+                                                BoolArgumentType.getBool(ctx, ARG_STACK))))));
     }
 
     private static ArgumentBuilder<CommandSourceStack, ?> traitAddArguments() {
@@ -1005,6 +1051,105 @@ public final class FabricPlayerModifierCommands {
                             return 1;
                         })
                 .orElseGet(() -> notReady(ctx));
+    }
+
+    private static int runAddTemp(CommandContext<CommandSourceStack> ctx, boolean stat, boolean pauseOffline,
+            GraniteSkillsModifier.Operation operation, boolean stack) {
+        return FabricCommandPluginState.runtimeReadyOrEmpty()
+                .map(p -> {
+                    CommandSourceStack source = ctx.getSource();
+                    String pName = StringArgumentType.getString(ctx, ARG_PLAYER);
+                    String mName = StringArgumentType.getString(ctx, ARG_NAME);
+                    double value = DoubleArgumentType.getDouble(ctx, ARG_VALUE);
+                    String rawDuration = StringArgumentType.getString(ctx, ARG_DURATION);
+                    Duration duration;
+                    try {
+                        duration = DurationParser.parse(rawDuration);
+                    } catch (RuntimeException e) {
+                        source.sendFailure(Component.literal("Invalid duration: " + rawDuration));
+                        return 0;
+                    }
+                    if (duration.isZero() || duration.isNegative()) {
+                        source.sendFailure(Component.literal("Invalid duration: " + rawDuration));
+                        return 0;
+                    }
+                    ServerPlayer target = FabricCommandPlayerTarget.findOnline(source.getServer(), pName).orElse(null);
+                    if (target == null) {
+                        source.sendFailure(FabricGraniteText.key(
+                                "graniteskills.granite.command.xp.player_not_found", pName));
+                        return 0;
+                    }
+                    User user = p.getUserManager().getUser(target.getUUID());
+                    if (user == null) {
+                        source.sendFailure(Component.literal(
+                                p.getMsg(CommandMessage.NO_PROFILE, p.getDefaultLanguage())));
+                        return 0;
+                    }
+                    Locale lo = user.getLocale();
+                    long expiration = System.currentTimeMillis() + duration.toMillis();
+                    if (stat) {
+                        Stat parsed = FabricCommandStatParser.parse(p, StringArgumentType.getString(ctx, ARG_STAT));
+                        if (parsed == null) {
+                            source.sendFailure(Component.literal(
+                                    p.getMsg(CommandMessage.UNKNOWN_STAT, p.getDefaultLanguage())));
+                            return 0;
+                        }
+                        String storedName = tempName(user.getStatModifiers().keySet(), mName, stack);
+                        if (storedName == null) {
+                            StatModifier existing = new StatModifier(mName, parsed, value, operation);
+                            source.sendFailure(Component.literal(FabricCommandModifierText.applyStatModifier(
+                                    p, p.getMsg(CommandMessage.MODIFIER_ADD_ALREADY_EXISTS, lo), existing, target, lo)));
+                            return 0;
+                        }
+                        StatModifier modifier = new StatModifier(storedName, parsed, value, operation);
+                        modifier.makeTemporary(expiration, pauseOffline);
+                        user.getUserStats().addTemporaryStatModifier(modifier, true, expiration);
+                        user.setShouldSave(true);
+                        p.getModifierManager().applyModifiers(user, true);
+                        String line = FabricCommandModifierText.applyStatModifier(
+                                p, p.getMsg(CommandMessage.MODIFIER_ADDTEMP_ADDED, lo), modifier, target, lo);
+                        line = line.replace("{duration}", DurationParser.toString(duration));
+                        String out = line;
+                        source.sendSuccess(() -> Component.literal(out), false);
+                        return 1;
+                    }
+                    Trait trait = FabricCommandTraitParser.parse(p, StringArgumentType.getString(ctx, ARG_TRAIT));
+                    if (trait == null) {
+                        source.sendFailure(Component.literal(
+                                p.getMsg(CommandMessage.UNKNOWN_TRAIT, p.getDefaultLanguage())));
+                        return 0;
+                    }
+                    String storedName = tempName(user.getTraitModifiers().keySet(), mName, stack);
+                    if (storedName == null) {
+                        TraitModifier existing = new TraitModifier(mName, trait, value, operation);
+                        source.sendFailure(Component.literal(FabricCommandModifierText.applyTraitModifier(
+                                p, p.getMsg(CommandMessage.MODIFIER_ADD_ALREADY_EXISTS, lo), existing, target, lo)));
+                        return 0;
+                    }
+                    TraitModifier modifier = new TraitModifier(storedName, trait, value, operation);
+                    modifier.makeTemporary(expiration, pauseOffline);
+                    user.getUserStats().addTemporaryTraitModifier(modifier, true, expiration);
+                    user.setShouldSave(true);
+                    p.getModifierManager().applyModifiers(user, true);
+                    String line = FabricCommandModifierText.applyTraitModifier(
+                            p, p.getMsg(CommandMessage.TRAIT_ADDTEMP_ADDED, lo), modifier, target, lo);
+                    line = line.replace("{duration}", DurationParser.toString(duration));
+                    String out = line;
+                    source.sendSuccess(() -> Component.literal(out), false);
+                    return 1;
+                })
+                .orElseGet(() -> notReady(ctx));
+    }
+
+    /** @return the name to store, or null when the name exists and stacking was not requested */
+    private static String tempName(java.util.Set<String> existing, String name, boolean stack) {
+        if (!existing.contains(name)) {
+            return name;
+        }
+        if (!stack) {
+            return null;
+        }
+        return FabricCommandModifierStackName.getStackedName(existing, name);
     }
 
     private static int notReady(CommandContext<CommandSourceStack> ctx) {

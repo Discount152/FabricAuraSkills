@@ -47,7 +47,7 @@ public final class FabricEventHandler implements EventHandler {
         for (FabricSkillsListeners.Listener listener : FabricSkillsListeners.listeners()) {
             Pair<Boolean, Double> next = listener.onXpGain(user, skill, source, amount);
             if (next != null) {
-                cancelled = next.first();
+                cancelled = cancelled || next.first();
                 amount = next.second();
             }
         }

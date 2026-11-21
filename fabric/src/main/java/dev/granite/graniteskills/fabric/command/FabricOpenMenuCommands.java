@@ -51,6 +51,18 @@ public final class FabricOpenMenuCommands {
 
     private FabricOpenMenuCommands() {}
 
+    /** Opening a menu on another player's screen requires the openmenu node or op level 2. */
+    private static boolean lacksOpenOthers(CommandSourceStack source, ServerPlayer target) {
+        if (source.getEntity() instanceof ServerPlayer self && self.getUUID().equals(target.getUUID())) {
+            return false;
+        }
+        if (FabricCommandRequirements.permissionOrOpLevel(FabricCommandPermissions.OPEN_MENU, 2).test(source)) {
+            return false;
+        }
+        source.sendFailure(FabricGraniteText.key("graniteskills.granite.command.permission_denied"));
+        return true;
+    }
+
     /**
      * Subcommand {@code openmenu …}: attach with {@code .then(…)} under a parent
      * root.
@@ -241,6 +253,9 @@ public final class FabricOpenMenuCommands {
                                         "graniteskills.granite.command.xp.player_not_found", name));
                         return 0;
                     }
+                    if (lacksOpenOthers(s, target)) {
+                        return 0;
+                    }
                     if (FabricMenuUserReadiness.loadedUserOrWarn(p, target) == null) {
                         return 1;
                     }
@@ -285,6 +300,9 @@ public final class FabricOpenMenuCommands {
                         s.sendFailure(
                                 FabricGraniteText.key(
                                         "graniteskills.granite.command.xp.player_not_found", name));
+                        return 0;
+                    }
+                    if (lacksOpenOthers(s, target)) {
                         return 0;
                     }
                     if (FabricMenuUserReadiness.loadedUserOrWarn(p, target) == null) {
@@ -340,6 +358,9 @@ public final class FabricOpenMenuCommands {
                                         "graniteskills.granite.command.xp.player_not_found", name));
                         return 0;
                     }
+                    if (lacksOpenOthers(s, target)) {
+                        return 0;
+                    }
                     Skill skill = FabricCommandSkillParser.parse(p, raw);
                     if (skill == null) {
                         s.sendFailure(
@@ -393,6 +414,9 @@ public final class FabricOpenMenuCommands {
                         s.sendFailure(
                                 FabricGraniteText.key(
                                         "graniteskills.granite.command.xp.player_not_found", name));
+                        return 0;
+                    }
+                    if (lacksOpenOthers(s, target)) {
                         return 0;
                     }
                     Stat stat = FabricCommandStatParser.parse(p, raw);
@@ -483,6 +507,9 @@ public final class FabricOpenMenuCommands {
                                         "graniteskills.granite.command.xp.player_not_found", name));
                         return 0;
                     }
+                    if (lacksOpenOthers(s, target)) {
+                        return 0;
+                    }
                     return runOpenmenuSourcesInGame(
                             p, s, target, raw, FabricSourceSortType.ASCENDING, 0, false, true);
                 });
@@ -555,6 +582,9 @@ public final class FabricOpenMenuCommands {
                         s.sendFailure(
                                 FabricGraniteText.key(
                                         "graniteskills.granite.command.xp.player_not_found", name));
+                        return 0;
+                    }
+                    if (lacksOpenOthers(s, target)) {
                         return 0;
                     }
                     return runOpenmenuUnclaimed(p, s, target);

@@ -143,6 +143,9 @@ final class FabricStatInfoMenuGui {
                     inv.setItem(backSlot, back);
                 },
                 (topSlot, p, b, t) -> {
+                    if (!FabricMenuClicks.activates(t)) {
+                        return;
+                    }
                     if (topSlot != backSlot) {
                         return;
                     }

@@ -369,8 +369,8 @@ public final class FabricItemArmorModifierCommands {
                 .then(
                         literal(LIT_GIVE)
                                 .requires(
-                                        FabricCommandRequirements.permission(
-                                                FabricCommandPermissions.ITEM_GIVE, false))
+                                        FabricCommandRequirements.permissionOrOpLevel(
+                                                FabricCommandPermissions.ITEM_GIVE, 2))
                                 .then(
                                         Commands.argument(
                                                         ARG_GIVE_TARGET, StringArgumentType.word())

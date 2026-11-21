@@ -14,7 +14,9 @@ import java.util.Set;
  * <p><b>Sprint 112:</b> {@link #normalize(String)}, {@link #isKnown(String)}, and {@link #allKnownNormalized()} define
  * the canonical trimmed {@link Locale#ROOT} lowercase vocabulary for template validation and item lookups.
  * Sprint 113 adds navigation actions for the locked skills/stats hub ({@code open_leaderboard}, {@code open_stats},
- * {@code open_unclaimed_items}, {@code close}); {@link #allKnownNormalized()} size is <strong>21</strong>.
+ * {@code open_unclaimed_items}, {@code close}). Leaderboard mode controls are {@code leaderboard_power},
+ * {@code leaderboard_average}, and {@code leaderboard_skill}. {@link #allKnownNormalized()} size is
+ * <strong>24</strong>.
  */
 public final class GraniteTemplateActionNames {
 
@@ -81,6 +83,15 @@ public final class GraniteTemplateActionNames {
 
     public static final String CYCLE_SORT = "cycle_sort";
 
+    /** Open the power leaderboard (Fabric leaderboard). */
+    public static final String LEADERBOARD_POWER = "leaderboard_power";
+
+    /** Open the average leaderboard (Fabric leaderboard). */
+    public static final String LEADERBOARD_AVERAGE = "leaderboard_average";
+
+    /** Open or advance the per-skill leaderboard (Fabric leaderboard). */
+    public static final String LEADERBOARD_SKILL = "leaderboard_skill";
+
     private static final Set<String> ALL_KNOWN_NORMALIZED = Set.copyOf(List.of(
             BACK,
             STAT_PANEL,
@@ -102,7 +113,10 @@ public final class GraniteTemplateActionNames {
             OPEN_ABILITIES,
             PREVIOUS_PAGE,
             NEXT_PAGE,
-            CYCLE_SORT));
+            CYCLE_SORT,
+            LEADERBOARD_POWER,
+            LEADERBOARD_AVERAGE,
+            LEADERBOARD_SKILL));
 
     /**
      * Sprint 112+113: stable normalization for action comparisons -- trim, then {@link Locale#ROOT} lowercase; {@code

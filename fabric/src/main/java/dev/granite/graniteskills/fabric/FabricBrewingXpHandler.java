@@ -122,6 +122,11 @@ public final class FabricBrewingXpHandler {
         brewingSlot.setBrewed(false);
         brewingSlot.resetIngredients();
 
+        ServerPlayer brewer = resolveBrewXpPlayer(world, pos);
+        if (brewer == null) {
+            return;
+        }
+
         List<SkillSource<BrewingXpSource>> sources = new ArrayList<>();
         for (ItemStack ingredient : ingredients) {
             SkillSource<BrewingXpSource> skillSource = findFirstMatchingSource(plugin, ingredient);
@@ -135,13 +140,16 @@ public final class FabricBrewingXpHandler {
         for (SkillSource<BrewingXpSource> skillSource : sources) {
             BrewingXpSource source = skillSource.source();
             Skill skill = skillSource.skill();
-            if (FabricXpHandlerUtil.shouldBlockXp(plugin, player, skill, SourceTypes.BREWING)) {
+            if (FabricXpHandlerUtil.shouldBlockXp(plugin, brewer, skill, SourceTypes.BREWING)) {
                 return;
             }
             totalXpMap.merge(skill, source.getXp(), Double::sum);
         }
 
-        User user = plugin.getUserManager().getUser(player.getUUID());
+        User user = plugin.getUserManager().getUser(brewer.getUUID());
+        if (user == null) {
+            return;
+        }
         for (Skill skill : totalXpMap.keySet()) {
             plugin.getLevelManager().addXp(user, skill, sources.getFirst().source(), totalXpMap.getOrDefault(skill, 0.0));
         }

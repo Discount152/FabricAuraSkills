@@ -50,6 +50,12 @@ class FabricLeaderboardBundledTemplateParseTest {
             assertEquals(48, t.items().get("previous").slots().getFirst());
             assertEquals(49, t.items().get("refresh").slots().getFirst());
             assertEquals(50, t.items().get("next").slots().getFirst());
+            assertEquals(46, t.items().get("power").slots().getFirst());
+            assertEquals(47, t.items().get("average").slots().getFirst());
+            assertEquals(52, t.items().get("skill").slots().getFirst());
+            assertTrue(GraniteTemplateItems.actionEquals(t.items().get("power"), GraniteTemplateActionNames.LEADERBOARD_POWER));
+            assertTrue(GraniteTemplateItems.actionEquals(t.items().get("average"), GraniteTemplateActionNames.LEADERBOARD_AVERAGE));
+            assertTrue(GraniteTemplateItems.actionEquals(t.items().get("skill"), GraniteTemplateActionNames.LEADERBOARD_SKILL));
 
             assertSame(entry, GraniteTemplateItems.findLeaderboardEntryDefinition(t));
         }

@@ -42,10 +42,12 @@ public final class FabricTransferCommands {
                         Commands.argument(ARG_FROM, StringArgumentType.word())
                                 .then(
                                         Commands.argument(ARG_TO, StringArgumentType.word())
-                                                .executes(FabricTransferCommands::execute)));
+                                                .executes(ctx -> FabricTransferCommands.execute(ctx, false))
+                                                .then(literal("confirm")
+                                                        .executes(ctx -> FabricTransferCommands.execute(ctx, true)))));
     }
 
-    private static int execute(CommandContext<CommandSourceStack> ctx) {
+    private static int execute(CommandContext<CommandSourceStack> ctx, boolean confirmed) {
         return FabricCommandPluginState.runtimeReadyOrEmpty()
                 .map(
                         p -> {
@@ -102,7 +104,7 @@ public final class FabricTransferCommands {
                                     return 0;
                                 }
                             }
-                            return applyWithState(p, source, from, to, state, lo);
+                            return applyWithState(p, source, from, to, state, lo, confirmed);
                         })
                 .orElseGet(
                         () -> {
@@ -117,7 +119,13 @@ public final class FabricTransferCommands {
             UUID from,
             UUID to,
             UserState oldState,
-            Locale lo) {
+            Locale lo,
+            boolean confirmed) {
+        if (!confirmed && destinationHasProgress(p, to)) {
+            source.sendFailure(FabricGraniteText.key(
+                    "graniteskills.granite.command.transfer.destination_has_progress", to.toString()));
+            return 0;
+        }
         UserState newState = oldState.withUuid(to);
         if (FabricUserDataTransfer.isPlayerOnline(p.getServer(), to)) {
             User toUser = p.getUserManager().getUser(to);
@@ -173,5 +181,29 @@ public final class FabricTransferCommands {
             }
         }
         return p.getDefaultLanguage();
+    }
+
+    private static boolean destinationHasProgress(FabricGraniteSkills plugin, UUID to) {
+        if (FabricUserDataTransfer.isPlayerOnline(plugin.getServer(), to)) {
+            User user = plugin.getUserManager().getUser(to);
+            return user != null && user.hasProgressBeyondStart();
+        }
+        try {
+            UserState state = plugin.getStorageProvider().loadState(to);
+            int start = plugin.config().getStartLevel();
+            for (Integer level : state.skillLevels().values()) {
+                if (level != null && level > start) {
+                    return true;
+                }
+            }
+            for (Double xp : state.skillXp().values()) {
+                if (xp != null && xp > 0.0) {
+                    return true;
+                }
+            }
+            return !state.statModifiers().isEmpty() || !state.traitModifiers().isEmpty();
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

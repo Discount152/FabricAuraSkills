@@ -2,8 +2,14 @@
   "required": true,
   "package": "dev.granite.graniteskills.fabric.mixin",
   "compatibilityLevel": "JAVA_21",
+  "injectors": {
+    "defaultRequire": 1
+  },
   "mixins": [
+    "AbstractArrowRetrievalMixin",
+    "ArmorSlotRequirementMixin",
     "BowItemChargedShotMixin",
+    "EquippableArmorRequirementMixin",
     "BowItemRequirementMixin",
     "CrossbowItemRequirementMixin",
     "SweetBerryBushRequirementMixin",
@@ -16,6 +22,7 @@
     "MobSpawnerLogicMixin",
     "EnchantmentScreenHandlerMixin",
     "FishingBobberEntityMixin",
+    "ItemStackHardenedArmorMixin",
     "ForgingScreenHandlerMixin",
     "ScreenHandlerBrewingTakeoutXpMixin",
     "ScreenHandlerGrindstoneXpMixin",
@@ -27,12 +34,21 @@
     "PlayerFoodExhaustionMixin",
     "CropBlockGrowthMixin",
     "LivingEntityNoDebuffSplashMixin",
+    "HealOrHarmLifeEssenceMixin",
+    "MobEffectLifeEssenceMixin",
     "PotionEntityMixin",
+    "ThrownLingeringPotionMixin",
+    "ThrownSplashPotionSplasherMixin",
     "ServerWorldSpawnerMixin",
     "ServerPlayerEntityChargedShotMixin",
     "ServerPlayerEntitySharpHookMixin",
     "ServerPlayerEntityTraitWorldMixin",
     "ServerPlayerEntityParrySwingMixin",
-    "ServerPlayerEntityShieldAbsorptionSwingMixin"
+    "ServerPlayerEntityShieldAbsorptionSwingMixin",
+    "ServerPlayerExperienceBonusMixin",
+    "PistonPlacedBlockMixin",
+    "FallingBlockPlacedMixin",
+    "LevelXpOccurrenceMixin",
+    "SaplingBlockPlacedClearMixin"
   ]
 }

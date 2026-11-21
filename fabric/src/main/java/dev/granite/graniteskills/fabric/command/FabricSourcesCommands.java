@@ -57,7 +57,7 @@ public final class FabricSourcesCommands {
                                                 .executes(
                                                         FabricSourcesCommands::runWithSortArg)))
                 .then(literal("diagnose")
-                        .requires(FabricCommandRequirements.permission(FabricCommandPermissions.RELOAD, false))
+                        .requires(FabricCommandRequirements.permissionOrNonPlayerSource(FabricCommandPermissions.RELOAD, false))
                         .then(Commands.argument(ARG_SKILL, StringArgumentType.word())
                                 .suggests(FabricCommandSuggestionProviders.enabledSkillKeys())
                                 .executes(FabricSourcesCommands::runDiagnose)));
@@ -243,6 +243,11 @@ public final class FabricSourcesCommands {
                         for (Map.Entry<String, String> entry : diagnostics.rejectedSources().entrySet()) {
                             log.add("rejected source=" + entry.getKey() + " reason=" + entry.getValue());
                         }
+                    }
+                    if (diagnostics.recoveredFromEmbedded().isEmpty()) {
+                        log.add("recoveredFromEmbedded=none");
+                    } else {
+                        log.add("recoveredFromEmbedded=" + String.join(",", diagnostics.recoveredFromEmbedded()));
                     }
                     p.logger().info(log.toString());
                     return 1;

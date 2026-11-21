@@ -36,12 +36,9 @@ public enum ActionBarIdleMode {
         };
     }
 
-    public @NotNull ActionBarIdleMode nextInCycle() {
-        return switch (this) {
-            case SMART -> ALWAYS;
-            case ALWAYS -> OFF;
-            case OFF -> SMART;
-        };
+    /** Bare {@code /toggle}: hides the idle line, or restores the default Smart mode when hidden. */
+    public @NotNull ActionBarIdleMode toggled() {
+        return this == OFF ? SMART : OFF;
     }
 
     public static @NotNull ActionBarLoadResolution resolveOnLoad(

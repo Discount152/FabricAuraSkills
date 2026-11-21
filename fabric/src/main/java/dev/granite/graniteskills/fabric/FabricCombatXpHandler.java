@@ -10,6 +10,7 @@ import dev.granite.graniteskills.api.source.type.EntityXpSource.EntityDamagers;
 import dev.granite.graniteskills.api.source.type.EntityXpSource.EntityTriggers;
 import dev.granite.graniteskills.common.config.Option;
 import dev.granite.graniteskills.common.source.SourceTypes;
+import dev.granite.graniteskills.common.ui.ActionBarManager;
 import dev.granite.graniteskills.common.user.User;
 import dev.granite.graniteskills.fabric.ability.FabricBleedListener;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
@@ -62,6 +63,10 @@ public final class FabricCombatXpHandler {
     }
 
     private void handlePlayerDamaged(ServerPlayer player, DamageSource source, float baseDamageTaken, float damageTaken, boolean blocked) {
+        User early = plugin.getUserManager().getUser(player.getUUID());
+        if (early != null) {
+            plugin.getUiProvider().getActionBarManager().openSmartWindow(early, ActionBarManager.SMART_COMBAT_TICKS);
+        }
         if (!plugin.getSkillManager().isSourceEnabled(SourceTypes.DAMAGE)) {
             return;
         }
@@ -171,7 +176,7 @@ public final class FabricCombatXpHandler {
                 xpPortion = damageTaken / max.getValue();
             }
         }
-        double xp = xpPortion * ex.getXp() * FabricSpawnerMobTracker.xpMultiplier(victim, skill);
+        double xp = BleedXpAward.xp(true, xpPortion, ex.getXp()) * FabricSpawnerMobTracker.xpMultiplier(victim, skill);
         FabricXpContext.run(victim.getUUID(), () -> plugin.getLevelManager().addXp(user, skill, ex, xp));
     }
 
@@ -373,40 +378,11 @@ public final class FabricCombatXpHandler {
         for (SkillSource<EntityXpSource> entry : filtered) {
             EntityXpSource source = entry.source();
             String configured = plugin.getPlatformUtil().convertEntityName(source.getEntity().toLowerCase(Locale.ROOT));
-            if (!entityPath.equalsIgnoreCase(configured)) {
+            if (!BleedXpAward.matches(entityPath, configured, source.getTriggers(), eventDamager, source.getDamagers(),
+                    damageCause, source.getCauses(), source.getExcludedCauses())) {
                 continue;
             }
-            DamageCause[] causes = source.getCauses();
-            if (causes != null) {
-                boolean ok = false;
-                for (DamageCause c : causes) {
-                    if (c.toString().equals(damageCause.toString())) {
-                        ok = true;
-                        break;
-                    }
-                }
-                if (!ok) {
-                    continue;
-                }
-            }
-            DamageCause[] excludedCauses = source.getExcludedCauses();
-            if (excludedCauses != null) {
-                boolean skip = false;
-                for (DamageCause c : excludedCauses) {
-                    if (c.toString().equals(damageCause.toString())) {
-                        skip = true;
-                        break;
-                    }
-                }
-                if (skip) {
-                    continue;
-                }
-            }
-            for (EntityDamagers sd : source.getDamagers()) {
-                if (sd == eventDamager) {
-                    return entry;
-                }
-            }
+            return entry;
         }
         return null;
     }

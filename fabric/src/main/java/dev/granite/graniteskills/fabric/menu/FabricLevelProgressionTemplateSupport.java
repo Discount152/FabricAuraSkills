@@ -326,6 +326,9 @@ public final class FabricLevelProgressionTemplateSupport {
                     }
                 },
                 (topSlot, pl, b, t) -> {
+                    if (!FabricMenuClicks.activates(t)) {
+                        return;
+                    }
                     if (topSlot == back) {
                         plugin.getScheduler()
                                 .executeSync(

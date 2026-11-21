@@ -1,5 +1,6 @@
 package dev.granite.graniteskills.fabric.menu;
 
+import dev.granite.graniteskills.api.skill.Skills;
 import dev.granitelib.fabric.template.GraniteTemplateActionNames;
 import dev.granitelib.fabric.template.GraniteTemplateItems;
 import dev.granitelib.fabric.template.load.GraniteMenuTemplateYamlLoader;
@@ -34,8 +35,8 @@ class FabricSkillsStatsBundledTemplateParseTest {
 
             GraniteTemplateItem skill = t.items().get("skill");
             assertNotNull(skill);
-            assertEquals(FabricSkillsTemplateSupport.EXPECTED_SKILL_COUNT, skill.slots().size());
-            assertEquals(FabricSkillsTemplateSupport.LOCKED_SKILL_GRID_SLOTS, skill.slots());
+            assertEquals(Skills.values().length, skill.slots().size());
+            assertEquals(FabricSkillsTemplateSupport.DEFAULT_SKILL_GRID_SLOTS, skill.slots());
 
             assertUtility(t, "leaderboard", GraniteTemplateActionNames.OPEN_LEADERBOARD);
             assertUtility(t, "stats_button", GraniteTemplateActionNames.OPEN_STATS);

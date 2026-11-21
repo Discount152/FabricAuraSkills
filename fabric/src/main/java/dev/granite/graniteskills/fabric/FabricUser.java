@@ -1,6 +1,7 @@
 package dev.granite.graniteskills.fabric;
 
 import dev.granite.graniteskills.api.skill.Skill;
+import dev.granite.graniteskills.common.user.PermissionMultipliers;
 import dev.granite.graniteskills.common.user.User;
 import dev.granite.graniteskills.fabric.item.FabricUserEquipment;
 import me.lucko.fabric.api.permissions.v0.Permissions;
@@ -17,7 +18,7 @@ import java.util.UUID;
 public final class FabricUser extends User {
 
     private final FabricGraniteSkills plugin;
-    private final @Nullable ServerPlayer player;
+    private @Nullable ServerPlayer player;
     private final FabricUserEquipment fabricEquipment = FabricUserEquipment.empty();
 
     public FabricUser(UUID uuid, @Nullable ServerPlayer player, FabricGraniteSkills plugin) {
@@ -35,6 +36,11 @@ public final class FabricUser extends User {
             return fu.player;
         }
         return null;
+    }
+
+    /** Points traits, messages, and permission checks at the player who is actually in the world. */
+    public void rebind(@Nullable ServerPlayer current) {
+        this.player = current;
     }
 
     /**
@@ -64,25 +70,28 @@ public final class FabricUser extends User {
 
     @Override
     public void sendMessage(String message) {
-        if (player != null) {
-            player.sendSystemMessage(net.minecraft.network.chat.Component.literal(message));
+        if (player == null || message == null || message.isEmpty()) {
+            return;
         }
+        sendMessage(plugin.getMessageProvider().stringToComponent(message));
     }
 
     @Override
     public void sendMessage(Component component) {
-        if (player == null) {
+        if (player == null || component == null) {
             return;
         }
-        if (plugin.getMessageProvider().componentToString(component).isEmpty()) {
-            return;
-        }
-        player.sendSystemMessage(net.minecraft.network.chat.Component.literal(plugin.getMessageProvider().componentToString(component)));
+        player.sendSystemMessage(dev.granite.graniteskills.fabric.text.FabricTextAdapter.toNativeText(
+                component, player.level().getServer()));
     }
 
     @Override
     public double getPermissionMultiplier(@Nullable Skill skill) {
-        return 0.0;
+        ServerPlayer online = resolvePlayer();
+        if (online == null) {
+            return 0.0;
+        }
+        return PermissionMultipliers.sum(FabricLuckPermsGrants.granted(online), skill);
     }
 
     @Override

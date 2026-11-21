@@ -199,6 +199,9 @@ public final class FabricStatsTemplateSupport {
                     }
                 },
                 (topSlot, pl, b, t) -> {
+                    if (!FabricMenuClicks.activates(t)) {
+                        return;
+                    }
                     if (topSlot == fClose) {
                         pl.closeContainer();
                         return;

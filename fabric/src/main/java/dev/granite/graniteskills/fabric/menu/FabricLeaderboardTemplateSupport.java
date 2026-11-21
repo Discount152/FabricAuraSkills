@@ -31,9 +31,12 @@ public final class FabricLeaderboardTemplateSupport {
     public static final String TEMPLATE_RESOURCE_PATH = "assets/graniteskills/granite/templates/leaderboard.yml";
 
     private static final int SLOT_BACK = 45;
+    private static final int SLOT_POWER = 46;
+    private static final int SLOT_AVERAGE = 47;
     private static final int SLOT_PREV = 48;
     private static final int SLOT_REFRESH = 49;
     private static final int SLOT_NEXT = 50;
+    private static final int SLOT_SKILL = 52;
 
     private static final int ENTRIES = FabricCommandLeaderboardText.ENTRIES_PER_PAGE;
 
@@ -135,18 +138,37 @@ public final class FabricLeaderboardTemplateSupport {
         Optional<Integer> refreshSlot =
                 GraniteTemplateItems.firstSlotByPreferredKeyOrActions(
                         template, "refresh", List.of(GraniteTemplateActionNames.REFRESH));
-        if (backSlot.isEmpty() || prevSlot.isEmpty() || nextSlot.isEmpty() || refreshSlot.isEmpty()) {
+        Optional<Integer> powerSlot =
+                GraniteTemplateItems.firstSlotByPreferredKeyOrActions(
+                        template, "power", List.of(GraniteTemplateActionNames.LEADERBOARD_POWER));
+        Optional<Integer> averageSlot =
+                GraniteTemplateItems.firstSlotByPreferredKeyOrActions(
+                        template, "average", List.of(GraniteTemplateActionNames.LEADERBOARD_AVERAGE));
+        Optional<Integer> skillSlot =
+                GraniteTemplateItems.firstSlotByPreferredKeyOrActions(
+                        template, "skill", List.of(GraniteTemplateActionNames.LEADERBOARD_SKILL));
+        if (backSlot.isEmpty() || prevSlot.isEmpty() || nextSlot.isEmpty() || refreshSlot.isEmpty()
+                || powerSlot.isEmpty() || averageSlot.isEmpty() || skillSlot.isEmpty()) {
             plugin.logger().warn(
-                    "leaderboard template: missing navigation item (back/previous/next/refresh); using built-in menu");
+                    "leaderboard template: missing navigation item (back/previous/next/refresh/power/average/skill); using built-in menu");
             return false;
         }
         if (backSlot.get() != SLOT_BACK
                 || prevSlot.get() != SLOT_PREV
                 || refreshSlot.get() != SLOT_REFRESH
-                || nextSlot.get() != SLOT_NEXT) {
+                || nextSlot.get() != SLOT_NEXT
+                || powerSlot.get() != SLOT_POWER
+                || averageSlot.get() != SLOT_AVERAGE
+                || skillSlot.get() != SLOT_SKILL) {
             plugin.logger().warn(
                     "leaderboard template: nav slots must match built-in (back "
                             + SLOT_BACK
+                            + ", power "
+                            + SLOT_POWER
+                            + ", average "
+                            + SLOT_AVERAGE
+                            + ", skill "
+                            + SLOT_SKILL
                             + ", previous "
                             + SLOT_PREV
                             + ", refresh "
@@ -161,17 +183,24 @@ public final class FabricLeaderboardTemplateSupport {
         GraniteTemplateItem prevItem = template.items().get("previous");
         GraniteTemplateItem nextItem = template.items().get("next");
         GraniteTemplateItem refreshItem = template.items().get("refresh");
-        if (backItem == null || prevItem == null || nextItem == null || refreshItem == null) {
+        GraniteTemplateItem powerItem = template.items().get("power");
+        GraniteTemplateItem averageItem = template.items().get("average");
+        GraniteTemplateItem skillItem = template.items().get("skill");
+        if (backItem == null || prevItem == null || nextItem == null || refreshItem == null
+                || powerItem == null || averageItem == null || skillItem == null) {
             plugin.logger().warn(
-                    "leaderboard template: require YAML keys back, previous, next, refresh; using built-in menu");
+                    "leaderboard template: require YAML keys back, previous, next, refresh, power, average, skill; using built-in menu");
             return false;
         }
         if (!GraniteTemplateItems.actionEquals(backItem, GraniteTemplateActionNames.BACK)
                 || !GraniteTemplateItems.actionEquals(prevItem, GraniteTemplateActionNames.PREVIOUS_PAGE)
                 || !GraniteTemplateItems.actionEquals(nextItem, GraniteTemplateActionNames.NEXT_PAGE)
-                || !GraniteTemplateItems.actionEquals(refreshItem, GraniteTemplateActionNames.REFRESH)) {
+                || !GraniteTemplateItems.actionEquals(refreshItem, GraniteTemplateActionNames.REFRESH)
+                || !GraniteTemplateItems.actionEquals(powerItem, GraniteTemplateActionNames.LEADERBOARD_POWER)
+                || !GraniteTemplateItems.actionEquals(averageItem, GraniteTemplateActionNames.LEADERBOARD_AVERAGE)
+                || !GraniteTemplateItems.actionEquals(skillItem, GraniteTemplateActionNames.LEADERBOARD_SKILL)) {
             plugin.logger().warn(
-                    "leaderboard template: navigation actions must be back, previous_page, next_page, refresh; using built-in menu");
+                    "leaderboard template: navigation actions must be back, previous_page, next_page, refresh, leaderboard_power, leaderboard_average, leaderboard_skill; using built-in menu");
             return false;
         }
 
@@ -223,6 +252,21 @@ public final class FabricLeaderboardTemplateSupport {
         if (refreshStack.isEmpty()) {
             return false;
         }
+        Optional<ItemStack> powerStack =
+                FabricGraniteTemplateStacks.buildTemplateItemStack(
+                        powerItem, globalPh, plugin, MENU_LOG, "items.power");
+        Optional<ItemStack> averageStack =
+                FabricGraniteTemplateStacks.buildTemplateItemStack(
+                        averageItem, globalPh, plugin, MENU_LOG, "items.average");
+        Optional<ItemStack> skillStack =
+                FabricGraniteTemplateStacks.buildTemplateItemStack(
+                        skillItem, globalPh, plugin, MENU_LOG, "items.skill");
+        if (powerStack.isEmpty() || averageStack.isEmpty() || skillStack.isEmpty()) {
+            return false;
+        }
+        int powerS = powerSlot.get();
+        int averageS = averageSlot.get();
+        int skillS = skillSlot.get();
 
         Optional<ItemStack> prevStackOpt = Optional.empty();
         Optional<ItemStack> nextStackOpt = Optional.empty();
@@ -252,6 +296,12 @@ public final class FabricLeaderboardTemplateSupport {
         final int fMax0 = maxPage0;
         final FabricLeaderboardMenuGui.Mode fMode = mode;
         @Nullable final Skill fSkill = skill;
+        final int fPower = powerS;
+        final int fAverage = averageS;
+        final int fSkillSlot = skillS;
+        final ItemStack fPowerStack = powerStack.get();
+        final ItemStack fAverageStack = averageStack.get();
+        final ItemStack fSkillStack = skillStack.get();
         final Optional<ItemStack> fPrevOpt = prevStackOpt;
         final Optional<ItemStack> fNextOpt = nextStackOpt;
 
@@ -274,16 +324,41 @@ public final class FabricLeaderboardTemplateSupport {
                     }
                     inv.setItem(back, backStack.get().copy());
                     inv.setItem(refreshS, refreshStack.get().copy());
+                    inv.setItem(fPower, fPowerStack.copy());
+                    inv.setItem(fAverage, fAverageStack.copy());
+                    inv.setItem(fSkillSlot, fSkillStack.copy());
                     if (fMax0 > 0) {
                         fPrevOpt.ifPresent(st -> inv.setItem(prev, st.copy()));
                         fNextOpt.ifPresent(st -> inv.setItem(next, st.copy()));
                     }
                 },
                 (topSlot, pl, b, t) -> {
+                    if (!FabricMenuClicks.activates(t)) {
+                        return;
+                    }
                     if (topSlot == back) {
                         plugin.getScheduler()
                                 .executeSync(
-                                        () -> FabricGraniteSkillsMenus.open(FabricMenuKeys.SKILLS, pl, plugin));
+                                        () -> {
+                                            if (!FabricMenuNavigation.back(pl, plugin)) {
+                                                FabricGraniteSkillsMenus.open(FabricMenuKeys.SKILLS, pl, plugin);
+                                            }
+                                        });
+                        return;
+                    }
+                    if (topSlot == fPower) {
+                        plugin.getScheduler().executeSync(() -> FabricLeaderboardMenuGui.open(pl, plugin, FabricLeaderboardMenuGui.Mode.POWER, null, 1));
+                        return;
+                    }
+                    if (topSlot == fAverage) {
+                        plugin.getScheduler().executeSync(() -> FabricLeaderboardMenuGui.open(pl, plugin, FabricLeaderboardMenuGui.Mode.AVERAGE, null, 1));
+                        return;
+                    }
+                    if (topSlot == fSkillSlot) {
+                        Skill nextSkill = FabricLeaderboardMenuGui.nextListedSkill(plugin, fMode == FabricLeaderboardMenuGui.Mode.SKILL ? fSkill : null);
+                        if (nextSkill != null) {
+                            plugin.getScheduler().executeSync(() -> FabricLeaderboardMenuGui.open(pl, plugin, FabricLeaderboardMenuGui.Mode.SKILL, nextSkill, 1));
+                        }
                         return;
                     }
                     if (topSlot == refreshS) {

@@ -143,6 +143,9 @@ final class FabricSkillsMenuGui {
                     }
                 },
                 (topSlot, p, b, t) -> {
+                    if (!FabricMenuClicks.activates(t)) {
+                        return;
+                    }
                     if (fMaxPage > 0) {
                         if (topSlot == prevSlot) {
                             if (fPage > 0) {

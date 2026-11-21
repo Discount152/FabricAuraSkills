@@ -23,11 +23,19 @@ public abstract class ActionBarManager {
     protected final GraniteSkillsPlugin plugin;
     private final UiProvider uiProvider;
 
+    public static final int SMART_JOIN_TICKS = 100;
+    public static final int SMART_HEALTH_TICKS = 100;
+    public static final int SMART_MANA_TICKS = 100;
+    public static final int SMART_COMBAT_TICKS = 120;
+
     private final Set<UUID> isPaused = Sets.newConcurrentHashSet();
     private final Set<UUID> isGainingXp = Sets.newConcurrentHashSet();
     private final Map<UUID, Integer> timer = new ConcurrentHashMap<>();
     private final Map<UUID, Integer> currentAction = new ConcurrentHashMap<>();
     private final Map<Locale, String> idleMessageCache = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> smartRemainingTicks = new ConcurrentHashMap<>();
+    private final Map<UUID, String> lastDisplayedTuple = new ConcurrentHashMap<>();
+    private final Map<UUID, String> lastWorld = new ConcurrentHashMap<>();
 
     public ActionBarManager(GraniteSkillsPlugin plugin, UiProvider uiProvider) {
         this.plugin = plugin;
@@ -82,6 +90,9 @@ public abstract class ActionBarManager {
                         currentAction.put(uuid, 0);
                     }
                     if (isGainingXp.contains(uuid) || isPaused.contains(uuid)) {
+                        continue;
+                    }
+                    if (!refreshSmartWindow(user, uuid)) {
                         continue;
                     }
 
@@ -181,11 +192,58 @@ public abstract class ActionBarManager {
         }, 41 * 50L, TimeUnit.MILLISECONDS);
     }
 
+    /**
+     * Opens the Smart idle window for the given number of ticks. Always and Off ignore the window.
+     */
+    public void openSmartWindow(User user, int ticks) {
+        if (user.getActionBarIdleMode() != ActionBarIdleMode.SMART) {
+            return;
+        }
+        UUID uuid = user.getUuid();
+        smartRemainingTicks.merge(uuid, ticks, Math::max);
+    }
+
+    private boolean refreshSmartWindow(User user, UUID uuid) {
+        String world = getWorldName(user);
+        String previousWorld = lastWorld.put(uuid, world);
+        if (previousWorld == null || !previousWorld.equals(world)) {
+            openSmartWindow(user, SMART_JOIN_TICKS);
+        }
+        String tuple = getHp(user) + "|" + getMaxHp(user) + "|" + getMana(user) + "|" + getMaxMana(user);
+        String previousTuple = lastDisplayedTuple.put(uuid, tuple);
+        if (previousTuple != null && !previousTuple.equals(tuple)) {
+            int ticks = tupleHealthChanged(previousTuple, tuple) ? SMART_HEALTH_TICKS : SMART_MANA_TICKS;
+            openSmartWindow(user, ticks);
+        }
+        if (user.getActionBarIdleMode() != ActionBarIdleMode.SMART) {
+            return true;
+        }
+        int left = smartRemainingTicks.getOrDefault(uuid, 0);
+        if (left <= 0) {
+            return false;
+        }
+        int period = Math.max(1, plugin.configInt(Option.ACTION_BAR_UPDATE_PERIOD));
+        smartRemainingTicks.put(uuid, Math.max(0, left - period));
+        return true;
+    }
+
+    private static boolean tupleHealthChanged(String previous, String current) {
+        String[] oldParts = previous.split("\\|", -1);
+        String[] newParts = current.split("\\|", -1);
+        if (oldParts.length < 2 || newParts.length < 2) {
+            return true;
+        }
+        return !oldParts[0].equals(newParts[0]) || !oldParts[1].equals(newParts[1]);
+    }
+
     public void resetActionBars() {
         isGainingXp.clear();
         timer.clear();
         currentAction.clear();
         isPaused.clear();
+        smartRemainingTicks.clear();
+        lastDisplayedTuple.clear();
+        lastWorld.clear();
         clearMessageCache();
     }
 

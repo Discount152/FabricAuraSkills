@@ -71,33 +71,49 @@ public final class FabricEnchantingAbilities extends FabricAbilityImpl {
     }
 
     public static void tryLuckyTable(FabricGraniteSkills plugin, ServerPlayer player, EnchantmentMenu menu, ItemStack before) {
+        ItemStack after = menu.getSlot(0).getItem();
+        applyLuckyTable(plugin, player, before, after, Double.NaN);
+    }
+
+    /**
+     * Bukkit {@code EnchantingAbilities#luckyTable}: chance to bump each newly added enchant by +1
+     * when below max level.
+     *
+     * @param forcedRoll pass a fixed {@code [0,1)} roll for probes; {@link Double#NaN} uses the ability RNG
+     * @return number of enchantments upgraded
+     */
+    public static int applyLuckyTable(
+            FabricGraniteSkills plugin, ServerPlayer player, ItemStack before, ItemStack after, double forcedRoll) {
+        if (plugin == null || player == null || before == null || after == null || after.isEmpty()) {
+            return 0;
+        }
         FabricEnchantingAbilities self = plugin.getAbilityManager().getAbilityImpl(FabricEnchantingAbilities.class);
         var ability = Abilities.LUCKY_TABLE;
         if (self.isDisabled(ability) || self.failsChecks(player, ability)) {
-            return;
-        }
-        ItemStack after = menu.getSlot(0).getItem();
-        if (after.isEmpty()) {
-            return;
+            return 0;
         }
         User user = plugin.getUserManager().getUser(player.getUUID());
         double chance = self.getValue(ability, user) / 100.0;
         ItemEnchantments beforeEnchants = before.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
         ItemEnchantments afterEnchants = after.getEnchantments();
         ItemEnchantments.Mutable mutable = new ItemEnchantments.Mutable(afterEnchants);
-        boolean changed = false;
+        int upgraded = 0;
         for (Holder<Enchantment> enchantment : afterEnchants.keySet()) {
             int beforeLevel = beforeEnchants.getLevel(enchantment);
             int afterLevel = afterEnchants.getLevel(enchantment);
-            if (afterLevel > beforeLevel && afterLevel < enchantment.value().getMaxLevel()
-                    && self.rand.nextDouble() < chance) {
+            if (afterLevel <= beforeLevel || afterLevel >= enchantment.value().getMaxLevel()) {
+                continue;
+            }
+            double roll = Double.isNaN(forcedRoll) ? self.rand.nextDouble() : forcedRoll;
+            if (roll < chance) {
                 mutable.set(enchantment, afterLevel + 1);
-                changed = true;
+                upgraded++;
             }
         }
-        if (changed) {
+        if (upgraded > 0) {
             after.set(DataComponents.ENCHANTMENTS, mutable.toImmutable());
         }
+        return upgraded;
     }
 
     private void refreshEnchantedStrength() {

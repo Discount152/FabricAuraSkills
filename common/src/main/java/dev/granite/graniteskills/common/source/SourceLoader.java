@@ -59,6 +59,9 @@ public class SourceLoader {
             ConfigurationNode fileDefault = null;
             // Attempt to load embedded file
             ConfigurationNode embedded = configurateLoader.loadEmbeddedFileOrNull(fileName);
+            if (loadEmbedded && embedded == null) {
+                diagnostics.setEmbeddedFallbackUsed(true);
+            }
             if (loadEmbedded && embedded != null) {
                 // Get the node containing default values in the file
                 fileDefault = embedded.node("default");
@@ -85,15 +88,28 @@ public class SourceLoader {
 
             // Merge embedded and user sources
             Map<String, ConfigurationNode> sources = new HashMap<>();
+            Set<String> sourceNames = new LinkedHashSet<>();
+            sourceNames.addAll(userSources.keySet());
+            if (loadEmbedded) {
+                sourceNames.addAll(embeddedSources.keySet());
+            }
 
-            for (String sourceName : userSources.keySet()) {
+            for (String sourceName : sourceNames) {
                 ConfigurationNode userNode = userSources.get(sourceName);
+                ConfigurationNode embeddedNode = loadEmbedded ? embeddedSources.get(sourceName) : null;
+                if (userNode == null && embeddedNode == null) {
+                    continue;
+                }
+                if (userNode == null) {
+                    diagnostics.recover(sourceName);
+                }
                 ConfigurationNode merged;
                 if (loadEmbedded && fileDefault != null) {
-                    ConfigurationNode embeddedNode = embeddedSources.get(sourceName);
                     merged = configurateLoader.mergeNodes(fileDefault, embeddedNode, userDefault, userNode);
-                } else {
+                } else if (userNode != null) {
                     merged = configurateLoader.mergeNodes(userDefault, userNode);
+                } else {
+                    merged = embeddedNode;
                 }
                 sources.put(sourceName, merged);
             }
@@ -108,13 +124,20 @@ public class SourceLoader {
 
                 String type = sourceNode.node("type").getString();
                 if (type == null) {
-                    throw new IllegalArgumentException("Source " + id + " must specify a type");
+                    diagnostics.reject(sourceName, "missing type");
+                    continue;
                 }
-                applyNodeReplacements(sourceNode, sourceNode, sourceName);
-                XpSource source = parseSourceFromType(type, sourceNode, sourceName);
-                if (source != null && source.getXp() > 0.0) {
-                    deserializedSources.add(source);
-                    registerMenuItem(source, sourceNode);
+                try {
+                    applyNodeReplacements(sourceNode, sourceNode, sourceName);
+                    XpSource source = parseSourceFromType(type, sourceNode, sourceName);
+                    if (source != null && source.getXp() > 0.0) {
+                        deserializedSources.add(source);
+                        registerMenuItem(source, sourceNode);
+                    } else {
+                        diagnostics.reject(sourceName, "not version-valid or non-positive xp");
+                    }
+                } catch (RuntimeException e) {
+                    diagnostics.reject(sourceName, e.getMessage() == null ? e.getClass().getSimpleName() : e.getMessage());
                 }
             }
             diagnostics.setEmbeddedFileExists(embedded != null);
@@ -359,6 +382,7 @@ public class SourceLoader {
         private final Set<String> mergedSourceKeys = new LinkedHashSet<>();
         private int versionValidSources;
         private final Map<String, String> rejectedSources = new LinkedHashMap<>();
+        private final Set<String> recoveredFromEmbedded = new LinkedHashSet<>();
         private String fatalError = "";
         private boolean embeddedFallbackUsed;
 
@@ -403,12 +427,28 @@ public class SourceLoader {
             return Collections.unmodifiableMap(rejectedSources);
         }
 
+        public Set<String> recoveredFromEmbedded() {
+            return Collections.unmodifiableSet(recoveredFromEmbedded);
+        }
+
+        void recover(String sourceName) {
+            recoveredFromEmbedded.add(sourceName);
+        }
+
+        void reject(String sourceName, String reason) {
+            rejectedSources.put(sourceName, reason);
+        }
+
         public String fatalError() {
             return fatalError;
         }
 
         public boolean embeddedFallbackUsed() {
             return embeddedFallbackUsed;
+        }
+
+        void setEmbeddedFallbackUsed(boolean embeddedFallbackUsed) {
+            this.embeddedFallbackUsed = embeddedFallbackUsed;
         }
 
         void setDiskFileExists(boolean exists) {

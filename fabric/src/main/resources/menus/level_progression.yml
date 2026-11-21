@@ -26,3 +26,5 @@ granite:
     back: "graniteskills.granite.menu.level_progression_back"
     back_lore: "graniteskills.granite.menu.level_progression_back_lore"
     no_permission: "graniteskills.granite.menu.skills_lore_no_permission"
+    stat_reward_entry: "\n  {color}+{num} {symbol} {stat}"
+    money_reward_entry: "\n  <green>${amount}"

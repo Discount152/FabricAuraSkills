@@ -21,3 +21,5 @@ granite:
     next_slot: 53
   format:
     list_open_detail: "graniteskills.granite.menu.stats_lore_open_detail"
+    player_stat_entry: "{color}{symbol} {stat} <white>{level}"
+    trait_entry: "<#d0d0d0>{trait}: {color}{level}"

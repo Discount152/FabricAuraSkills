@@ -8,6 +8,8 @@ import dev.granite.graniteskills.common.mana.ManaAbilityData;
 import dev.granite.graniteskills.common.message.type.ManaAbilityMessage;
 import dev.granite.graniteskills.common.user.User;
 import dev.granite.graniteskills.common.util.text.TextUtil;
+import dev.granite.graniteskills.fabric.item.FabricItemIgnoreTags;
+import dev.granite.graniteskills.fabric.item.IgnoreInteractClicks;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -209,6 +211,9 @@ public final class FabricAbsorption {
     }
 
     private static boolean isAllowReady(FabricGraniteSkills plugin, ServerPlayer player, ServerLevel world, BlockPos pos) {
+        if (!IgnoreInteractClicks.runRightClickHandler(FabricItemIgnoreTags.ignoresManaAbilityInteract(player.getMainHandItem()))) {
+            return false;
+        }
         if (MANA.optionBoolean("require_sneak", false) && !player.isShiftKeyDown()) {
             return false;
         }

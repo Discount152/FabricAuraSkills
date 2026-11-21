@@ -140,23 +140,43 @@ public final class FabricAgilityAbilities extends FabricAbilityImpl {
     }
 
     private void thunderFall(ServerPlayer player, float amount) {
+        applyThunderFall(player, amount, Double.NaN);
+    }
+
+    /**
+     * Bukkit Thunder Fall: while sneaking, chance to splash secondary% of fall damage to nearby entities.
+     *
+     * @param forcedRoll {@link Double#NaN} uses live RNG
+     * @return number of entities damaged
+     */
+    public static int applyThunderFall(ServerPlayer player, float amount, double forcedRoll) {
+        FabricGraniteSkills plugin = FabricGraniteSkills.getInstance();
+        if (plugin == null || player == null || amount <= 0f || !player.isShiftKeyDown()) {
+            return 0;
+        }
+        FabricAgilityAbilities self = plugin.getAbilityManager().getAbilityImpl(FabricAgilityAbilities.class);
         var ability = Abilities.THUNDER_FALL;
-        if (isDisabled(ability) || failsChecks(player, ability) || !player.isShiftKeyDown()) {
-            return;
+        if (self.isDisabled(ability) || self.failsChecks(player, ability)) {
+            return 0;
         }
         User user = plugin.getUserManager().getUser(player.getUUID());
-        if (rand.nextDouble() >= getValue(ability, user) / 100.0) {
-            return;
+        double roll = Double.isNaN(forcedRoll) ? self.rand.nextDouble() : forcedRoll;
+        if (roll >= self.getValue(ability, user) / 100.0) {
+            return 0;
         }
         if (!(player.level() instanceof ServerLevel level)) {
-            return;
+            return 0;
         }
-        double damage = (getSecondaryValue(ability, user) / 100.0) * amount;
+        double damage = (self.getSecondaryValue(ability, user) / 100.0) * amount;
         DamageSource source = level.damageSources().playerAttack(player);
         AABB box = player.getBoundingBox().inflate(3.0, 1.0, 3.0);
+        int hit = 0;
         for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, box, living -> living != player)) {
-            entity.hurtServer(level, source, (float) damage);
+            if (entity.hurtServer(level, source, (float) damage)) {
+                hit++;
+            }
         }
+        return hit;
     }
 
     private static double healthRequired() {

@@ -57,9 +57,42 @@ public final class FabricGraniteMenuTemplateRegistry {
         int failed = 0;
 
         for (FabricGraniteMenuTemplateBindings.Binding b : FabricGraniteMenuTemplateBindings.ALL) {
+            RegistryEntry previous = entries.get().get(b.menuId());
             FabricGraniteMenuTemplateLoader.ManagedTemplateLoad ml =
                     FabricGraniteMenuTemplateLoader.loadManagedCore(
                             graniteskillsDataRoot, b.menuId(), b.classpathAnchor(), b.bundledClasspathPath());
+            Path diskPath = FabricGraniteMenuTemplateLoader.diskTemplatePath(graniteskillsDataRoot, b.menuId());
+            if (ml.state() == FabricGraniteMenuTemplateLoader.GraniteMenuTemplateState.DISK_INVALID_BUNDLED_LOADED
+                    && previous != null
+                    && previous.loaded().isPresent()) {
+                String detail = ml.diagnosticDetail() != null ? ml.diagnosticDetail() : "invalid disk";
+                String named = diskPath.toAbsolutePath().normalize() + ": " + detail;
+                logger.warn(
+                        "Granite menu template registry: invalid disk template '"
+                                + b.menuId()
+                                + "' at "
+                                + diskPath.toAbsolutePath().normalize()
+                                + " ("
+                                + detail
+                                + "); leaving the last valid menu in place");
+                next.put(
+                        b.menuId(),
+                        new RegistryEntry(
+                                b.menuId(),
+                                previous.state(),
+                                previous.loaded(),
+                                previous.primarySourceDisplay(),
+                                previous.diskSourceDisplay(),
+                                previous.bundledSourceDisplay(),
+                                named,
+                                null));
+                switch (previous.state()) {
+                    case DISK_LOADED -> disk++;
+                    case BUNDLED_LOADED, DISK_INVALID_BUNDLED_LOADED -> bundled++;
+                    case BUNDLED_MISSING_OR_INVALID -> failed++;
+                }
+                continue;
+            }
 
             switch (ml.state()) {
                 case DISK_LOADED -> disk++;
@@ -108,7 +141,6 @@ public final class FabricGraniteMenuTemplateRegistry {
                                 + (ml.diagnosticDetail() != null ? ml.diagnosticDetail() : "unavailable"));
             } else if (ml.state()
                     == FabricGraniteMenuTemplateLoader.GraniteMenuTemplateState.DISK_INVALID_BUNDLED_LOADED) {
-                Path diskPath = FabricGraniteMenuTemplateLoader.diskTemplatePath(graniteskillsDataRoot, b.menuId());
                 logger.warn(
                         "Granite menu template registry: invalid disk template '"
                                 + b.menuId()
@@ -153,5 +185,30 @@ public final class FabricGraniteMenuTemplateRegistry {
 
     public Optional<RegistryEntry> getEntry(String menuId) {
         return Optional.ofNullable(entries.get().get(menuId));
+    }
+
+    /**
+     * Replaces the in-memory template for {@code menuId} so ordinary TemplateSupport opens and
+     * {@code loadDefinition} probes see the new definition without a full disk reload.
+     */
+    public void putOverride(String menuId, FabricGraniteMenuTemplateLoader.LoadedTemplate loaded) {
+        if (menuId == null || loaded == null) {
+            return;
+        }
+        Map<String, RegistryEntry> current = entries.get();
+        Map<String, RegistryEntry> next = new LinkedHashMap<>(current);
+        RegistryEntry previous = current.get(menuId);
+        next.put(
+                menuId,
+                new RegistryEntry(
+                        menuId,
+                        FabricGraniteMenuTemplateLoader.GraniteMenuTemplateState.DISK_LOADED,
+                        Optional.of(loaded),
+                        "override:" + menuId,
+                        previous != null ? previous.diskSourceDisplay() : null,
+                        previous != null ? previous.bundledSourceDisplay() : "override",
+                        null,
+                        null));
+        entries.set(Collections.unmodifiableMap(next));
     }
 }

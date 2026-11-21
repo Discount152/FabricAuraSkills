@@ -53,6 +53,27 @@ public final class GraniteTemplatePlaceholders {
         return expandKeys(raw, values, keys);
     }
 
+    /**
+     * Replaces known placeholders in a display name and lists every placeholder that had no value.
+     */
+    public static GranitePlaceholderResult replace(String name, Map<String, String> values) {
+        String text = expandAllKeysLongestFirst(name, values == null ? Map.of() : values);
+        return new GranitePlaceholderResult(text, unknown(text));
+    }
+
+    public static List<String> unknown(String text) {
+        if (text == null || text.isEmpty()) {
+            return List.of();
+        }
+        java.util.regex.Matcher matcher = PLACEHOLDER.matcher(text);
+        List<String> found = new ArrayList<>();
+        while (matcher.find()) {
+            String token = matcher.group();
+            found.add(token.substring(1, token.length() - 1));
+        }
+        return List.copyOf(found);
+    }
+
     /** True if any {@code {...}} substring remains (typically unknown token after expansion). */
     public static boolean hasUnresolvedBraceSyntax(String str) {
         return str != null && PLACEHOLDER.matcher(str).find();

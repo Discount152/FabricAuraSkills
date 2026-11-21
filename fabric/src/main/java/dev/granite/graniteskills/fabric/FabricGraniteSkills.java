@@ -38,6 +38,7 @@ import dev.granite.graniteskills.common.skill.SkillManager;
 import dev.granite.graniteskills.common.skill.SkillRegistry;
 import dev.granite.graniteskills.common.source.SourceTypeRegistry;
 import dev.granite.graniteskills.common.stat.StatLoader;
+import dev.granite.graniteskills.fabric.trait.FabricHealthRegenTraits;
 import dev.granite.graniteskills.common.stat.StatManager;
 import dev.granite.graniteskills.common.stat.StatRegistry;
 import dev.granite.graniteskills.common.storage.StorageFactory;
@@ -56,6 +57,7 @@ import dev.granite.graniteskills.fabric.item.FabricItemRegistry;
 import dev.granite.graniteskills.fabric.loot.FabricApiLootBridge;
 import dev.granite.graniteskills.fabric.loot.FabricLootManager;
 import dev.granite.graniteskills.fabric.menu.FabricBuiltInMenuConfig;
+import dev.granite.graniteskills.fabric.menu.FabricGraniteLibMenuBridge;
 import dev.granite.graniteskills.fabric.menu.FabricGraniteMenuTemplateRegistry;
 import dev.granite.graniteskills.fabric.menu.FabricMenuLoaders;
 import dev.granite.graniteskills.fabric.menu.FabricMenuRegistry;
@@ -114,6 +116,7 @@ public final class FabricGraniteSkills implements GraniteSkillsPlugin {
     private FabricModifierManager modifierManager;
     private FabricMenuHelper menuHelper;
     private FabricMenuRegistry menuRegistry;
+    private FabricGraniteLibMenuBridge graniteLibMenus;
     private final FabricBuiltInMenuConfig builtInMenuConfig = new FabricBuiltInMenuConfig();
     private final FabricGraniteMenuTemplateRegistry menuTemplateRegistry = new FabricGraniteMenuTemplateRegistry();
     private FabricPlatformUtil platformUtil;
@@ -194,7 +197,7 @@ public final class FabricGraniteSkills implements GraniteSkillsPlugin {
         leaderboardManager = new LeaderboardManager(this, new FabricLeaderboardExclusion(this));
         uiProvider = new FabricUiProvider(this);
         modifierManager = new FabricModifierManager(this);
-        menuHelper = new FabricMenuHelper();
+        menuHelper = new FabricMenuHelper(this);
         rewardManager = new RewardManager(this);
         levelManager = new FabricLevelManager(this);
         antiAfkManager = new FabricAntiAfkManager(this);
@@ -210,10 +213,22 @@ public final class FabricGraniteSkills implements GraniteSkillsPlugin {
         requirementManager = new FabricRequirementManager(this);
         lootManager.loadLootTables();
         levelManager.loadXpRequirements();
+        FabricTreecapitator.register(this);
         levelManager.registerFabricXpHandlers();
         uiProvider.getBossBarManager().loadOptions();
         rewardManager.loadRewards();
+        new dev.granite.graniteskills.fabric.region.FabricPlacedBlocks(this);
         traitManager.registerTraitImplementations();
+        FabricPlayerDeathReset.register(this);
+        net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents.END_SERVER_TICK.register(server -> {
+            if (server.getTickCount() % 20 != 0) {
+                return;
+            }
+            FabricHealthRegenTraits regen = traitManager.getTraitImpl(FabricHealthRegenTraits.class);
+            for (net.minecraft.server.level.ServerPlayer player : server.getPlayerList().getPlayers()) {
+                regen.tickPlayer(player);
+            }
+        });
         abilityManager.registerAbilityImplementations();
         FabricDefenseAbilities.registerImmunityListeners(this);
         FabricDefenseAbilities.registerNoDebuffFireListener(this);
@@ -224,10 +239,44 @@ public final class FabricGraniteSkills implements GraniteSkillsPlugin {
         modifierManager.registerSchedulesIfNeeded();
         menuRegistry = new FabricMenuRegistry();
         FabricMenuLoaders.registerBuiltInMenus(menuRegistry, this);
+        graniteLibMenus = new FabricGraniteLibMenuBridge(this);
         builtInMenuConfig.load(this);
         menuTemplateRegistry.reloadAll(this);
+        graniteLibMenus.syncLoadedDefinitions();
+        // Menu YAML names/lore: MiniMessage + & legacy codes via GraniteLib layout parser.
+        dev.granitelib.fabric.menu.GraniteMenuText.setParser(raw ->
+                dev.granite.graniteskills.fabric.text.FabricTextAdapter.toNativeText(
+                        dev.granite.graniteskills.fabric.text.FabricTextFormatter.toComponent(raw), null));
         runtimeReady = true;
+        try {
+            backupAutomatically();
+        } catch (Exception e) {
+            logger.warn("Automatic backup failed: " + e.getMessage());
+            e.printStackTrace();
+        }
         logger.info("Granite Skills enabled — block/entity/damage/stat/jump/fishing XP; consume, splash, anvil, grindstone, enchanting table, brewing (BREW + TAKEOUT); mana abilities; permissions via fabric-permissions-api. Use /graniteskills reload after editing configs; see fabric/FABRIC_QUICKSTART.md.");
+    }
+
+    private void backupAutomatically() throws Exception {
+        if (!configBoolean(Option.AUTOMATIC_BACKUPS_ENABLED)) {
+            return;
+        }
+        File metaFile = new File(getPluginFolder(), "backups/meta.yml");
+        org.spongepowered.configurate.ConfigurationNode metaConfig =
+                dev.granite.graniteskills.common.util.file.FileUtil.loadYamlFile(metaFile);
+        long lastBackup = metaConfig.node("last_automatic_backup").getLong(0);
+        long intervalMs = (long) (configDouble(Option.AUTOMATIC_BACKUPS_MINIMUM_INTERVAL_HOURS) * 3_600_000L);
+        if (lastBackup + intervalMs > System.currentTimeMillis()) {
+            return;
+        }
+        if (backupProvider == null) {
+            return;
+        }
+        // Record success only after the backup completes so a failed run can retry next interval.
+        backupProvider.saveBackupSync(false);
+        metaConfig.node("last_automatic_backup").set(System.currentTimeMillis());
+        dev.granite.graniteskills.common.util.file.FileUtil.saveYamlFile(metaFile, metaConfig);
+        logger.info("Automatic backup completed.");
     }
 
     private void loadSkills() {
@@ -259,6 +308,8 @@ public final class FabricGraniteSkills implements GraniteSkillsPlugin {
     }
 
     public void disable() {
+        dev.granite.graniteskills.fabric.region.FabricPlacedBlocks.flush();
+        dev.granite.graniteskills.fabric.region.FabricPlacedBlocks.shutdown();
         if (scheduler != null) {
             scheduler.shutdown();
         }
@@ -444,6 +495,10 @@ public final class FabricGraniteSkills implements GraniteSkillsPlugin {
         return menuRegistry;
     }
 
+    public FabricGraniteLibMenuBridge getGraniteLibMenus() {
+        return graniteLibMenus;
+    }
+
     /** Granite slice of bundled menu YAML. Reloads with {@link #reloadFromDisk()}. */
     public FabricBuiltInMenuConfig getBuiltInMenuConfig() {
         return builtInMenuConfig;
@@ -586,6 +641,11 @@ public final class FabricGraniteSkills implements GraniteSkillsPlugin {
         scheduler.executeAsync(() -> leaderboardManager.updateLeaderboards());
         runReloadStep("built-in menu YAML (menus/*.yml granite)", () -> builtInMenuConfig.load(this));
         runReloadStep("granite menu templates (registry)", () -> menuTemplateRegistry.reloadAll(this));
+        runReloadStep("granite menu definitions", () -> {
+            if (graniteLibMenus != null) {
+                graniteLibMenus.syncLoadedDefinitions();
+            }
+        });
         logger.info("GraniteSkills: reload finished.");
     }
 

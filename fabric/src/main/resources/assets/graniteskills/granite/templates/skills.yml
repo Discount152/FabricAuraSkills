@@ -1,5 +1,6 @@
-# Granite Skills — locked layout (Sprint 113). 6×9 chest with row 5 (slots 36–44) empty; utilities on row 6.
-# Shows 11 curated skills; endurance/sorcery/healing/forging are not on this hub (see sprint doc).
+# Granite Skills — 6×9 chest; utilities on rows 1 and 6.
+# Every enabled skill fills the skill slots in order (farming … forging). The slot list must have at least
+# as many entries as enabled skills, otherwise the built-in menu is used.
 id: skills
 title: "§8§lYour Skills"
 rows: 6
@@ -8,17 +9,21 @@ items:
   skill:
     material: minecraft:stone
     slots:
+      - 11
       - 12
       - 13
       - 14
+      - 15
       - 20
       - 21
       - 22
       - 23
       - 24
+      - 29
       - 30
       - 31
       - 32
+      - 33
     name: "§f{skill_display}"
     lore:
       - "§7Level §f{skill_level} §8· §7XP §f{skill_xp}"

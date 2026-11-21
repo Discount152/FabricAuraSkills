@@ -15,9 +15,6 @@ import net.minecraft.world.item.enchantment.ItemEnchantments;
 
 public final class FabricEnchantingXpHandler {
 
-    /** Bukkit typo in {@link dev.granite.graniteskills.bukkit.source.EnchantingLeveler} — match for config parity. */
-    private static final String UNIT_EXP_REQUIREMENT_TYPO = "{sources.units.exp_requirement";
-
     private FabricEnchantingXpHandler() {
     }
 
@@ -42,17 +39,9 @@ public final class FabricEnchantingXpHandler {
         if (FabricXpHandlerUtil.shouldBlockXp(plugin, player, skill, SourceTypes.ENCHANTING)) {
             return;
         }
-        double xp = source.getXp();
         String unit = source.getUnit();
-        if (unit != null) {
-            if (unit.equals("{sources.units.enchant_level}")) {
-                int totalAdded = sumAddedEnchantLevels(stackBeforeEnchant, after);
-                xp *= totalAdded;
-            } else if (unit.equals(UNIT_EXP_REQUIREMENT_TYPO) || unit.equals("{sources.units.exp_requirement}")) {
-                int spent = Math.max(0, xpLevelBefore - player.experienceLevel);
-                xp *= spent;
-            }
-        }
+        double xp = EnchantingXpAward.xp(source.getXp(), unit, sumAddedEnchantLevels(stackBeforeEnchant, after),
+                Math.max(0, xpLevelBefore - player.experienceLevel));
         if (xp <= 0) {
             return;
         }

@@ -98,4 +98,25 @@ public final class FabricCommandConfirmation {
         }
         return false;
     }
+
+    /**
+     * Drops a matching preview without applying it. A missing or different pending key is reported
+     * and left unchanged.
+     */
+    public static boolean cancelPending(CommandSourceStack source, String expectedKey) {
+        UUID id = subjectKey(source);
+        String cur = PENDING.get(id);
+        if (cur != null && cur.equals(expectedKey)) {
+            PENDING.remove(id, cur);
+            return true;
+        }
+        if (cur == null) {
+            source.sendFailure(
+                    FabricGraniteText.key("graniteskills.granite.command.confirmation.no_pending"));
+        } else {
+            source.sendFailure(
+                    FabricGraniteText.key("graniteskills.granite.command.confirmation.mismatch"));
+        }
+        return false;
+    }
 }

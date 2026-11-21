@@ -52,3 +52,24 @@ items:
     lore:
       - "Next ranks"
     action: next_page
+  power:
+    material: minecraft:gold_ingot
+    slot: 46
+    name: "Power board"
+    lore:
+      - "Rank by total skill level"
+    action: leaderboard_power
+  average:
+    material: minecraft:iron_ingot
+    slot: 47
+    name: "Average board"
+    lore:
+      - "Rank by average skill level"
+    action: leaderboard_average
+  skill:
+    material: minecraft:book
+    slot: 52
+    name: "Skill board"
+    lore:
+      - "Rank one skill"
+    action: leaderboard_skill

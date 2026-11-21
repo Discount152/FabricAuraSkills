@@ -132,6 +132,9 @@ public final class FabricAbilitiesMenuGui {
                             Items.IRON_DOOR);
                 },
                 (topSlot, pl, b, t) -> {
+                    if (!FabricMenuClicks.activates(t)) {
+                        return;
+                    }
                     if (topSlot == SLOT_BACK) {
                         plugin.getScheduler()
                                 .executeSync(

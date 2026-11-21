@@ -17,36 +17,65 @@ public final class FabricEnduranceAbilities extends FabricAbilityImpl {
             return false;
         }
         FabricEnduranceAbilities self = plugin.getAbilityManager().getAbilityImpl(FabricEnduranceAbilities.class);
+        return shouldIgnoreHunger(player, self.rand.nextDouble());
+    }
+
+    /**
+     * Deterministic Anti Hunger check (Bukkit {@code FoodLevelChangeEvent} chance). Used by probes and by
+     * {@link #shouldIgnoreHunger(ServerPlayer)} with a live roll.
+     */
+    public static boolean shouldIgnoreHunger(ServerPlayer player, double roll) {
+        FabricGraniteSkills plugin = FabricGraniteSkills.getInstance();
+        if (plugin == null || player == null) {
+            return false;
+        }
+        FabricEnduranceAbilities self = plugin.getAbilityManager().getAbilityImpl(FabricEnduranceAbilities.class);
         var ability = Abilities.ANTI_HUNGER;
         if (self.isDisabled(ability) || self.failsChecks(player, ability)) {
             return false;
         }
         User user = plugin.getUserManager().getUser(player.getUUID());
-        return self.rand.nextDouble() < self.getValue(ability, user) / 100.0;
+        return roll < self.getValue(ability, user) / 100.0;
     }
 
     public static void onPlayerMelee(ServerPlayer attacker, ServerPlayer victim) {
+        applyMealSteal(attacker, victim, Double.NaN);
+    }
+
+    /**
+     * Bukkit meal steal: chance to take 1 food from a player victim on melee hit.
+     *
+     * @param forcedRoll pass a fixed {@code [0,1)} roll for probes; {@link Double#NaN} uses the ability RNG
+     * @return true when food was transferred
+     */
+    public static boolean applyMealSteal(ServerPlayer attacker, ServerPlayer victim, double forcedRoll) {
         FabricGraniteSkills plugin = FabricGraniteSkills.getInstance();
         if (plugin == null || attacker == null || victim == null) {
-            return;
+            return false;
         }
         FabricEnduranceAbilities self = plugin.getAbilityManager().getAbilityImpl(FabricEnduranceAbilities.class);
         var ability = Abilities.MEAL_STEAL;
         if (self.isDisabled(ability) || self.failsChecks(attacker, ability)) {
-            return;
+            return false;
         }
         User user = plugin.getUserManager().getUser(attacker.getUUID());
-        if (self.rand.nextDouble() >= self.getValue(ability, user) / 100.0) {
-            return;
+        double roll = Double.isNaN(forcedRoll) ? self.rand.nextDouble() : forcedRoll;
+        if (roll >= self.getValue(ability, user) / 100.0) {
+            return false;
         }
+        boolean transferred = false;
         if (victim.getFoodData().getFoodLevel() >= 1) {
             victim.getFoodData().setFoodLevel(victim.getFoodData().getFoodLevel() - 1);
+            transferred = true;
         }
         if (attacker.getFoodData().getFoodLevel() < 20) {
             attacker.getFoodData().setFoodLevel(attacker.getFoodData().getFoodLevel() + 1);
+            transferred = true;
         } else if (attacker.getFoodData().getSaturationLevel() < 20f) {
             attacker.getFoodData().setSaturation(attacker.getFoodData().getSaturationLevel() + 1f);
+            transferred = true;
         }
+        return transferred;
     }
 
     public static float adjustHeal(ServerPlayer player, float amount) {

@@ -262,6 +262,9 @@ public final class FabricAbilitiesTemplateSupport {
                     inv.setItem(FabricAbilitiesMenuGui.SLOT_BACK, backStack.get().copy());
                 },
                 (topSlot, pl, b, t) -> {
+                    if (!FabricMenuClicks.activates(t)) {
+                        return;
+                    }
                     if (topSlot == FabricAbilitiesMenuGui.SLOT_BACK) {
                         plugin.getScheduler()
                                 .executeSync(

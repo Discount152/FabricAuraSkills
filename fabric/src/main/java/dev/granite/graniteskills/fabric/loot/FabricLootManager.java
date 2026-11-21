@@ -24,7 +24,11 @@ public final class FabricLootManager extends LootManager {
 
     @Override
     public dev.granite.graniteskills.api.loot.LootRequirements getLootRequirements(ConfigurationNode config) {
-        return new FabricPassthroughLootRequirements();
+        if (plugin.getFabricRequirementManager() == null) {
+            return new FabricPassthroughLootRequirements();
+        }
+        return new FabricNodeLootRequirements(plugin,
+                plugin.getFabricRequirementManager().parseRequirementNodes(config.node("requirements").childrenList()));
     }
 
     public void loadLootTables() {

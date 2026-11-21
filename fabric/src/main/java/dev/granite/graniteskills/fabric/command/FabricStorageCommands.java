@@ -92,7 +92,22 @@ public final class FabricStorageCommands {
                                                                                                         == null)
                                                                                 .executes(
                                                                                         FabricStorageCommands
-                                                                                                ::executeMergeConfirm)))))
+                                                                                                ::executeMergeConfirm))
+                                                                .then(
+                                                                        literal("cancel")
+                                                                                .requires(
+                                                                                        FabricCommandRequirements
+                                                                                                .permissionOrNonPlayerSource(
+                                                                                                        FabricCommandPermissions
+                                                                                                                .STORAGE,
+                                                                                                        false))
+                                                                                .requires(
+                                                                                        s ->
+                                                                                                s.getEntity()
+                                                                                                        == null)
+                                                                                .executes(
+                                                                                        FabricStorageCommands
+                                                                                                ::executeMergeCancel)))))
                 .then(
                         literal("removeallmodifiers")
                                 .requires(
@@ -110,7 +125,19 @@ public final class FabricStorageCommands {
                                                 .requires(s -> s.getEntity() == null)
                                                 .executes(
                                                         FabricStorageCommands
-                                                                ::executeRemoveModifiersConfirm)));
+                                                                ::executeRemoveModifiersConfirm))
+                                .then(
+                                        literal("cancel")
+                                                .requires(
+                                                        FabricCommandRequirements
+                                                                .permissionOrNonPlayerSource(
+                                                                        FabricCommandPermissions
+                                                                                .STORAGE,
+                                                                        false))
+                                                .requires(s -> s.getEntity() == null)
+                                                .executes(
+                                                        FabricStorageCommands
+                                                                ::executeRemoveModifiersCancel)));
     }
 
     private static int executeRootUsage(CommandContext<CommandSourceStack> ctx) {
@@ -461,6 +488,70 @@ public final class FabricStorageCommands {
         return null;
     }
 
+    private static int executeMergeCancel(CommandContext<CommandSourceStack> ctx) {
+        return FabricCommandPluginState.runtimeReadyOrEmpty()
+                .map(
+                        p -> {
+                            if (ctx.getSource().getEntity() != null) {
+                                ctx.getSource()
+                                        .sendFailure(
+                                                FabricGraniteText.key(
+                                                        "graniteskills.granite.command.storage"
+                                                                + ".confirm_console_only"));
+                                return 0;
+                            }
+                            String fromR = StringArgumentType.getString(ctx, ARG_FROM);
+                            String toR = StringArgumentType.getString(ctx, ARG_TO);
+                            Skill fromS = FabricCommandSkillParser.parse(p, fromR);
+                            Skill toS = FabricCommandSkillParser.parse(p, toR);
+                            if (fromS == null) {
+                                ctx.getSource()
+                                        .sendFailure(
+                                                FabricGraniteText.key(
+                                                        "graniteskills.granite.command.storage"
+                                                                + ".merge_unknown_from",
+                                                        fromR));
+                                return 0;
+                            }
+                            if (toS == null) {
+                                ctx.getSource()
+                                        .sendFailure(
+                                                FabricGraniteText.key(
+                                                        "graniteskills.granite.command.storage"
+                                                                + ".merge_unknown_to",
+                                                        toR));
+                                return 0;
+                            }
+                            if (fromS.getId().equals(toS.getId())) {
+                                ctx.getSource()
+                                        .sendFailure(
+                                                FabricGraniteText.key(
+                                                        "graniteskills.granite.command.storage"
+                                                                + ".merge_same_skill"));
+                                return 0;
+                            }
+                            if (!FabricCommandConfirmation.cancelPending(
+                                    ctx.getSource(),
+                                    FabricCommandConfirmation.storageMergePendingKey(fromS, toS))) {
+                                return 0;
+                            }
+                            ctx.getSource()
+                                    .sendSuccess(
+                                            () ->
+                                                    FabricGraniteText.key(
+                                                            "graniteskills.granite.command.storage"
+                                                                    + ".merge_cancelled"),
+                                            false);
+                            return 1;
+                        })
+                .orElseGet(
+                        () -> {
+                            ctx.getSource()
+                                    .sendFailure(Component.literal("GraniteSkills is still starting."));
+                            return 0;
+                        });
+    }
+
     private static int executeRemoveModifiersPreview(CommandContext<CommandSourceStack> ctx) {
         return FabricCommandPluginState.runtimeReadyOrEmpty()
                 .map(
@@ -476,6 +567,40 @@ public final class FabricStorageCommands {
                                     p,
                                     source,
                                     FabricCommandConfirmation.STORAGE_PENDING_REMOVE_ALL_MODIFIERS);
+                            return 1;
+                        })
+                .orElseGet(
+                        () -> {
+                            ctx.getSource()
+                                    .sendFailure(Component.literal("GraniteSkills is still starting."));
+                            return 0;
+                        });
+    }
+
+    private static int executeRemoveModifiersCancel(CommandContext<CommandSourceStack> ctx) {
+        return FabricCommandPluginState.runtimeReadyOrEmpty()
+                .map(
+                        p -> {
+                            if (ctx.getSource().getEntity() != null) {
+                                ctx.getSource()
+                                        .sendFailure(
+                                                FabricGraniteText.key(
+                                                        "graniteskills.granite.command.storage"
+                                                                + ".confirm_console_only"));
+                                return 0;
+                            }
+                            if (!FabricCommandConfirmation.cancelPending(
+                                    ctx.getSource(),
+                                    FabricCommandConfirmation.STORAGE_PENDING_REMOVE_ALL_MODIFIERS)) {
+                                return 0;
+                            }
+                            ctx.getSource()
+                                    .sendSuccess(
+                                            () ->
+                                                    FabricGraniteText.key(
+                                                            "graniteskills.granite.command.storage"
+                                                                    + ".remove_mod_cancelled"),
+                                            false);
                             return 1;
                         })
                 .orElseGet(

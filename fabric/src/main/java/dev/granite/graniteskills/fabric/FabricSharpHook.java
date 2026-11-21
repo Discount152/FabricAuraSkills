@@ -8,6 +8,7 @@ import dev.granite.graniteskills.common.mana.ManaAbilityData;
 import dev.granite.graniteskills.common.message.type.ManaAbilityMessage;
 import dev.granite.graniteskills.common.user.User;
 import dev.granite.graniteskills.common.util.text.TextUtil;
+import dev.granite.graniteskills.fabric.item.IgnoreInteractClicks;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -47,7 +48,7 @@ public final class FabricSharpHook {
         if (!player.getMainHandItem().is(Items.FISHING_ROD)) {
             return;
         }
-        if (FabricManaAbilityItemTags.shouldIgnoreInteract(player.getMainHandItem())) {
+        if (!IgnoreInteractClicks.runRightClickHandler(FabricManaAbilityItemTags.shouldIgnoreInteract(player.getMainHandItem()))) {
             return;
         }
         User user = plugin.getUserManager().getUser(player.getUUID());

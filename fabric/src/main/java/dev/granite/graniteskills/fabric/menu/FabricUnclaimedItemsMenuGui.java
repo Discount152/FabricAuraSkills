@@ -144,8 +144,12 @@ public final class FabricUnclaimedItemsMenuGui {
                             "graniteskills.granite.menu.unclaimed_claim_all_lore",
                             Items.CHEST);
                 },
-                (topSlot, pl, b, t) ->
-                        handleUnclaimedClick(pl, plugin, fPage, fMax, topSlot));
+                (topSlot, pl, b, t) -> {
+                    if (!FabricMenuClicks.activates(t)) {
+                        return;
+                    }
+                    handleUnclaimedClick(pl, plugin, fPage, fMax, topSlot);
+                });
     }
 
     static void handleUnclaimedClick(
